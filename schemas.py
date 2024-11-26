@@ -4,3 +4,7 @@ class UserCreateModel(BaseModel) :
     username: str
     email: str
     password: str
+
+
+class UserModel(BaseModel) :
+    pass
