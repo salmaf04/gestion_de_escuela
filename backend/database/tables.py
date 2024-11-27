@@ -1,34 +1,49 @@
 from typing import List
 from typing import Optional
 from enum import Enum
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, Table
 from sqlalchemy import String
 from sqlalchemy import Integer
 from sqlalchemy import Column
 from sqlalchemy import Boolean
+from sqlalchemy import DateTime
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
+
 import uuid
 
-class TableNames(str, Enum):
-    PROFESOR = "profesor" 
-    DECANO = "decano"
-    ASIGNATURA = "asignatura"
-    Estudiante = "estudiante"
+class TableName(str, Enum):
+    TEACHER = "teacher" 
+    DEAN = "dean"
+    SUBJECT = "subject"
+    STUDENT = "student"
+    SECRETARY = "secretary"
+    ADMINISTRATOR = "administrator"
+    CLASSROOM = "classroom"
+    COURSE = "course"
+    MEAN = "mean"
+    TECHNOLOGICAL_MEAN = "technological_mean"
+    TEACHING_MATERIAL = "teaching_material"   
+    OTHERS = "others"
+    MY_DATE = "my_date"
+    MEAN_MAINTENANCE_TABLE="mean_maintenance_table"
+    STUDENT_NOTE = "student_note"
+    TEACHER_NOTE = "teacher_note"
+    
 
-class EstadoMedios(str, Enum):
-    EXCELENTE = "excelente" 
-    BIEN = "bien"
+class MeanState(str, Enum):
+    EXCELENT = "excelent" 
+    GOOD = "good"
     REGULAR = "regular"
-    MAL = "mal"    
+    BAD = "bad"    
 
-class TipoMedios(str, Enum) :
-    TECNOLÓGICOS = "tecnológicos"
-    MATERIAL_DIDÁCTICO = "material didáctico"
-    OTROS = "otros"
+class MeanType(str, Enum) :
+    TECHNOLOGICAL = "technological"
+    TEACHING_MATERIAL = "teaching_material" 
+    OTHERS = "others"
 
 
 class BaseTable(DeclarativeBase):
@@ -43,99 +58,115 @@ class User(DeclarativeBase) :
     hash_password = Column(String)
 
 
-class Profesor(BaseTable):
-    __tablename__ = "profesor"
+class Teacher(BaseTable):
+    __tablename__ = TableName.TEACHER.value
     
     name = Column(String)
     fullname = Column(String)
-    especialidad = Column(String)
-    tipo_de_contrato = Column(String)
-    experiencia = Column(Integer)
+    specialty = Column(String)
+    contract_type = Column(String)
+    experience = Column(Integer)
 
 
-class Decano(BaseTable , Profesor):
-    __tablename__ = "decano"
+class Dean(BaseTable , Teacher):
+    __tablename__ = TableName.DEAN.value
     
     __mapper_args__ = {
-        "polymorphic_identity": "decano",
+        "polymorphic_identity": "dean",
     }
     
 
-class Secretaria(BaseTable) :
-    __tablename__ = "secretaria"
+class Secretary(BaseTable) :
+    __tablename__ = TableName.SECRETARY.value
 
-    nombre = Column(String)
-
-
-class Administrador(BaseTable) :
-    __tablename__ = "administrador"
-
-    nombre = Column(String)
+    name = Column(String)
 
 
-class Estudiante(BaseTable) :
-    __tablename__ = "estudiante"
+class Administrator(BaseTable) :
+    __tablename__ = TableName.ADMINISTRATOR.value
 
-    nombre = Column(String)
-    edad = Column(Integer)
-    actividades_extras = Column(Boolean, nullable=True)
+    name = Column(String)
 
 
-class Asignatura(BaseTable) :
-    __tablename__ = "asignatura"
+class Student(BaseTable) :
+    __tablename__ = TableName.STUDENT.value
 
-    nombre = Column(String)
-    carga_horaria  = Column(Integer)
-    programa_de_estudios = Column(Integer)
-
-
-class Aula(BaseTable) : 
-    __tablename__ = "aula"
-
-    ubicación = Column(String)
-    capacidad = Column(Integer)
+    name = Column(String)
+    age = Column(Integer)
+    extra_activities = Column(Boolean, nullable=True)
 
 
-class Curso(BaseTable) :
-    __tablename__ = "curso"
+class Subject(BaseTable) :
+    __tablename__ = TableName.SUBJECT.value
 
-    curso = Column(Integer , nullable=False , unique=True)
+    name = Column(String)
+    hourly_load  = Column(Integer)
+    study_program = Column(Integer)
 
 
-class Medio(BaseTable) :
-    __tablename__ = "medio"
+class Classroom(BaseTable) : 
+    __tablename__ = TableName.CLASSROOM.value
+
+    location = Column(String)
+    capacity = Column(Integer)
+
+
+class Course(BaseTable) :
+    __tablename__ = TableName.COURSE.value
+
+    course = Column(Integer , nullable=False , unique=True)
+
+
+class Mean(BaseTable) :
+    __tablename__ = TableName.MEAN.value
  
-    nombre = Column(String) 
-    estado: Mapped[EstadoMedios] = mapped_column(String)
-    ubicación = Column(String)
-    tipo: Mapped[TipoMedios] = mapped_column(String)
+    name = Column(String) 
+    state: Mapped[MeanState] = mapped_column(String)
+    location = Column(String)
+    type: Mapped[MeanType] = mapped_column(String)
 
 
-class MedioTecnologico(Medio, BaseTable) : 
-    __tablename__ = "medio tecnologico"   
+class TechnologicalMean(Mean, BaseTable) : 
+    __tablename__ = TableName.TECHNOLOGICAL_MEAN.value  
 
     __mapper_args__ = {
-        "polymorphic_identity": "medio tecnologico",
-        "polymorphic_on": "tipo"
+        "polymorphic_identity": "technological mean",
+        "polymorphic_on": "type"
     }
 
 
-class MaterialDidactico(Medio, BaseTable) : 
-    __tablename__ = "material didactico"   
+class TeachingMaterial(Mean, BaseTable) : 
+    __tablename__ = TableName.TEACHING_MATERIAL.value   
 
     __mapper_args__ = {
-        "polymorphic_identity": "material didactico",
-        "polymorphic_on": "tipo"
+        "polymorphic_identity": "teaching material" ,
+        "polymorphic_on": "type"
     }
 
 
-class Otros(Medio, BaseTable) : 
-    __tablename__ = "otros"   
+class Others(Mean, BaseTable) : 
+    __tablename__ = TableName.OTHERS.value
 
     __mapper_args__ = {
-        "polymorphic_identity": "otros",
-        "polymorphic_on": "tipo"
+        "polymorphic_identity": "others",
+        "polymorphic_on": "type"
     }
+    
+class MyDate (BaseTable):
+    __tablename__ = TableName.MY_DATE.value
+
+    date = Column(DateTime, unique= True)
+    
+class StudentNote (BaseTable) :
+    __tablename__ = TableName.STUDENT_NOTE.value
+    
+#Tablas de relación
+mean_maintenance_table = Table(
+    TableName.MEAN_MAINTENANCE_TABLE.value,
+    BaseTable.metadata,
+    Column("mean_id", ForeignKey(f"{TableName.MEAN}.entity_id", use_alter=True), primary_key= True),
+    Column("date_id", ForeignKey(f"{TableName.MY_DATE}.entity_id", use_alter=True), primary_key= True),
+)
     
     
 
