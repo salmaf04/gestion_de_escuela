@@ -1,9 +1,11 @@
+import LoginScreen from "./login/LoginScreen.tsx";
+
 function App() {
 
   return (
-    <div>
-      <h1>Hola don pepito</h1>
-    </div>
+    <>
+        <LoginScreen />
+    </>
   )
 }
 
