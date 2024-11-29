@@ -3,11 +3,9 @@ from pydantic import BaseModel, Field
 
 
 class UserCreateModel(BaseModel) :
-    first_name: str
-    last_name: str
     username: str
     email: str
-    password: str
+    password: str = Field(exclude=True)
 
 
 class UserModel(BaseModel) :
@@ -15,9 +13,6 @@ class UserModel(BaseModel) :
     username: str
     email: str
     hashed_password: str = Field(exclude=True)
-    first_name: str
-    last_name: str
-
 
 class UserLoginModel(BaseModel) :
     email: str

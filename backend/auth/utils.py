@@ -1,11 +1,13 @@
 from passlib.context import CryptContext
 from datetime import timedelta, datetime
-from ..config import Config
+#from config import Config
 import jwt
 import uuid 
 import logging
 
-JWT_EXPIRE='3600'
+JWT_EXPIRE=3600
+JWT_SECRET="1fc43f42d151c15c0c5a0e625a2a0d95"
+JWT_ALGORITHM="HS256"
 
 passwd_context = CryptContext(schemes=["bcrypt"])
 
@@ -24,24 +26,26 @@ def create_access_token(user_data: dict, expire: timedelta = None, refresh: bool
     payload = {}
 
     payload['user'] = user_data 
-    payload['expire'] = datetime.now() + (
-        expire if expire else timedelta(seconds=JWT_EXPIRE)
+    payload['expire'] = str(datetime.now() + (
+        expire if expire else timedelta(seconds=JWT_EXPIRE))
     )
     payload['jti'] = str(uuid.uuid4())
     payload['refresh'] = refresh
   
     token = jwt.encode(
         payload=payload,
-        key=Config.JWT_SECRET, 
-        algorithm=Config.JWT_ALGORITHM
+        key=JWT_SECRET, 
+        algorithm=JWT_ALGORITHM
     )
+
+    return token
 
 def decode_token(token: str) -> dict :
     try :
         token_data = jwt.decode(
             payload=token,
-            key=Config.JWT_SECRET,
-            algorithm=Config.JWT_ALGORITHM
+            key=JWT_SECRET,
+            algorithm=JWT_ALGORITHM
         )
 
         return token_data
