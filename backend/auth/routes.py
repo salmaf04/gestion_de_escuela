@@ -1,23 +1,42 @@
-from fastapi import APIRouter, HTTPException, status, Depends
-from schemas import UserCreateModel, UserModel, UserLoginModel
-from sqlalchemy.ext.asyncio import AsyncSession
-from services import UserCreateService
+from fastapi import FastAPI, HTTPException, status, Depends
+from .schemas import UserCreateModel, UserModel, UserLoginModel
+from sqlalchemy.orm import Session
+from .services import UserCreateService
 from fastapi.exceptions import HTTPException
-from utils import verify_password, create_access_token
+from .utils import verify_password, create_access_token
 from datetime import timedelta
 from fastapi.responses import JSONResponse
+from database.config import SessionLocal, engine
+from database import tables
 
-app = APIRouter()
-EXPIRE_TOKEN='2'
+tables.BaseTable.metadata.create_all(bind=engine)
+
+
+app = FastAPI()
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+EXPIRE_TOKEN=2
+
+@app.get("/")
+async def say_hello() :
+    return {
+        "message" : "Welcome"
+    }
 
 @app.post(
     "/signup",
-    response_model=UserModel,
     status_code=status.HTTP_201_CREATED
 )
 async def create_user_account(
     user_input: UserCreateModel,
-    session: AsyncSession
+    session: Session = Depends(get_db)
 ) :
     user_service=UserCreateService()
 
@@ -37,7 +56,7 @@ async def create_user_account(
 )
 async def user_loggin(
     login_data: UserLoginModel,
-    session:AsyncSession 
+    session: Session = Depends(get_db)
 ) :# Depends(get_session)) 
 
     user_service=UserCreateService()
@@ -56,14 +75,14 @@ async def user_loggin(
         access_token =  create_access_token(
             user_data ={
                 'email': user.email,
-                'user_id': user.id,
+                'user_id': str(user.id)
             }
         )
 
         refresh_token =  create_access_token(
             user_data ={
                 'email': user.email,
-                'user_id': user.id,
+                'user_id': str(user.id)
             },
             refresh=True,
             expire=timedelta(days=EXPIRE_TOKEN)
