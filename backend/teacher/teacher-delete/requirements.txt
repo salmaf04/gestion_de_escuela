@@ -1,0 +1,4 @@
+database==0.6.0
+fastapi==0.115.5
+SQLAlchemy==2.0.36
+teacher==0.0.2
