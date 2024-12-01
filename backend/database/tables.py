@@ -66,6 +66,7 @@ class TeacherTable(BaseTable):
     
     name = Column(String)
     fullname = Column(String)
+    email = Column(String, unique=True)
     specialty = Column(String)
     contract_type = Column(String)
     experience = Column(Integer)
