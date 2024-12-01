@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run FastAPI Dev Command",
+            "type": "shell",
+            "command": "fastapi",
+            "args": [
+                "dev",
+                "${workspaceFolder}/backend/teacher/teacher-get/rest_api.py"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}

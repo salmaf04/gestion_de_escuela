@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from .schemas import TeacherCreateModel, TeacherModel
 from database.tables import TeacherTable
+from sqlalchemy import and_
 
 class TeacherCreateService :
 
@@ -20,4 +21,5 @@ class TeacherPaginationService :
         result = query.first()
 
         return result
-
+    
+  

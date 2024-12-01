@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Custom FastAPI Command",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/rest_api.py",
+            "console": "integratedTerminal",
+            "args": [
+                "dev"
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "preLaunchTask": "Run FastAPI Dev Command"
+        }
+    ]
+}

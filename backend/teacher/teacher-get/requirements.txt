@@ -1,0 +1,6 @@
+database==0.6.0
+fastapi==0.115.5
+pydantic==2.10.2
+SQLAlchemy==2.0.36
+sqlalchemy_filterset==2.3.0
+teacher==0.0.2
