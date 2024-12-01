@@ -8,5 +8,6 @@ class StudentMapper :
             id = student.entity_id,
             name= student.name,
             age= student.age,
+            email= student.email,
             extra_activities= student.extra_activities  
         )
