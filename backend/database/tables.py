@@ -111,6 +111,7 @@ class StudentTable(BaseTable) :
 
     name = Column(String)
     age = Column(Integer)
+    email = Column(String, unique=True)
     extra_activities = Column(Boolean, nullable=True)
     """
     teacher: Mapped["Teacher"] = relationship(
