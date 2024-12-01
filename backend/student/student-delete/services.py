@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from database.tables import StudentTable
 import uuid
 
-class TeacherDeletionService:
+class StudentDeletionService:
     def delete_student(self, session: Session, student: StudentModel) -> None :
         session.delete(student)
         session.commit()
