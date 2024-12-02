@@ -17,6 +17,7 @@ from sqlalchemy.dialects.postgresql import UUID
 import uuid
 
 class TableName(str, Enum):
+    USER = "user"
     TEACHER = "teacher" 
     DEAN = "dean"
     SUBJECT = "subject"
@@ -72,11 +73,9 @@ class TeacherTable(UserTable):
     id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
     name = Column(String)
     fullname = Column(String)
-    email = Column(String, unique=True)
     specialty = Column(String)
     contract_type = Column(String)
     experience = Column(Integer)
-    type = Column(String)
     """
     students: Mapped[List["Student"]] = relationship(
         secondary=f"{TableName.STUDENT.value}", back_populates="teacher", viewonly=True
@@ -97,7 +96,7 @@ class TeacherTable(UserTable):
 class DeanTable(TeacherTable):
     __tablename__ = TableName.DEAN.value
     
-    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.TEACHER.value}.entity_id"), primary_key=True)
+    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.TEACHER.value}.id"), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "dean",
@@ -131,7 +130,6 @@ class StudentTable(UserTable) :
     id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
     name = Column(String)
     age = Column(Integer)
-    email = Column(String, unique=True)
     extra_activities = Column(Boolean, nullable=True)
     """
     teacher: Mapped["Teacher"] = relationship(
