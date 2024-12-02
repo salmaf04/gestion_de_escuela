@@ -59,11 +59,17 @@ class UserTable(BaseTable) :
     username = Column(String, unique=True)
     email = Column(String, unique =True)
     hash_password = Column(String)
+    type = Column(String)
+    __mapper_args__ = {
+        "polymorphic_identity": "user",
+        "polymorphic_on": "type",
+    }
 
 
-class TeacherTable(BaseTable):
+class TeacherTable(UserTable):
     __tablename__ = TableName.TEACHER.value
     
+    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
     name = Column(String)
     fullname = Column(String)
     email = Column(String, unique=True)
@@ -83,33 +89,46 @@ class TeacherTable(BaseTable):
     student_note_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="teacher")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="teacher")
 
+    __mapper_args__ = {
+        "polymorphic_identity": "teacher",
+    }
+
       
 class DeanTable(TeacherTable):
     __tablename__ = TableName.DEAN.value
     
-    teacher_id = Column(Integer,primary_key=True)
+    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.TEACHER.value}.entity_id"), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "dean",
-        "inherit_condition": id == teacher_id
     }
-    
 
-class SecretaryTable(BaseTable) :
+class SecretaryTable(UserTable) :
     __tablename__ = TableName.SECRETARY.value
 
+    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
     name = Column(String)
 
+    __mapper_args__ = {
+        "polymorphic_identity": "secretary",
+    }
 
-class AdministratorTable(BaseTable) :
+
+class AdministratorTable(UserTable) :
     __tablename__ = TableName.ADMINISTRATOR.value
-
+    
+    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
     name = Column(String)
 
+    __mapper_args__ = {
+        "polymorphic_identity": "administrator",
+    }
 
-class StudentTable(BaseTable) :
+
+class StudentTable(UserTable) :
     __tablename__ = TableName.STUDENT.value
 
+    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
     name = Column(String)
     age = Column(Integer)
     email = Column(String, unique=True)
@@ -131,6 +150,10 @@ class StudentTable(BaseTable) :
     student_note_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="student")
     student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="student")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="student")
+
+    __mapper_args__ = {
+        "polymorphic_identity": "student",
+    }
 
 
 class SubjectTable(BaseTable) :
@@ -192,6 +215,7 @@ class MeanTable(BaseTable) :
     mean_mainteniance_association: Mapped[List["MeanMaintenianceTable"]] = relationship(back_populates="mean")
 
     __mapper_args__ = {
+        "polymorphic_identity": "mean",
         "polymorphic_on": "type",
     }
 
@@ -199,33 +223,29 @@ class MeanTable(BaseTable) :
 class TechnologicalMeanTable(MeanTable) : 
     __tablename__ = TableName.TECHNOLOGICAL_MEAN.value  
 
-    mean_id = Column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.MEAN.value}.entity_id"), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "technological mean",
-        "inherit_condition": id == mean_id
     }
 
 
 class TeachingMaterialTable(MeanTable) : 
     __tablename__ = TableName.TEACHING_MATERIAL.value   
 
-    mean_id = Column(Integer,primary_key=True)
+    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.MEAN.value}.entity_id"), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "teaching_material",
-        "inherit_condition": id == mean_id
     }
-
 
 class OthersTable(MeanTable) : 
     __tablename__ = TableName.OTHERS.value
 
-    mean_id = Column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.MEAN.value}.entity_id"), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "other",
-        "inherit_condition": id == mean_id
     }
 
 
