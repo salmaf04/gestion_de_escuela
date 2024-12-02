@@ -55,7 +55,7 @@ class BaseTable(DeclarativeBase):
 
 
 class UserTable(BaseTable) :
-    __tablename__ = "user"
+    __tablename__ = TableName.USER.value
     
     username = Column(String, unique=True)
     email = Column(String, unique =True)
@@ -70,7 +70,7 @@ class UserTable(BaseTable) :
 class TeacherTable(UserTable):
     __tablename__ = TableName.TEACHER.value
     
-    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
     name = Column(String)
     fullname = Column(String)
     specialty = Column(String)
@@ -96,7 +96,7 @@ class TeacherTable(UserTable):
 class DeanTable(TeacherTable):
     __tablename__ = TableName.DEAN.value
     
-    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.TEACHER.value}.id"), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.TEACHER.value}.id"), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "dean",
@@ -105,7 +105,7 @@ class DeanTable(TeacherTable):
 class SecretaryTable(UserTable) :
     __tablename__ = TableName.SECRETARY.value
 
-    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
     name = Column(String)
 
     __mapper_args__ = {
@@ -116,7 +116,7 @@ class SecretaryTable(UserTable) :
 class AdministratorTable(UserTable) :
     __tablename__ = TableName.ADMINISTRATOR.value
     
-    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
     name = Column(String)
 
     __mapper_args__ = {
@@ -127,7 +127,7 @@ class AdministratorTable(UserTable) :
 class StudentTable(UserTable) :
     __tablename__ = TableName.STUDENT.value
 
-    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
     name = Column(String)
     age = Column(Integer)
     extra_activities = Column(Boolean, nullable=True)
@@ -221,7 +221,7 @@ class MeanTable(BaseTable) :
 class TechnologicalMeanTable(MeanTable) : 
     __tablename__ = TableName.TECHNOLOGICAL_MEAN.value  
 
-    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.MEAN.value}.entity_id"), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.MEAN.value}.entity_id"), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "technological mean",
@@ -231,7 +231,7 @@ class TechnologicalMeanTable(MeanTable) :
 class TeachingMaterialTable(MeanTable) : 
     __tablename__ = TableName.TEACHING_MATERIAL.value   
 
-    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.MEAN.value}.entity_id"), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.MEAN.value}.entity_id"), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "teaching_material",
@@ -240,7 +240,7 @@ class TeachingMaterialTable(MeanTable) :
 class OthersTable(MeanTable) : 
     __tablename__ = TableName.OTHERS.value
 
-    id: Mapped[int] = mapped_column(Integer,ForeignKey(f"{TableName.MEAN.value}.entity_id"), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.MEAN.value}.entity_id"), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "other",
@@ -258,8 +258,8 @@ class MyDateTable(BaseTable):
 class StudentNoteTable(BaseTable) :
     __tablename__ = TableName.STUDENT_NOTE.value
 
-    teacher_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.TEACHER.value}.entity_id"))
-    student_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.STUDENT.value}.entity_id"), primary_key=True)
+    teacher_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.TEACHER.value}.id"))
+    student_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.STUDENT.value}.id"), primary_key=True)
     subject_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.SUBJECT.value}.entity_id"), primary_key=True)
     
     note_value = Column(Integer)
@@ -272,8 +272,8 @@ class StudentNoteTable(BaseTable) :
 class TeacherNoteTable(BaseTable) :
     __tablename__ = TableName.TEACHER_NOTE.value
 
-    teacher_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.TEACHER.value}.entity_id"), primary_key=True)
-    student_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.STUDENT.value}.entity_id"), primary_key=True)
+    teacher_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.TEACHER.value}.id"), primary_key=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.STUDENT.value}.id"), primary_key=True)
     subject_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.SUBJECT.value}.entity_id"), primary_key=True)
     course_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id"))
     
@@ -289,7 +289,7 @@ class TeacherNoteTable(BaseTable) :
 class AbsenceTable(BaseTable) :
     __tablename__ = TableName.ABSENCE.value
 
-    student_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.STUDENT.value}.entity_id"), primary_key=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.STUDENT.value}.id"), primary_key=True)
     subject_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.SUBJECT.value}.entity_id"), primary_key=True)
     course_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id"))
     
