@@ -14,6 +14,9 @@ class UserCreateService:
 
         user = result.first()
     
+        if user is None :
+            return None
+    
         return  UserModel(
             id = user.entity_id,
             email=user.email,
