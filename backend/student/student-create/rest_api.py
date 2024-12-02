@@ -19,9 +19,8 @@ SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:543
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL
 )
+tables.BaseTable.metadata.create_all(engine)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base = declarative_base()
 
 
 app = FastAPI()
