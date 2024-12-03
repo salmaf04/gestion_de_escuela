@@ -3,19 +3,16 @@ from sqlalchemy import select
 from database.tables import UserTable
 from .schemas import UserModel
 from .schemas import UserCreateModel
-from .utils import generate_password_hash
+from .utils import get_password_hash
 
 
 class UserCreateService:
-    async def get_user_by_email(self, email: str, session: Session) -> UserModel :
-        query = select(UserTable).where(UserTable.email == email)
+    async def get_user_by_username(self, username: str, session: Session) -> UserModel :
+        query = select(UserTable).where(UserTable.username == username)
 
-        result = session.scalars(query)
+        result =  session.execute(query)
 
-        user = result.first()
-    
-        if user is None :
-            return None
+        user = result.scalars().first()
     
         return  UserModel(
             id = user.entity_id,
@@ -25,8 +22,8 @@ class UserCreateService:
         )
     
 
-    async def user_exists(self, email:str, session: Session) :
-        user = await self.get_user_by_email(email=email, session=session)
+    async def user_exists(self, username: str, session: Session) :
+        user = await self.get_user_by_username(username=username, session=session)
 
         return user is not None
     
@@ -34,7 +31,7 @@ class UserCreateService:
     async def create_user(self, user: UserCreateModel, session: Session) :
         user_dict = user.model_dump()
 
-        hashed_password = generate_password_hash(user.password)
+        hashed_password = get_password_hash(user.password)
 
         new_user = UserTable(**user_dict, hash_password=hashed_password)
 
