@@ -6,7 +6,7 @@ class SecretaryCreateModel(BaseModel):
     username: str
     email: str
     hash_password: str
-    type: str
+
 
 class SecretaryModel(BaseModel):
     id : uuid.UUID
@@ -14,4 +14,4 @@ class SecretaryModel(BaseModel):
     username: str
     email: str
     hash_password: str
-    type: str
+
