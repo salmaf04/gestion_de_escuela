@@ -1,5 +1,5 @@
 function Sidebar() {
-    return <div className={"w-1/6 flex flex-col justify-center items-center"}>
+    return <div className={"w-1/12 flex flex-col justify-center items-center"}>
         <div className={' flex flex-col items-center justify-center gap-10'}>
             <button className={'bg-indigo-100 p-2 rounded'}>
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"

@@ -2,9 +2,15 @@ import ToggleButton from "./ToggleButton.tsx";
 import Table from "./Table.tsx";
 import {header, rows} from "./Example_data.tsx";
 
-function Content() {
-    return <div className={"mx-4 w-5/6 flex flex-col"}>
-        <div className={'flex-wrap flex items-center justify-around w-full h-28'}>
+interface ContentProps {
+    setFormVisible : () => void
+}
+
+function Content({setFormVisible}: ContentProps) {
+
+
+    return <div className={"mx-4 w-11/12 flex flex-col"}>
+        <div className={' my-4 flex-wrap flex items-center justify-around w-full '}>
             <ToggleButton/>
             <div className={'relative'}>
                 <input type="search" className={'rounded-md px-2 py-1  bg-no-repeat bg-left bg-contain'}
@@ -18,16 +24,15 @@ function Content() {
                 </svg>
             </div>
             <div>
-                <button
+                <button onClick={() => setFormVisible()}
                     className={'text-white font-medium py-2 px-5 bg-gradient-to-r from-indigo-400 to-indigo-500 rounded-xl'}>Añadir
                     +
                 </button>
             </div>
         </div>
         <Table rows={rows
-           } header={header }></Table>
+        } header={header}></Table>
     </div>
-
 
 
 }
