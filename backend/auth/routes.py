@@ -2,9 +2,7 @@
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta
-from .auth import get_current_user, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, get_password_hash
-import json
-from pydantic import BaseModel
+from .auth import get_current_user, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
 from .authorizations import authorize
 from .services import UserCreateService
 from database import tables
@@ -52,7 +50,13 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         raise HTTPException(status_code=401, detail="Incorrect username or password")
     
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
+    access_token = create_access_token(
+        data={
+            "sub": user.username,
+            "type": user.type
+        }, 
+        expires_delta=access_token_expires
+    )
     
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -77,14 +81,14 @@ async def register_user(user: UserCreateModel, session: Session = Depends(get_db
 
     
 @app.get("/check-all")
-@authorize(role=['admin','superadmin'])
-async def route1(current_user: dict = Depends(get_current_user)):
+@authorize(role=['user','superadmin'])
+async def route1(current_user: UserModel = Depends(get_current_user)):
     return {"message": "This endpoint is accessible to admin and superadmin only"}
 
 
 @app.get("/check-superadmin")
 @authorize(role=['superadmin'])
-async def route2(current_user: dict = Depends(get_current_user)):
+async def route2(current_user: UserModel = Depends(get_current_user)):
     return {"message": "This endpoint is accessible to superadmin only"}
 
         

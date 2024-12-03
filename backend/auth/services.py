@@ -14,11 +14,13 @@ class UserCreateService:
 
         user = result.scalars().first()
     
+    
         return  UserModel(
             id = user.entity_id,
             email=user.email,
             username=user.username,
-            hashed_password=user.hash_password
+            hashed_password=user.hash_password,
+            type=user.type
         )
     
 
@@ -43,5 +45,6 @@ class UserCreateService:
             id = new_user.entity_id,
             email=new_user.email,
             username=new_user.username,
-            hashed_password=new_user.hash_password
+            hashed_password=new_user.hash_password,
+            type=new_user.type
         )

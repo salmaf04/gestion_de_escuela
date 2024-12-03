@@ -6,7 +6,8 @@ def authorize(role: list):
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
-            user_role = kwargs.get("current_user")['role']
+            user =  await kwargs.get("current_user")
+            user_role = user.type
             if user_role not in role:
                 raise HTTPException(status_code=403, detail="User is not authorized to access")
             return await func(*args, **kwargs)

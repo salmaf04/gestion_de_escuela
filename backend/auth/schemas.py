@@ -13,6 +13,7 @@ class UserModel(BaseModel) :
     username: str
     email: str
     hashed_password: str = Field(exclude=True)
+    type: str
 
 class UserLoginModel(BaseModel) :
     email: str
