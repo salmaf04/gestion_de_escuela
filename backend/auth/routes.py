@@ -81,7 +81,7 @@ async def register_user(user: UserCreateModel, session: Session = Depends(get_db
 
     
 @app.get("/check-all")
-@authorize(role=['user','superadmin'])
+@authorize(role=['superadmin'])
 async def route1(current_user: UserModel = Depends(get_current_user)):
     return {"message": "This endpoint is accessible to admin and superadmin only"}
 
