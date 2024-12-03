@@ -10,5 +10,4 @@ class SecretaryMapper :
             username= secretary.username,
             email= secretary.email,
             hash_password= secretary.hash_password,
-            type= secretary.type
         )
