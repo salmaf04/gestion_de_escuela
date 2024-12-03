@@ -1,8 +1,6 @@
 
 import Formulario from "./components/Formulario.tsx";
 
-
-
 function LoginScreen() {
 
     return (
