@@ -1,10 +1,10 @@
 import LoginScreen from "./login/LoginScreen.tsx";
-
+import Layout from  "./layout/Layout.tsx";
 function App() {
 
   return (
     <>
-        <LoginScreen />
+        <Layout name={'Josefina Agurre'}></Layout>
     </>
   )
 }
