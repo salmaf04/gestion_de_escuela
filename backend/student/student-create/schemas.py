@@ -6,6 +6,8 @@ class StudentCreateModel(BaseModel):
     age: int
     email: str
     extra_activities: bool
+    username: str
+    hash_password: str
 
 class StudentModel(BaseModel):
     id : uuid.UUID
@@ -13,3 +15,5 @@ class StudentModel(BaseModel):
     age: int
     email: str
     extra_activities: bool
+    username: str
+    hash_password: str

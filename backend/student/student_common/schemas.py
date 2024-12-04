@@ -7,3 +7,5 @@ class StudentModel(BaseModel):
     age: int
     email: str
     extra_activities: bool
+    username: str
+    hash_password: str

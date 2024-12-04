@@ -6,3 +6,5 @@ class ChangeRequest(BaseModel) :
     age : Optional[int] = None
     email : Optional[str] = None
     extra_activities : Optional[bool] = None
+    username : Optional[str] = None
+    hash_password : Optional[str] = None
