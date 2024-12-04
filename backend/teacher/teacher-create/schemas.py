@@ -8,6 +8,8 @@ class TeacherCreateModel(BaseModel):
     specialty: str
     contract_type: str
     experience: int
+    username: str
+    hash_password: str
 
 class TeacherModel(BaseModel):
     id : uuid.UUID
@@ -17,3 +19,5 @@ class TeacherModel(BaseModel):
     specialty: str
     contract_type: str
     experience: int
+    username: str
+    hash_password: str

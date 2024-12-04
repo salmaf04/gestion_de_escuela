@@ -8,3 +8,5 @@ class ChangeRequest(BaseModel) :
     specialty : Optional[str] = None
     contract_type : Optional[str] = None
     experience : Optional[int] = None
+    username : Optional[str] = None
+    hash_password : Optional[str] = None

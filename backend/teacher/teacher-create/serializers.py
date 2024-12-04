@@ -11,5 +11,7 @@ class TeacherMapper :
             email=teacher.email,
             specialty=teacher.specialty,
             contract_type=teacher.contract_type,
-            experience=teacher.experience
+            experience=teacher.experience,
+            username=teacher.username,
+            hash_password=teacher.hash_password
         )

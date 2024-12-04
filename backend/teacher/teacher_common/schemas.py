@@ -9,3 +9,5 @@ class TeacherModel(BaseModel):
     specialty: str
     contract_type: str  
     experience: int
+    username: str
+    hash_password: str
