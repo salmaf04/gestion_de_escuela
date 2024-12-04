@@ -9,5 +9,7 @@ class StudentMapper :
             name= student.name,
             age= student.age,
             email= student.email,
-            extra_activities= student.extra_activities  
+            extra_activities= student.extra_activities,  
+            username= student.username,
+            hash_password= student.hash_password
         )
