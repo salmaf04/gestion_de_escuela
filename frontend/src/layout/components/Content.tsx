@@ -1,12 +1,15 @@
 import ToggleButton from "./ToggleButton.tsx";
 import Table from "./Table.tsx";
 import {header, rows} from "./Example_data.tsx";
+import {Profesor} from "./Types.tsx";
+
 
 interface ContentProps {
-    setFormVisible : () => void
-}
+    setFormVisible: () => void,
+    setEdit: (index:number) => void,
+    Data : Profesor[],}
 
-function Content({setFormVisible}: ContentProps) {
+function Content({setFormVisible, setEdit, Data}: ContentProps) {
 
 
     return <div className={"mx-4 w-11/12 flex flex-col"}>
@@ -25,12 +28,12 @@ function Content({setFormVisible}: ContentProps) {
             </div>
             <div>
                 <button onClick={() => setFormVisible()}
-                    className={'text-white font-medium py-2 px-5 bg-gradient-to-r from-indigo-400 to-indigo-500 rounded-xl'}>Añadir
+                        className={'text-white font-medium py-2 px-5 bg-gradient-to-r from-indigo-400 to-indigo-500 rounded-xl'}>Añadir
                     +
                 </button>
             </div>
         </div>
-        <Table setFormVisible={setFormVisible}  rows={rows
+        <Table setEdit={setEdit} Data={Data} rows={rows
         } header={header}></Table>
     </div>
 
