@@ -30,7 +30,7 @@ function Content({setFormVisible}: ContentProps) {
                 </button>
             </div>
         </div>
-        <Table rows={rows
+        <Table setFormVisible={setFormVisible}  rows={rows
         } header={header}></Table>
     </div>
 

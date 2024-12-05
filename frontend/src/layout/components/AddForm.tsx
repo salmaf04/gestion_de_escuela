@@ -23,7 +23,7 @@ export default function FormModal({ onClose }: Props) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Handle form submission logic here
+
         onClose();
     };
 

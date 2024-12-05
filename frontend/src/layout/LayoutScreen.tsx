@@ -3,7 +3,7 @@ import Sidebar from "./components/Sidebar.tsx";
 import Content from "./components/Content.tsx";
 import {useState} from "react";
 import AddForm from "./components/AddForm.tsx";
-import {header} from "./components/Example_data.tsx";
+
 
 interface Props
 {
@@ -13,21 +13,21 @@ interface Props
 
 
 export default function LayoutScreen({name} : Props) {
-    const [isFormVisible, setFormVisible] = useState(false);
+    const [isAddFormVisible, setIsAddFormVisible] = useState(false);
 
     const handleAddButtonClick = () => {
-        setFormVisible(true);
+        setIsAddFormVisible(true);
     };
 
-    const handleCloseForm = () => {
-        setFormVisible(false);
+    const handleCloseAddForm = () => {
+        setIsAddFormVisible(false);
     };
 
 
     return (
 
         <div className={' bg-indigo-50'}>
-            {isFormVisible && <AddForm onClose={handleCloseForm} />}
+            {isAddFormVisible && <AddForm onClose={handleCloseAddForm} />}
             <Navbar name={name}/>
             <div className={'flex'}>
                 <Sidebar/>
