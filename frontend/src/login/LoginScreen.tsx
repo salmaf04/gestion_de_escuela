@@ -22,10 +22,6 @@ function LoginScreen() {
                             <SpotLight position={[0,-10,0]} angle={10} intensity={200} distance={250}/>
                             <Universitario/>
                             <OrbitControls enableZoom={false}/>
-                            {/*<mesh>
-                    <boxGeometry/>
-                    <meshBasicMaterial color="hotpink"/>
-                </mesh>*/}
                         </Canvas>
                     </div>
 

@@ -1,6 +1,7 @@
 import VisibilityOn from '/visibility-on.svg';
 import VisibilityOff from '/visibility-off.svg';
 import { useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 interface User {
     username: string;
@@ -11,6 +12,7 @@ export default function Formulario() {
     const [user, setUser] = useState<User>({username: '', password: ''});
     const [isPassVisible, setIsPassVisible] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const navigate = useNavigate()
     return <form onSubmit={
         (e) => {
             e.preventDefault();
@@ -19,6 +21,9 @@ export default function Formulario() {
                 setIsLoading(false)
                 res.text().then((text)=>{
                     setUser({username: text, password: ''})
+                    sessionStorage.setItem('username', user.username);
+                    sessionStorage.setItem('password', user.password);
+                    navigate('/main')
                 })
                 console.log(res.text())
             })
