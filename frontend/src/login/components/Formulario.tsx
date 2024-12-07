@@ -23,7 +23,7 @@ export default function Formulario() {
                     setUser({username: text, password: ''})
                     sessionStorage.setItem('username', user.username);
                     sessionStorage.setItem('password', user.password);
-                    navigate('/main')
+                    navigate('/')
                 })
                 console.log(res.text())
             })
