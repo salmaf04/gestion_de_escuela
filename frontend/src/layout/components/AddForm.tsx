@@ -10,29 +10,30 @@ interface Props {
 
 }
 
-export default function FormModal({onClose, IsEdit, Data, Index, }: Props) {const [formData, setFormData] = useState(() => {
-    if (IsEdit) {
-        return {
-            nombre: Data[Index].Nombre,
-            apellidos: Data[Index].Apellidos,
-            especialidad: Data[Index].Especialidad,
-            contrato: Data[Index].Contrato,
-            asignaturas: Data[Index].Asignaturas,
-            experiencia: Data[Index].Experiencia,
-            valoracion: Data[Index].Valoracion
-        };
-    } else {
-        return {
-            nombre: "",
-            apellidos: "",
-            especialidad: "",
-            contrato: "",
-            asignaturas: "",
-            experiencia: "",
-            valoracion: ""
-        };
-    }
-});
+export default function FormModal({onClose, IsEdit, Data, Index,}: Props) {
+    const [formData, setFormData] = useState(() => {
+        if (IsEdit) {
+            return {
+                nombre: Data[Index].Nombre,
+                apellidos: Data[Index].Apellidos,
+                especialidad: Data[Index].Especialidad,
+                contrato: Data[Index].Contrato,
+                asignaturas: Data[Index].Asignaturas,
+                experiencia: Data[Index].Experiencia,
+                valoracion: Data[Index].Valoracion
+            };
+        } else {
+            return {
+                nombre: "",
+                apellidos: "",
+                especialidad: "",
+                contrato: "",
+                asignaturas: "",
+                experiencia: "",
+                valoracion: ""
+            };
+        }
+    });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -48,7 +49,7 @@ export default function FormModal({onClose, IsEdit, Data, Index, }: Props) {cons
         <div className="fixed z-40 inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white w-1/2  p-6 rounded-lg">
                 <h2 className="text-xl   text-indigo-400 text-center font-bold mb-4">{`${IsEdit ? 'Editar Registro' : 'Anadir Registro'}`}</h2>
-                <form className={'justify-around flex flex-row  '} onSubmit={handleSubmit}>
+                <form className={'justify-around flex flex-row  '}>
                     <div>
                         <div className="mb-4">
                             <label className="block text-gray-700">Nombre</label>
@@ -93,7 +94,9 @@ export default function FormModal({onClose, IsEdit, Data, Index, }: Props) {cons
                     <button type="button" onClick={() => onClose(IsEdit)}
                             className="mr-4 px-4 py-2 bg-gray-300 rounded">Cancelar
                     </button>
-                    <button type="submit" className="px-4 py-2 bg-indigo-500 text-white rounded">Guardar</button>
+                    <button onClick={handleSubmit} type="submit"
+                            className="px-4 py-2 bg-indigo-500 text-white rounded">Guardar
+                    </button>
                 </div>
             </div>
         </div>

@@ -5,18 +5,19 @@ interface Props {
     header: string[],
     rows: string[][],
     setEdit: (index:number) => void,
-    Data : Profesor[]
+    Data : Profesor[] ,
+    className? : string
 }
 
 
-export default function Table({header, setEdit, Data}: Props) {
+export default function Table({header,className, setEdit, Data}: Props) {
 
 
 
 
     return (
 
-        <div className={`flex flex-col text-indigo-950`}>
+        <div className={`flex flex-col text-indigo-950 ${className}`}>
             <div className={'flex  justify-around py-2'}>
                 {header.map((item, index) => {
                     return (
@@ -36,18 +37,23 @@ export default function Table({header, setEdit, Data}: Props) {
 
                 </div>
             </div>
-            {Data.map((row, index) => {
-                return (
-                    <div onClick={() => setEdit(index)} key={index}
-                         className={'flex justify-around py-2 hover:bg-indigo-100'}>
-                        {Object.values(row).map((item, index) => {
-                            return <div key={index} className={` w-full text-center py-1`}>{item}</div>
-                        })}
-                        <div className={'w-full flex justify-center items-center'}>
-                            <div className={'h-[3px] w-4 bg-red-500 rounded-full'}/>
-                        </div>
-                    </div>)
-            })}
+           <div className={'overflow-y-scroll'}>
+               {Data.map((row, index) => {
+                   return (
+                       <div onClick={() => setEdit(index)} key={index}
+                            className={'flex justify-around py-2 items-center hover:bg-indigo-100'}>
+                           {Object.values(row).map((item, index) => {
+                               return <div key={index} className={` w-full text-center py-1`}>{item}</div>
+                           })}
+                           <div className={'w-full flex justify-center items-center'}>
+                               <div onClick={(e)=>{
+                                   e.stopPropagation()
+
+                               }} className={'h-[3px] w-4 bg-red-500 rounded-full'}/>
+                           </div>
+                       </div>)
+               })}
+           </div>
 
         </div>
     )

@@ -43,9 +43,8 @@ export default function LayoutScreen({name} : Props) {
 
     return (
 
-        <div className={' bg-indigo-50'}>
+        <div className={'h-dvh bg-indigo-50'}>
             {isAddFormVisible && <AddForm Index={index}  Data={Data} IsEdit={edit} onClose={handleCloseAddForm} />}
-            <Navbar name={name}/>
             <div className={'flex'}>
                 <Sidebar/>
                 <Content Data={Data}  setEdit={handleEdit} setFormVisible={handleAddButtonClick}/>
