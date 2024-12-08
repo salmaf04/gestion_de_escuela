@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.mean import MeanCreateModel, MeanModel
-from database.tables import MeanTable
+from backend.domain.models.tables import MeanTable
 from sqlalchemy import and_
 import uuid
 from sqlalchemy import select, update

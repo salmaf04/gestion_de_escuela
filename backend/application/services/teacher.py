@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.teacher import TeacherCreateModel, TeacherModel
-from database.tables import TeacherTable
+from backend.domain.models.tables import TeacherTable
 from sqlalchemy import and_, update
 import uuid
 from sqlalchemy import select

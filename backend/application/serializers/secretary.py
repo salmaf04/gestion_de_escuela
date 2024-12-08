@@ -1,5 +1,5 @@
 from backend.domain.schemas.secretary import SecretaryModel
-from database.tables import SecretaryTable
+from backend.domain.models.tables import SecretaryTable
 
 class SecretaryMapper :
 

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.secretary import SecretaryCreateModel, SecretaryModel
-from database.tables import SecretaryTable
+from backend.domain.models.tables import SecretaryTable
 import uuid
 from sqlalchemy import update
 from backend.domain.filters.secretary import ChangeRequest

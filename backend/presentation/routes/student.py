@@ -1,37 +1,14 @@
-from fastapi import FastAPI, HTTPException, status, Depends, APIRouter
+from fastapi import  HTTPException, status, Depends, APIRouter
 from backend.domain.schemas.student import  StudentModel, StudentCreateModel
 from sqlalchemy.orm import Session
 from backend.application.services.student import StudentCreateService, StudentPaginationService, StudentDeletionService, StudentUpdateService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.student import StudentMapper
-from datetime import timedelta
-from fastapi.responses import JSONResponse
-from database.config import SessionLocal, engine
-from database import tables
 from backend.domain.filters.student import StudentFilterSchema, ChangeRequest
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-
-SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:5432/postgres"
-# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL
-)
-tables.BaseTable.metadata.create_all(engine)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
+from backend.configuration import get_db
 
 router = APIRouter()
 
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @router.post(

@@ -1,5 +1,5 @@
 from backend.domain.schemas.teacher import TeacherModel
-from database.tables import TeacherTable
+from backend.domain.models.tables import TeacherTable
 
 class TeacherMapper :
 

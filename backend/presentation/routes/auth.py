@@ -4,37 +4,12 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta
 from ..utils.auth import authorize , get_current_user, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
 from backend.application.services.user import UserCreateService
-from backend.domain.models import tables
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Session
 from backend.domain.schemas.user import UserCreateModel, UserModel
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-database_url = os.getenv("DATABASE_URL")
-
-
-engine = create_engine(
-    database_url
-)
-
-tables.BaseTable.metadata.create_all(engine)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+from backend.configuration import get_db
 
 
 router = APIRouter()
-
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 # Define OAuth2 scheme for token authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

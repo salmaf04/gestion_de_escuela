@@ -4,43 +4,12 @@ from sqlalchemy.orm import Session
 from backend.application.services.administrador import AdministratorCreateService, AdministratorPaginationService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.administrador import AdministratorMapper
-from backend.domain.models.config import SessionLocal, engine
-from backend.domain.models import tables
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from backend.domain.filters.administrador import ChangeRequest
 from backend.application.services.administrador import AdministradorUpdateService, AdministratorPaginationService, AdministratorDeletionService
-
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-database_url = os.getenv("DATABASE_URL")
-
-
-engine = create_engine(
-    database_url
-)
-# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
-
-engine = create_engine(
-    database_url
-)
-tables.BaseTable.metadata.create_all(engine)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+from backend.configuration import get_db
 
 
 router = APIRouter()
-
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 
 @router.post(
     "/administrator",

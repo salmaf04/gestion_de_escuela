@@ -1,5 +1,5 @@
 from backend.domain.schemas.mean import MeanModel
-from database.tables import MeanTable
+from backend.domain.models.tables import MeanTable
 
 class MeanMapper() :
 

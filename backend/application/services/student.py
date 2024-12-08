@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, update
 from backend.domain.filters.student import StudentFilterSet , StudentFilterSchema, ChangeRequest
 from backend.domain.schemas.student import StudentCreateModel, StudentModel
-from database.tables import StudentTable
+from backend.domain.models.tables import StudentTable
 import uuid
 
 

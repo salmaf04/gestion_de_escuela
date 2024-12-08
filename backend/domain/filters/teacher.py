@@ -1,6 +1,6 @@
 from sqlalchemy_filterset import FilterSet, Filter, RangeFilter, BooleanFilter
 from pydantic import BaseModel
-from database.tables import TeacherTable
+from backend.domain.models.tables import TeacherTable
 from typing import Optional
 
 class TeacherFilterSet(FilterSet):

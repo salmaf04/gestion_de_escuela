@@ -1,39 +1,14 @@
 from backend.application.serializers.mean import MeanMapper
-from datetime import timedelta
-from fastapi.responses import JSONResponse
 from fastapi import FastAPI, Depends, HTTPException, status, APIRouter
 from fastapi import Depends, HTTPException, status
-from database.config import SessionLocal, engine
-from database import tables
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 from backend.domain.schemas.mean import MeanModel, MeanCreateModel
 from backend.application.services.mean import MeanCreateService, MeanPaginationService, MeanDeletionService, MeanUpdateService
 from sqlalchemy.orm import Session
 from backend.domain.filters.mean import MeanFilterSchema, ChangeRequest
-
-
-SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:5434/proyecto"
-# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL
-)
-
-tables.BaseTable.metadata.create_all(engine)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+from backend.configuration import get_db
 
 
 router = APIRouter()
-
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @router.post(

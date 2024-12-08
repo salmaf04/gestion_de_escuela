@@ -1,6 +1,6 @@
 from sqlalchemy_filterset import FilterSet, Filter, InFilter
 from pydantic import BaseModel
-from database.tables import MeanTable
+from backend.domain.models.tables import MeanTable
 from typing import Optional
 
 
