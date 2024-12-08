@@ -1,5 +1,5 @@
-import VisibilityOn from '/visibility-on.svg';
-import VisibilityOff from '/visibility-off.svg';
+import VisibilityOn from '../assets/visibility-on.svg';
+import VisibilityOff from '../assets/visibility-off.svg';
 import { useState} from "react";
 import {useNavigate} from "react-router-dom";
 
