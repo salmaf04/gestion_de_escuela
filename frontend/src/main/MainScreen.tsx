@@ -2,7 +2,8 @@ import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import Sidebar from "./components/Sidebar.tsx";
 import Content from "./components/Content.tsx";
-import ScreenType, {Screens} from "./types.ts";
+import {Screens} from "./router.tsx";
+import ScreenType from "./types.ts";
 
 export default function MainScreen() {
     const navigate = useNavigate()
@@ -12,7 +13,7 @@ export default function MainScreen() {
         }
     });
     //const name = sessionStorage.getItem('username');
-    const [actualScreen, setActualScreen] = useState<ScreenType>(Screens.Inicio)
+    const [actualScreen, setActualScreen] = useState<ScreenType>(Screens.Estudiantes)
     return (
         <div className={'h-dvh bg-indigo-50 flex'}>
             <Sidebar actualScreen={actualScreen} setActualScreen={setActualScreen}/>
