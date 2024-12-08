@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from domain.schemas.administrador import AdministratorCreateModel, AdministratorModel
-from domain.filters.administrador import ChangeRequest
-from domain.models.tables import AdministratorTable
+from backend.domain.schemas.administrador import AdministratorCreateModel, AdministratorModel
+from backend.domain.filters.administrador import ChangeRequest
+from backend.domain.models.tables import AdministratorTable
 from sqlalchemy.orm import Session
 from sqlalchemy import update
 import uuid

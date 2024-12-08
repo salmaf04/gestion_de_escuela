@@ -1,21 +1,31 @@
 from fastapi import APIRouter, HTTPException, status, Depends
-from domain.schemas.administrador import AdministratorCreateModel, AdministratorModel
+from backend.domain.schemas.administrador import AdministratorCreateModel, AdministratorModel
 from sqlalchemy.orm import Session
-from application.services.administrador import AdministratorCreateService, AdministratorPaginationService
+from backend.application.services.administrador import AdministratorCreateService, AdministratorPaginationService
 from fastapi.exceptions import HTTPException
-from application.serializers.administrador import AdministratorMapper
-from domain.models.config import SessionLocal, engine
-from domain.models import tables
+from backend.application.serializers.administrador import AdministratorMapper
+from backend.domain.models.config import SessionLocal, engine
+from backend.domain.models import tables
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from domain.filters.administrador import ChangeRequest
-from application.services.administrador import AdministradorUpdateService, AdministratorPaginationService, AdministratorDeletionService
+from backend.domain.filters.administrador import ChangeRequest
+from backend.application.services.administrador import AdministradorUpdateService, AdministratorPaginationService, AdministratorDeletionService
 
-SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:5432/postgres"
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+database_url = os.getenv("DATABASE_URL")
+
+
+engine = create_engine(
+    database_url
+)
 # SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL
+    database_url
 )
 tables.BaseTable.metadata.create_all(engine)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

@@ -18,11 +18,16 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Session
 
-SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:5432/proyecto"
-# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+database_url = os.getenv("DATABASE_URL")
+
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL
+    database_url
 )
 
 tables.BaseTable.metadata.create_all(engine)

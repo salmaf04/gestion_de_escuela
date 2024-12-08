@@ -1,7 +1,7 @@
-from domain.schemas.administrador import AdministratorModel 
-from domain.models.tables import AdministratorTable
+from backend.domain.schemas.administrador import AdministratorModel 
+from backend.domain.models.tables import AdministratorTable
 
-class administratorMapper:
+class AdministratorMapper:
 
     def to_api(self, administrator: AdministratorTable) -> AdministratorModel:
         return AdministratorModel(
