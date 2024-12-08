@@ -1,11 +1,11 @@
-import ToggleButton from "../components/ToggleButton.tsx";
+import ToggleButton from "./components/ToggleButton.tsx";
 import Table from "../components/Table.tsx";
-import {header, rows} from "./data/Example_data.tsx";
+import {data, header, rows} from "./data/Example_data.tsx";
 
 export default function EstudiantesScreen() {
     return (
-        <div id={'estudiantes'} className={"mx-4 w-5/6 flex flex-col"}>
-            <div className={'flex-wrap flex items-center justify-around w-full h-28'}>
+        <div className={"mx-4 w-11/12 h-dvh flex flex-col"}>
+            <div className={' my-4 h-1/5 flex items-center justify-around w-full '}>
                 <ToggleButton/>
                 <div className={'relative'}>
                     <input type="search" className={'rounded-md px-2 py-1  bg-no-repeat bg-left bg-contain'}
@@ -19,13 +19,14 @@ export default function EstudiantesScreen() {
                     </svg>
                 </div>
                 <div>
-                    <button
-                        className={'text-white font-medium py-2 px-5 bg-gradient-to-r from-indigo-400 to-indigo-500 rounded-xl'}>Añadir
+                    <button onClick={() => {}}
+                            className={'text-white font-medium py-2 px-5 bg-gradient-to-r from-indigo-400 to-indigo-500 rounded-xl'}>Añadir
                         +
                     </button>
                 </div>
             </div>
-            <Table rows={rows} header={header}></Table>
+                <Table className={'h-4/5'} Data={data} rows={rows} header={header}></Table>
+
         </div>
     )
 }

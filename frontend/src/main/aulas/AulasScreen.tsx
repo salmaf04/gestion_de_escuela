@@ -1,7 +1,7 @@
-export default function MediosScreen(){
+export default function AulasScreen(){
     return(
         <div>
-            <h1>Medios</h1>
+            <h1>Aulas</h1>
         </div>
     )
 }
