@@ -3,15 +3,16 @@ from sqlalchemy import select, update
 from backend.domain.filters.student import StudentFilterSet , StudentFilterSchema, ChangeRequest
 from backend.domain.schemas.student import StudentCreateModel, StudentModel
 from backend.domain.models.tables import StudentTable
+from ..utils.auth import get_password_hash
 import uuid
 
 
 class StudentCreateService :
 
     def create_student(self, session: Session, student:StudentCreateModel) -> StudentTable :
-        student_dict = student.model_dump()
-
-        new_student = StudentTable(**student_dict)
+        student_dict = student.model_dump(exclude={'password'})
+        hashed_password = get_password_hash(student.password)
+        new_student = StudentTable(**student_dict, hash_password=hashed_password)
         session.add(new_student)
         session.commit()
         return new_student

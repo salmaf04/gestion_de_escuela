@@ -16,4 +16,4 @@ class StudentCreateModel(BaseModel):
     email: str
     extra_activities: bool
     username: str
-    hash_password: str
+    password: str
