@@ -1,9 +1,8 @@
 ## main.py
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta
-from .auth import get_current_user, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
-from application.utils.auth import authorize
+from ..utils.auth import authorize , get_current_user, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
 from application.services.user import UserCreateService
 from domain.models import tables
 from sqlalchemy import create_engine
@@ -24,7 +23,7 @@ tables.BaseTable.metadata.create_all(engine)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-app = FastAPI()
+router = APIRouter()
 
 # Dependency
 def get_db():
@@ -38,7 +37,7 @@ def get_db():
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Define endpoints for token generation and authentication
-@app.post(
+@router.post(
     "/token",
     response_model=dict,
     status_code=status.HTTP_200_OK
@@ -62,7 +61,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 
 # Define a route for registering a new user
-@app.post(
+@router.post(
     "/register",
     response_model=UserModel,
     status_code=status.HTTP_201_CREATED
@@ -80,13 +79,13 @@ async def register_user(user: UserCreateModel, session: Session = Depends(get_db
     return created_user
 
     
-@app.get("/check-all")
+@router.get("/check-all")
 @authorize(role=['superadmin'])
 async def route1(current_user: UserModel = Depends(get_current_user)):
     return {"message": "This endpoint is accessible to admin and superadmin only"}
 
 
-@app.get("/check-superadmin")
+@router.get("/check-superadmin")
 @authorize(role=['superadmin'])
 async def route2(current_user: UserModel = Depends(get_current_user)):
     return {"message": "This endpoint is accessible to superadmin only"}

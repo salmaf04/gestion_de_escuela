@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends
 from domain.schemas.administrador import AdministratorCreateModel, AdministratorModel
 from sqlalchemy.orm import Session
 from application.services.administrador import AdministratorCreateService, AdministratorPaginationService
@@ -21,7 +21,7 @@ tables.BaseTable.metadata.create_all(engine)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-app = FastAPI()
+router = APIRouter()
 
 # Dependency
 def get_db():
@@ -32,7 +32,7 @@ def get_db():
         db.close()
 
 
-@app.post(
+@router.post(
     "/administrator",
     response_model= AdministratorModel,
     status_code=status.HTTP_201_CREATED
@@ -57,7 +57,7 @@ async def create_administrator(
 
     return mapper.to_api(response)
 
-@app.delete(
+@router.delete(
     "/administrator/{id}",
     status_code=status.HTTP_200_OK
 ) 
@@ -78,7 +78,7 @@ async def delete_administrator(
 
     administrator_deletion_service.delete_administrator(session=session, administrator=administrator)
 
-@app.patch(
+@router.patch(
     "/administrator/{id}",
     response_model=AdministratorModel,
     status_code=status.HTTP_200_OK

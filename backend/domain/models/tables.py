@@ -200,7 +200,8 @@ class CourseTable(BaseTable) :
     student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="course")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="course")
 
-    course = Column(Tuple(Integer, Integer), nullable=False , unique=True)
+    start_year = Column(Integer,nullable=False)
+    end_year = Column(Integer, nullable=False)
 
 
 class MeanTable(BaseTable) :

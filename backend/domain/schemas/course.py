@@ -1,4 +1,5 @@
 from pydantic import BaseModel
 
 class Course(BaseModel) :
-    course: tuple[int, int]
+    start_year: int
+    end_year: int

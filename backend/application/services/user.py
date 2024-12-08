@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from domain.models.tables import UserTable
-from domain.schemas.user import UserCreateModel, UserModel
-from utils.auth import get_password_hash
+from backend.domain.models.tables import UserTable
+from backend.domain.schemas.user import UserCreateModel, UserModel
+from ..utils.auth import get_password_hash
 
 
 class UserCreateService:
