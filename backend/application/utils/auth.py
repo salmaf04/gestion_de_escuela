@@ -1,3 +1,7 @@
+from passlib.context import CryptContext
+## authorizations.py
+from functools import wraps
+from fastapi import HTTPException
 # authentications
 from fastapi import Depends, FastAPI
 from fastapi.security import OAuth2PasswordBearer
@@ -7,9 +11,9 @@ from passlib.context import CryptContext
 from typing import Optional
 from datetime import datetime, timedelta, timezone
 import json
-from .services import UserCreateService
-from .utils import verify_password
-from database import tables
+from application.services.user import UserCreateService
+from domain.models.tables import UserTable
+from domain.models import tables
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -73,3 +77,26 @@ async def get_current_user(token: str = Depends(oauth2_scheme), session: Session
     if user is None:
         return None
     return user
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# Verify password
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+# Hash password
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+
+def authorize(role: list):
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(*args, **kwargs):
+            user =  await kwargs.get("current_user")
+            user_role = user.type
+            if user_role not in role:
+                raise HTTPException(status_code=403, detail=f"User is not authorized to access , only avaliable for {role}")
+            return await func(*args, **kwargs)
+        return wrapper
+    return decorator

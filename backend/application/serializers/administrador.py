@@ -1,5 +1,5 @@
-from administrator.administrator_common.schemas import AdministratorModel
-from database.tables import AdministratorTable
+from domain.schemas.administrador import AdministratorModel 
+from domain.models.tables import AdministratorTable
 
 class administratorMapper:
 

@@ -3,14 +3,14 @@ from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta
 from .auth import get_current_user, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
-from .authorizations import authorize
-from .services import UserCreateService
-from database import tables
+from application.utils.auth import authorize
+from application.services.user import UserCreateService
+from domain.models import tables
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Session
-from .schemas import UserCreateModel, UserModel
+from domain.schemas.user import UserCreateModel, UserModel
 
 
 SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:5432/proyecto"
