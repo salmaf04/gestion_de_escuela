@@ -8,6 +8,7 @@ from sqlalchemy import Column
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Double
+from sqlalchemy import Tuple
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -199,7 +200,7 @@ class CourseTable(BaseTable) :
     student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="course")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="course")
 
-    course = Column(Integer , nullable=False , unique=True)
+    course = Column(Tuple(Integer, Integer), nullable=False , unique=True)
 
 
 class MeanTable(BaseTable) :
