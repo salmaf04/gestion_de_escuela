@@ -1,7 +1,7 @@
 import {useState} from 'react';
 
 interface Props {
-    Materials: String[]
+    Materials: string[]
 }
 
 export default function MaterialForm({Materials}: Props) {
