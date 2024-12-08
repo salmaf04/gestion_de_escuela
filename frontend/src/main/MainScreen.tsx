@@ -13,7 +13,7 @@ export default function MainScreen() {
         }
     });
     //const name = sessionStorage.getItem('username');
-    const [actualScreen, setActualScreen] = useState<ScreenType>(Screens.Estudiantes)
+    const [actualScreen, setActualScreen] = useState<ScreenType>(Screens.Profesores)
     return (
         <div className={'h-dvh bg-indigo-50 flex'}>
             <Sidebar actualScreen={actualScreen} setActualScreen={setActualScreen}/>
