@@ -10,6 +10,7 @@ class TeacherModel(BaseModel):
     experience: int
     email: str
     username: str
+    
 
 class TeacherCreateModel(BaseModel):
     name: str
