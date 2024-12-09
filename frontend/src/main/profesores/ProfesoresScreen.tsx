@@ -5,10 +5,15 @@ import AddButton from "../components/AddButton.tsx";
 import Table from "../components/Table.tsx";
 import AddProfesorForm from "./components/AddProfesorForm.tsx";
 import {Profesor} from "../types.ts";
+import {postProfesor} from "./api/requests.ts";
+import Alert from "../components/Alert.tsx";
 
 export default function ProfesoresScreen() {
     const [searchText, setSearchText] = useState('');
     const [dataTable, setDataTable] = useState(data);
+    useEffect(() => {
+        fetch('http://localhost:8000/teacher/')
+    }, []);
     useEffect(() => {
         setDataTable(
             [...data].filter((row) => {
@@ -19,20 +24,40 @@ export default function ProfesoresScreen() {
     }, [searchText]);
     const [isAdding, setIsAdding] = useState(false);
     const [editing, setEditing] = useState<Profesor | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('')
     return (
         <div className={"mx-4 w-11/12 h-dvh flex flex-col"}>
+            {
+                error && <Alert title={'Error:'} message={error} className={'bg-red-200'} onClick={()=>{setError('')}} />
+            }
             {isAdding && <AddProfesorForm
                 onAccept={(formData) => {
                     //todo POST request Profesor
-                    setDataTable([...dataTable, formData])
-                    setIsAdding(false)
-                }}
+                    setIsLoading(true)
+                    postProfesor(formData).then(res => {
+                        if (res.ok) {
+                            console.log(res)
+                            setDataTable([...dataTable, formData])
+                            setIsAdding(false)
+                            setIsLoading(false)
+                        }else {
+                            setError(res.statusText)
+                        }
+                    }).finally(() => {
+                        setIsLoading(false)
+                    })
 
+
+                }}
+                isLoading={isLoading}
                 onCancel={() => setIsAdding(false)}
             />}
             {editing && <AddProfesorForm
+                isLoading={isLoading}
                 onAccept={(formData) => {
                     //todo PUT request Profesor
+
                     setDataTable(dataTable.map((item) => item.Id === formData.Id ? formData : item));
                     setEditing(null)
                 }}
@@ -55,9 +80,9 @@ export default function ProfesoresScreen() {
                        }))
                    }}
                    onEditRow={(index) => {
-                        setEditing(
-                            dataTable.find((item) => item.Id === index) || new Profesor('', '', '', '', '', '', '', '')
-                        )
+                       setEditing(
+                           dataTable.find((item) => item.Id === index) || null
+                       )
                    }}
             />
         </div>
