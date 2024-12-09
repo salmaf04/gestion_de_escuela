@@ -4,13 +4,14 @@ from backend.domain.models.tables import SecretaryTable
 import uuid
 from sqlalchemy import update
 from backend.domain.filters.secretary import ChangeRequest
+from ..utils.auth import get_password_hash
 
 class SecretaryCreateService :
 
     def create_secretary(self, session: Session, secretary:SecretaryCreateModel) -> SecretaryTable :
-        secretary_dict = secretary.model_dump()
-
-        new_secretary = SecretaryTable(**secretary_dict)
+        secretary_dict = secretary.model_dump(exclude={'password'})
+        hashed_password = get_password_hash(secretary.password)
+        new_secretary = SecretaryTable(**secretary_dict, hash_password=hashed_password)
         session.add(new_secretary)
         session.commit()
         return new_secretary

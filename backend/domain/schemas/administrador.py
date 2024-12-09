@@ -5,7 +5,7 @@ class AdministratorCreateModel(BaseModel):
     name: str
     username: str
     email: str
-    hash_password: str
+    password: str
 
 
 class AdministratorModel(BaseModel):

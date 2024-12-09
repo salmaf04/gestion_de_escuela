@@ -20,4 +20,4 @@ class TeacherCreateModel(BaseModel):
     contract_type: str
     experience: int
     username: str
-    hash_password: str
+    password: str

@@ -5,14 +5,15 @@ from sqlalchemy import and_, update
 import uuid
 from sqlalchemy import select
 from backend.domain.filters.teacher import TeacherFilterSet , TeacherFilterSchema, ChangeRequest
+from ..utils.auth import get_password_hash
 
 
 class TeacherCreateService :
 
     def create_teacher(self, session: Session, teacher: TeacherCreateModel) -> TeacherTable :
-        teacher_dict = teacher.model_dump()
-
-        new_teacher = TeacherTable(**teacher_dict)
+        teacher_dict = teacher.model_dump(exclude={'password'})
+        hashed_password = get_password_hash(teacher.password)
+        new_teacher = TeacherTable(**teacher_dict, hash_password=hashed_password)
         session.add(new_teacher)
         session.commit()
         return new_teacher
