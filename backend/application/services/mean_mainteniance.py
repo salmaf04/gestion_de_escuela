@@ -4,6 +4,8 @@ from backend.domain.models.tables import MeanMaintenianceTable
 from sqlalchemy import select, update
 from backend.application.services.mean import MeanPaginationService
 from backend.application.services.my_date import DatePaginationService
+from backend.domain.filters.mean_mainteniance import MeanMaintenanceFilterSet , MeanMaintenanceFilterSchema
+from backend.domain.models.tables import MeanMaintenianceTable
 
 
 class MeanMaintenanceCreateService :
@@ -24,3 +26,10 @@ class MeanMaintenanceCreateService :
         session.add(new_mean_maintenance)
         session.commit()
         return new_mean_maintenance
+    
+class MeanMaintenancePaginationService :
+    def get_mean_maintenance(self, session: Session, filter_params: MeanMaintenanceFilterSchema) -> list[MeanMaintenianceTable] :
+        query = select(MeanMaintenianceTable)
+        filter_set = MeanMaintenanceFilterSet(session, query=query)
+        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True)) 
+        return session.execute(query).scalars().all()
