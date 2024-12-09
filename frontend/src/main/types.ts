@@ -38,10 +38,10 @@ export class Profesor implements DBObject {
 export class Estudiante implements DBObject {
     Id: string;
     Nombre: string;
-    Edad: number;
+    Edad: string;
     ActividadesExtras: boolean;
 
-    constructor(Id: string, Nombre: string, Edad: number, ActividadesExtras: boolean) {
+    constructor(Id: string, Nombre: string, Edad: string, ActividadesExtras: boolean) {
         this.Id = Id;
         this.Nombre = Nombre;
         this.Edad = Edad;
