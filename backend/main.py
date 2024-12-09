@@ -6,6 +6,8 @@ from .presentation.routes.student import router as student_router
 from .presentation.routes.secretary import router as secretary_router
 from .presentation.routes.mean import router as mean_router
 from .presentation.routes.classroom import router as classroom_router
+from .presentation.routes.note import router as note_router
+from .presentation.routes.subject import router as subject_router
 import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
@@ -22,6 +24,8 @@ app.include_router(student_router)
 app.include_router(secretary_router)
 app.include_router(mean_router)
 app.include_router(classroom_router)
+app.include_router(note_router)
+app.include_router(subject_router)
 
 
 app.add_middleware(

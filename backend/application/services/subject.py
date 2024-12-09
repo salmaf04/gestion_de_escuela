@@ -9,7 +9,7 @@ import uuid
 class SubjectCreateService :
 
     def create_subject(self, session: Session, subject:SubjectCreateModel) -> SubjectTable :
-        subject_dict = subject.model_dump
+        subject_dict = subject.model_dump()
         new_subject = SubjectTable(**subject_dict)
         session.add(new_subject)
         session.commit()
