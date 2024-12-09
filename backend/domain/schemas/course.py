@@ -1,6 +1,9 @@
 from pydantic import BaseModel
+import uuid
 
-class Course(BaseModel) :
-    id : int
+class CourseCreateModel(BaseModel) :
     start_year: int
     end_year: int
+
+class CourseModel(CourseCreateModel) :
+    id : uuid.UUID

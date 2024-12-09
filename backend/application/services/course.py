@@ -17,7 +17,7 @@ class CourseCreateService :
         return new_course
 
 
-class CoursetDeletionService:
+class CourseDeletionService:
     def delete_course(self, session: Session, course: CourseModel) -> None :
         session.delete(course)
         session.commit()
@@ -35,7 +35,7 @@ class CourseUpdateService :
         return student
            
 
-class StudentPaginationService :
+class CoursePaginationService :
         
     def get_course_by_id(self, session: Session, id:uuid.UUID ) -> CourseTable :
         query = session.query(CourseTable).filter(CourseTable.entity_id == id)
