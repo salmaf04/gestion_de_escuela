@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from backend.domain.schemas.course import DateCreateModel
+from backend.domain.schemas.my_date import DateCreateModel
 from backend.domain.models.tables import MyDateTable
 import uuid
 

@@ -22,7 +22,7 @@ async def create_date(
     date_service = DateCreateService()
     mapper = DateMapper()
 
-    response = date_service.date_create(session=session, my_date=model_input)
+    response = date_service.create_date(session=session, date=model_input)
 
     return mapper.to_api(response)
 

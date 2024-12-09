@@ -3,8 +3,8 @@ from datetime import datetime
 import uuid
 
 class DateModel (BaseModel):
+    id: uuid.UUID
     date: datetime
     
 class DateCreateModel(BaseModel):
-    id: uuid.UUID
     date: datetime

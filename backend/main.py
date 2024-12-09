@@ -11,6 +11,7 @@ from .presentation.routes.subject import router as subject_router
 from .presentation.routes.course import router as course_router
 from .presentation.routes.absence import router as absence_router
 from .presentation.routes.valoration import router as valoration_router
+from .presentation.routes.my_date import router as date_router
 import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
@@ -32,6 +33,7 @@ app.include_router(subject_router)
 app.include_router(course_router)
 app.include_router(absence_router)
 app.include_router(valoration_router)
+app.include_router(date_router)
 
 
 app.add_middleware(
