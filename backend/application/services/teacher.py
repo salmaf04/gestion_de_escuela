@@ -57,15 +57,3 @@ class TeacherPaginationService :
         filter_set = TeacherFilterSet(session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
         return session.scalars(query).all()
-    
-
-
-
-
-
-    
-
-
-
-
- 
