@@ -12,3 +12,12 @@ input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
   display: none;
 }
+/* Ocultar barra de scroll en WebKit (Chrome, Safari) */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ocultar barra de scroll en Firefox */
+.scrollbar-hide {
+  scrollbar-width: thin;
+}
