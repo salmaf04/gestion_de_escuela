@@ -1,11 +1,12 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import select, update
-from backend.domain.schemas.absence import AbsenceCreateModel, AbsenceModel
+from sqlalchemy import select
+from backend.domain.schemas.absence import AbsenceCreateModel
 from backend.domain.models.tables import AbsenceTable
-import uuid
 from backend.application.services.student import StudentPaginationService
 from backend.application.services.course import CoursePaginationService
 from backend.application.services.subject import SubjectPaginationService
+from backend.domain.filters.absence import AbsenceFilterSchema, AbsenceFilterSet
+
 
 
 class AbsenceCreateService :
@@ -29,3 +30,11 @@ class AbsenceCreateService :
         session.add(new_absence)
         session.commit()
         return new_absence
+    
+    
+class AbsencePaginationService :
+    def get_absence(self, session: Session, filter_params: AbsenceFilterSchema) -> list[AbsenceTable] :
+        query = select(AbsenceTable)
+        filter_set = AbsenceFilterSet(session, query=query)
+        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
+        return session.execute(query).scalars().all()
