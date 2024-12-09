@@ -48,3 +48,17 @@ export class Estudiante implements DBObject {
         this.ActividadesExtras = ActividadesExtras;
     }
 }
+
+export class Medio implements DBObject {
+    Id: string;
+    Nombre: string;
+    Estado: string;
+    Ubicacion: string;
+
+    constructor(Id: string, Nombre: string, Estado: string, Ubicacion: string) {
+        this.Id = Id;
+        this.Nombre = Nombre;
+        this.Estado = Estado;
+        this.Ubicacion = Ubicacion;
+    }
+}
