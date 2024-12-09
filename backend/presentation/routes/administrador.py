@@ -47,7 +47,7 @@ async def delete_administrator(
     administrator_pagination_service = AdministratorPaginationService()
     administrator_deletion_service = AdministratorDeletionService()
 
-    administrator =administrator_pagination_service.get_administrator_by_email(session=session, id=id)
+    administrator =administrator_pagination_service.get_administrator_by_id(session=session, id=id)
 
     if not administrator :
         raise HTTPException(

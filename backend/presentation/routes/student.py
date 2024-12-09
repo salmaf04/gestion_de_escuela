@@ -47,7 +47,7 @@ async def delete_student(
     student_pagination_service = StudentPaginationService()
     student_deletion_service = StudentDeletionService()
 
-    student =student_pagination_service.get_student_by_email(session=session, id=id)
+    student =student_pagination_service.get_student_by_id(session=session, id=id)
 
     if not student :
         raise HTTPException(

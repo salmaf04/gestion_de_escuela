@@ -47,7 +47,7 @@ async def delete_teacher(
     teacher_pagination_service = TeacherPaginationService()
     teacher_deletion_service = TeacherDeletionService()
 
-    teacher =teacher_pagination_service.get_teacher_by_email(session=session, id=id)
+    teacher =teacher_pagination_service.get_teacher_by_id(session=session, id=id)
 
     if not teacher :
         raise HTTPException(

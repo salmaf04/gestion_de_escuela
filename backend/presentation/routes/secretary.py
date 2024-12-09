@@ -47,7 +47,7 @@ async def delete_secretary(
     secretary_pagination_service = SecretaryPaginationService()
     secretary_deletion_service = SecretaryDeletionService()
 
-    secretary =secretary_pagination_service.get_secretary_by_email(session=session, id=id)
+    secretary =secretary_pagination_service.get_secretary_by_id(session=session, id=id)
 
     if not secretary :
         raise HTTPException(

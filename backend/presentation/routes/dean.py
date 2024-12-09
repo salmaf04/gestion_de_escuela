@@ -47,7 +47,7 @@ async def delete_dean(
     dean_pagination_service = DeanPaginationService()
     dean_deletion_service = DeanDeletionService()
 
-    dean =dean_pagination_service.get_dean_by_email(session=session, id=id)
+    dean =dean_pagination_service.get_dean_by_id(session=session, id=id)
 
     if not dean :
         raise HTTPException(
