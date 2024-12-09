@@ -8,6 +8,7 @@ class MeanMapper() :
             id = mean.entity_id,
             name = mean.name,
             state = mean.state,
-            location = mean.location
+            location = mean.location,
+            type= mean.type
         )
         

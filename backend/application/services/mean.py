@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.mean import MeanCreateModel, MeanModel
-from backend.domain.models.tables import MeanTable
+from backend.domain.models.tables import MeanTable , TechnologicalMeanTable , TeachingMaterialTable, OthersTable
 from sqlalchemy import and_
 import uuid
 from sqlalchemy import select, update
@@ -9,9 +9,15 @@ from backend.domain.filters.mean import MeanFilterSet , MeanFilterSchema, Change
 class MeanCreateService() :
 
     def mean_create(self, session: Session, mean: MeanCreateModel) -> MeanTable :
+        table_to_insert = {
+            "technological_mean": TechnologicalMeanTable,
+            "teaching_material": TeachingMaterialTable,
+            "other": OthersTable,
+        }
+
         mean_dict = mean.model_dump()
 
-        new_mean = MeanTable(**mean_dict)
+        new_mean = table_to_insert.get(mean.type)(**mean_dict)
         session.add(new_mean)
         session.commit()
         return new_mean

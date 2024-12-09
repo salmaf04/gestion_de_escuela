@@ -6,8 +6,10 @@ class MeanModel (BaseModel):
     name: str
     state: str
     location: str
+    type: str
     
 class MeanCreateModel(BaseModel):
     name: str
     state: str
     location: str 
+    type: str
