@@ -5,6 +5,8 @@ from backend.application.services.student import StudentPaginationService
 from backend.application.services.subject import SubjectPaginationService
 from backend.application.services.teacher import TeacherPaginationService
 from backend.application.services.course import CoursePaginationService
+from backend.domain.filters.valoration import ValorationFilterSchema, ValorationFilterSet
+from sqlalchemy import select
 
 class ValorationCreateService :
     def create_valoration(self, session: Session, valoration: ValorationCreateModel) -> TeacherNoteTable :
@@ -29,3 +31,10 @@ class ValorationCreateService :
         session.add(new_valoration)
         session.commit()
         return new_valoration
+    
+class ValorationPaginationService :
+    def get_valoration(self, session: Session, filter_params: ValorationFilterSchema) -> list[TeacherNoteTable] :
+        query = select(TeacherNoteTable)
+        filter_set = ValorationFilterSet(session, query=query)
+        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
+        return session.execute(query).scalars().all()
