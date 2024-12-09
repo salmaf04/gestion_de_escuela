@@ -16,7 +16,7 @@ router = APIRouter()
     response_model=MeanModel,
     status_code=status.HTTP_201_CREATED
 )
-async def create_teacher(
+async def create_mean(
     model_input: MeanCreateModel,
     session: Session = Depends(get_db)
 ) :
