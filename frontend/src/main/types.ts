@@ -34,3 +34,17 @@ export class Profesor implements DBObject {
         this.Experiencia = Experiencia;
     }
 }
+
+export class Estudiante implements DBObject {
+    Id: string;
+    Nombre: string;
+    Edad: number;
+    ActividadesExtras: boolean;
+
+    constructor(Id: string, Nombre: string, Edad: number, ActividadesExtras: boolean) {
+        this.Id = Id;
+        this.Nombre = Nombre;
+        this.Edad = Edad;
+        this.ActividadesExtras = ActividadesExtras;
+    }
+}
