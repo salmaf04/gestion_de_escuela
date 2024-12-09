@@ -62,3 +62,15 @@ export class Medio implements DBObject {
         this.Ubicacion = Ubicacion;
     }
 }
+
+export class Aula implements DBObject {
+    Id: string;
+    Ubicacion: string;
+    Capacidad: number;
+
+    constructor(Id: string, Ubicacion: string, Capacidad: number) {
+        this.Id = Id;
+        this.Ubicacion = Ubicacion;
+        this.Capacidad = Capacidad;
+    }
+}
