@@ -4,12 +4,14 @@ from backend.domain.models.tables import TeacherTable
 from typing import Optional
 
 class TeacherFilterSet(FilterSet):
+    name = Filter(TeacherTable.name)
     email = Filter(TeacherTable.email)
     specialty = Filter(TeacherTable.specialty)
     contract_type = Filter(TeacherTable.contract_type)
     experience = RangeFilter(TeacherTable.experience)
 
 class TeacherFilterSchema(BaseModel):
+    name : str | None = None
     email : str | None = None
     specialty : str | None = None
     contract_type : str | None = None

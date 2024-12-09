@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from backend.domain.models import tables
 from sqlalchemy.orm import sessionmaker
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
@@ -21,6 +22,21 @@ app.include_router(student_router)
 app.include_router(secretary_router)
 app.include_router(mean_router)
 app.include_router(classroom_router)
+
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+    # Puedes agregar más dominios aquí
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Permitir estos orígenes
+    allow_credentials=True,
+    allow_methods=["*"],  # Permitir todos los métodos (GET, POST, etc.)
+    allow_headers=["*"],  # Permitir todos los encabezados
+)
+
 
 load_dotenv()
 
