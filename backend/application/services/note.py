@@ -4,6 +4,8 @@ from backend.domain.models.tables import StudentNoteTable
 from backend.application.services.student import StudentPaginationService
 from backend.application.services.subject import SubjectPaginationService
 from backend.application.services.teacher import TeacherPaginationService
+from backend.domain.filters.note import NoteFilterSet , NoteFilterSchema
+from sqlalchemy import select
 
 class NoteCreateService :
     def create_note(self, session: Session, note: NoteCreateModel) -> StudentNoteTable :
@@ -25,3 +27,10 @@ class NoteCreateService :
         session.add(new_note)
         session.commit()
         return new_note
+    
+class NotePaginationService :
+    def get_note(self, session: Session, filter_params: NoteFilterSchema) -> list[StudentNoteTable] :
+        query = select(StudentNoteTable)
+        filter_set = NoteFilterSet(session, query=query)
+        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
+        return session.execute(query).scalars().all()
