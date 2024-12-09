@@ -7,7 +7,7 @@ class ValorationCreateModel(BaseModel):
     student_id: uuid.UUID
     subject_id: uuid.UUID
     course_id: uuid.UUID
-    valoration_value: int
+    grade: int
 
 class ValorationModel(ValorationCreateModel):
     id : uuid.UUID

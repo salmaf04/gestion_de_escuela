@@ -21,10 +21,10 @@ class ValorationCreateService :
         new_valoration.teacher = teacher
         new_valoration.course = course
 
-        teacher.student_valoration_association.append(new_valoration)
-        subject.student_teacher_association.append(new_valoration)
-        student.student_valoration_association.append(new_valoration)
-        course.course_valoration_association.append(new_valoration)
+        teacher.teacher_note_association.append(new_valoration)
+        subject.teacher_note_association.append(new_valoration)
+        student.teacher_note_association.append(new_valoration)
+        course.teacher_note_association.append(new_valoration)
 
         session.add(new_valoration)
         session.commit()

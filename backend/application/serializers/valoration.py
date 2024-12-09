@@ -11,5 +11,5 @@ class ValorationMapper :
             student_id = valoration.student_id,
             subject_id = valoration.subject_id,
             course_id = valoration.course_id,
-            valoration_value = valoration.valoration_value
+            grade = valoration.grade
         )
