@@ -16,7 +16,7 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow}:
                     return (
                         <div key={index} className={'w-full flex justify-center'}>
                             <div className={'w-fit'}>
-                                <div  className={`font-bold w-full`}>{item}</div>
+                                <div className={`font-bold w-full`}>{item}</div>
                                 <div className={'h-[3px] w-full bg-indigo-500 rounded-full'}/>
                             </div>
                         </div>)
@@ -34,7 +34,11 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow}:
                         <div key={row.Id} onClick={() => onEditRow(row.Id)}
                              className={'flex justify-around py-2 items-center hover:bg-indigo-100 cursor-pointer'}>
                             {Object.values(row).slice(1).map((item, index) => {
-                                return <div key={index} className={` w-full text-center py-1`}>{item}</div>
+                                return (
+                                    <div key={index} className={`w-full text-center py-1`}>
+                                        {typeof item === 'boolean' ? (item ? 'Participa' : 'No participa') : item}
+                                    </div>
+                                );
                             })}
                             <div className={'w-full flex justify-center'}>
                                 <div
@@ -44,7 +48,7 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow}:
                                     }}
                                     className={'size-9 flex items-center justify-center rounded-full hover:bg-indigo-200 cursor-pointer'}>
 
-                                    <div  className={'h-[3px] w-4 bg-red-500 rounded-full'}/>
+                                    <div className={'h-[3px] w-4 bg-red-500 rounded-full'}/>
                                 </div>
 
                             </div>

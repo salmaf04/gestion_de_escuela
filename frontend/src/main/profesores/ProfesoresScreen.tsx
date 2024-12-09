@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {data, header} from "../estudiantes/data/Example_data.tsx";
+import {data, header} from "./data/Example_data.tsx";
 import SearchInput from "../components/SearchInput.tsx";
 import AddButton from "../components/AddButton.tsx";
 import Table from "../components/Table.tsx";
