@@ -78,9 +78,7 @@ async def read_teacher(
         )
 
     teachers_mapped = {}    
-
-    print(teacher.hash_password for teacher in teachers)
-     
+  
     for i, teacher in enumerate(teachers) :
         teachers_mapped[i] = mapper.to_api(teacher)
         
