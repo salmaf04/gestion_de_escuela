@@ -4,7 +4,7 @@ interface Props {
     Materials: string[]
 }
 
-export default function MaterialForm({Materials}: Props) {
+export default function AddMediosForm({Materials}: Props) {
     const [formData, setFormData] = useState({
         option: '',
         date: '',
