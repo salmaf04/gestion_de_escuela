@@ -17,6 +17,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Session
+from backend.application.serializers.user import UserMapper
 
 import os
 from dotenv import load_dotenv
@@ -56,9 +57,16 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 # Authenticate user
 async def authenticate_user(username: str, password: str, session: Session):
     user_service = UserCreateService()  
+    mapper = UserMapper()
     user = await user_service.get_user_by_username(username=username, session=session)
-    if user is None or not verify_password(password, user.hashed_password):
-        return False
+    if user is None :
+        return None
+    
+    user = mapper.to_api(user)
+
+    if  verify_password(password, user.hash_password) is None:
+        return None
+
     return user
 
 # Create access token
