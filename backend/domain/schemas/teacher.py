@@ -10,6 +10,7 @@ class TeacherModel(BaseModel):
     experience: int
     email: str
     username: str
+    list_of_subjects: list[str]
     
 
 class TeacherCreateModel(BaseModel):
@@ -21,3 +22,4 @@ class TeacherCreateModel(BaseModel):
     experience: int
     username: str
     password: str
+    list_of_subjects: list[str]

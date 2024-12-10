@@ -64,7 +64,7 @@ async def authenticate_user(username: str, password: str, session: Session):
     
     user = mapper.to_api(user)
 
-    if  verify_password(password, user.hash_password) is None:
+    if  verify_password(password, user.hashed_password) is None:
         return None
 
     return user

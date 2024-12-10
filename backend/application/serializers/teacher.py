@@ -3,7 +3,7 @@ from backend.domain.models.tables import TeacherTable
 
 class TeacherMapper :
 
-    def to_api(self, teacher: TeacherTable) -> TeacherModel :
+    def to_api(self, teacher: TeacherTable , subjects: list[str]) -> TeacherModel :
         return TeacherModel(
             id = teacher.entity_id,
             name=teacher.name,
@@ -13,4 +13,5 @@ class TeacherMapper :
             contract_type=teacher.contract_type,
             experience=teacher.experience,
             username=teacher.username,
+            list_of_subjects=subjects
         )

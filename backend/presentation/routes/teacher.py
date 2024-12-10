@@ -39,7 +39,7 @@ async def create_teacher(
 
     response = teacher_service.create_teacher(session=session, teacher=teacher_input)
 
-    return mapper.to_api(response)
+    return mapper.to_api(response, subjects=teacher_input.list_of_subjects)
 
 @router.delete(
     "/teacher/{id}",
