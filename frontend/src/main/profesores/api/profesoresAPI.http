@@ -2,6 +2,11 @@
 GET localhost:8000/teacher?email=adrian@gmail.com
 
 ###
+
+GET localhost:8000/teacher
+
+
+###
 POST localhost:8000/teacher
 Content-Type: application/json
 

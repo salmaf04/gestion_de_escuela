@@ -31,15 +31,15 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow}:
             <div className={'overflow-y-scroll scrollbar-hide text-sm'}>
                 {Data.map((row) => {
                     return (
-                        <div key={row.Id} onClick={() => onEditRow(row.Id)}
-                             className={'flex justify-around py-2 items-center hover:bg-indigo-100 cursor-pointer'}>
+                        <div key={row.id} onClick={() => onEditRow(row.id)}
+                             className={'flex w-full py-2 items-center hover:bg-indigo-100 cursor-pointer'}>
                             {Object.values(row).slice(1).map((item, index) => {
-                                return <div key={index} className={` w-full text-center py-1`}>{item}</div>
+                                return <div key={index} className={`w-full text-center py-1`}>{item.toString().substring(0, 15)+ (item.toString().length > 15? '...':'')}</div>
                             })}
                             <div className={'w-full flex justify-center'}>
                                 <div
                                     onClick={(e) => {
-                                        onRemoveRow(row.Id)
+                                        onRemoveRow(row.id)
                                         e.stopPropagation()
                                     }}
                                     className={'size-9 flex items-center justify-center rounded-full hover:bg-indigo-200 cursor-pointer'}>

@@ -10,31 +10,6 @@ export default class ScreenType {
 
 }
 export interface DBObject {
-    Id: string;
+    id: string;
 }
 
-export class Profesor implements DBObject {
-    Id: string;
-    Nombre: string;
-    Apellidos: string;
-    Usuario: string;
-    Password: string;
-    Contrato: string;
-    Asignaturas: string;
-    Valoracion: string;
-    Especialidad: string;
-    Experiencia: string;
-
-    constructor(Id: string, Nombre: string, Apellidos: string, Usuario: string, Password: string, Contrato: string, Asignaturas: string, Valoracion: string, Especialidad: string, Experiencia: string) {
-        this.Id = Id;
-        this.Nombre = Nombre;
-        this.Apellidos = Apellidos;
-        this.Usuario = Usuario;
-        this.Password = Password;
-        this.Contrato = Contrato;
-        this.Asignaturas = Asignaturas;
-        this.Valoracion = Valoracion;
-        this.Especialidad = Especialidad;
-        this.Experiencia = Experiencia;
-    }
-}
