@@ -6,6 +6,9 @@ from fastapi.exceptions import HTTPException
 from backend.application.serializers.teacher import TeacherMapper
 from backend.domain.filters.teacher import TeacherFilterSchema, ChangeRequest
 from backend.configuration import get_db
+from backend.presentation.utils.auth import get_current_user
+from backend.domain.schemas.user import UserModel
+from backend.presentation.utils.auth import authorize
 
 
 router = APIRouter()
@@ -16,8 +19,10 @@ router = APIRouter()
     response_model=TeacherModel,
     status_code=status.HTTP_201_CREATED
 )
+@authorize(role=["secretary"])
 async def create_teacher(
     teacher_input: TeacherCreateModel,
+    current_user : UserModel = Depends(get_current_user),
     session: Session = Depends(get_db)
 ) :
     teacher_service = TeacherCreateService()
@@ -63,6 +68,7 @@ async def delete_teacher(
     status_code=status.HTTP_200_OK
 )
 async def read_teacher(
+    user : UserModel = Depends(get_current_user),
     filters: TeacherFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
