@@ -1,10 +1,9 @@
 import {useEffect, useState} from "react";
-import {header} from "../estudiantes/data/Example_data.tsx";
 import SearchInput from "../components/SearchInput.tsx";
 import AddButton from "../components/AddButton.tsx";
 import Table from "../components/Table.tsx";
 import AddProfesorForm from "./components/AddProfesorForm.tsx";
-import {getProfesores, postProfesor} from "./api/requests.ts";
+import {deleteProfesor, getProfesores, postProfesor} from "./api/requests.ts";
 import Alert from "../../components/Alert.tsx";
 import {ProfesorGet} from "./dto/types.ts";
 
@@ -15,7 +14,7 @@ export default function ProfesoresScreen() {
         getProfesores().then(res => {
             const x: ProfesorGet[] = []
             let i = 0;
-            while (res[i]){
+            while (res[i]) {
                 x.push(res[i])
                 i++
             }
@@ -43,7 +42,6 @@ export default function ProfesoresScreen() {
             }
             {isAdding && <AddProfesorForm
                 onAccept={(formData) => {
-                    //todo POST request Profesor
                     setIsLoading(true)
                     postProfesor(formData).then(res => {
                         if (res.ok) {
@@ -81,11 +79,15 @@ export default function ProfesoresScreen() {
             </div>
             <Table className={'h-5/6'} Data={dataTable} header={ProfesorGet.Properties.slice(1)}
                    onRemoveRow={(index) => {
-                       //todo DELETE request Profesor
-                       console.log('delete')
-                       setDataTable(dataTable.filter((item) => {
-                           return item.id !== index
-                       }))
+                       deleteProfesor(index).then(res => {
+                           if (res.ok) {
+                               setDataTable(dataTable.filter((item) => {
+                                   return item.id !== index
+                               }))
+                           }else{
+                                 setError(res.statusText)
+                           }
+                       })
                    }}
                    onEditRow={(index) => {
                        setEditing(

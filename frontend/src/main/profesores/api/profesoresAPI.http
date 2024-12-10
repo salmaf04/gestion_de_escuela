@@ -20,3 +20,6 @@ Content-Type: application/json
   "email":"adrian11@gmail.com",
   "password":"12341"
 }
+
+###
+DELETE localhost:8000/teacher/bed42a7e-c6e2-45dc-b0fc-e54d7d2a64ee
