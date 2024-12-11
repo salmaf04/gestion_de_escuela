@@ -8,5 +8,8 @@ class NoteCreateModel(BaseModel):
     subject_id: uuid.UUID
     note_value: int
 
-class NoteModel(NoteCreateModel):
+class NoteModel(BaseModel):
+    teacher : str
+    student : str
+    subject : str
     id : uuid.UUID
