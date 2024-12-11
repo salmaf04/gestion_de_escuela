@@ -3,11 +3,10 @@ import {data, header} from "./data/Example_data.tsx";
 import SearchInput from "../components/SearchInput.tsx";
 import AddButton from "../components/AddButton.tsx";
 import Table from "../components/Table.tsx";
-import AddMediosForm from "./components/AddMediosForm.tsx";
-import {Medio} from "../types.ts";
+import AddMantenimientoForm from "./components/AddMantenimientosForm.tsx";
+import {MantenimientoDeMedio} from "../types.ts";
 
-
-export default function MediosScreen() {
+export default function MantenimientosScreen() {
     const [searchText, setSearchText] = useState('');
 
     const [dataTable, setDataTable] = useState(data);
@@ -22,21 +21,21 @@ export default function MediosScreen() {
 
     const [isAdding, setIsAdding] = useState(false);
 
-    const [editing, setEditing] = useState<Medio | null>(null);
+    const [editing, setEditing] = useState<MantenimientoDeMedio | null>(null);
     return (
         <div className={"mx-4 w-11/12 h-dvh flex flex-col"}>
-            {isAdding && <AddMediosForm
+            {isAdding && <AddMantenimientoForm
                 onAccept={(formData) => {
-                    //todo POST request Medio
+                    //todo POST request MantenimientoDeMedio
                     setDataTable([...dataTable, formData])
                     setIsAdding(false)
                 }}
 
                 onCancel={() => setIsAdding(false)}
             />}
-            {editing && <AddMediosForm
+            {editing && <AddMantenimientoForm
                 onAccept={(formData) => {
-                    //todo PUT request Medio
+                    //todo PUT request MantenimientoDeMedio
                     setDataTable(dataTable.map((item) => item.Id === formData.Id ? formData : item));
                     setEditing(null)
                 }}
@@ -52,7 +51,7 @@ export default function MediosScreen() {
             </div>
             <Table className={'h-5/6'} Data={dataTable} header={header}
                    onRemoveRow={(index) => {
-                       //todo DELETE request Medio
+                       //todo DELETE request MantenimientoDeMedio
                        console.log('delete')
                        setDataTable(dataTable.filter((item) => {
                            return item.Id !== index
@@ -60,7 +59,7 @@ export default function MediosScreen() {
                    }}
                    onEditRow={(index) => {
                         setEditing(
-                            dataTable.find((item) => item.Id === index) || new Medio('', '', '', '')
+                            dataTable.find((item) => item.Id === index) || new MantenimientoDeMedio('', '', '', '')
                         )
                    }}
             />
