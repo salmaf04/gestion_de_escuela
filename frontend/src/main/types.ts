@@ -74,3 +74,17 @@ export class Aula implements DBObject {
         this.Capacidad = Capacidad;
     }
 }
+
+export class Mantenimiento implements DBObject {
+    Id: string;
+    Medio: string;
+    Fecha: string;
+    Costo: number;
+
+    constructor(Id: string, Fecha: string, Medio : string ,  Costo: number) {
+        this.Id = Id;
+        this.Medio = Medio;
+        this.Fecha = Fecha;
+        this.Costo = Costo;
+    }
+}
