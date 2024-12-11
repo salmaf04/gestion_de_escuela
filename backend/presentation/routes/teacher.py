@@ -1,3 +1,4 @@
+import uuid
 from fastapi import FastAPI, HTTPException, status, Depends, APIRouter
 from backend.domain.schemas.teacher import TeacherCreateModel, TeacherModel
 from sqlalchemy.orm import Session
@@ -64,7 +65,7 @@ async def delete_teacher(
     
 @router.get(
     "/teacher",
-    response_model=dict[int, TeacherModel],
+    response_model=dict[uuid.UUID, TeacherModel],
     status_code=status.HTTP_200_OK
 )
 async def read_teacher(
@@ -75,7 +76,7 @@ async def read_teacher(
     teacher_pagination_service = TeacherPaginationService()
     mapper = TeacherMapper()
 
-    teachers = teacher_pagination_service.get_teachers(session=session, filter_params=filters)
+    teachers, valorations, subjects = teacher_pagination_service.get_teachers(session=session, filter_params=filters)   
 
     if not teachers :
         raise HTTPException(
@@ -85,8 +86,8 @@ async def read_teacher(
 
     teachers_mapped = {}    
   
-    for i, teacher in enumerate(teachers) :
-        teachers_mapped[i] = mapper.to_api(teacher)
+    for  teacher,valoration,subject in zip(teachers, valorations, subjects) :
+        teachers_mapped[teacher.id] = mapper.to_api(teacher, list(subject), valoration)
         
     return teachers_mapped
 

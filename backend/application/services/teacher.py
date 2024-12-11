@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
+from backend.application.serializers.teacher import TeacherMapper
 from backend.domain.schemas.teacher import TeacherCreateModel, TeacherModel
-from backend.domain.models.tables import TeacherTable, teacher_subject_table
+from backend.domain.models.tables import TeacherTable, teacher_subject_table, TeacherNoteTable
 from sqlalchemy import and_, update
 import uuid
 from sqlalchemy import select
@@ -8,13 +9,13 @@ from backend.domain.filters.teacher import TeacherFilterSet , TeacherFilterSchem
 from backend.domain.filters.subject import SubjectFilterSchema
 from ..utils.auth import get_password_hash
 from backend.application.services.subject import SubjectPaginationService
+from sqlalchemy import func
 
 
 class TeacherCreateService :
 
     def create_teacher(self, session: Session, teacher: TeacherCreateModel) -> TeacherTable :
         subject_service = SubjectPaginationService()
-        teacher_subject_service = TeacherSubjectService()
         subjects = subject_service.get_subjects(session=session, filter_params=SubjectFilterSchema(name=teacher.list_of_subjects))
         teacher_dict = teacher.model_dump(exclude={'password', 'list_of_subjects'})
         hashed_password = get_password_hash(teacher.password)
@@ -64,10 +65,33 @@ class TeacherPaginationService :
         query = select(TeacherTable)
         filter_set = TeacherFilterSet(session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
-        return session.scalars(query).all()
+        teachers = session.scalars(query).all()
+        valoration_service = TeacherValorationService()
+        mapper = TeacherMapper()
+        valorations = []
+        subjects = []
+
+        if teachers :
+            for teacher in teachers :
+                valorations.append(valoration_service.get_teacher_valoration_average(session=session, teacher_id=teacher.id))
+                subjects.append(mapper.to_subject_list(teacher.teacher_subject_association))
+
+        return teachers, valorations, subjects
+
+
     
 class TeacherSubjectService :
     def create_teacher_subject(self, session: Session, teacher_id: str, subject_id: str) :
         teacher_subject = teacher_subject_table.insert().values(teacher_id=teacher_id, subject_id=subject_id)
         session.execute(teacher_subject)
         session.commit()
+
+class TeacherValorationService :
+    def get_teacher_valoration_average(self, session: Session, teacher_id: str)  :
+        value = select(func.sum(TeacherNoteTable.grade)).where(TeacherNoteTable.teacher_id == teacher_id)
+        valoration_sum = session.execute(value).scalars().first()
+        rows = select(func.count(TeacherNoteTable.grade)).where(TeacherNoteTable.teacher_id == teacher_id)
+        total_valorations = session.execute(rows).scalars().first()
+        print(valoration_sum, total_valorations)
+        return valoration_sum / total_valorations
+        

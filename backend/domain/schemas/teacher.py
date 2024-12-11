@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 import uuid
+from typing import Optional
 
 class TeacherModel(BaseModel):
     id : uuid.UUID
@@ -11,6 +12,7 @@ class TeacherModel(BaseModel):
     email: str
     username: str
     list_of_subjects: list[str]
+    valoration : Optional[float] = None
     
 
 class TeacherCreateModel(BaseModel):
