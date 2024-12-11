@@ -12,6 +12,7 @@ import AulasScreen from "./aulas/AulasScreen.tsx";
 import AsignaturasScreen from "./asignaturas/AsignaturasScreen.tsx";
 import MediosScreen from "./medios/MediosScreen.tsx";
 import ScreenType from "./types.ts";
+import MantenimientosScreen from "./mantenimientos/MantenimientosScreen.tsx";
 
 export const Screens = {
     Inicio: new ScreenType('Inicio', HomeIcon, <HomeScreen />),
@@ -20,4 +21,5 @@ export const Screens = {
     Aulas: new ScreenType('Aulas', AulaIcon, <AulasScreen/>),
     Asignaturas: new ScreenType('Asignaturas', AsignaturaIcon, <AsignaturasScreen/>),
     Medios: new ScreenType('Medios', MediosIcon, <MediosScreen/>),
+    Mantenimientos: new ScreenType('Mantenimientos', MediosIcon, <MantenimientosScreen/>),
 }
