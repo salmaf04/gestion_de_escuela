@@ -75,13 +75,13 @@ export class Aula implements DBObject {
     }
 }
 
-export class Mantenimiento implements DBObject {
+export class MantenimientoDeMedio implements DBObject {
     Id: string;
     Medio: string;
     Fecha: string;
-    Costo: number;
+    Costo: string;
 
-    constructor(Id: string, Fecha: string, Medio : string ,  Costo: number) {
+    constructor(Id: string, Fecha: string, Medio : string ,  Costo: string) {
         this.Id = Id;
         this.Medio = Medio;
         this.Fecha = Fecha;
