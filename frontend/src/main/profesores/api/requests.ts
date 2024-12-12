@@ -5,6 +5,7 @@ export function postProfesor(profesor: ProfesorCreate) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
         },
         body: JSON.stringify({
             ...profesor,
@@ -14,11 +15,19 @@ export function postProfesor(profesor: ProfesorCreate) {
 }
 
 export async function getProfesores(): Promise<Array<ProfesorGet>> {
-    return await fetch('http://localhost:8000/teacher/').then(res => res.json() as Promise<Array<ProfesorGet>>)
+    return await fetch('http://localhost:8000/teacher/', {
+            headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+            }
+        }
+        ).then(res => res.json() as Promise<Array<ProfesorGet>>)
 }
 
 export function deleteProfesor(id: string) {
     return fetch(`http://localhost:8000/teacher/${id}`, {
         method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+        }
     })
 }
