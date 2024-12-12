@@ -102,14 +102,19 @@ def authorize(role: list):
         @wraps(func)
         async def wrapper(*args, **kwargs):
             user =  await kwargs.get("current_user")
-            filters =  kwargs.get("filters")
-            user_role = user.type    
+            check_id =  kwargs.get("id")
+            user_id = user.id
+            user_role = user.type
+            
+            if check_id and check_id != str(user_id):
+                raise HTTPException(status_code=403, detail=f"User is not authorized to access")
+
             if user_role not in role:
                 role_str = ','.join(role)
                 raise HTTPException(status_code=403, detail=f"User is not authorized to access , only avaliable for {role_str}")
-            if filters and filters.hash_password and user_role == "secretary" :
-                raise HTTPException(status_code=403, detail=f"User is not authorized to access , only avaliable for {role[1]}")
+            
 
             return await func(*args, **kwargs)
         return wrapper
     return decorator
+

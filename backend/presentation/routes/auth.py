@@ -2,12 +2,19 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta
+
+from backend.application.serializers.user import UserMapper
 from ..utils.auth import authorize , get_current_user, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
-from backend.application.services.user import UserCreateService
+from backend.application.services.user import UserCreateService, UserUpdateService
 from sqlalchemy.orm import Session
 from backend.domain.schemas.user import UserCreateModel, UserModel
 from backend.configuration import get_db
+from backend.domain.filters.user import ChangeRequest
+from backend.domain.schemas.roles import Roles
+from typing import Annotated
+from fastapi import Query
 
+roles = Roles.get_roles_list()
 
 router = APIRouter()
 
@@ -56,7 +63,36 @@ async def register_user(user: UserCreateModel, session: Session = Depends(get_db
     created_user = await user_service.create_user(user=user, session=session)
     return created_user
 
+@router.patch(
+       "/user/{id}",
+       response_model=UserModel,
+       status_code=status.HTTP_200_OK
+)
+@authorize(roles)
+async def update_user(
+    id: str ,
+    current_user: UserModel = Depends(get_current_user),
+    changes :ChangeRequest =  Depends(),
+    session: Session = Depends(get_db)    
+):
+    update_user_service = UserUpdateService()
+    create_user = UserCreateService()
+    mapper = UserMapper()
     
+    user = await create_user.get_user_by_id(id=id, session=session)
+    user = mapper.to_api(user)
+
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    updated_user = await update_user_service.update_user(user_input=user, changes=changes, session=session)
+
+    return updated_user
+    
+
 @router.get("/check-all")
 @authorize(role=['superadmin'])
 async def route1(current_user: UserModel = Depends(get_current_user)):
