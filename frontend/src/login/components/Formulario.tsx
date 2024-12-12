@@ -20,7 +20,7 @@ export default function Formulario() {
     const [errorFetch, setErrorFetch] = useState('')
     return (
         <>
-            {errorFetch && <Alert title={"Error"} message={errorFetch} onClick={()=>setErrorFetch('')} />}
+            {errorFetch && <Alert title={"Error"} message={errorFetch} onClick={() => setErrorFetch('')}/>}
             <form onSubmit={
                 (e) => {
                     e.preventDefault();
@@ -30,11 +30,14 @@ export default function Formulario() {
                             res.json().then((res: TokenResponse) => {
                                 console.log(res)
                                 sessionStorage.setItem("token", res.access_token)
-                                navigate('/')
+                                navigate('/main')
                             })
                         } else
                             res.json().then((r) => setErrorFetch(r.detail))
-                    }).finally(() => setIsLoading(false))
+                    }).catch(() => {
+                        setErrorFetch('Error de conexión')
+                    })
+                        .finally(() => setIsLoading(false))
                 }
             } className={"size-full flex flex-col items-center justify-around p-10 text-indigo-500"}>
                 <h1 className={" surface font-bold text-3xl"}>Iniciar Sesión</h1>
@@ -91,8 +94,9 @@ export default function Formulario() {
                     className={`${isLoading ? 'from-indigo-300 to-indigo-300 cursor-default' : 'from-indigo-400 hover:from-indigo-500 hover:to-indigo-500 to-indigo-500 shadow-md shadow-indigo-300 hover:scale-105'} bg-gradient-to-br flex justify-center transition-all text-indigo-50 font-semibold  rounded-lg py-3 w-2/3`}
                     type={"submit"}
                 >
-                    {isLoading? <img src={LoadingIcon} alt="loading" className="absolute w-6 h-6 animate-spin"/>: null}
-                    <p className={`${isLoading? 'invisible': 'visible'}`}>
+                    {isLoading ?
+                        <img src={LoadingIcon} alt="loading" className="absolute w-6 h-6 animate-spin"/> : null}
+                    <p className={`${isLoading ? 'invisible' : 'visible'}`}>
                         Iniciar Sesión
                     </p>
                 </button>

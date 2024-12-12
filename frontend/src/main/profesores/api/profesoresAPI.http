@@ -4,6 +4,8 @@ GET localhost:8000/teacher?email=adrian@gmail.com
 ###
 
 GET localhost:8000/teacher
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZHJpYW4iLCJ0eXBlIjoidGVhY2hlciIsImV4cCI6MTczNDAxOTMzMn0.RaFlKGrqmlwIiG57blxUJyditRF--IdkCDqsCCS3d1k
+
 
 
 ###
@@ -23,3 +25,11 @@ Content-Type: application/json
 
 ###
 DELETE localhost:8000/teacher/bed42a7e-c6e2-45dc-b0fc-e54d7d2a64ee
+
+###
+PATCH localhost:8000/teacher/054ddf7b-5d80-4636-b02c-a49180227319
+Content-Type: application/json
+
+{
+  "contract_type":"Parcial"
+}
