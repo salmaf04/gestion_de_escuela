@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from backend.application.serializers.teacher import TeacherMapper
 from backend.domain.schemas.teacher import TeacherCreateModel, TeacherModel
-from backend.domain.models.tables import TeacherTable, teacher_subject_table, TeacherNoteTable
+from backend.domain.models.tables import TeacherTable, teacher_subject_table, TeacherNoteTable, UserTable
 from sqlalchemy import and_, update
 import uuid
 from sqlalchemy import select
@@ -19,7 +19,6 @@ class TeacherCreateService :
         subjects = subject_service.get_subjects(session=session, filter_params=SubjectFilterSchema(name=teacher.list_of_subjects))
         teacher_dict = teacher.model_dump(exclude={'password', 'list_of_subjects'})
         hashed_password = get_password_hash(get_password(teacher))
-        print(get_password(teacher))
         new_teacher = TeacherTable(**teacher_dict, hash_password=hashed_password)
         new_teacher.teacher_subject_association = subjects
         session.add(new_teacher)
@@ -34,17 +33,29 @@ class TeacherDeletionService:
         session.delete(teacher)
         session.commit()
         
-        
+       
 class TeacherUpdateService :
+    pass
+    """ 
     def update_one(self, session : Session , changes : ChangeRequest , teacher : TeacherModel ) -> TeacherModel: 
-        query = update(TeacherTable).where(TeacherTable.entity_id == teacher.id)
+        print(changes.hash_password)
+        if changes.hash_password :
+            print(changes.hash_password)
+            hashed_password = get_password_hash(changes.hash_password)
+            changes.hash_password = hashed_password
+            print(changes.hash_password)
+            print(changes.model_dump(exclude_unset=True, exclude_none=True))
         
-        query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
+        #query = update(TeacherTable).values(changes.model_dump(exclude_unset=True, exclude_none=True)).where(TeacherTable.id == teacher.id)
+        query = update(TeacherTable).values(changes.model_dump(exclude_unset=True, exclude_none=True))
+        query = query.where(TeacherTable.id == UserTable.entity_id)
+        query = query.where(
         session.execute(query)
-        session.commit()
+        session.refresh(teacher)
         
         teacher = teacher.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
         return teacher
+        """
         
 
 class TeacherPaginationService :
@@ -96,4 +107,12 @@ class TeacherValorationService :
         rows = select(func.count(TeacherNoteTable.grade)).where(TeacherNoteTable.teacher_id == teacher_id)
         total_valorations = session.execute(rows).scalars().first()
         return valoration_sum / total_valorations
+    
+class TeacherSubjectService :
+    def get_teacher_subjects(self, session: Session, id:uuid.UUID ) -> list[str] :
+        query = select(TeacherTable).where(TeacherTable.entity_id == id)
+        teacher = session.execute(query).scalars().first()
+        subjects = teacher.teacher_subject_association
+        return TeacherMapper().to_subject_list(subjects)
+        
         

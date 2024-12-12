@@ -64,7 +64,7 @@ async def authenticate_user(username: str, password: str, session: Session):
     
     user = mapper.to_api(user)
 
-    if  verify_password(password, user.hashed_password) is None:
+    if  not verify_password(password, user.hashed_password):
         return None
 
     return user
@@ -102,9 +102,14 @@ def authorize(role: list):
         @wraps(func)
         async def wrapper(*args, **kwargs):
             user =  await kwargs.get("current_user")
-            user_role = user.type
+            filters =  kwargs.get("filters")
+            user_role = user.type    
             if user_role not in role:
-                raise HTTPException(status_code=403, detail=f"User is not authorized to access , only avaliable for {role}")
+                role_str = ','.join(role)
+                raise HTTPException(status_code=403, detail=f"User is not authorized to access , only avaliable for {role_str}")
+            if filters and filters.hash_password and user_role == "secretary" :
+                raise HTTPException(status_code=403, detail=f"User is not authorized to access , only avaliable for {role[1]}")
+
             return await func(*args, **kwargs)
         return wrapper
     return decorator
