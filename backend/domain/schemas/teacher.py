@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import uuid
 from typing import Optional
 
@@ -23,5 +23,4 @@ class TeacherCreateModel(BaseModel):
     contract_type: str
     experience: int
     username: str
-    password: str
     list_of_subjects: list[str]

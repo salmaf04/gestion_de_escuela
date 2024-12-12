@@ -1,5 +1,5 @@
 from sqlalchemy_filterset import FilterSet, Filter, RangeFilter, BooleanFilter
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from backend.domain.models.tables import TeacherTable
 from typing import Optional
 
@@ -25,4 +25,4 @@ class ChangeRequest(BaseModel) :
     contract_type : Optional[str] = None
     experience : Optional[int] = None
     username : Optional[str] = None
-    hash_password : Optional[str] = None
+    hash_password :Optional[str] = Field(None, alias="password")

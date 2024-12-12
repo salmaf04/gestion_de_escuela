@@ -2,7 +2,7 @@ import uuid
 from fastapi import FastAPI, HTTPException, status, Depends, APIRouter
 from backend.domain.schemas.teacher import TeacherCreateModel, TeacherModel
 from sqlalchemy.orm import Session
-from backend.application.services.teacher import TeacherCreateService, TeacherPaginationService, TeacherDeletionService, TeacherUpdateService
+from backend.application.services.teacher import TeacherCreateService, TeacherPaginationService, TeacherDeletionService, TeacherUpdateService, TeacherSubjectService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.teacher import TeacherMapper
 from backend.domain.filters.teacher import TeacherFilterSchema, ChangeRequest
@@ -96,17 +96,21 @@ async def read_teacher(
     response_model=TeacherModel,
     status_code=status.HTTP_200_OK
 )
+@authorize(role=["secretary","teacher"])
 async def update_teacher(
     id : str,
     filters: ChangeRequest = Depends(),
+    current_user : UserModel = Depends(get_current_user),
     session: Session = Depends(get_db)
 ) :
     teacher_pagination_service = TeacherPaginationService()
     teacher_update_service = TeacherUpdateService()
+    teacher_subject_service = TeacherSubjectService()
     mapper = TeacherMapper()
 
     teacher = teacher_pagination_service.get_teacher_by_id(session=session, id = id)
-    teacher_model = mapper.to_api(teacher)
+    subjects = teacher_subject_service.get_teacher_subjects(session=session, id=id)
+    teacher_model = mapper.to_api(teacher, subjects)
 
     if not teacher :
         raise HTTPException(

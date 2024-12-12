@@ -36,7 +36,7 @@ export default function MantenimientosScreen() {
             {editing && <AddMantenimientoForm
                 onAccept={(formData) => {
                     //todo PUT request MantenimientoDeMedio
-                    setDataTable(dataTable.map((item) => item.Id === formData.Id ? formData : item));
+                    setDataTable(dataTable.map((item) => item.id === formData.id ? formData : item));
                     setEditing(null)
                 }}
                 formDataEdit={editing}
@@ -54,12 +54,12 @@ export default function MantenimientosScreen() {
                        //todo DELETE request MantenimientoDeMedio
                        console.log('delete')
                        setDataTable(dataTable.filter((item) => {
-                           return item.Id !== index
+                           return item.id !== index
                        }))
                    }}
                    onEditRow={(index) => {
                         setEditing(
-                            dataTable.find((item) => item.Id === index) || new MantenimientoDeMedio('', '', '', '')
+                            dataTable.find((item) => item.id === index) || new MantenimientoDeMedio('', '', '', '')
                         )
                    }}
             />
