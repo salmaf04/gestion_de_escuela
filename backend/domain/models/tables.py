@@ -37,6 +37,7 @@ class TableName(str, Enum):
     TEACHER_NOTE = "teacher_note"
     ABSENCE = "absence"
     CLASSROOM_REQUEST = "classroom_request"
+    TEACHER_SUBJECT = "teacher_subject"
     
 
 class MeanState(str, Enum):
@@ -53,6 +54,14 @@ class MeanType(str, Enum) :
 
 class BaseTable(DeclarativeBase):
     entity_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+
+
+teacher_subject_table = Table(
+    TableName.TEACHER_SUBJECT.value,
+    BaseTable.metadata,
+    Column("teacher_id", ForeignKey("teacher.id"), primary_key=True),
+    Column("subject_id", ForeignKey("subject.entity_id"), primary_key=True),
+)
 
 
 class UserTable(BaseTable) :
@@ -85,9 +94,10 @@ class TeacherTable(UserTable):
         secondary=f"{TableName.SUBJECT.value}", back_populates="teacher", viewonly=True
     )
     """
-
     student_note_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="teacher")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="teacher")
+    teacher_subject_association = relationship("SubjectTable", secondary=teacher_subject_table, back_populates="teacher_subject_association")
+
 
     __mapper_args__ = {
         "polymorphic_identity": "teacher",
@@ -178,7 +188,7 @@ class SubjectTable(BaseTable) :
     student_teacher_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="subject")
     student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="subject")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="subject")
-
+    teacher_subject_association = relationship("TeacherTable", secondary=teacher_subject_table, back_populates="teacher_subject_association")
     
 class ClassroomTable(BaseTable) : 
     __tablename__ = TableName.CLASSROOM.value
@@ -315,6 +325,7 @@ class MeanMaintenianceTable(BaseTable) :
 
     mean: Mapped["MeanTable"] = relationship(back_populates="mean_mainteniance_association")
     date: Mapped["MyDateTable"] = relationship(back_populates="mean_mainteniance_association")
+
 
 
 

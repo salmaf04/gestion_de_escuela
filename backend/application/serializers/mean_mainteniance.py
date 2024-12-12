@@ -6,7 +6,7 @@ class MeanMaintenanceMapper :
     def to_api(self, mean_maintenance: MeanMaintenianceTable) -> MeanMaintenianceTable :
         return MeanMaintenanceModel(
             id = mean_maintenance.entity_id,
-            mean_id = mean_maintenance.mean_id,
-            date_id = mean_maintenance.date_id,
+            mean = mean_maintenance.mean.name,
+            date = mean_maintenance.date.date.strftime("%Y-%m-%d"),
             cost = mean_maintenance.cost
         )

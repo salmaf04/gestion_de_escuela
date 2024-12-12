@@ -1,3 +1,4 @@
+import uuid
 from fastapi import FastAPI, HTTPException, status, Depends, APIRouter
 from backend.domain.schemas.teacher import TeacherCreateModel, TeacherModel
 from sqlalchemy.orm import Session
@@ -6,6 +7,9 @@ from fastapi.exceptions import HTTPException
 from backend.application.serializers.teacher import TeacherMapper
 from backend.domain.filters.teacher import TeacherFilterSchema, ChangeRequest
 from backend.configuration import get_db
+from backend.presentation.utils.auth import get_current_user
+from backend.domain.schemas.user import UserModel
+from backend.presentation.utils.auth import authorize
 
 
 router = APIRouter()
@@ -16,8 +20,10 @@ router = APIRouter()
     response_model=TeacherModel,
     status_code=status.HTTP_201_CREATED
 )
+@authorize(role=["secretary"])
 async def create_teacher(
     teacher_input: TeacherCreateModel,
+    current_user : UserModel = Depends(get_current_user),
     session: Session = Depends(get_db)
 ) :
     teacher_service = TeacherCreateService()
@@ -34,7 +40,7 @@ async def create_teacher(
 
     response = teacher_service.create_teacher(session=session, teacher=teacher_input)
 
-    return mapper.to_api(response)
+    return mapper.to_api(response, subjects=teacher_input.list_of_subjects)
 
 @router.delete(
     "/teacher/{id}",
@@ -59,17 +65,18 @@ async def delete_teacher(
     
 @router.get(
     "/teacher",
-    response_model=dict[int, TeacherModel],
+    response_model=dict[uuid.UUID, TeacherModel],
     status_code=status.HTTP_200_OK
 )
 async def read_teacher(
+    user : UserModel = Depends(get_current_user),
     filters: TeacherFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
     teacher_pagination_service = TeacherPaginationService()
     mapper = TeacherMapper()
 
-    teachers = teacher_pagination_service.get_teachers(session=session, filter_params=filters)
+    teachers, valorations, subjects = teacher_pagination_service.get_teachers(session=session, filter_params=filters)   
 
     if not teachers :
         raise HTTPException(
@@ -79,8 +86,8 @@ async def read_teacher(
 
     teachers_mapped = {}    
   
-    for i, teacher in enumerate(teachers) :
-        teachers_mapped[i] = mapper.to_api(teacher)
+    for  teacher,valoration,subject in zip(teachers, valorations, subjects) :
+        teachers_mapped[teacher.id] = mapper.to_api(teacher, list(subject), valoration)
         
     return teachers_mapped
 

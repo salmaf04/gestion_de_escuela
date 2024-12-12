@@ -6,5 +6,8 @@ class MeanMaintenanceCreateModel(BaseModel):
     date_id: uuid.UUID
     cost: float
 
-class MeanMaintenanceModel(MeanMaintenanceCreateModel):
+class MeanMaintenanceModel(BaseModel):
     id: uuid.UUID
+    mean: str
+    date: str
+    cost: float
