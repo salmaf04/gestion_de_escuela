@@ -1,0 +1,9 @@
+fastapi==0.115.6
+passlib==1.7.4
+pydantic==2.10.3
+pydantic_settings==2.6.1
+PyJWT==2.3.0
+PyJWT==2.10.1
+python-dotenv==1.0.1
+SQLAlchemy==2.0.36
+sqlalchemy_filterset==2.3.0

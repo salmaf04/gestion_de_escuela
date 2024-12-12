@@ -1,36 +1,30 @@
 import {useState} from "react";
-import  {Profesor} from "../../types.ts";
+import LoadingIcon from "../../assets/loading.svg"
+import {ProfesorCreate} from "../dto/types.ts";
 
 interface Props {
     onCancel: () => void
-    onAccept: (formData: Profesor) => void
-    formDataEdit?: Profesor
+    onAccept: (formData: ProfesorCreate) => void
+    formDataEdit?: ProfesorCreate
+    isLoading: boolean
+    className?: string
 }
 
-export default function AddProfesorForm({onCancel, onAccept, formDataEdit}: Props) {
-    const [formData, setFormData] = useState(formDataEdit || {
-        Id: '',
-        Nombre: '',
-        Apellidos: '',
-        Contrato: '',
-        Asignaturas: '',
-        Valoracion: '',
-        Especialidad: '',
-        Experiencia: ''
-    });
+export default function AddProfesorForm({onCancel, onAccept, formDataEdit, isLoading, className}: Props) {
+    const [formData, setFormData] = useState<ProfesorCreate>(formDataEdit || new ProfesorCreate('', '', '', '', '', 0, ''));
     return (
-        <div className="fixed z-40 inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div className={`fixed z-20 inset-0 bg-black bg-opacity-50 flex justify-center items-center ${className}`}>
             <div className="bg-white w-1/2  p-6 rounded-lg">
                 <h2 className="text-xl   text-indigo-400 text-center font-bold mb-4">{`${formDataEdit ? 'Editar Registro' : 'Anadir Registro'}`}</h2>
                 <form className={'justify-around flex flex-row  '}>
                     <div>
                         <div className="mb-4">
                             <label className="block text-gray-700">Nombre</label>
-                            <input type="text" name="nombre" value={formData.Nombre} onChange={(e) => {
+                            <input type="text" name="nombre" value={formData.name} onChange={(e) => {
                                 setFormData(
                                     {
                                         ...formData,
-                                        Nombre: e.target.value
+                                        name: e.target.value
                                     }
                                 )
                             }}
@@ -38,11 +32,23 @@ export default function AddProfesorForm({onCancel, onAccept, formDataEdit}: Prop
                         </div>
                         <div className="mb-4">
                             <label className="block text-gray-700">Apellidos</label>
-                            <input type="text" name="apellidos" value={formData.Apellidos} onChange={(e) => {
+                            <input type="text" name="apellidos" value={formData.fullname} onChange={(e) => {
                                 setFormData(
                                     {
                                         ...formData,
-                                        Apellidos: e.target.value
+                                        fullname: e.target.value
+                                    }
+                                )
+                            }}
+                                   className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50"}/>
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-gray-700">Usuario</label>
+                            <input type="text" name="usuario" value={formData.username} onChange={(e) => {
+                                setFormData(
+                                    {
+                                        ...formData,
+                                        username: e.target.value
                                     }
                                 )
                             }}
@@ -50,37 +56,26 @@ export default function AddProfesorForm({onCancel, onAccept, formDataEdit}: Prop
                         </div>
                         <div className="mb-4">
                             <label className="block text-gray-700">Especialidad</label>
-                            <input type="text" name="especialidad" value={formData.Especialidad} onChange={(e) => {
+                            <input type="text" name="especialidad" value={formData.specialty} onChange={(e) => {
                                 setFormData(
                                     {
                                         ...formData,
-                                        Especialidad: e.target.value
+                                        specialty: e.target.value
                                     }
                                 )
                             }}
                                    className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50"}/>
                         </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-700">Contrato</label>
-                            <input type="text" name="contrato" value={formData.Contrato} onChange={(e) => {
-                                setFormData(
-                                    {
-                                        ...formData,
-                                        Contrato: e.target.value
-                                    }
-                                )
-                            }}
-                                   className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50"}/>
-                        </div>
+
                     </div>
                     <div>
                         <div className="mb-4">
-                            <label className="block text-gray-700">Asignaturas</label>
-                            <input type="text" name="asignaturas" value={formData.Asignaturas} onChange={(e) => {
+                            <label className="block text-gray-700">Contrato</label>
+                            <input type="text" name="contrato" value={formData.contract_type} onChange={(e) => {
                                 setFormData(
                                     {
                                         ...formData,
-                                        Asignaturas: e.target.value
+                                        contract_type: e.target.value
                                     }
                                 )
                             }}
@@ -88,23 +83,23 @@ export default function AddProfesorForm({onCancel, onAccept, formDataEdit}: Prop
                         </div>
                         <div className="mb-4">
                             <label className="block text-gray-700">Experiencia</label>
-                            <input type="text" name="experiencia" value={formData.Experiencia} onChange={(e) => {
+                            <input type="number" name="experiencia" value={formData.experience} onChange={(e) => {
                                 setFormData(
                                     {
                                         ...formData,
-                                        Experiencia: e.target.value
+                                        experience: parseInt(e.target.value.toString())
                                     }
                                 )
                             }}
                                    className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50"}/>
                         </div>
                         <div className="mb-4">
-                            <label className="block text-gray-700">Valoracion</label>
-                            <input type="text" name="valoracion" value={formData.Valoracion} onChange={(e) => {
+                            <label className="block text-gray-700">Correo</label>
+                            <input type="text" name="correo" value={formData.email} onChange={(e) => {
                                 setFormData(
                                     {
                                         ...formData,
-                                        Valoracion: e.target.value
+                                        email: e.target.value,
                                     }
                                 )
                             }}
@@ -114,12 +109,18 @@ export default function AddProfesorForm({onCancel, onAccept, formDataEdit}: Prop
                 </form>
                 <div className="flex justify-end">
                     <button type="button" onClick={onCancel}
+                            hidden={isLoading}
                             className="mr-4 px-4 py-2 bg-gray-300 rounded">Cancelar
                     </button>
-                    <button onClick={()=>{
+                    <button onClick={() => {
                         onAccept(formData)
                     }} type="submit"
-                            className="px-4 py-2 bg-indigo-500 text-white rounded">{formDataEdit? 'Editar': 'Guardar'}
+                            className={`${isLoading ? ' bg-indigo-300 cursor-default' : 'bg-indigo-500'} px-4 flex justify-center py-2  text-white rounded`}>
+                        {isLoading ?
+                            <img src={LoadingIcon} alt="loading" className="absolute w-6 h-6 animate-spin"/> : null}
+                        <p className={`${isLoading? 'invisible': 'visible'}`}>
+                            {formDataEdit ? 'Editar' : 'Guardar'}
+                        </p>
                     </button>
                 </div>
             </div>

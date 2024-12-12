@@ -8,7 +8,7 @@ import ScreenType from "./types.ts";
 export default function MainScreen() {
     const navigate = useNavigate()
     useEffect(() => {
-        if (sessionStorage.getItem('username')) {
+        if (!sessionStorage.getItem('token')) {
             navigate('/login')
         }
     });
