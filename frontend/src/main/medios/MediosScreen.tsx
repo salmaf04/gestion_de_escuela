@@ -37,7 +37,7 @@ export default function MediosScreen() {
             {editing && <AddMediosForm
                 onAccept={(formData) => {
                     //todo PUT request Medio
-                    setDataTable(dataTable.map((item) => item.Id === formData.Id ? formData : item));
+                    setDataTable(dataTable.map((item) => item.id === formData.id ? formData : item));
                     setEditing(null)
                 }}
                 formDataEdit={editing}
@@ -55,12 +55,12 @@ export default function MediosScreen() {
                        //todo DELETE request Medio
                        console.log('delete')
                        setDataTable(dataTable.filter((item) => {
-                           return item.Id !== index
+                           return item.id !== index
                        }))
                    }}
                    onEditRow={(index) => {
                         setEditing(
-                            dataTable.find((item) => item.Id === index) || new Medio('', '', '', '')
+                            dataTable.find((item) => item.id === index) || new Medio('', '', '', '')
                         )
                    }}
             />
