@@ -17,7 +17,6 @@ def get_password(schema: BaseModel) -> str:
     username = schema.username
     lastname = schema.fullname 
     today_date = datetime.now()
-    today = today_date.strftime("%d-%m-%Y")
-
-    new_password = name[0].tolower() + username[0].tolower() + lastname[0].tolower() + today
+    
+    new_password = name[0].lower() + lastname[0].lower() + username 
     return new_password

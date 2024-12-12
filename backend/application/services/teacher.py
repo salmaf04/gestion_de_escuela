@@ -7,7 +7,7 @@ import uuid
 from sqlalchemy import select
 from backend.domain.filters.teacher import TeacherFilterSet , TeacherFilterSchema, ChangeRequest
 from backend.domain.filters.subject import SubjectFilterSchema
-from ..utils.auth import get_password_hash
+from ..utils.auth import get_password_hash, get_password
 from backend.application.services.subject import SubjectPaginationService
 from sqlalchemy import func
 
@@ -18,7 +18,8 @@ class TeacherCreateService :
         subject_service = SubjectPaginationService()
         subjects = subject_service.get_subjects(session=session, filter_params=SubjectFilterSchema(name=teacher.list_of_subjects))
         teacher_dict = teacher.model_dump(exclude={'password', 'list_of_subjects'})
-        hashed_password = get_password_hash(teacher.password)
+        hashed_password = get_password_hash(get_password(teacher))
+        print(get_password(teacher))
         new_teacher = TeacherTable(**teacher_dict, hash_password=hashed_password)
         new_teacher.teacher_subject_association = subjects
         session.add(new_teacher)

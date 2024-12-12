@@ -23,5 +23,4 @@ class TeacherCreateModel(BaseModel):
     contract_type: str
     experience: int
     username: str
-    password: str
     list_of_subjects: list[str]
