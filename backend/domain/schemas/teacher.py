@@ -12,7 +12,7 @@ class TeacherModel(BaseModel):
     email: str
     username: str
     list_of_subjects: list[str]
-    valoration : Optional[float] = None
+    valoration : Optional[float | str ] = None
     
 
 class TeacherCreateModel(BaseModel):
