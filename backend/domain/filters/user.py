@@ -3,4 +3,4 @@ from typing import Optional
 
 class ChangeRequest(BaseModel) :
     username : Optional[str] = None
-    hash_password : Optional[str] = Field(alias="password")
+    hash_password : Optional[str] = Field(None, alias="password")
