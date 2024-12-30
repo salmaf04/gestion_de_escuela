@@ -1,11 +1,11 @@
 export default class ScreenType {
     title: string;
     icon: string;
-    screen: JSX.Element;
-    constructor(title: string, icon: string, screen: JSX.Element) {
+    path: string;
+    constructor(title: string, icon: string, path: string) {
         this.title = title;
         this.icon = icon;
-        this.screen = screen;
+        this.path = path;
     }
 
 }

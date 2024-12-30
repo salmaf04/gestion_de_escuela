@@ -5,7 +5,7 @@ import {useNavigate} from "react-router-dom";
 import {getToken} from "../api/requests.ts";
 import {TokenResponse} from "../api/types.ts";
 import Alert from "../../components/Alert.tsx";
-import LoadingIcon from "../../main/assets/loading.svg";
+import Spinner from "../../components/Spinner.tsx";
 
 interface User {
     username: string;
@@ -94,19 +94,11 @@ export default function Formulario() {
                     className={`${isLoading ? 'from-indigo-300 to-indigo-300 cursor-default' : 'from-indigo-400 hover:from-indigo-500 hover:to-indigo-500 to-indigo-500 shadow-md shadow-indigo-300 hover:scale-105'} bg-gradient-to-br flex justify-center transition-all text-indigo-50 font-semibold  rounded-lg py-3 w-2/3`}
                     type={"submit"}
                 >
-                    {isLoading ?
-                        <img src={LoadingIcon} alt="loading" className="absolute w-6 h-6 animate-spin"/> : null}
+                    {isLoading && <Spinner />}
                     <p className={`${isLoading ? 'invisible' : 'visible'}`}>
                         Iniciar Sesión
                     </p>
                 </button>
-                {/*<DotLottieReact
-                            src='/loading-button-animation.lottie'
-                            loop
-                            autoplay
-                        />*/}
-
-
             </form>
         </>
 

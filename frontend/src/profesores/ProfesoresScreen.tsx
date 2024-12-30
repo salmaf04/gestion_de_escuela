@@ -4,14 +4,29 @@ import AddButton from "../components/AddButton.tsx";
 import Table from "../components/Table.tsx";
 import AddProfesorForm from "./components/AddProfesorForm.tsx";
 import {deleteProfesor, getProfesores, postProfesor} from "./api/requests.ts";
-import Alert from "../../components/Alert.tsx";
-import {ProfesorGet} from "./dto/types.ts";
+import Alert from "../components/Alert.tsx";
+import {ProfesorGet} from "./models/ProfesorGet.ts";
+import {dataExample} from "./data/Example_data.tsx";
 
 export default function ProfesoresScreen() {
     const [searchText, setSearchText] = useState('');
     const [dataTable, setDataTable] = useState<ProfesorGet[]>([]);
+    const [dataTableShow, setDataTableShow] = useState<ProfesorGet[]>(dataTable);
+
     useEffect(() => {
-        getProfesores().then(res => {
+        if (searchText){
+            setDataTableShow(
+                [...dataTable].filter((row) => {
+                    return Object.values(row).some((value) => {
+                        return value.toString().toLowerCase().includes(searchText.toLowerCase())
+                    })
+                }))
+        } else {
+            setDataTableShow(dataTable)
+        }
+    }, [searchText]);
+    useEffect(() => {
+        /*getProfesores().then(res => {
             const x: ProfesorGet[] = []
             let i = 0;
             while (res[i]) {
@@ -19,16 +34,13 @@ export default function ProfesoresScreen() {
                 i++
             }
             setDataTable(x)
-        })
+            console.log(res)
+        }).catch((e) => {
+            setError(e)
+        })*/
+        setDataTable(dataExample)
+        setDataTableShow(dataExample)
     }, []);
-    useEffect(() => {
-        setDataTable(
-            [...dataTable].filter((row) => {
-                return Object.values(row).some((value) => {
-                    return value.toString().toLowerCase().includes(searchText.toLowerCase())
-                })
-            }))
-    }, [searchText]);
     const [isAdding, setIsAdding] = useState(false);
     const [editing, setEditing] = useState<ProfesorGet | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -77,15 +89,15 @@ export default function ProfesoresScreen() {
                 }}/>
                 <AddButton onClick={() => setIsAdding(true)}/>
             </div>
-            <Table className={'h-5/6'} Data={dataTable} header={ProfesorGet.Properties.slice(1)}
+            <Table className={'h-5/6'} Data={dataTableShow} header={ProfesorGet.Properties.slice(1)}
                    onRemoveRow={(index) => {
                        deleteProfesor(index).then(res => {
                            if (res.ok) {
                                setDataTable(dataTable.filter((item) => {
                                    return item.id !== index
                                }))
-                           }else{
-                                 setError(res.statusText)
+                           } else {
+                               setError(res.statusText)
                            }
                        })
                    }}

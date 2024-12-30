@@ -1,6 +1,6 @@
 import {useState} from "react";
 import LoadingIcon from "../../assets/loading.svg"
-import {ProfesorCreate} from "../dto/types.ts";
+import {ProfesorCreate} from "../models/ProfesorCreate.ts";
 
 interface Props {
     onCancel: () => void
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function AddProfesorForm({onCancel, onAccept, formDataEdit, isLoading, className}: Props) {
-    const [formData, setFormData] = useState<ProfesorCreate>(formDataEdit || new ProfesorCreate('', '', '', '', '', 0, ''));
+    const [formData, setFormData] = useState<ProfesorCreate>(formDataEdit || new ProfesorCreate('', '', '', '', '', 0, '',[]));
     return (
         <div className={`fixed z-20 inset-0 bg-black bg-opacity-50 flex justify-center items-center ${className}`}>
             <div className="bg-white w-1/2  p-6 rounded-lg">

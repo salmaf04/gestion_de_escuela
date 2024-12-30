@@ -1,10 +1,13 @@
+
+
+
 ### GET request to example server
 GET localhost:8000/teacher?email=adrian@gmail.com
 
 ###
 
 GET localhost:8000/teacher
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZHJpYW4iLCJ0eXBlIjoidGVhY2hlciIsImV4cCI6MTczNDAxOTMzMn0.RaFlKGrqmlwIiG57blxUJyditRF--IdkCDqsCCS3d1k
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZHJpYW4iLCJ0eXBlIjoidGVhY2hlciIsImV4cCI6MTczNDAyNDE0M30.TyDMVuRCdO8FwiMSXTtHVq72HwoNTaWhgKW0nYS80Do
 
 
 
