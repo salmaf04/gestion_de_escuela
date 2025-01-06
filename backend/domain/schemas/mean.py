@@ -6,10 +6,12 @@ class MeanModel (BaseModel):
     name: str
     state: str
     location: str
+    classroom_id: uuid.UUID
     type: str
     
 class MeanCreateModel(BaseModel):
     name: str
     state: str
     location: str 
+    classroom_id: uuid.UUID
     type: str

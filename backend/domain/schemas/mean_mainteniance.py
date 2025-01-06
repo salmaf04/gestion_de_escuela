@@ -11,3 +11,10 @@ class MeanMaintenanceModel(BaseModel):
     mean: str
     date: str
     cost: float
+
+
+
+
+
+    
+

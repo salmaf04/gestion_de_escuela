@@ -10,6 +10,7 @@ from backend.domain.filters.subject import SubjectFilterSchema
 from ..utils.auth import get_password_hash, get_password
 from backend.application.services.subject import SubjectPaginationService
 from sqlalchemy import func
+from backend.application.utils.valoration_average import get_teacher_valoration_average, calculate_teacher_average
 
 
 class TeacherCreateService :
@@ -78,17 +79,14 @@ class TeacherPaginationService :
         filter_set = TeacherFilterSet(session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
         teachers = session.scalars(query).all()
-        valoration_service = TeacherValorationService()
         mapper = TeacherMapper()
-        valorations = []
         subjects = []
-
+ 
         if teachers :
             for teacher in teachers :
-                valorations.append(valoration_service.get_teacher_valoration_average(session=session, teacher_id=teacher.id))
                 subjects.append(mapper.to_subject_list(teacher.teacher_subject_association))
 
-        return teachers, valorations, subjects
+        return teachers, subjects
 
 
     
@@ -99,14 +97,11 @@ class TeacherSubjectService :
         session.commit()
 
 class TeacherValorationService :
-    def get_teacher_valoration_average(self, session: Session, teacher_id: str)  :
-        value = select(func.sum(TeacherNoteTable.grade)).where(TeacherNoteTable.teacher_id == teacher_id)
-        valoration_sum = session.execute(value).scalars().first()
-        if valoration_sum is None :
-            return None
-        rows = select(func.count(TeacherNoteTable.grade)).where(TeacherNoteTable.teacher_id == teacher_id)
-        total_valorations = session.execute(rows).scalars().first()
-        return valoration_sum / total_valorations
+    def update_note_average(self, session: Session, teacher_id: str, new_note : int ) : 
+        new_avergage = calculate_teacher_average(session=session, teacher_id=teacher_id, new_note=new_note)
+        query = update(TeacherTable).where(TeacherTable.id == teacher_id).values(average_valoration=new_avergage)
+        session.execute(query)
+        session.commit()
     
 class TeacherSubjectService :
     def get_teacher_subjects(self, session: Session, id:uuid.UUID ) -> list[str] :

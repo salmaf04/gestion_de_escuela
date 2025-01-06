@@ -14,7 +14,7 @@ class TeacherMapper :
             experience=teacher.experience,
             username=teacher.username,
             list_of_subjects=subjects,
-            valoration=valoration if valoration else "No hay valoraciones"
+            valoration= teacher.average_valoration
         )
     
     def to_subject_list(self, subjects) :

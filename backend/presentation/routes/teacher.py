@@ -76,7 +76,7 @@ async def read_teacher(
     teacher_pagination_service = TeacherPaginationService()
     mapper = TeacherMapper()
 
-    teachers, valorations, subjects = teacher_pagination_service.get_teachers(session=session, filter_params=filters)   
+    teachers, subjects = teacher_pagination_service.get_teachers(session=session, filter_params=filters)   
 
     if not teachers :
         raise HTTPException(
@@ -86,8 +86,8 @@ async def read_teacher(
 
     teachers_mapped = {}    
   
-    for  teacher,valoration,subject in zip(teachers, valorations, subjects) :
-        teachers_mapped[teacher.id] = mapper.to_api(teacher, list(subject), valoration)
+    for  teacher, subject in zip(teachers, subjects) :
+        teachers_mapped[teacher.id] = mapper.to_api(teacher, list(subject))
         
     return teachers_mapped
 

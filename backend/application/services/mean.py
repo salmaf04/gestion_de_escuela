@@ -5,6 +5,7 @@ from sqlalchemy import and_
 import uuid
 from sqlalchemy import select, update
 from backend.domain.filters.mean import MeanFilterSet , MeanFilterSchema, ChangeRequest
+from backend.application.services.classroom import ClassroomPaginationService
 
 class MeanCreateService() :
 
@@ -14,10 +15,15 @@ class MeanCreateService() :
             "teaching_material": TeachingMaterialTable,
             "other": OthersTable,
         }
+        
+        classroom_pagination_service = ClassroomPaginationService()
+        classroom = classroom_pagination_service.get_classroom_by_id(session=session, id=mean.classroom_id)
 
         mean_dict = mean.model_dump()
 
         new_mean = table_to_insert.get(mean.type)(**mean_dict)
+        new_mean.classroom_id = classroom.entity_id
+        new_mean.classroom = classroom
         session.add(new_mean)
         session.commit()
         return new_mean

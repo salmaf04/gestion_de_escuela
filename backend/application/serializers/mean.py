@@ -9,6 +9,7 @@ class MeanMapper() :
             name = mean.name,
             state = mean.state,
             location = mean.location,
-            type= mean.type
+            type= mean.type,
+            classroom_id= mean.classroom.entity_id
         )
         

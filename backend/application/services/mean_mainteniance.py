@@ -6,6 +6,9 @@ from backend.application.services.mean import MeanPaginationService
 from backend.application.services.my_date import DatePaginationService
 from backend.domain.filters.mean_mainteniance import MeanMaintenanceFilterSet , MeanMaintenanceFilterSchema
 from backend.domain.models.tables import MeanMaintenianceTable
+import uuid
+from datetime import datetime, timedelta, timezone
+from sqlalchemy import func
 
 
 class MeanMaintenanceCreateService :
@@ -32,4 +35,12 @@ class MeanMaintenancePaginationService :
         query = select(MeanMaintenianceTable)
         filter_set = MeanMaintenanceFilterSet(session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True)) 
+        return session.execute(query).scalars().all()
+    
+
+    def get_mainenance_by_classroom(self, session: Session) :
+        query = select(MeanMaintenianceTable.mean.classroom, MeanMaintenianceTable.mean.type, func.count(MeanMaintenianceTable.entity_id).label("count"))
+        query.where(MeanMaintenianceTable.date.date == datetime.now(timezone.utc) - timedelta(days=730))
+        query.group_by(MeanMaintenanceModel.mean.classroom, MeanMaintenanceModel.mean.type)
+
         return session.execute(query).scalars().all()
