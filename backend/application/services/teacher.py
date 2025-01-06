@@ -87,6 +87,21 @@ class TeacherPaginationService :
                 subjects.append(mapper.to_subject_list(teacher.teacher_subject_association))
 
         return teachers, subjects
+    
+
+    def get_teachers_average_better_than_8(self, session: Session) :
+        subjects = []
+        query = select(TeacherTable.name, TeacherTable.id, TeacherTable.average_valoration).where(TeacherTable.average_valoration > 8)
+        results = session.execute(query).all()
+        mapper = TeacherMapper()
+
+        for teacher in results :
+            teacher = self.get_teacher_by_id(session=session, id=teacher.id)
+            subjects.append(mapper.to_subject_list(teacher.teacher_subject_association))
+
+        return results, subjects
+
+
 
 
     

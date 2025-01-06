@@ -65,16 +65,22 @@ async def delete_teacher(
     
 @router.get(
     "/teacher",
-    response_model=dict[uuid.UUID, TeacherModel],
+    response_model=list,
     status_code=status.HTTP_200_OK
 )
 async def read_teacher(
+    better_than_eight = False,
     user : UserModel = Depends(get_current_user),
     filters: TeacherFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
     teacher_pagination_service = TeacherPaginationService()
     mapper = TeacherMapper()
+
+    if better_than_eight :
+        results = teacher_pagination_service.get_teachers_average_better_than_8(session=session)
+        return mapper.to_teachers_with_average(results)
+
 
     teachers, subjects = teacher_pagination_service.get_teachers(session=session, filter_params=filters)   
 
@@ -84,10 +90,10 @@ async def read_teacher(
             detail="There is no teacher with that email"
         )
 
-    teachers_mapped = {}    
+    teachers_mapped = []  
   
     for  teacher, subject in zip(teachers, subjects) :
-        teachers_mapped[teacher.id] = mapper.to_api(teacher, list(subject))
+        teachers_mapped.append(mapper.to_api(teacher, list(subject)))
         
     return teachers_mapped
 
