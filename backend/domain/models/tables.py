@@ -173,6 +173,9 @@ class SubjectTable(BaseTable) :
     name = Column(String)
     hourly_load  = Column(Integer)
     study_program = Column(Integer)
+
+    classroom_id : Mapped[int] = mapped_column(ForeignKey(f"{TableName.CLASSROOM.value}.entity_id"))
+
     """
     teacher: Mapped["Teacher"] = relationship(
         secondary=f"{TableName.TEACHER.value}", back_populates="subjects", viewonly=True
@@ -187,6 +190,9 @@ class SubjectTable(BaseTable) :
         secondary=f"{TableName.COURSE.value}", back_populates="subjects"
     )
     """
+    
+    classroom: Mapped["ClassroomTable"] = relationship(back_populates="subjects")
+
     student_teacher_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="subject")
     student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="subject")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="subject")
@@ -199,6 +205,7 @@ class ClassroomTable(BaseTable) :
     capacity = Column(Integer)
 
     technological_means: Mapped[List["TechnologicalMeanTable"]] = relationship(back_populates="classroom")
+    subjects : Mapped[List["SubjectTable"]] = relationship(back_populates="classroom")
 
 
 class CourseTable(BaseTable) :
