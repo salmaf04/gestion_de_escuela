@@ -1,0 +1,16 @@
+services:
+  database:
+    image: postgres:14  # Cambia a la imagen estándar de PostgreSQL
+    environment:
+      - POSTGRES_USER=local
+      - POSTGRES_PASSWORD=local
+      - POSTGRES_DB=school_management
+      - PGDATA=/tmp
+    ports:
+      - "5434:5432"  # Asegúrate de que el puerto esté correctamente mapeado
+    volumes:
+      - db:/var/lib/postgresql/data
+
+volumes:
+  db:
+    driver: local
