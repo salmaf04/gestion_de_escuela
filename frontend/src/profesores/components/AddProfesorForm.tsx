@@ -1,17 +1,27 @@
 import {useState} from "react";
 import LoadingIcon from "../../assets/loading.svg"
-import {ProfesorCreate} from "../models/ProfesorCreate.ts";
+import {ProfesorCreateAdapter} from "../adapters/ProfesorCreateAdapter.ts";
 
 interface Props {
     onCancel: () => void
-    onAccept: (formData: ProfesorCreate) => void
-    formDataEdit?: ProfesorCreate
+    onAccept: (formData: ProfesorCreateAdapter) => void
+    formDataEdit?: ProfesorCreateAdapter
     isLoading: boolean
     className?: string
 }
 
 export default function AddProfesorForm({onCancel, onAccept, formDataEdit, isLoading, className}: Props) {
-    const [formData, setFormData] = useState<ProfesorCreate>(formDataEdit || new ProfesorCreate('', '', '', '', '', 0, '',[]));
+    const [formData, setFormData] = useState<ProfesorCreateAdapter>(formDataEdit || new ProfesorCreateAdapter({
+        name: '',
+        fullname: '',
+        username: '',
+        email: '',
+        contract_type: '',
+        experience: 0,
+        specialty: '',
+        list_of_subjects: []
+    }));
+
     return (
         <div className={`fixed z-20 inset-0 bg-black bg-opacity-50 flex justify-center items-center ${className}`}>
             <div className="bg-white w-1/2  p-6 rounded-lg">
@@ -32,11 +42,11 @@ export default function AddProfesorForm({onCancel, onAccept, formDataEdit, isLoa
                         </div>
                         <div className="mb-4">
                             <label className="block text-gray-700">Apellidos</label>
-                            <input type="text" name="apellidos" value={formData.fullname} onChange={(e) => {
+                            <input type="text" name="apellidos" value={formData.lastname} onChange={(e) => {
                                 setFormData(
                                     {
                                         ...formData,
-                                        fullname: e.target.value
+                                        lastname: e.target.value
                                     }
                                 )
                             }}
@@ -71,11 +81,11 @@ export default function AddProfesorForm({onCancel, onAccept, formDataEdit, isLoa
                     <div>
                         <div className="mb-4">
                             <label className="block text-gray-700">Contrato</label>
-                            <input type="text" name="contrato" value={formData.contract_type} onChange={(e) => {
+                            <input type="text" name="contrato" value={formData.contractType} onChange={(e) => {
                                 setFormData(
                                     {
                                         ...formData,
-                                        contract_type: e.target.value
+                                        contractType: e.target.value
                                     }
                                 )
                             }}

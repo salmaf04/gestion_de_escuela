@@ -7,7 +7,7 @@ GET localhost:8000/teacher?email=adrian@gmail.com
 ###
 
 GET localhost:8000/teacher
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZHJpYW4iLCJ0eXBlIjoidGVhY2hlciIsImV4cCI6MTczNDAyNDE0M30.TyDMVuRCdO8FwiMSXTtHVq72HwoNTaWhgKW0nYS80Do
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZHJpYW4iLCJ0eXBlIjoidGVhY2hlciIsImV4cCI6MTczNTc4NDUyOH0.cYVpibpPGZ4Wq-aDPnJjOGckfO5iaMoYWD8Alpd-MpI
 
 
 

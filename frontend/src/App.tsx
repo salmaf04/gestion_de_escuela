@@ -38,7 +38,7 @@ function App() {
                 ) :
                 (
                     <Routes>
-                        <Route path={'/'} element={<LoginScreen/>}/>
+                        <Route path={'/'} element={<LoginScreen setIsLogged={setIsLogged}/>}/>
                         <Route path={'*'} element={<Navigate to={'/'}/>}/>
                     </Routes>
                 )

@@ -5,14 +5,18 @@ import Table from "../components/Table.tsx";
 import AddProfesorForm from "./components/AddProfesorForm.tsx";
 import {deleteProfesor, getProfesores, postProfesor} from "./api/requests.ts";
 import Alert from "../components/Alert.tsx";
-import {ProfesorGet} from "./models/ProfesorGet.ts";
-import {dataExample} from "./data/Example_data.tsx";
+import Spinner from "../components/Spinner.tsx";
+import {ProfesorGetAdapter} from "./adapters/ProfesorGetAdapter.ts";
+import {getProfesorFromResponse} from "./utils/utils.ts";
 
 export default function ProfesoresScreen() {
     const [searchText, setSearchText] = useState('');
-    const [dataTable, setDataTable] = useState<ProfesorGet[]>([]);
-    const [dataTableShow, setDataTableShow] = useState<ProfesorGet[]>(dataTable);
-
+    const [dataTable, setDataTable] = useState<ProfesorGetAdapter[]>([]);
+    const [dataTableShow, setDataTableShow] = useState<ProfesorGetAdapter[]>(dataTable);
+    const [isTableLoading, setIsTableLoading] = useState(false)
+    useEffect(() => {
+        setDataTableShow(dataTable)
+    }, [dataTable]);
     useEffect(() => {
         if (searchText){
             setDataTableShow(
@@ -26,24 +30,19 @@ export default function ProfesoresScreen() {
         }
     }, [searchText]);
     useEffect(() => {
-        /*getProfesores().then(res => {
-            const x: ProfesorGet[] = []
-            let i = 0;
-            while (res[i]) {
-                x.push(res[i])
-                i++
-            }
-            setDataTable(x)
+        setIsTableLoading(true)
+        getProfesores().then(res => {
+            setDataTable(getProfesorFromResponse(res))
             console.log(res)
         }).catch((e) => {
             setError(e)
-        })*/
+        }).finally(()=> setIsTableLoading(false))/*
         setDataTable(dataExample)
-        setDataTableShow(dataExample)
+        setDataTableShow(dataExample)*/
     }, []);
     const [isAdding, setIsAdding] = useState(false);
-    const [editing, setEditing] = useState<ProfesorGet | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [editing, setEditing] = useState<ProfesorGetAdapter | null>(null);
+    const [isLoading, setisLoading] = useState(false);
     const [error, setError] = useState('')
     return (
         <div className={"mx-4 w-11/12 h-dvh flex flex-col"}>
@@ -54,10 +53,10 @@ export default function ProfesoresScreen() {
             }
             {isAdding && <AddProfesorForm
                 onAccept={(formData) => {
-                    setIsLoading(true)
+                    setisLoading(true)
                     postProfesor(formData).then(res => {
                         if (res.ok) {
-                            res.json().then((data: ProfesorGet) => {
+                            res.json().then((data: ProfesorGetAdapter) => {
                                 setDataTable([...dataTable, data])
                                 setIsAdding(false)
                             })
@@ -65,7 +64,7 @@ export default function ProfesoresScreen() {
                             setError(res.statusText)
                         }
                     }).finally(() => {
-                        setIsLoading(false)
+                        setisLoading(false)
                     })
 
 
@@ -89,7 +88,10 @@ export default function ProfesoresScreen() {
                 }}/>
                 <AddButton onClick={() => setIsAdding(true)}/>
             </div>
-            <Table className={'h-5/6'} Data={dataTableShow} header={ProfesorGet.Properties.slice(1)}
+            {
+                isTableLoading && <Spinner />
+            }
+            <Table className={'h-5/6'} Data={dataTableShow} header={ProfesorGetAdapter.Properties.slice(1)}
                    onRemoveRow={(index) => {
                        deleteProfesor(index).then(res => {
                            if (res.ok) {

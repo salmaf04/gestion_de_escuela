@@ -1,4 +1,4 @@
-import {ProfesorGet} from "../models/ProfesorGet.ts";
+import {ProfesorGet} from "../models/ProfesorGetDB.ts";
 
 export const dataExample: ProfesorGet[] =
     [
