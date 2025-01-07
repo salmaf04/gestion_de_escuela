@@ -4,13 +4,18 @@ from backend.domain.filters.subject import SubjectFilterSet , SubjectFilterSchem
 from backend.domain.schemas.subject import SubjectCreateModel, SubjectModel
 from backend.domain.models.tables import SubjectTable
 import uuid
-
+from backend.application.services.classroom import ClassroomPaginationService
 
 class SubjectCreateService :
 
     def create_subject(self, session: Session, subject:SubjectCreateModel) -> SubjectTable :
+        classroom_service = ClassroomPaginationService()
+        classroom = classroom_service.get_classroom_by_id(session=session, id=subject.classroom_id)
+         
         subject_dict = subject.model_dump()
         new_subject = SubjectTable(**subject_dict)
+        new_subject.classroom = classroom
+        classroom.subjects.append(new_subject)
         session.add(new_subject)
         session.commit()
         return new_subject

@@ -11,7 +11,7 @@ from ..utils.auth import get_password_hash, get_password
 from backend.application.services.subject import SubjectPaginationService
 from sqlalchemy import func
 from backend.application.utils.valoration_average import get_teacher_valoration_average, calculate_teacher_average
-
+from backend.domain.models.tables import ClassroomTable, TechnologicalMeanTable, SubjectTable, teacher_subject_table
 
 class TeacherCreateService :
 
@@ -100,6 +100,16 @@ class TeacherPaginationService :
             subjects.append(mapper.to_subject_list(teacher.teacher_subject_association))
 
         return results, subjects
+    
+
+    def get_teachers_by_technological_classroom(self, session: Session) : 
+        query = select(TeacherTable, SubjectTable, ClassroomTable, TechnologicalMeanTable)   
+        query = query.join(teacher_subject_table, TeacherTable.id == teacher_subject_table.c.teacher_id)
+        query = query.join(SubjectTable, teacher_subject_table.c.subject_id == SubjectTable.entity_id)
+        query = query.join(ClassroomTable, SubjectTable.classroom_id == ClassroomTable.entity_id)
+        query = query.join(TechnologicalMeanTable, ClassroomTable.entity_id == TechnologicalMeanTable.classroom_id)
+        print(session.execute(query).all())
+        return session.execute(query).all()
 
 
 

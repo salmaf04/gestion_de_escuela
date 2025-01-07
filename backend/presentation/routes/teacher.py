@@ -65,10 +65,11 @@ async def delete_teacher(
     
 @router.get(
     "/teacher",
-    response_model=list,
+    response_model=list | dict,
     status_code=status.HTTP_200_OK
 )
 async def read_teacher(
+    technology_classroom = False,
     better_than_eight = False,
     user : UserModel = Depends(get_current_user),
     filters: TeacherFilterSchema = Depends(),
@@ -80,6 +81,9 @@ async def read_teacher(
     if better_than_eight :
         results = teacher_pagination_service.get_teachers_average_better_than_8(session=session)
         return mapper.to_teachers_with_average(results)
+    elif technology_classroom :
+        results = teacher_pagination_service.get_teachers_by_technological_classroom(session=session)
+        return mapper.to_teachers_technological_classroom(results)
 
 
     teachers, subjects = teacher_pagination_service.get_teachers(session=session, filter_params=filters)   
