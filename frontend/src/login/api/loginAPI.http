@@ -1,0 +1,8 @@
+### GET request to example server
+GET localhost:8000/token
+Content-Type: multipart/form-data
+
+{
+    "user": "adrian",
+    "password": "1234"
+}
