@@ -1,11 +1,11 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.note import NoteCreateModel
-from backend.domain.models.tables import StudentNoteTable, StudentTable
+from backend.domain.models.tables import StudentNoteTable, StudentTable, TeacherTable
 from backend.application.services.student import StudentPaginationService
 from backend.application.services.subject import SubjectPaginationService
 from backend.application.services.teacher import TeacherPaginationService
 from backend.domain.filters.note import NoteFilterSet , NoteFilterSchema
-from sqlalchemy import select
+from sqlalchemy import select, func
 from backend.application.services.student import UpdateNoteAverageService
 class NoteCreateService :
     def create_note(self, session: Session, note: NoteCreateModel) -> StudentNoteTable :
@@ -39,15 +39,38 @@ class NotePaginationService :
         return session.execute(query).scalars().all()
     
     def grade_less_than_fifty(self, session: Session) :
-        student_note_association = []
-        pagination_service = StudentPaginationService()
-        query = select(StudentTable.id , StudentTable.name, StudentTable.average_note)
-        query = query.where(StudentTable.average_note < 50)
-        
-        results = session.execute(query).all()
+        query = select(StudentNoteTable.student_id, StudentNoteTable.subject_id, (func.sum(StudentNoteTable.note_value)/func.count()).label('average_note'))
+        query = query.group_by(StudentNoteTable.student_id, StudentNoteTable.subject_id)
+        query = query.having((func.sum(StudentNoteTable.note_value)/func.count()) < 12)
 
-        for student in results :
-            student = pagination_service.get_student_by_id(session=session, id=student.id)
-            student_note_association.append(student.student_note_association)
+        query = query.subquery()
 
-        return results, student_note_association
+        second_query = select(query.c.student_id)
+        second_query = second_query.group_by(query.c.student_id)
+        second_query = second_query.having((func.count(query.c.student_id)) > 1).subquery()
+
+        combined_query = (
+        select(
+            StudentTable.name.label('student_name'),
+            StudentTable.id.label('student_id'),
+            TeacherTable.name.label('teacher_name'),
+            func.avg(TeacherTable.average_valoration).label('average_teacher_valoration')
+        )
+        .join(second_query, second_query.c.student_id == StudentTable.id)
+        .join(StudentNoteTable, StudentNoteTable.student_id == StudentTable.id)
+        .join(TeacherTable, TeacherTable.id == StudentNoteTable.teacher_id)
+        .group_by(StudentTable.name, StudentTable.id, TeacherTable.name)
+        )
+
+    # Ejecutar la consulta
+        results = session.execute(combined_query).fetchall()
+
+        return results
+       
+        """
+        final_query = select(StudentTable.name, second_query.c.student_id)
+        final_query = final_query.join(second_query, StudentTable.entity_id == second_query.c.student_id)
+        final_query = final_query.group_by(StudentTable.name, second_query.c.student_id)
+        """
+
+       

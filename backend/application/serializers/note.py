@@ -3,12 +3,14 @@ from backend.domain.models.tables import StudentNoteTable
 from pydantic import BaseModel
 import uuid
 from backend.application.services.student import StudentPaginationService
+from fastapi.encoders import jsonable_encoder
 
 class NoteLessThanFifty(BaseModel) :
-    id : uuid.UUID
     name : str
-    note : float
-    teachers : dict
+    student_id : uuid.UUID
+    teacher_name : str
+    teacher_valoration : float | None
+   
 
 class NoteMapper :
     def to_api(self, note: StudentNoteTable) -> NoteModel :
@@ -23,24 +25,16 @@ class NoteMapper :
     def to_less_than_fifty(self, data) :
         serialized_values = []
 
-        for response in data[0] :
-            teachers_with_average = {}
-
-            for relation_list in data[1] :
-                for relation in relation_list :
-                    if relation.teacher.name not in teachers_with_average :
-                        teachers_with_average[relation.teacher.name] = relation.teacher.average_valoration
-                    else :
-                        continue
-                    
-            note = NoteLessThanFifty(
-                name= response.name,
-                id = response.id,
-                note = response.average_note,
-                teachers= teachers_with_average
+        for item in data :
+            new_item = NoteLessThanFifty(
+                name = item[0],
+                student_id = item[1],
+                teacher_name= item[2],
+                teacher_valoration= item[3]
             )
-            serialized_values.append(note)
+            serialized_values.append(new_item)
 
-        return list(serialized_values)
+        return serialized_values
+        
 
 

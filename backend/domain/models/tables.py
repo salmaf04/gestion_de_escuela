@@ -38,6 +38,7 @@ class TableName(str, Enum):
     ABSENCE = "absence"
     CLASSROOM_REQUEST = "classroom_request"
     TEACHER_SUBJECT = "teacher_subject"
+    SANCTION = "sanction_table"
     
 
 class MeanState(str, Enum):
@@ -87,6 +88,7 @@ class TeacherTable(UserTable):
     contract_type = Column(String)
     experience = Column(Integer)
     average_valoration = Column(Double)
+    salary = Column(Double)
     """
     students: Mapped[List["Student"]] = relationship(
         secondary=f"{TableName.STUDENT.value}", back_populates="teacher", viewonly=True
@@ -95,6 +97,9 @@ class TeacherTable(UserTable):
         secondary=f"{TableName.SUBJECT.value}", back_populates="teacher", viewonly=True
     )
     """
+    
+    sanctions: Mapped[List["SanctionTable"]] = relationship(back_populates="teacher")
+
     student_note_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="teacher")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="teacher")
     teacher_subject_association = relationship("SubjectTable", secondary=teacher_subject_table, back_populates="teacher_subject_association")
@@ -204,7 +209,7 @@ class ClassroomTable(BaseTable) :
     location = Column(String)
     capacity = Column(Integer)
 
-    technological_means: Mapped[List["TechnologicalMeanTable"]] = relationship(back_populates="classroom")
+    means: Mapped[List["MeanTable"]] = relationship(back_populates="classroom")
     subjects : Mapped[List["SubjectTable"]] = relationship(back_populates="classroom")
 
 
@@ -231,9 +236,13 @@ class MeanTable(BaseTable) :
     name = Column(String) 
     state: Mapped[MeanState] = mapped_column(String)
     location = Column(String)
+    classroom_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.CLASSROOM.value}.entity_id"))
     type: Mapped[MeanType] = mapped_column(String)
 
     mean_mainteniance_association: Mapped[List["MeanMaintenianceTable"]] = relationship(back_populates="mean")
+
+    classroom: Mapped["ClassroomTable"] = relationship(back_populates="means")
+
 
     __mapper_args__ = {
         "polymorphic_identity": "mean",
@@ -245,10 +254,8 @@ class TechnologicalMeanTable(MeanTable) :
     __tablename__ = TableName.TECHNOLOGICAL_MEAN.value  
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.MEAN.value}.entity_id"), primary_key=True)
-    classroom_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.CLASSROOM.value}.entity_id"))
 
-    classroom: Mapped["ClassroomTable"] = relationship(back_populates="technological_means")
-
+    
     __mapper_args__ = {
         "polymorphic_identity": "technological_mean",
     }
@@ -278,7 +285,6 @@ class MyDateTable(BaseTable):
 
     date = Column(DateTime, unique= True)
 
-    mean_mainteniance_association: Mapped[List["MeanMaintenianceTable"]] = relationship(back_populates="date")
     
 
 class StudentNoteTable(BaseTable) :
@@ -338,7 +344,16 @@ class MeanMaintenianceTable(BaseTable) :
     cost = Column(Double)
 
     mean: Mapped["MeanTable"] = relationship(back_populates="mean_mainteniance_association")
-    date: Mapped["MyDateTable"] = relationship(back_populates="mean_mainteniance_association")
+    date = Column(DateTime, nullable=False)
+
+
+class SanctionTable(BaseTable):
+    __tablename__ = TableName.SANCTION.value
+
+    teacher_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.TEACHER.value}.id"), nullable=False)
+    teacher: Mapped["TeacherTable"] = relationship(back_populates="sanctions")
+    amount: Mapped[Double] = mapped_column(Double, nullable=False)
+    date = Column(DateTime, nullable=False)
 
 
 

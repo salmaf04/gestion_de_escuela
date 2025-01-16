@@ -69,6 +69,7 @@ async def delete_teacher(
     status_code=status.HTTP_200_OK
 )
 async def read_teacher(
+    sanctions = False,
     technology_classroom = False,
     better_than_eight = False,
     user : UserModel = Depends(get_current_user),
@@ -84,6 +85,9 @@ async def read_teacher(
     elif technology_classroom :
         results = teacher_pagination_service.get_teachers_by_technological_classroom(session=session)
         return mapper.to_teachers_technological_classroom(results)
+    elif sanctions :
+        results, mean_data = teacher_pagination_service.get_teachers_by_sanctions(session=session)
+        return mapper.to_teachers_sanctions(results, mean_data)
 
 
     teachers, subjects = teacher_pagination_service.get_teachers(session=session, filter_params=filters)   
