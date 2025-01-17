@@ -1,5 +1,5 @@
 export type ProfesorDB = {
-        id: string
+        "id" : string
         "name": string
         "fullname": string
         "specialty": string
