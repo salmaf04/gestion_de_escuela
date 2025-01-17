@@ -1,9 +1,9 @@
 import { EstudianteGetResponse } from "../models/EstudianteGetDB.ts";
-import { EstudiantesCreateAdapter } from "../adapters/EstudiantesCreateAdapter.ts";
-import { EstudiantesCreateDB } from "../models/EstudiantesCreateDB.ts";
+import { EstudianteCreateAdapter } from "../adapters/EstudianteCreateAdapter.ts";
+import { EstudianteCreateDB } from "../models/EstudianteCreateDB.ts";
 
-export function postEstudiante(estudiante: EstudiantesCreateAdapter) {
-    const estudianteDB: EstudiantesCreateDB = {
+export function postEstudiante(estudiante: EstudianteCreateAdapter) {
+    const estudianteDB: EstudianteCreateDB = {
         name: estudiante.name,
         age: estudiante.age,
         email: estudiante.email,
@@ -21,8 +21,8 @@ export function postEstudiante(estudiante: EstudiantesCreateAdapter) {
     })
 }
 
-export function patchEstudiante(id: string, estudiante: EstudiantesCreateAdapter) {
-    const estudianteDB: EstudiantesCreateDB = {
+export function patchEstudiante(id: string, estudiante: EstudianteCreateAdapter) {
+    const estudianteDB: EstudianteCreateDB = {
         name: estudiante.name,
         age: estudiante.age,
         email: estudiante.email,

@@ -1,6 +1,6 @@
-import { EstudiantesCreateDB } from "../models/EstudiantesCreateDB.ts";
+import { EstudianteCreateDB } from "../models/EstudianteCreateDB.ts";
 
-export class EstudiantesCreateAdapter {
+export class EstudianteCreateAdapter {
     static Properties = ['Nombre', 'Edad', 'Correo', 'ActividadesExtra', 'Usuario', 'Contraseña']
     name: string
     age: number
@@ -9,7 +9,7 @@ export class EstudiantesCreateAdapter {
     username: string
     password: string
 
-    constructor(estudiantesCreateDB: EstudiantesCreateDB) {
+    constructor(estudiantesCreateDB: EstudianteCreateDB) {
         this.name = estudiantesCreateDB.name;
         this.age = estudiantesCreateDB.age;
         this.email = estudiantesCreateDB.email;

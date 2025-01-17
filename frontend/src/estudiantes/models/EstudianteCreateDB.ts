@@ -1,4 +1,4 @@
-export type EstudiantesCreateDB = {
+export type EstudianteCreateDB = {
     "name": string,
     "age": number,
     "email": string,

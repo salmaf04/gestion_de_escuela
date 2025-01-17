@@ -8,28 +8,23 @@ import Alert from "../components/Alert.tsx";
 import Spinner from "../components/Spinner.tsx";
 import {ProfesorGetAdapter} from "./adapters/ProfesorGetAdapter.ts";
 import {getProfesorFromResponse} from "./utils/utils.ts";
+import {DBObject} from "../types.ts";
+
+interface ScreenProps
+    {
+        GetAdapter : DBObject
+    }
 
 export default function ProfesoresScreen() {
     const [searchText, setSearchText] = useState('');
     const [dataTable, setDataTable] = useState<ProfesorGetAdapter[]>([]);
-    const [dataTableShow, setDataTableShow] = useState<ProfesorGetAdapter[]>(dataTable);
     const [isTableLoading, setIsTableLoading] = useState(false)
-   /* useEffect(() => {
-        setDataTableShow(dataTable)
-    }, [dataTable]);
-    //
-   /* useEffect(() => {
-        if (searchText){
-            setDataTableShow(
-                [...dataTable].filter((row) => {
-                    return Object.values(row).some((value) => {
-                        return value.toString().toLowerCase().includes(searchText.toLowerCase())
-                    })
-                }))
-        } else {
-            setDataTableShow(dataTable)
-        }
-    }, [searchText]);*/
+    const [isAdding, setIsAdding] = useState(false);
+    const [editing, setEditing] = useState<ProfesorGetAdapter | null>(null);
+    const [isLoading, setisLoading] = useState(false);
+    const [error, setError] = useState('')
+
+
     useEffect(() => {
         setIsTableLoading(true)
         getProfesores().then(res => {
@@ -40,10 +35,8 @@ export default function ProfesoresScreen() {
         setDataTable(dataExample)
         setDataTableShow(dataExample)*/
     }, []);
-    const [isAdding, setIsAdding] = useState(false);
-    const [editing, setEditing] = useState<ProfesorGetAdapter | null>(null);
-    const [isLoading, setisLoading] = useState(false);
-    const [error, setError] = useState('')
+
+
     return (
         <div className={"mx-4 w-11/12 h-dvh flex flex-col"}>
             {
