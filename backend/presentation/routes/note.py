@@ -5,6 +5,10 @@ from backend.application.services.note import NoteCreateService, NotePaginationS
 from backend.application.serializers.note import NoteMapper
 from backend.configuration import get_db
 from backend.domain.filters.note import NoteFilterSchema
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
+import json
+from backend.application.serializers.note import NoteLessThanFifty
 
 router = APIRouter()
 
@@ -26,17 +30,22 @@ async def create_note(
 
 @router.get(
     "/note",
-    response_model=dict[int, NoteModel],
+    response_model=list[NoteModel] | list[NoteLessThanFifty],
     status_code=status.HTTP_200_OK
 )
 async def read_note(
     filters: NoteFilterSchema = Depends(),
+    less_than_fifty: bool = False,
     session: Session = Depends(get_db)
 ) :
     note_pagination_service = NotePaginationService()
     mapper = NoteMapper()
 
     notes = note_pagination_service.get_note(session=session, filter_params=filters)
+
+    if less_than_fifty :
+        notes = note_pagination_service.grade_less_than_fifty(session=session)
+        return mapper.to_less_than_fifty(notes)
 
     if not notes :
         raise HTTPException(

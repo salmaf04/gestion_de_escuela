@@ -10,7 +10,8 @@ from backend.domain.filters.subject import SubjectFilterSchema
 from ..utils.auth import get_password_hash, get_password
 from backend.application.services.subject import SubjectPaginationService
 from sqlalchemy import func
-
+from backend.application.utils.valoration_average import get_teacher_valoration_average, calculate_teacher_average
+from backend.domain.models.tables import ClassroomTable, TechnologicalMeanTable, SubjectTable, teacher_subject_table
 
 class TeacherCreateService :
 
@@ -78,17 +79,39 @@ class TeacherPaginationService :
         filter_set = TeacherFilterSet(session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
         teachers = session.scalars(query).all()
-        valoration_service = TeacherValorationService()
         mapper = TeacherMapper()
-        valorations = []
         subjects = []
-
+ 
         if teachers :
             for teacher in teachers :
-                valorations.append(valoration_service.get_teacher_valoration_average(session=session, teacher_id=teacher.id))
                 subjects.append(mapper.to_subject_list(teacher.teacher_subject_association))
 
-        return teachers, valorations, subjects
+        return teachers, subjects
+    
+
+    def get_teachers_average_better_than_8(self, session: Session) :
+        subjects = []
+        query = select(TeacherTable.name, TeacherTable.id, TeacherTable.average_valoration).where(TeacherTable.average_valoration > 8)
+        results = session.execute(query).all()
+        mapper = TeacherMapper()
+
+        for teacher in results :
+            teacher = self.get_teacher_by_id(session=session, id=teacher.id)
+            subjects.append(mapper.to_subject_list(teacher.teacher_subject_association))
+
+        return results, subjects
+    
+
+    def get_teachers_by_technological_classroom(self, session: Session) : 
+        query = select(TeacherTable, SubjectTable, ClassroomTable, TechnologicalMeanTable)   
+        query = query.join(teacher_subject_table, TeacherTable.id == teacher_subject_table.c.teacher_id)
+        query = query.join(SubjectTable, teacher_subject_table.c.subject_id == SubjectTable.entity_id)
+        query = query.join(ClassroomTable, SubjectTable.classroom_id == ClassroomTable.entity_id)
+        query = query.join(TechnologicalMeanTable, ClassroomTable.entity_id == TechnologicalMeanTable.classroom_id)
+        print(session.execute(query).all())
+        return session.execute(query).all()
+
+
 
 
     
@@ -99,14 +122,11 @@ class TeacherSubjectService :
         session.commit()
 
 class TeacherValorationService :
-    def get_teacher_valoration_average(self, session: Session, teacher_id: str)  :
-        value = select(func.sum(TeacherNoteTable.grade)).where(TeacherNoteTable.teacher_id == teacher_id)
-        valoration_sum = session.execute(value).scalars().first()
-        if valoration_sum is None :
-            return None
-        rows = select(func.count(TeacherNoteTable.grade)).where(TeacherNoteTable.teacher_id == teacher_id)
-        total_valorations = session.execute(rows).scalars().first()
-        return valoration_sum / total_valorations
+    def update_note_average(self, session: Session, teacher_id: str, new_note : int ) : 
+        new_avergage = calculate_teacher_average(session=session, teacher_id=teacher_id, new_note=new_note)
+        query = update(TeacherTable).where(TeacherTable.id == teacher_id).values(average_valoration=new_avergage)
+        session.execute(query)
+        session.commit()
     
 class TeacherSubjectService :
     def get_teacher_subjects(self, session: Session, id:uuid.UUID ) -> list[str] :

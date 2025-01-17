@@ -5,6 +5,9 @@ from backend.application.services.mean_mainteniance import MeanMaintenanceCreate
 from backend.application.serializers.mean_mainteniance import MeanMaintenanceMapper
 from backend.configuration import get_db
 from backend.domain.filters.mean_mainteniance import MeanMaintenanceFilterSchema
+from typing import Annotated
+from fastapi import Query
+from fastapi.encoders import jsonable_encoder
 
 router = APIRouter()
 
@@ -32,22 +35,32 @@ async def create_mean_maintenance(
 )
 async def read_mean_maintenance(
     filters: MeanMaintenanceFilterSchema = Depends(),
-    session: Session = Depends(get_db)
+    session: Session = Depends(get_db),
+    mainteniance_by_classroom_filter : Annotated[
+        bool,
+        Query(
+            description="Indicates if the user wants to access the maintenance by classroom filter",
+        ),
+    ] = False  
 ) :
     mean_maintenance_pagination_service = MeanMaintenancePaginationService()
     mapper = MeanMaintenanceMapper()
 
-    mean_maintenances = mean_maintenance_pagination_service.get_mean_maintenance(session=session, filter_params=filters)
+    if mainteniance_by_classroom_filter :
+        mainteniance_by_classroom = mean_maintenance_pagination_service.get_mainenance_by_classroom(session=session)
+        mean_maintenances_mapped = jsonable_encoder(mainteniance_by_classroom)
+    else :
+        mean_maintenances = mean_maintenance_pagination_service.get_mean_maintenance(session=session, filter_params=filters)
 
-    if not mean_maintenances :
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="There is no mean_maintenance with that fields"
-        )
-
-    mean_maintenances_mapped = {}    
+        if not mean_maintenances :
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="There is no mean_maintenance with that fields"
+            )
+    
+        mean_maintenances_mapped = {}    
      
-    for i, mean_maintenance in enumerate(mean_maintenances) :
-        mean_maintenances_mapped[i] = mapper.to_api(mean_maintenance)
+        for i, mean_maintenance in enumerate(mean_maintenances) :
+            mean_maintenances_mapped[i] = mapper.to_api(mean_maintenance)
         
     return mean_maintenances_mapped

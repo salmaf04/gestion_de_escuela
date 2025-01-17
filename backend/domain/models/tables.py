@@ -86,6 +86,7 @@ class TeacherTable(UserTable):
     specialty = Column(String)
     contract_type = Column(String)
     experience = Column(Integer)
+    average_valoration = Column(Double)
     """
     students: Mapped[List["Student"]] = relationship(
         secondary=f"{TableName.STUDENT.value}", back_populates="teacher", viewonly=True
@@ -142,6 +143,7 @@ class StudentTable(UserTable) :
     name = Column(String)
     age = Column(Integer)
     extra_activities = Column(Boolean, nullable=True)
+    average_note = Column(Double)
     """
     teacher: Mapped["Teacher"] = relationship(
         secondary=f"{TableName.TEACHER.value}", back_populates="students", viewonly=True
@@ -156,7 +158,7 @@ class StudentTable(UserTable) :
         secondary=f"{TableName.COURSE.value}", back_populates="students"
     )
     """
-    student_note_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="student")
+    student_note_association: Mapped[List["StudentNoteTable"]] = relationship('StudentNoteTable', back_populates="student")
     student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="student")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="student")
 
@@ -171,6 +173,9 @@ class SubjectTable(BaseTable) :
     name = Column(String)
     hourly_load  = Column(Integer)
     study_program = Column(Integer)
+
+    classroom_id : Mapped[int] = mapped_column(ForeignKey(f"{TableName.CLASSROOM.value}.entity_id"))
+
     """
     teacher: Mapped["Teacher"] = relationship(
         secondary=f"{TableName.TEACHER.value}", back_populates="subjects", viewonly=True
@@ -185,6 +190,9 @@ class SubjectTable(BaseTable) :
         secondary=f"{TableName.COURSE.value}", back_populates="subjects"
     )
     """
+    
+    classroom: Mapped["ClassroomTable"] = relationship(back_populates="subjects")
+
     student_teacher_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="subject")
     student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="subject")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="subject")
@@ -195,6 +203,9 @@ class ClassroomTable(BaseTable) :
 
     location = Column(String)
     capacity = Column(Integer)
+
+    technological_means: Mapped[List["TechnologicalMeanTable"]] = relationship(back_populates="classroom")
+    subjects : Mapped[List["SubjectTable"]] = relationship(back_populates="classroom")
 
 
 class CourseTable(BaseTable) :
@@ -234,9 +245,12 @@ class TechnologicalMeanTable(MeanTable) :
     __tablename__ = TableName.TECHNOLOGICAL_MEAN.value  
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.MEAN.value}.entity_id"), primary_key=True)
+    classroom_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.CLASSROOM.value}.entity_id"))
+
+    classroom: Mapped["ClassroomTable"] = relationship(back_populates="technological_means")
 
     __mapper_args__ = {
-        "polymorphic_identity": "technological mean",
+        "polymorphic_identity": "technological_mean",
     }
 
 

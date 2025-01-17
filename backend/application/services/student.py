@@ -4,7 +4,9 @@ from backend.domain.filters.student import StudentFilterSet , StudentFilterSchem
 from backend.domain.schemas.student import StudentCreateModel, StudentModel
 from backend.domain.models.tables import StudentTable
 from ..utils.auth import get_password_hash
+from ..utils.note_average import  calculate_student_average
 import uuid
+
 
 
 class StudentCreateService :
@@ -56,3 +58,11 @@ class StudentPaginationService :
         filter_set = StudentFilterSet(session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
         return session.execute(query).scalars().all()
+    
+
+class UpdateNoteAverageService : 
+    def update_note_average(self, session: Session, student_id: str, new_note : int ) : 
+        new_avergage = calculate_student_average(session=session, student_id=student_id, new_note=new_note)
+        query = update(StudentTable).where(StudentTable.id == student_id).values(average_note=new_avergage)
+        session.execute(query)
+        session.commit()

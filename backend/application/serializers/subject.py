@@ -8,6 +8,7 @@ class SubjectMapper :
             id = subject.entity_id,
             name= subject.name,
             hourly_load= subject.hourly_load,
-            study_program= subject.study_program
+            study_program= subject.study_program,
+            classroom_id= subject.classroom_id
         )
         

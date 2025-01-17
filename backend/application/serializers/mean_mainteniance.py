@@ -1,5 +1,19 @@
 from backend.domain.schemas.mean_mainteniance import MeanMaintenanceModel
 from backend.domain.models.tables import MeanMaintenianceTable
+from pydantic import BaseModel
+
+class MaintenanceByType(BaseModel):
+    type: str
+    count: int
+
+
+class ClassroomMaintenance(BaseModel):
+    list: list[MaintenanceByType]
+
+
+class MeanMaintenanceByClassroom(BaseModel):
+    classrooms : list[ClassroomMaintenance]
+    
 
 class MeanMaintenanceMapper :
 
@@ -10,3 +24,5 @@ class MeanMaintenanceMapper :
             date = mean_maintenance.date.date.strftime("%Y-%m-%d"),
             cost = mean_maintenance.cost
         )
+    
+ 
