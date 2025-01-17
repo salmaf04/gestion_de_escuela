@@ -27,6 +27,26 @@ export function postProfesor(profesor: ProfesorCreateAdapter) {
     })
 }
 
+export function patchProfesor(id: string, profesor: ProfesorCreateAdapter) {
+    const profesorDB: ProfesorCreateDB = {
+        name: profesor.name,
+        fullname: profesor.lastname,
+        email: profesor.email,
+        specialty: profesor.specialty,
+        contract_type: profesor.contractType,
+        experience: profesor.experience,
+        username: profesor.username,
+        list_of_subjects: profesor.asignaturas
+    }
+    return fetch(`http://localhost:8000/teacher/${id}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(profesorDB),
+    });
+}
 export async function getProfesores(): Promise<ProfesorGetResponse> {
     return await fetch('http://localhost:8000/teacher/', {
             headers: {

@@ -1,11 +1,12 @@
 import {useState} from "react";
 import LoadingIcon from "../../assets/loading.svg"
 import {ProfesorCreateAdapter} from "../adapters/ProfesorCreateAdapter.ts";
+import {ProfesorGetAdapter} from "../adapters/ProfesorGetAdapter.ts";
 
 interface Props {
     onCancel: () => void
-    onAccept: (formData: ProfesorCreateAdapter) => void
-    formDataEdit?: ProfesorCreateAdapter
+    onAccept: (formData: ProfesorGetAdapter) => void
+    formDataEdit?: ProfesorGetAdapter
     isLoading: boolean
     className?: string
 }

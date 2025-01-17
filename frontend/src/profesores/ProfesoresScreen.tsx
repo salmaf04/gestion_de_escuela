@@ -3,7 +3,7 @@ import SearchInput from "../components/SearchInput.tsx";
 import AddButton from "../components/AddButton.tsx";
 import Table from "../components/Table.tsx";
 import AddProfesorForm from "./components/AddProfesorForm.tsx";
-import {deleteProfesor, getProfesores, postProfesor} from "./api/requests.ts";
+import {deleteProfesor, getProfesores, postProfesor , patchProfesor} from "./api/requests.ts";
 import Alert from "../components/Alert.tsx";
 import Spinner from "../components/Spinner.tsx";
 import {ProfesorGetAdapter} from "./adapters/ProfesorGetAdapter.ts";
@@ -74,9 +74,17 @@ export default function ProfesoresScreen() {
             />}
             {editing && <AddProfesorForm
                 isLoading={isLoading}
-                onAccept={(formData) => {
-                    //todo PUT request Profesor
-                    setEditing(null)
+                onAccept={(formData : ProfesorGetAdapter) => {
+                    patchProfesor(formData.id, formData).then(res => {
+                        if (res.ok) {
+                            setDataTable(dataTable.map((item) => item.id === formData.id ? formData : item));
+                        } else {
+                            setError(res.statusText);
+                        }
+                    }).finally(() => {
+                        setEditing(null);
+                        setisLoading(false);
+                    });
                 }}
                 formDataEdit={editing}
                 onCancel={() => setEditing(null)}
