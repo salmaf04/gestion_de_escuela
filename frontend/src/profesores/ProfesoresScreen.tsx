@@ -14,11 +14,11 @@ export default function ProfesoresScreen() {
     const [dataTable, setDataTable] = useState<ProfesorGetAdapter[]>([]);
     const [dataTableShow, setDataTableShow] = useState<ProfesorGetAdapter[]>(dataTable);
     const [isTableLoading, setIsTableLoading] = useState(false)
-    useEffect(() => {
+   /* useEffect(() => {
         setDataTableShow(dataTable)
     }, [dataTable]);
     //
-    useEffect(() => {
+   /* useEffect(() => {
         if (searchText){
             setDataTableShow(
                 [...dataTable].filter((row) => {
@@ -29,12 +29,11 @@ export default function ProfesoresScreen() {
         } else {
             setDataTableShow(dataTable)
         }
-    }, [searchText]);
+    }, [searchText]);*/
     useEffect(() => {
         setIsTableLoading(true)
         getProfesores().then(res => {
             setDataTable(getProfesorFromResponse(res))
-            console.log(res)
         }).catch((e) => {
             setError(e)
         }).finally(()=> setIsTableLoading(false))/*
@@ -92,7 +91,7 @@ export default function ProfesoresScreen() {
             {
                 isTableLoading && <Spinner />
             }
-            <Table className={'h-5/6'} Data={dataTableShow} header={ProfesorGetAdapter.Properties.slice(1)}
+           { <Table className={'h-5/6'} Data={dataTable} header={ProfesorGetAdapter.Properties.slice(1)}
                    onRemoveRow={(index) => {
                        deleteProfesor(index).then(res => {
                            if (res.ok) {
@@ -109,7 +108,7 @@ export default function ProfesoresScreen() {
                            dataTable.find((item) => item.id === index) || null
                        )
                    }}
-            />
+            />}
         </div>
     )
 }

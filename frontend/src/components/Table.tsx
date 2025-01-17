@@ -9,7 +9,9 @@ interface Props {
 }
 
 export default function Table({header, className, Data, onRemoveRow, onEditRow}: Props) {
+
     return (
+
         <div className={` flex flex-col text-indigo-950 ${className}`}>
             <div className={'flex justify-around me-2 text-sm mb-1'}>
                 {header.map((item, index) => {
@@ -34,7 +36,7 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow}:
                         <div key={row.id} onClick={() => onEditRow(row.id)}
                              className={'flex w-full py-2 items-center hover:bg-indigo-100 cursor-pointer'}>
                             {Object.values(row).slice(1).map((item, index) => {
-                                return <div key={index} className={`w-full text-center py-1`}>{item.toString().substring(0, 15)+ (item.toString().length > 15? '...':'')}</div>
+                                return <div key={index} className={`w-full text-center py-1`}>{item}</div>
                             })}
                             <div className={'w-full flex justify-center'}>
                                 <div
