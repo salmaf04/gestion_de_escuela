@@ -17,6 +17,7 @@ export default function ProfesoresScreen() {
     useEffect(() => {
         setDataTableShow(dataTable)
     }, [dataTable]);
+    //
     useEffect(() => {
         if (searchText){
             setDataTableShow(
