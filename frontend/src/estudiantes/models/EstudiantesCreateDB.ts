@@ -1,5 +1,4 @@
 export type EstudiantesCreateDB = {
-    "id" : string
     "name": "string",
     "age": number,
     "email": "string",

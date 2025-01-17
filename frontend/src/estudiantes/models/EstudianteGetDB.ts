@@ -1,5 +1,6 @@
 
 export type EstudianteGetDB = {
+    "id" : string
     "name": "string",
     "age": number,
     "email": "string",
