@@ -1,4 +1,3 @@
-import {ProfesorDB} from "../../profesores/models/ProfesorGetDB.ts";
 
 export type EstudianteGetDB = {
     "name": "string",
