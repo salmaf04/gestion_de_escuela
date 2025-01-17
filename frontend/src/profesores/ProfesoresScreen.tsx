@@ -8,12 +8,9 @@ import Alert from "../components/Alert.tsx";
 import Spinner from "../components/Spinner.tsx";
 import {ProfesorGetAdapter} from "./adapters/ProfesorGetAdapter.ts";
 import {getProfesorFromResponse} from "./utils/utils.ts";
-import {DBObject} from "../types.ts";
 
-interface ScreenProps
-    {
-        GetAdapter : DBObject
-    }
+
+
 
 export default function ProfesoresScreen() {
     const [searchText, setSearchText] = useState('');
