@@ -6,7 +6,7 @@ import {ProfesorGetAdapter} from "../adapters/ProfesorGetAdapter.ts";
 interface Props {
     onCancel: () => void
     onAccept: (formData: ProfesorGetAdapter) => void
-    formDataEdit?: ProfesorGetAdapter
+    formDataEdit?: ProfesorCreateAdapter
     isLoading: boolean
     className?: string
 }
