@@ -8,6 +8,7 @@ export const useCreateProfesor = () => {
     const [newProfesor, setNewProfesor] = useState<ProfesorCreateAdapter>()
 
     const createProfesor = async (profesor: ProfesorCreateAdapter, onError: (error: Error) => void) => {
+
         setIsLoading(true)
         const res = await profesorApi.postProfesor(profesor)
         if (res.ok) {

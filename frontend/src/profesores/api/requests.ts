@@ -3,6 +3,7 @@ import {ProfesorCreateDB} from "../models/ProfesorCreateDB.ts";
 
 
 function postProfesor(profesor: ProfesorCreateAdapter) {
+
     const profesorDB: ProfesorCreateDB = {
         name: profesor.name,
         fullname: profesor.lastname,
@@ -11,8 +12,11 @@ function postProfesor(profesor: ProfesorCreateAdapter) {
         contract_type: profesor.contractType,
         experience: profesor.experience,
         username: profesor.username,
-        list_of_subjects: profesor.asignaturas
+        //TODO Agregar las asignaturas
+        list_of_subjects: ['asdsad']
     }
+
+    console.log(profesorDB)
     return fetch('http://localhost:8000/teacher/', {
         method: 'POST',
         headers: {
