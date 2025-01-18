@@ -1,5 +1,5 @@
 import {DBObject} from "../types.ts";
-import MySpinner from "../profesores/components/MySpinner.tsx";
+import MySpinner from "../ui/MySpinner.tsx";
 import {useEffect} from "react";
 
 interface Props {

@@ -1,68 +1,90 @@
-import {useState} from "react";
-import {Estudiante} from "../../types.ts";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { EstudianteCreateAdapter } from "../adapters/EstudianteCreateAdapter.ts";
+import { useContext, useEffect, useState } from "react";
+import { EstudianteContext } from "../EstudiantesScreen.tsx";
+import MySpinner from "./MySpinner.tsx";
 
-interface Props {
-    onCancel: () => void
-    onAccept: (formData: Estudiante) => void
-    formDataEdit?: Estudiante
-}
+export default function AddEstudianteForm() {
+    const { register, handleSubmit } = useForm<EstudianteCreateAdapter>();
+    const { editting, isEditting, isCreatting, onEditTableItem, onAddTableItem, setEditting, setShowModal } = useContext(EstudianteContext);
 
-export default function AddEstudianteForm({onCancel, onAccept, formDataEdit}: Props) {
-    const [formData, setFormData] = useState(formDataEdit || {
-        Id : '',
-        Nombre: '',
-        Edad: '',
-        ActividadesExtras: false
-    });
+    const [isLoading, setIsLoading] = useState<boolean>(isEditting! || isCreatting!);
+
+    useEffect(() => {
+        setIsLoading(isEditting! || isCreatting!);
+    }, [isEditting, isCreatting]);
+
+    const onSubmit: SubmitHandler<EstudianteCreateAdapter> = (data) => {
+        if (editting)
+            onEditTableItem!(data);
+        else
+            onAddTableItem!(data);
+    };
 
     return (
-        <div className="fixed z-40 inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white w-1/2 p-6 rounded-lg">
-                <h2 className="text-xl text-indigo-400 text-center font-bold mb-4">{`${formDataEdit ? 'Editar Registro' : 'Anadir Registro'}`}</h2>
-                <form className={'justify-around flex flex-row'}>
-                    <div>
-                        <div className="mb-4">
-                            <label className="block text-gray-700">Nombre</label>
-                            <input type="text" name="nombre" value={formData.Nombre} onChange={(e) => {
-                                setFormData({
-                                    ...formData,
-                                    Nombre: e.target.value
-                                });
-                            }}
-                                   className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50"}/>
+        <div className={` fixed  z-20 inset-0 bg-black bg-opacity-50 flex justify-center items-center`}>
+            <div className="min-h-[30%] bg-white w-1/2  py-6 px-8 rounded-lg">
+                <h2 className="text-2xl text-indigo-600 text-center font-bold group mb-4">{`${editting ? 'Editar Registro' : 'Añadir Registro'}`}</h2>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className={'grid grid-cols-2 gap-y-1 gap-x-10'}>
+                        <div className="group mb-4">
+                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Nombre</label>
+                            <input
+                                type="text"
+                                {...register("nombre", {
+                                    required: "true"
+                                })}
+                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
+                                defaultValue={editting?.nombre}
+                            />
                         </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-700">Edad</label>
-                            <input type="text" name="edad" value={formData.Edad} onChange={(e) => {
-                                setFormData({
-                                    ...formData,
-                                    Edad: e.target.value
-                                });
-                            }}
-                                   className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50"}/>
+                        <div className="group mb-4">
+                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Edad</label>
+                            <input
+                                type="number" {...register("edad", {
+                                required: true
+                            })}
+                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
+                                defaultValue={editting?.edad}
+                            />
                         </div>
-                        <div className="mb-4 flex flex-row">
-                            <label className="block text-gray-700">Actividades Extras</label>
-                            <input type="checkbox" name="actividadesExtras"  checked={formData.ActividadesExtras} onChange={(e) => {
-                                setFormData({
-                                    ...formData,
-                                    ActividadesExtras: e.target.checked
-                                });
-                            }}
-                                   className={"rounded-lg mx-4 p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50"}/>
+                        <div className="group mb-4">
+                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Correo</label>
+                            <input
+                                type="email" {...register("correo", {
+                                required: true
+                            })}
+                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
+                                defaultValue={editting?.correo}
+                            />
+                        </div>
+                        <div className="group mb-4">
+                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Actividades Extras</label>
+                            <input
+                                type="checkbox" {...register("actividadesExtras")}
+                                className={"rounded-lg mx-4 p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50"}
+                                defaultChecked={editting?.actividadesExtras}
+                            />
                         </div>
                     </div>
+
+                    <div className="flex space-x-3 justify-center">
+                        <button type="button" onClick={() => {
+                            setShowModal!(false);
+                            setEditting!(undefined);
+                        }}
+                                hidden={isLoading}
+                                className="hover:bg-gray-400 transition-colors w-full py-2 bg-gray-300 rounded-lg text-gray-900">Cancelar
+                        </button>
+                        <button type="submit"
+                                className={`${isLoading ? 'hover:bg-indigo-300 bg-indigo-300 cursor-default' : 'bg-indigo-500 hover:bg-indigo-600 '} transition-colors w-full flex justify-center py-2  text-indigo-50 rounded-lg`}>
+                            {isLoading ? <MySpinner className={'h-6 w-6'}/> : null}
+                            <p className={`${isLoading ? 'invisible' : 'visible'}`}>
+                                {editting ? 'Editar' : 'Guardar'}
+                            </p>
+                        </button>
+                    </div>
                 </form>
-                <div className="flex justify-end">
-                    <button type="button" onClick={onCancel}
-                            className="mr-4 px-4 py-2 bg-gray-300 rounded">Cancelar
-                    </button>
-                    <button onClick={() => {
-                        onAccept(formData)
-                    }} type="submit"
-                            className="px-4 py-2 bg-indigo-500 text-white rounded">{formDataEdit ? 'Editar' : 'Guardar'}
-                    </button>
-                </div>
             </div>
         </div>
     );
