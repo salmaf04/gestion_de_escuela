@@ -49,7 +49,7 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow, 
                                          className={'flex w-full py-2 items-center hover:bg-indigo-100 cursor-pointer'}>
                                         {Object.values(row).slice(1).map((item, index) => {
                                             return <div key={index}
-                                                        className={`w-full text-center py-1`}>{item.toString().substring(0, 15) + (item.toString().length > 15 ? '...' : '')}</div>
+                                                        className={`w-full text-center py-1`}>{item}</div>
                                         })}
                                         <div className={'w-full flex justify-center'}>
                                             <div

@@ -8,6 +8,7 @@ import {AppContext} from "../App.tsx";
 import AddProfesorForm from "./components/AddProfesorForm.tsx";
 import {useEditProfesor} from "./hooks/useEditProfesor.ts";
 import {useCreateProfesor} from "./hooks/useCreateProfesor.ts";
+import {useDeleteProfesor} from "./hooks/useDeleteProfesor.ts";
 
 interface IProfesorContext {
     searchText?: string;
@@ -51,12 +52,17 @@ export default function ProfesoresScreen() {
         getProfesores,
     } = useGetProfesores(setError!)
 
+    const {
+       deleteProfesor,
+        deletedProfesorId,
+    } = useDeleteProfesor()
+
     useEffect(() => {
         getProfesores()
-    }, [editedProfesor, newProfesor]);
+    }, [editedProfesor, newProfesor , deletedProfesorId]);
 
-    const onDeleteTableItem = (index: string) => {
-        //todo DELETE request Profesor
+    const onDeleteTableItem = (deletedProfesorId : string ) => {
+        deleteProfesor(deletedProfesorId , setError! )
     }
 
     const onEditTableItem = (profesorEdit: ProfesorCreateAdapter) => {
