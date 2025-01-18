@@ -294,11 +294,13 @@ class StudentNoteTable(BaseTable) :
     student_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.STUDENT.value}.id"), primary_key=True)
     subject_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.SUBJECT.value}.entity_id"), primary_key=True)
     
-    note_value = Column(Integer)
+    last_modified_by: Mapped[int] = mapped_column(ForeignKey(f"{TableName.USER.value}.entity_id"), nullable=False)
+
+    note_value = Column(Integer)    
     
-    teacher: Mapped["TeacherTable"] = relationship(back_populates="student_note_association")
-    student: Mapped["StudentTable"] = relationship(back_populates="student_note_association")
-    subject: Mapped["SubjectTable"] = relationship(back_populates="student_teacher_association")
+    teacher: Mapped["TeacherTable"] = relationship(back_populates="student_note_association", foreign_keys=[teacher_id])
+    student: Mapped["StudentTable"] = relationship(back_populates="student_note_association", foreign_keys=[student_id])
+    subject: Mapped["SubjectTable"] = relationship(back_populates="student_teacher_association", foreign_keys=[subject_id])
 
 
 class TeacherNoteTable(BaseTable) :

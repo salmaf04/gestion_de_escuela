@@ -5,15 +5,15 @@ from backend.application.services.student import StudentPaginationService
 from backend.application.services.subject import SubjectPaginationService
 from backend.application.services.teacher import TeacherPaginationService
 from backend.domain.filters.note import NoteFilterSet , NoteFilterSchema
-from sqlalchemy import select, func
+from sqlalchemy import select, func, update
 from backend.application.services.student import UpdateNoteAverageService
 class NoteCreateService :
-    def create_note(self, session: Session, note: NoteCreateModel) -> StudentNoteTable :
+    def create_note(self, session: Session, note: NoteCreateModel, modified_by : str) -> StudentNoteTable :
         update_note_average_service = UpdateNoteAverageService()
         update_note_average_service.update_note_average(session=session, student_id=note.student_id, new_note=note.note_value)
 
         note_dict = note.model_dump()
-        new_note = StudentNoteTable(**note_dict)
+        new_note = StudentNoteTable(**note_dict, last_modified_by = modified_by)
         
         student = StudentPaginationService().get_student_by_id(session=session, id=note.student_id)
         subject = SubjectPaginationService().get_subject_by_id(session=session, id=note.subject_id)
@@ -31,7 +31,14 @@ class NoteCreateService :
         session.commit()
         return new_note
     
+
+
+    
 class NotePaginationService :
+    def get_note_by_id(self, session: Session, id : str) -> StudentNoteTable :
+        query = select(StudentNoteTable).where(StudentNoteTable.entity_id == id)
+        return session.execute(query).scalars().first()
+
     def get_note(self, session: Session, filter_params: NoteFilterSchema) -> list[StudentNoteTable] :
         query = select(StudentNoteTable)
         filter_set = NoteFilterSet(session, query=query)
@@ -41,7 +48,7 @@ class NotePaginationService :
     def grade_less_than_fifty(self, session: Session) :
         query = select(StudentNoteTable.student_id, StudentNoteTable.subject_id, (func.sum(StudentNoteTable.note_value)/func.count()).label('average_note'))
         query = query.group_by(StudentNoteTable.student_id, StudentNoteTable.subject_id)
-        query = query.having((func.sum(StudentNoteTable.note_value)/func.count()) < 12)
+        query = query.having((func.sum(StudentNoteTable.note_value)/func.count()) < 50)
 
         query = query.subquery()
 
@@ -72,5 +79,20 @@ class NotePaginationService :
         final_query = final_query.join(second_query, StudentTable.entity_id == second_query.c.student_id)
         final_query = final_query.group_by(StudentTable.name, second_query.c.student_id)
         """
+
+
+class NoteUpdateService() :
+    def update_note(self, session: Session, note_id : str , modified_by : str, new_note : float ) :
+        pagination_service = NotePaginationService()
+        update_statement = update(StudentNoteTable).where(StudentNoteTable.entity_id == note_id).values(note_value = new_note, last_modified_by = modified_by)
+        session.execute(update_statement)
+        session.commit()
+
+        return pagination_service.get_note_by_id(session=session, id=note_id)
+
+    
+
+
+
 
        
