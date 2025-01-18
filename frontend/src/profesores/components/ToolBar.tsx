@@ -10,14 +10,12 @@ export default function ToolBar() {
         setShowModal
     } = useContext(ProfesorContext)
     return (
-        <div className={'flex flex-col w-full h-1/6 justify-center'}>
-            <div className={'self-end w-2/3 my-4 flex items-center justify-between px-5'}>
+            <div className={'self-end w-2/3 my-4 h-1/6 flex items-center justify-between px-5'}>
                 {/*<ToggleButton/>*/}
                 <SearchInput focus={true} searchText={searchText!} setSearchText={(text: string) => {
                     setSearchText!(text)
                 }}/>
                 <AddButton onClick={() => setShowModal!(true)}/>
             </div>
-        </div>
     )
 }

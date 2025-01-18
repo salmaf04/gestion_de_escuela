@@ -6,30 +6,45 @@ import {useGetProfesores} from "./hooks/useGetProfesores.ts";
 import {ProfesorCreateAdapter} from "./adapters/ProfesorCreateAdapter.ts";
 import {AppContext} from "../App.tsx";
 import AddProfesorForm from "./components/AddProfesorForm.tsx";
+import {useEditProfesor} from "./hooks/useEditProfesor.ts";
+import {useCreateProfesor} from "./hooks/useCreateProfesor.ts";
 
-interface profesorContextInterface {
+interface IProfesorContext {
     searchText?: string;
     dataTable?: ProfesorGetAdapter[];
     editting?: ProfesorCreateAdapter;
     showModal?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEditting?: (profesor: ProfesorCreateAdapter) => void;
+    setEditting?: (profesor?: ProfesorCreateAdapter) => void;
     isGetLoading?: boolean;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
     onEditTableItem?: (profesorEdit: ProfesorCreateAdapter) => void;
     onAddTableItem?: (profesorEdit: ProfesorCreateAdapter) => void;
+    isEditting?: boolean;
+    isCreatting?: boolean;
 }
 
-export const ProfesorContext = createContext<profesorContextInterface>(
+export const ProfesorContext = createContext<IProfesorContext>(
     {}
 );
 
 export default function ProfesoresScreen() {
     const [searchText, setSearchText] = useState('');
     const [editting, setEditting] = useState<ProfesorCreateAdapter | undefined>()
-    const [showModal, setShowModal] = useState(true)
+    const [showModal, setShowModal] = useState(false)
     const {setError} = useContext(AppContext)
+    const {
+        editedProfesor,
+        isLoading: isEditting,
+        editProfesor
+    } = useEditProfesor()
+    const {
+        newProfesor,
+        isLoading: isCreatting,
+        createProfesor
+    } = useCreateProfesor()
+
     const {
         isGetLoading,
         profesores,
@@ -38,18 +53,19 @@ export default function ProfesoresScreen() {
 
     useEffect(() => {
         getProfesores()
-    }, []);
+    }, [editedProfesor, newProfesor]);
 
     const onDeleteTableItem = (index: string) => {
         //todo DELETE request Profesor
     }
 
     const onEditTableItem = (profesorEdit: ProfesorCreateAdapter) => {
-        //todo PUT request Profesor
+        editProfesor(profesorEdit, setError!)
+
     }
 
     const onAddTableItem = (profesor: ProfesorCreateAdapter) => {
-        //todo Add request Profesor
+        createProfesor(profesor, setError!)
     }
     return (
         <ProfesorContext.Provider value={{
@@ -63,56 +79,18 @@ export default function ProfesoresScreen() {
             setSearchText: setSearchText,
             onDeleteTableItem: onDeleteTableItem,
             onEditTableItem: onEditTableItem,
-            onAddTableItem: onAddTableItem
+            onAddTableItem: onAddTableItem,
+            isEditting: isEditting,
+            isCreatting: isCreatting
         }
         }>
-            <div className={'w-full h-dvh'}>
+            <div className={'w-full h-dvh flex flex-col'}>
                 <ToolBar/>
                 <Body />
-                {showModal &&
+                {(showModal || editting) &&
                     <AddProfesorForm />
                 }
             </div>
-
-            {/*{isAdding && <AddProfesorForm
-                    onAccept={(formData) => {
-                        setisLoading(true)
-                        postProfesor(formData).then(res => {
-                            if (res.ok) {
-                                res.json().then((data: ProfesorGetAdapter) => {
-                                    setDataTable([...dataTable, data])
-                                    setIsAdding(false)
-                                })
-                            } else {
-                                setError(res.statusText)
-                            }
-                        }).finally(() => {
-                            setisLoading(false)
-                        })
-
-
-                    }}
-                    isLoading={isLoading}
-                    onCancel={() => setIsAdding(false)}
-                />}
-
-                {isEditing && <AddProfesorForm
-                    isLoading={isLoading}
-                    onAccept={(formData) => {
-                        //todo PUT request Profesor
-                        setIsEditing(null)
-                    }}
-                    formDataEdit={isEditing}
-                    onCancel={() => setIsEditing(null)}
-                    <div className={"mx-4 w-11/12 h-dvh flex flex-col"}>
-
-
-                {
-                    isTableLoading && <Spinner/>
-                }
-
-            </div>
-                />}*/}
         </ProfesorContext.Provider>
     )
 }
