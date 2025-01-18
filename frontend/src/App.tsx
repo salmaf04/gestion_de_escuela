@@ -9,7 +9,7 @@ import AsignaturasScreen from "./asignaturas/AsignaturasScreen.tsx";
 import MediosScreen from "./medios/MediosScreen.tsx";
 import MantenimientosScreen from "./mantenimientos/MantenimientosScreen.tsx";
 import AulasScreen from "./aulas/AulasScreen.tsx";
-import Alert from "./components/Alert.tsx";
+import Notification from "./components/Notification.tsx";
 
 
 interface AppContextInterface {
@@ -38,7 +38,7 @@ function App() {
                     (
                         <div className={'h-dvh bg-indigo-50 flex'}>
                             {error &&
-                                <Alert title={'Error:'} message={error.message} className={'bg-red-200'} onClick={() => {
+                                <Notification title={'Error:'} message={error.message} className={'bg-red-200'} onClick={() => {
                                     setError(undefined)
                                 }}/>
                             }

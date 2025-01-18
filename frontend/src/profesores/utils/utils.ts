@@ -1,4 +1,4 @@
-import {ProfesorGetResponse} from "../models/ProfesorGetDB.ts";
+import { ProfesorGetResponse} from "../models/ProfesorGetDB.ts";
 import {ProfesorGetAdapter} from "../adapters/ProfesorGetAdapter.ts";
 
 export function getProfesorFromResponse(profesorResponse: ProfesorGetResponse) {

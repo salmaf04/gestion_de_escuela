@@ -1,6 +1,7 @@
 import {ProfesorCreateAdapter} from "../adapters/ProfesorCreateAdapter.ts";
 import {ProfesorCreateDB} from "../models/ProfesorCreateDB.ts";
 
+
 function postProfesor(profesor: ProfesorCreateAdapter) {
     const profesorDB: ProfesorCreateDB = {
         name: profesor.name,
@@ -33,6 +34,31 @@ function getProfesores() {
     })
 }
 
+function putProfesor(profesor: ProfesorCreateAdapter) {
+    const profesorDB: ProfesorCreateDB = {
+        name: profesor.name,
+        fullname: profesor.lastname,
+        email: profesor.email,
+        specialty: profesor.specialty,
+        contract_type: profesor.contractType,
+        experience: profesor.experience,
+        username: profesor.username,
+        list_of_subjects: profesor.asignaturas
+    }
+    //todo revisar metodo
+    return fetch('http://localhost:8000/teacher/', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({
+            ...profesorDB,
+            "password": profesorDB.username
+        }),
+    })
+}
+
 function deleteProfesor(id: string) {
     return fetch(`http://localhost:8000/teacher/${id}`, {
         method: 'DELETE',
@@ -42,4 +68,4 @@ function deleteProfesor(id: string) {
     })
 }
 
-export default {postProfesor, getProfesores, deleteProfesor}
+export default {postProfesor, getProfesores, putProfesor, deleteProfesor}

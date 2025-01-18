@@ -5,13 +5,14 @@ import Body from "./components/Body.tsx";
 import {useGetProfesores} from "./hooks/useGetProfesores.ts";
 import {ProfesorCreateAdapter} from "./adapters/ProfesorCreateAdapter.ts";
 import {AppContext} from "../App.tsx";
+import AddProfesorForm from "./components/AddProfesorForm.tsx";
 
-interface profesorContextInterface{
+interface profesorContextInterface {
     searchText?: string;
     dataTable?: ProfesorGetAdapter[];
     editting?: ProfesorCreateAdapter;
-    isAdding?: boolean;
-    setIsAdding?: (text: boolean) => void;
+    showModal?: boolean;
+    setShowModal?: (text: boolean) => void;
     setEditting?: (profesor: ProfesorCreateAdapter) => void;
     isGetLoading?: boolean;
     setSearchText?: (text: string) => void;
@@ -27,7 +28,7 @@ export const ProfesorContext = createContext<profesorContextInterface>(
 export default function ProfesoresScreen() {
     const [searchText, setSearchText] = useState('');
     const [editting, setEditting] = useState<ProfesorCreateAdapter | undefined>()
-    const [isAdding, setIsAdding] = useState(false)
+    const [showModal, setShowModal] = useState(true)
     const {setError} = useContext(AppContext)
     const {
         isGetLoading,
@@ -51,28 +52,29 @@ export default function ProfesoresScreen() {
         //todo Add request Profesor
     }
     return (
-        <>
-            <ProfesorContext.Provider value={{
-                isGetLoading: isGetLoading,
-                dataTable: profesores,
-                searchText: searchText,
-                editting: editting,
-                isAdding: isAdding,
-                setIsAdding: setIsAdding,
-                setEditting: setEditting,
-                setSearchText: setSearchText,
-                onDeleteTableItem: onDeleteTableItem,
-                onEditTableItem: onEditTableItem,
-                onAddTableItem: onAddTableItem
-            }
-            }>
-                <ToolBar />
+        <ProfesorContext.Provider value={{
+            isGetLoading: isGetLoading,
+            dataTable: profesores,
+            searchText: searchText,
+            editting: editting,
+            showModal: showModal,
+            setShowModal: setShowModal,
+            setEditting: setEditting,
+            setSearchText: setSearchText,
+            onDeleteTableItem: onDeleteTableItem,
+            onEditTableItem: onEditTableItem,
+            onAddTableItem: onAddTableItem
+        }
+        }>
+            <div className={'w-full h-dvh'}>
+                <ToolBar/>
                 <Body />
-                {/*getError &&
-                    */
+                {showModal &&
+                    <AddProfesorForm />
                 }
+            </div>
 
-                {/*{isAdding && <AddProfesorForm
+            {/*{isAdding && <AddProfesorForm
                     onAccept={(formData) => {
                         setisLoading(true)
                         postProfesor(formData).then(res => {
@@ -111,9 +113,6 @@ export default function ProfesoresScreen() {
 
             </div>
                 />}*/}
-            </ProfesorContext.Provider>
-
-        </>
-
+        </ProfesorContext.Provider>
     )
 }

@@ -5,7 +5,7 @@ interface Props {
     onClick: () => void
 }
 
-export default function Alert({title, message, className, onClick}: Props) {
+export default function Notification({title, message, className, onClick}: Props) {
     return (
         <div id={'alert'} className={'fixed z-30 flex inset-0 justify-center p-4 text-white transition-all'} onClick={
             ()=>{onClick()}
