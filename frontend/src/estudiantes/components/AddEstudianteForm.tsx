@@ -93,7 +93,6 @@ export default function AddEstudianteForm() {
                                 defaultValue={editting?.password}
                             />
                         </div>
-
             </div>
 
             <div className="flex space-x-3 justify-center">
