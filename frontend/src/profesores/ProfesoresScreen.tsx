@@ -2,7 +2,7 @@ import {createContext, useEffect, useState} from "react";
 import {ProfesorGetAdapter} from "./adapters/ProfesorGetAdapter.ts";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
-import {useGetProfesores} from "./api/useGetProfesores.ts";
+import {useGetProfesores} from "./hooks/useGetProfesores.ts";
 import {ProfesorCreateAdapter} from "./adapters/ProfesorCreateAdapter.ts";
 
 interface profesorContextProps{

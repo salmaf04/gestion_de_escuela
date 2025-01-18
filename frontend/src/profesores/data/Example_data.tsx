@@ -1,6 +1,6 @@
-import {ProfesorGet} from "../models/ProfesorGetDB.ts";
+import {ProfesorDB} from "../models/ProfesorGetDB.ts";
 
-export const dataExample: ProfesorGet[] =
+export const dataExample: ProfesorDB[] =
     [
         {
             id: "1",

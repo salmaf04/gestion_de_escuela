@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {ProfesorGetAdapter} from "../adapters/ProfesorGetAdapter.ts";
 import {ProfesorDB, ProfesorGetResponse} from "../models/ProfesorGetDB.ts";
-import profesorApi from "./requests.ts";
+import profesorApi from "../api/requests.ts";
 
 export const useGetProfesores = () => {
     const [isGetLoading, setIsGetLoading] = useState(false)
