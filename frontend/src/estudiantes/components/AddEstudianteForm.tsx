@@ -2,7 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { EstudianteCreateAdapter } from "../adapters/EstudianteCreateAdapter.ts";
 import { useContext, useEffect, useState } from "react";
 import { EstudianteContext } from "../EstudiantesScreen.tsx";
-import MySpinner from "./MySpinner.tsx";
+import MySpinner from "../../ui/MySpinner.tsx";
 
 export default function AddEstudianteForm() {
     const { register, handleSubmit } = useForm<EstudianteCreateAdapter>();
@@ -28,64 +28,93 @@ export default function AddEstudianteForm() {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className={'grid grid-cols-2 gap-y-1 gap-x-10'}>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Nombre</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Nombre</label>
                             <input
                                 type="text"
-                                {...register("nombre", {
+                                {...register("name", {
                                     required: "true"
                                 })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.nombre}
+                                defaultValue={editting?.name}
                             />
                         </div>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Edad</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Edad</label>
                             <input
-                                type="number" {...register("edad", {
+                                type="number" {...register("age", {
                                 required: true
                             })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.edad}
+                                defaultValue={editting?.age}
                             />
                         </div>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Correo</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Correo</label>
                             <input
-                                type="email" {...register("correo", {
+                                type="email" {...register("email", {
                                 required: true
                             })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.correo}
+                                defaultValue={editting?.email}
                             />
                         </div>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Actividades Extras</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Actividades
+                                Extras</label>
                             <input
-                                type="checkbox" {...register("actividadesExtras")}
+                                type="checkbox" {...register("extraActivities")}
                                 className={"rounded-lg mx-4 p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50"}
-                                defaultChecked={editting?.actividadesExtras}
+                                defaultChecked={editting?.extraActivities}
                             />
                         </div>
-                    </div>
+                        <div className="group mb-4">
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Usuario</label>
+                            <input
+                                type="text" {...register("username", {
+                                required: true
+                            })}
+                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
+                                defaultValue={editting?.username}
+                            />
+                        </div>
+                        <div className="group mb-4">
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Contraseña</label>
+                            <input
+                                type="password" {...register("password", {
+                                required: true
+                            })}
+                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
+                                defaultValue={editting?.password}
+                            />
+                        </div>
 
-                    <div className="flex space-x-3 justify-center">
-                        <button type="button" onClick={() => {
-                            setShowModal!(false);
-                            setEditting!(undefined);
-                        }}
-                                hidden={isLoading}
-                                className="hover:bg-gray-400 transition-colors w-full py-2 bg-gray-300 rounded-lg text-gray-900">Cancelar
-                        </button>
-                        <button type="submit"
-                                className={`${isLoading ? 'hover:bg-indigo-300 bg-indigo-300 cursor-default' : 'bg-indigo-500 hover:bg-indigo-600 '} transition-colors w-full flex justify-center py-2  text-indigo-50 rounded-lg`}>
-                            {isLoading ? <MySpinner className={'h-6 w-6'}/> : null}
-                            <p className={`${isLoading ? 'invisible' : 'visible'}`}>
-                                {editting ? 'Editar' : 'Guardar'}
-                            </p>
-                        </button>
-                    </div>
-                </form>
             </div>
-        </div>
-    );
+
+            <div className="flex space-x-3 justify-center">
+                <button type="button" onClick={() => {
+                    setShowModal!(false);
+                    setEditting!(undefined);
+                }}
+                        hidden={isLoading}
+                        className="hover:bg-gray-400 transition-colors w-full py-2 bg-gray-300 rounded-lg text-gray-900">Cancelar
+                </button>
+                <button type="submit"
+                        className={`${isLoading ? 'hover:bg-indigo-300 bg-indigo-300 cursor-default' : 'bg-indigo-500 hover:bg-indigo-600 '} transition-colors w-full flex justify-center py-2  text-indigo-50 rounded-lg`}>
+                    {isLoading ? <MySpinner className={'h-6 w-6'}/> : null}
+                    <p className={`${isLoading ? 'invisible' : 'visible'}`}>
+                        {editting ? 'Editar' : 'Guardar'}
+                    </p>
+                </button>
+            </div>
+        </form>
+</div>
+</div>
+)
+    ;
 }

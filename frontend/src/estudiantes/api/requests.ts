@@ -12,6 +12,8 @@ function postEstudiante(estudiante: EstudianteCreateAdapter) {
         password: estudiante.password
     };
 
+    console.log(estudianteDB)
+
     return fetch('http://localhost:8000/student/', {
         method: 'POST',
         headers: {
