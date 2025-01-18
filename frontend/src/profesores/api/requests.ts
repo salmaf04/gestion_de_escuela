@@ -1,9 +1,7 @@
-
-import {ProfesorGetResponse} from "../models/ProfesorGetDB.ts";
 import {ProfesorCreateAdapter} from "../adapters/ProfesorCreateAdapter.ts";
 import {ProfesorCreateDB} from "../models/ProfesorCreateDB.ts";
 
-export function postProfesor(profesor: ProfesorCreateAdapter) {
+function postProfesor(profesor: ProfesorCreateAdapter) {
     const profesorDB: ProfesorCreateDB = {
         name: profesor.name,
         fullname: profesor.lastname,
@@ -27,16 +25,15 @@ export function postProfesor(profesor: ProfesorCreateAdapter) {
     })
 }
 
-export async function getProfesores(): Promise<ProfesorGetResponse> {
-    return await fetch('http://localhost:8000/teacher/', {
-            headers: {
-                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-            }
+function getProfesores() {
+    return fetch('http://localhost:8000/teacher/', {
+        headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         }
-        ).then(res => res.json() as Promise<ProfesorGetResponse>)
+    })
 }
 
-export function deleteProfesor(id: string) {
+function deleteProfesor(id: string) {
     return fetch(`http://localhost:8000/teacher/${id}`, {
         method: 'DELETE',
         headers: {
@@ -44,3 +41,5 @@ export function deleteProfesor(id: string) {
         }
     })
 }
+
+export default {postProfesor, getProfesores, deleteProfesor}
