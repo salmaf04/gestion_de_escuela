@@ -1,9 +1,9 @@
 export type EstudianteCreateDB =
     {
         name: string,
-        age: 0,
+        age: number,
         email: string,
-        extra_activities: true,
+        extra_activities: boolean,
         username: string,
         password: string
     }
