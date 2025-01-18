@@ -14,3 +14,4 @@ class NoteModel(BaseModel):
     subject : str
     id : uuid.UUID
     note_value : int
+    last_modified_by : uuid.UUID

@@ -38,6 +38,8 @@ class TableName(str, Enum):
     ABSENCE = "absence"
     CLASSROOM_REQUEST = "classroom_request"
     TEACHER_SUBJECT = "teacher_subject"
+    TEACHER_MEAN = 'teacher_request_mean'
+    TEACHER_CLASSROOM = 'teacher_request_classroom'
     SANCTION = "sanction_table"
     
 
@@ -64,6 +66,21 @@ teacher_subject_table = Table(
     Column("subject_id", ForeignKey("subject.entity_id"), primary_key=True),
 )
 
+
+teacher_request_classroom_table = Table(
+    TableName.TEACHER_CLASSROOM.value,
+    BaseTable.metadata,
+    Column("teacher_id", ForeignKey("teacher.id"), primary_key=True),
+    Column("classroom_id", ForeignKey("classroom.entity_id"), primary_key=True),
+)
+
+
+teacher_request_mean_table = Table(
+    TableName.TEACHER_MEAN.value,
+    BaseTable.metadata,
+    Column("teacher_id", ForeignKey("teacher.id"), primary_key=True),
+    Column("mean_id", ForeignKey("mean.entity_id"), primary_key=True),
+)
 
 class UserTable(BaseTable) :
     __tablename__ = TableName.USER.value
@@ -99,6 +116,18 @@ class TeacherTable(UserTable):
     """
     
     sanctions: Mapped[List["SanctionTable"]] = relationship(back_populates="teacher")
+
+    mean_request = relationship(
+        "MeanTable",
+        secondary=teacher_request_mean_table,
+        back_populates="teachers",
+    )
+
+    classroom_request = relationship(
+        "ClassroomTable",
+        secondary=teacher_request_classroom_table,
+        back_populates="teachers",
+    )
 
     student_note_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="teacher")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="teacher")
@@ -209,6 +238,11 @@ class ClassroomTable(BaseTable) :
     location = Column(String)
     capacity = Column(Integer)
 
+    teachers = relationship(
+        "TeacherTable",
+        secondary=teacher_request_classroom_table,
+        back_populates="classroom_request",
+    )
     means: Mapped[List["MeanTable"]] = relationship(back_populates="classroom")
     subjects : Mapped[List["SubjectTable"]] = relationship(back_populates="classroom")
 
@@ -242,6 +276,12 @@ class MeanTable(BaseTable) :
     mean_mainteniance_association: Mapped[List["MeanMaintenianceTable"]] = relationship(back_populates="mean")
 
     classroom: Mapped["ClassroomTable"] = relationship(back_populates="means")
+
+    teachers = relationship(
+        "TeacherTable",
+        secondary=teacher_request_mean_table,
+        back_populates="mean_request",
+    )
 
 
     __mapper_args__ = {

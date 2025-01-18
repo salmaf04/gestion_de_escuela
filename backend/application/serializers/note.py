@@ -19,7 +19,9 @@ class NoteMapper :
             teacher = note.teacher.name,
             student = note.student.name,
             subject = note.subject.name,
-            note_value = note.note_value
+            note_value = note.note_value,
+            last_modified_by = note.last_modified_by
+
         )
     
     def to_less_than_fifty(self, data) :
