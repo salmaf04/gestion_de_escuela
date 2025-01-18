@@ -11,7 +11,7 @@ export const useGetProfesores = (onError: (error: Error)=>void) => {
         const res = await profesorApi.getProfesores()
         if (res.ok) {
             const data: ProfesorGetResponse = await res.json()
-            setProfesores(Object.values(data)
+            setProfesores(data
                 .map((profesor: ProfesorDB) => new ProfesorGetAdapter(profesor)))
         } else {
             onError(new Error(res.statusText))
