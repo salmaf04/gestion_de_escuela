@@ -1,10 +1,10 @@
 import VisibilityOn from '../assets/visibility-on.svg';
 import VisibilityOff from '../assets/visibility-off.svg';
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {getToken} from "../api/requests.ts";
 import {TokenResponse} from "../api/types.ts";
-import Alert from "../../components/Alert.tsx";
 import Spinner from "../../components/Spinner.tsx";
+import {AppContext} from "../../App.tsx";
 
 interface User {
     username: string;
@@ -17,10 +17,9 @@ export default function Formulario({setIsLogged}: Props) {
     const [user, setUser] = useState<User>({username: '', password: ''});
     const [isPassVisible, setIsPassVisible] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const [errorFetch, setErrorFetch] = useState('')
+    const {setError} = useContext(AppContext)
     return (
         <>
-            {errorFetch && <Alert title={"Error"} message={errorFetch} onClick={() => setErrorFetch('')}/>}
             <form onSubmit={
                 (e) => {
                     e.preventDefault();
@@ -33,9 +32,9 @@ export default function Formulario({setIsLogged}: Props) {
                                 setIsLogged(true)
                             })
                         } else
-                            res.json().then((r) => setErrorFetch(r.detail))
+                            res.json().then((r) => setError!(new Error(r.detail)))
                     }).catch(() => {
-                        setErrorFetch('Error de conexión')
+                        setError!(new Error('Error de conexión'))
                     })
                         .finally(() => setIsLoading(false))
                 }

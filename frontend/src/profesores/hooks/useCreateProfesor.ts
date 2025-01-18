@@ -6,16 +6,15 @@ import profesorApi from "../api/requests.ts";
 export const useCreateProfesor = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [newProfesor, setNewProfesor] = useState<ProfesorCreateAdapter>()
-    const [createError, setGetError] = useState<Error>()
 
-    const createProfesor = async (profesor: ProfesorCreateAdapter) => {
+    const createProfesor = async (profesor: ProfesorCreateAdapter, onError: (error: Error) => void) => {
         setIsLoading(true)
         const res = await profesorApi.postProfesor(profesor)
         if (res.ok) {
             const data: ProfesorCreateDB = await res.json()
             setNewProfesor(new ProfesorCreateAdapter(data))
         } else {
-            setGetError(new Error(res.statusText))
+            onError(new Error(res.statusText))
         }
         setIsLoading(false)
     }
@@ -24,6 +23,5 @@ export const useCreateProfesor = () => {
         isLoading,
         newProfesor,
         createProfesor,
-        createError
     }
 }

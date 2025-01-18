@@ -1,37 +1,39 @@
-import {createContext, useEffect, useState} from "react";
+import {createContext, useContext, useEffect, useState} from "react";
 import {ProfesorGetAdapter} from "./adapters/ProfesorGetAdapter.ts";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
 import {useGetProfesores} from "./hooks/useGetProfesores.ts";
 import {ProfesorCreateAdapter} from "./adapters/ProfesorCreateAdapter.ts";
+import {AppContext} from "../App.tsx";
 
-interface profesorContextProps{
+interface profesorContextInterface{
     searchText?: string;
     dataTable?: ProfesorGetAdapter[];
-    isEditting?: boolean;
+    editting?: ProfesorCreateAdapter;
     isAdding?: boolean;
     setIsAdding?: (text: boolean) => void;
-    setIsEditting?: (text: boolean) => void;
+    setEditting?: (profesor: ProfesorCreateAdapter) => void;
     isGetLoading?: boolean;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
     onEditTableItem?: (profesorEdit: ProfesorCreateAdapter) => void;
+    onAddTableItem?: (profesorEdit: ProfesorCreateAdapter) => void;
 }
 
-export const ProfesorContext = createContext<profesorContextProps>(
+export const ProfesorContext = createContext<profesorContextInterface>(
     {}
 );
 
 export default function ProfesoresScreen() {
     const [searchText, setSearchText] = useState('');
-    const [isEditting, setIsEditting] = useState(false)
+    const [editting, setEditting] = useState<ProfesorCreateAdapter | undefined>()
     const [isAdding, setIsAdding] = useState(false)
+    const {setError} = useContext(AppContext)
     const {
         isGetLoading,
         profesores,
         getProfesores,
-        getError
-    } = useGetProfesores()
+    } = useGetProfesores(setError!)
 
     useEffect(() => {
         getProfesores()
@@ -44,27 +46,30 @@ export default function ProfesoresScreen() {
     const onEditTableItem = (profesorEdit: ProfesorCreateAdapter) => {
         //todo PUT request Profesor
     }
+
+    const onAddTableItem = (profesor: ProfesorCreateAdapter) => {
+        //todo Add request Profesor
+    }
     return (
         <>
             <ProfesorContext.Provider value={{
                 isGetLoading: isGetLoading,
                 dataTable: profesores,
                 searchText: searchText,
-                isEditting: isEditting,
-                isAdding: false,
+                editting: editting,
+                isAdding: isAdding,
                 setIsAdding: setIsAdding,
-                setIsEditting: setIsEditting,
+                setEditting: setEditting,
                 setSearchText: setSearchText,
                 onDeleteTableItem: onDeleteTableItem,
-                onEditTableItem: onEditTableItem
+                onEditTableItem: onEditTableItem,
+                onAddTableItem: onAddTableItem
             }
             }>
                 <ToolBar />
                 <Body />
                 {/*getError &&
-                    <Alert title={'Error:'} message={error} className={'bg-red-200'} onClick={() => {
-                        setError('')
-                    }}/>*/
+                    */
                 }
 
                 {/*{isAdding && <AddProfesorForm

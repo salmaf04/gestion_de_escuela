@@ -3,10 +3,9 @@ import {ProfesorGetAdapter} from "../adapters/ProfesorGetAdapter.ts";
 import {ProfesorDB, ProfesorGetResponse} from "../models/ProfesorGetDB.ts";
 import profesorApi from "../api/requests.ts";
 
-export const useGetProfesores = () => {
+export const useGetProfesores = (onError: (error: Error)=>void) => {
     const [isGetLoading, setIsGetLoading] = useState(false)
     const [profesores, setProfesores] = useState<ProfesorGetAdapter[]>()
-    const [getError, setGetError] = useState<Error>()
     const getProfesores = async () => {
         setIsGetLoading(true)
         const res = await profesorApi.getProfesores()
@@ -15,7 +14,7 @@ export const useGetProfesores = () => {
             setProfesores(Object.values(data)
                 .map((profesor: ProfesorDB) => new ProfesorGetAdapter(profesor)))
         } else {
-            setGetError(new Error(res.statusText))
+            onError(new Error(res.statusText))
         }
         setIsGetLoading(false)
     }
@@ -24,6 +23,5 @@ export const useGetProfesores = () => {
         isGetLoading,
         profesores,
         getProfesores,
-        getError
     }
 }
