@@ -1,80 +1,52 @@
 import VisibilityOn from '../assets/visibility-on.svg';
 import VisibilityOff from '../assets/visibility-off.svg';
-import {useContext, useState} from "react";
-import {getToken} from "../api/requests.ts";
-import {TokenResponse} from "../api/types.ts";
+import {useState} from "react";
 import Spinner from "../../components/Spinner.tsx";
-import {AppContext} from "../../App.tsx";
+import {useLogin} from "../hooks/useLogin.ts";
+import {SubmitHandler, useForm} from 'react-hook-form';
 
-interface User {
+interface IUser {
     username: string;
     password: string;
 }
-interface Props{
-    setIsLogged: (value: boolean) => void
-}
-export default function Formulario({setIsLogged}: Props) {
-    const [user, setUser] = useState<User>({username: '', password: ''});
+
+export default function Formulario() {
+    const {getToken, isLoading} = useLogin()
     const [isPassVisible, setIsPassVisible] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
-    const {setError} = useContext(AppContext)
+    const {handleSubmit, register} = useForm<IUser>()
+    const onSubmit: SubmitHandler<IUser> = (data: IUser) => {
+        getToken(data.username, data.password)
+    }
     return (
         <>
-            <form onSubmit={
-                (e) => {
-                    e.preventDefault();
-                    setIsLoading(true)
-                    getToken(user.username, user.password).then((res) => {
-                        if (res.ok) {
-                            res.json().then((res: TokenResponse) => {
-                                console.log(res)
-                                sessionStorage.setItem("token", res.access_token)
-                                setIsLogged(true)
-                            })
-                        } else
-                            res.json().then((r) => setError!(new Error(r.detail)))
-                    }).catch(() => {
-                        setError!(new Error('Error de conexión'))
-                    })
-                        .finally(() => setIsLoading(false))
-                }
-            } className={"size-full flex flex-col items-center justify-around p-10 text-indigo-500"}>
+            <form onSubmit={handleSubmit(onSubmit)}
+                  className={"size-full flex flex-col items-center justify-around p-10 text-indigo-500"}>
                 <h1 className={" surface font-bold text-3xl"}>Iniciar Sesión</h1>
                 <div className={"w-2/3 space-y-4 translate-y-2"}>
                     <div className={'group'}>
-                        <h2 className={'text-indigo-500 text-xs font-semibold invisible group-focus-within:visible opacity-0 group-focus-within:opacity-100 translate-y-5 group-focus-within:translate-y-0 transition-all'}>
+                        <label className={'text-indigo-500 text-xs font-semibold invisible group-focus-within:visible opacity-0 group-focus-within:opacity-100 translate-y-5 group-focus-within:translate-y-0 transition-all'}>
                             Usuario
-                        </h2>
+                        </label>
                         <input
-                            value={user.username}
-                            placeholder={"Usuario"} type="text"
-                            required={true}
+                            {...register("username", {
+                                required: "true"
+                            })}
+                            placeholder={"Usuario"}
+                            type="text"
                             autoFocus={true}
                             className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50"}
-                            onChange={
-                                (newText) => {
-                                    setUser(prevState => {
-                                        return {...prevState, username: newText.target.value}
-                                    })
-                                }
-                            }/>
+                            />
                     </div>
                     <div className={'group'}>
-                        <h2 className={'text-indigo-500 text-xs font-semibold opacity-0 invisible group-focus-within:visible group-focus-within:opacity-100 translate-y-5 group-focus-within:translate-y-0 transition-all'}>
+                        <label className={'text-indigo-500 text-xs font-semibold opacity-0 invisible group-focus-within:visible group-focus-within:opacity-100 translate-y-5 group-focus-within:translate-y-0 transition-all'}>
                             Contraseña
-                        </h2>
+                        </label>
                         <div className={"relative flex items-center"}>
-
                             <input placeholder={"Contraseña"} type={isPassVisible ? "text" : "password"}
-                                   value={user.password}
                                    required={true}
-                                   onChange={
-                                       (newText) => {
-                                           setUser(prevState => {
-                                               return {...prevState, password: newText.target.value}
-                                           })
-                                       }
-                                   }
+                                   {...register("password", {
+                                       required: "true",
+                                   })}
                                    className={" rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50"}/>
                             <img className={"absolute end-2 cursor-pointer scale-90"}
                                  alt={"Cambiar visibilidad"}

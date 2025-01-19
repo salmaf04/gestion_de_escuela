@@ -1,17 +1,19 @@
-import { useState } from "react";
+import {useContext, useState} from "react";
 import profesorApi from "../api/requests.ts";
+import {AppContext} from "../../App.tsx";
 
 export const useDeleteProfesor = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [deletedProfesorId, setDeletedProfesorId] = useState<string | null>(null);
+    const {setError} = useContext(AppContext)
 
-    const deleteProfesor = async (id: string, onError: (error: Error) => void) => {
+    const deleteProfesor = async (id: string) => {
         setIsLoading(true);
         const res = await profesorApi.deleteProfesor(id);
         if (res.ok) {
             setDeletedProfesorId(id);
         } else {
-            onError(new Error(res.statusText));
+            setError!(new Error(res.statusText));
         }
         setIsLoading(false);
     };

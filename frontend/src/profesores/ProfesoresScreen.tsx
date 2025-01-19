@@ -1,10 +1,9 @@
-import {createContext, useContext, useEffect, useState} from "react";
+import {createContext, useEffect, useState} from "react";
 import {ProfesorGetAdapter} from "./adapters/ProfesorGetAdapter.ts";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
 import {useGetProfesores} from "./hooks/useGetProfesores.ts";
 import {ProfesorCreateAdapter} from "./adapters/ProfesorCreateAdapter.ts";
-import {AppContext} from "../App.tsx";
 import AddProfesorForm from "./components/AddProfesorForm.tsx";
 import {useEditProfesor} from "./hooks/useEditProfesor.ts";
 import {useCreateProfesor} from "./hooks/useCreateProfesor.ts";
@@ -34,7 +33,6 @@ export default function ProfesoresScreen() {
     const [searchText, setSearchText] = useState('');
     const [editting, setEditting] = useState<ProfesorCreateAdapter | undefined>()
     const [showModal, setShowModal] = useState(false)
-    const {setError} = useContext(AppContext)
     const {
         editedProfesor,
         isLoading: isEditting,
@@ -50,7 +48,7 @@ export default function ProfesoresScreen() {
         isGetLoading,
         profesores,
         getProfesores,
-    } = useGetProfesores(setError!)
+    } = useGetProfesores()
 
     const {
        deleteProfesor,
@@ -62,16 +60,16 @@ export default function ProfesoresScreen() {
     }, [editedProfesor, newProfesor , deletedProfesorId]);
 
     const onDeleteTableItem = (deletedProfesorId : string ) => {
-        deleteProfesor(deletedProfesorId , setError! )
+        deleteProfesor(deletedProfesorId )
     }
 
     const onEditTableItem = (profesorEdit: ProfesorCreateAdapter) => {
-        editProfesor(profesorEdit, setError!)
+        editProfesor(profesorEdit)
 
     }
 
     const onAddTableItem = (profesor: ProfesorCreateAdapter) => {
-        createProfesor(profesor, setError!)
+        createProfesor(profesor)
     }
     return (
         <ProfesorContext.Provider value={{
