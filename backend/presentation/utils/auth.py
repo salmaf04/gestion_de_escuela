@@ -101,22 +101,30 @@ def authorize(role: list):
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
+            request = kwargs.get("request")
+            method = request.method
+            url = parse_url(request.url.path)
+            
             user =  await kwargs.get("current_user")
             check_id =  kwargs.get("id")
-            user_id = user.id
+            user_id1 = user.id
             user_role = user.type
             
-            if check_id and check_id != str(user_id):
+            if check_id and check_id != str(user_id1) and method == 'PATCH' and url != 'note':
                 raise HTTPException(status_code=403, detail=f"User is not authorized to access")
 
             if user_role not in role:
                 role_str = ','.join(role)
                 raise HTTPException(status_code=403, detail=f"User is not authorized to access , only avaliable for {role_str}")
             
+            kwargs['user_id']=user_id1
 
             return await func(*args, **kwargs)
         return wrapper
     return decorator
+
+def parse_url(url:str):
+    return url.split('/')[1]
 
 
 

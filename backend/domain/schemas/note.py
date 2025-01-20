@@ -13,3 +13,5 @@ class NoteModel(BaseModel):
     student : str
     subject : str
     id : uuid.UUID
+    note_value : int
+    last_modified_by : uuid.UUID

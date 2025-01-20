@@ -5,11 +5,10 @@ services:
       - POSTGRES_USER=local
       - POSTGRES_PASSWORD=local
       - POSTGRES_DB=school_management
-      - PGDATA=/tmp
     ports:
       - "5432:5432"  # Asegúrate de que el puerto esté correctamente mapeado
     volumes:
-      - db:/var/lib/postgresql/data
+      - db:/var/lib/postgresql/data  # Asegúrate de que el volumen esté correctamente mapeado
 
 volumes:
   db:

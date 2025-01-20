@@ -63,11 +63,16 @@ async def delete_student(
     status_code=status.HTTP_200_OK
 )
 async def read_student(
+    student_note_less_than_fifty = False,
     filters: StudentFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
     student_pagination_service = StudentPaginationService()
     mapper = StudentMapper()
+
+    if student_note_less_than_fifty :
+        students = student_pagination_service.grade_less_than_fifty(session=session)
+        return mapper.to_less_than_fifty(students)
 
     students = student_pagination_service.get_students(session=session, filter_params=filters)
 
