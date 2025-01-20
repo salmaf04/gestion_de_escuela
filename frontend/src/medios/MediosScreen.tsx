@@ -62,8 +62,8 @@ export default function MediosScreen() {
         deleteMedio(deletedMedioId)
     }
 
-    const onEditTableItem = (asignaruraEdit: MedioCreateAdapter) => {
-        editMedio(asignaruraEdit)
+    const onEditTableItem = (medioEdit: MedioCreateAdapter) => {
+        editMedio(medioEdit)
 
     }
 

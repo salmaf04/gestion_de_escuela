@@ -62,8 +62,8 @@ export default function EstudiantesScreen() {
         deleteEstudiante(deletedEstudianteId)
     }
 
-    const onEditTableItem = (asignaruraEdit: EstudianteCreateAdapter) => {
-        editEstudiante(asignaruraEdit)
+    const onEditTableItem = (estudianteEdit: EstudianteCreateAdapter) => {
+        editEstudiante(estudianteEdit)
 
     }
 

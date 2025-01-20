@@ -59,12 +59,12 @@ export default function AsignaturasScreen() {
         getAsignaturas()
     }, [editedAsignatura, newAsignatura , deletedAsignaturaId]);
 
-    const onDeleteTableItem = (deletedAsignaruraId : string ) => {
+    const onDeleteTableItem = (deletedAsignaturaId : string ) => {
         deleteAsignatura(deletedAsignaturaId)
     }
 
-    const onEditTableItem = (asignaruraEdit: AsignaturaCreateAdapter) => {
-        editAsignatura(asignaruraEdit)
+    const onEditTableItem = (asignaturaEdit: AsignaturaCreateAdapter) => {
+        editAsignatura(asignaturaEdit)
 
     }
 
