@@ -10,6 +10,7 @@ from backend.configuration import get_db
 from backend.presentation.utils.auth import get_current_user
 from backend.domain.schemas.user import UserModel
 from backend.presentation.utils.auth import authorize
+from fastapi import Request
 
 
 router = APIRouter()
@@ -17,11 +18,12 @@ router = APIRouter()
 
 @router.post(
     "/teacher",
-    response_model=TeacherModel,
+    response_model=TeacherModel | dict[str, str],
     status_code=status.HTTP_201_CREATED
 )
 @authorize(role=["secretary"])
 async def create_teacher(
+    request: Request,
     teacher_input: TeacherCreateModel,
     current_user : UserModel = Depends(get_current_user),
     session: Session = Depends(get_db)
