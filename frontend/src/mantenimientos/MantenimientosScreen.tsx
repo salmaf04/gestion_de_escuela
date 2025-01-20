@@ -1,68 +1,99 @@
-import {useEffect, useState} from "react";
-import {data, header} from "./data/Example_data.tsx";
-import SearchInput from "../components/SearchInput.tsx";
-import AddButton from "../components/AddButton.tsx";
-import Table from "../components/Table.tsx";
-import AddMantenimientoForm from "./components/AddMantenimientosForm.tsx";
-import {MantenimientoDeMedio} from "../types.ts";
+import {createContext, useEffect, useState} from "react";
+import ToolBar from "./components/ToolBar.tsx";
+import Body from "./components/Body.tsx";
+import {MantenimientoGetAdapter} from "./adapters/MantenimientoGetAdapter.ts";
+import {MantenimientoCreateAdapter} from "./adapters/MantenimientoCreateAdapter.ts";
+import AddMantenimientoForm from "./components/AddMantenimientoForm.tsx";
+import {useEditMantenimiento} from "./hooks/useEditEstudiante.ts";
+import {useCreateMantenimiento} from "./hooks/useCreateEstudiante.ts";
+import {useGetMantenimientos} from "./hooks/useGetMantenimiento.ts";
+import {useDeleteMantenimiento} from "./hooks/useDeleteEstudiante.ts";
+interface IMantenimientoContext {
+    searchText?: string;
+    dataTable?: MantenimientoGetAdapter[];
+    editting?: MantenimientoCreateAdapter;
+    showModal?: boolean;
+    setShowModal?: (text: boolean) => void;
+    setEditting?: (mantenimiento?: MantenimientoCreateAdapter) => void;
+    isGetLoading?: boolean;
+    setSearchText?: (text: string) => void;
+    onDeleteTableItem?: (index: string) => void;
+    onEditTableItem?: (mantenimientoEdit: MantenimientoCreateAdapter) => void;
+    onAddTableItem?: (mantenimientoEdit: MantenimientoCreateAdapter) => void;
+    isEditting?: boolean;
+    isCreatting?: boolean;
+}
+
+export const MantenimientoContext = createContext<IMantenimientoContext>(
+    {}
+);
 
 export default function MantenimientosScreen() {
     const [searchText, setSearchText] = useState('');
+    const [editting, setEditting] = useState<MantenimientoCreateAdapter | undefined>()
+    const [showModal, setShowModal] = useState(false)
+    const {
+        editedMantenimiento,
+        isLoading: isEditting,
+        editMantenimiento
+    } = useEditMantenimiento()
+    const {
+        newMantenimiento,
+        isLoading: isCreatting,
+        createMantenimiento
+    } = useCreateMantenimiento()
 
-    const [dataTable, setDataTable] = useState(data);
+    const {
+        isGetLoading,
+        mantenimientos,
+        getMantenimientos,
+    } = useGetMantenimientos()
+
+    const {
+       deleteMantenimiento,
+        deletedMantenimientoId,
+    } = useDeleteMantenimiento()
+
     useEffect(() => {
-        setDataTable(
-            [...data].filter((row) => {
-                return Object.values(row).some((value) => {
-                    return value.toString().toLowerCase().includes(searchText.toLowerCase())
-                })
-            }))
-    }, [searchText]);
+        getMantenimientos()
+    }, [editedMantenimiento, newMantenimiento , deletedMantenimientoId]);
 
-    const [isAdding, setIsAdding] = useState(false);
+    const onDeleteTableItem = (deletedMantenimientoId : string ) => {
+        deleteMantenimiento(deletedMantenimientoId)
+    }
 
-    const [editing, setEditing] = useState<MantenimientoDeMedio | null>(null);
+    const onEditTableItem = (asignaruraEdit: MantenimientoCreateAdapter) => {
+        editMantenimiento(asignaruraEdit)
+
+    }
+
+    const onAddTableItem = (mantenimiento: MantenimientoCreateAdapter) => {
+        createMantenimiento(mantenimiento)
+    }
     return (
-        <div className={"mx-4 w-11/12 h-dvh flex flex-col"}>
-            {isAdding && <AddMantenimientoForm
-                onAccept={(formData) => {
-                    //todo POST request MantenimientoDeMedio
-                    setDataTable([...dataTable, formData])
-                    setIsAdding(false)
-                }}
-
-                onCancel={() => setIsAdding(false)}
-            />}
-            {editing && <AddMantenimientoForm
-                onAccept={(formData) => {
-                    //todo PUT request MantenimientoDeMedio
-                    setDataTable(dataTable.map((item) => item.id === formData.id ? formData : item));
-                    setEditing(null)
-                }}
-                formDataEdit={editing}
-                onCancel={() => setEditing(null)}
-            />}
-            <div className={'self-end w-2/3 my-4 h-1/6 flex items-center justify-between px-5'}>
-                {/*<ToggleButton/>*/}
-                <SearchInput focus={true} searchText={searchText} setSearchText={(text: string) => {
-                    setSearchText(text)
-                }}/>
-                <AddButton onClick={() => setIsAdding(true)}/>
+        <MantenimientoContext.Provider value={{
+            isGetLoading: isGetLoading,
+            dataTable: mantenimientos,
+            searchText: searchText,
+            editting: editting,
+            showModal: showModal,
+            setShowModal: setShowModal,
+            setEditting: setEditting,
+            setSearchText: setSearchText,
+            onDeleteTableItem: onDeleteTableItem,
+            onEditTableItem: onEditTableItem,
+            onAddTableItem: onAddTableItem,
+            isEditting: isEditting,
+            isCreatting: isCreatting
+        }
+        }>
+            <div className={'w-full h-dvh flex flex-col'}>
+                <ToolBar/>
+                <Body />
+                {(showModal || editting) &&
+                    <AddMantenimientoForm />
+                }
             </div>
-            <Table className={'h-5/6'} Data={dataTable} header={header}
-                   onRemoveRow={(index) => {
-                       //todo DELETE request MantenimientoDeMedio
-                       console.log('delete')
-                       setDataTable(dataTable.filter((item) => {
-                           return item.id !== index
-                       }))
-                   }}
-                   onEditRow={(index) => {
-                        setEditing(
-                            dataTable.find((item) => item.id === index) || new MantenimientoDeMedio('', '', '', '')
-                        )
-                   }}
-            />
-        </div>
+        </MantenimientoContext.Provider>
     )
 }

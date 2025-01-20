@@ -1,12 +1,12 @@
 import {useForm, SubmitHandler} from "react-hook-form"
-import {EstudianteCreateAdapter} from "../adapters/EstudianteCreateAdapter.ts";
 import {useContext, useEffect, useState} from "react";
-import {EstudianteContext} from "../EstudiantesScreen.tsx";
 import MySpinner from "../../components/MySpinner.tsx";
+import {AulaCreateAdapter} from "../adapters/MedioCreateAdapter.ts";
+import {AulaContext} from "../MediosScreen.tsx";
 
-export default function AddEstudianteForm() {
-    const {register, handleSubmit} = useForm<EstudianteCreateAdapter>()
-    const {editting, isEditting, isCreatting, onEditTableItem, onAddTableItem, setEditting, setShowModal} = useContext(EstudianteContext)
+export default function AddAulaForm() {
+    const {register, handleSubmit} = useForm<AulaCreateAdapter>()
+    const {editting, isEditting, isCreatting, onEditTableItem, onAddTableItem, setEditting, setShowModal} = useContext(AulaContext)
 
     const [isLoading, setIsLoading] = useState<boolean>(isEditting! || isCreatting!)
 
@@ -14,7 +14,7 @@ export default function AddEstudianteForm() {
         setIsLoading(isEditting! || isCreatting!)
     }, [isEditting, isCreatting]);
 
-    const onSubmit: SubmitHandler<EstudianteCreateAdapter> = (data) => {
+    const onSubmit: SubmitHandler<AulaCreateAdapter> = (data) => {
         if (editting)
             onEditTableItem!(data)
         else

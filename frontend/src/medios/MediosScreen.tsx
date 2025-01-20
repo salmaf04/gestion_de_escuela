@@ -1,69 +1,99 @@
-import {useEffect, useState} from "react";
-import {data, header} from "./data/Example_data.tsx";
-import SearchInput from "../components/SearchInput.tsx";
-import AddButton from "../components/AddButton.tsx";
-import Table from "../components/Table.tsx";
-import AddMediosForm from "./components/AddMediosForm.tsx";
-import {Medio} from "../types.ts";
+import {createContext, useEffect, useState} from "react";
+import ToolBar from "./components/ToolBar.tsx";
+import Body from "./components/Body.tsx";
+import {MedioGetAdapter} from "./adapters/MedioGetAdapter.ts";
+import {MedioCreateAdapter} from "./adapters/MedioCreateAdapter.ts";
+import AddMedioForm from "./components/AddMedioForm.tsx";
+import {useEditMedio} from "./hooks/useEditMedio.ts";
+import {useCreateMedio} from "./hooks/useCreateMedio.ts";
+import {useGetMedios} from "./hooks/useGetMedio.ts";
+import {useDeleteMedio} from "./hooks/useDeleteMedio.ts";
+interface IMedioContext {
+    searchText?: string;
+    dataTable?: MedioGetAdapter[];
+    editting?: MedioCreateAdapter;
+    showModal?: boolean;
+    setShowModal?: (text: boolean) => void;
+    setEditting?: (medio?: MedioCreateAdapter) => void;
+    isGetLoading?: boolean;
+    setSearchText?: (text: string) => void;
+    onDeleteTableItem?: (index: string) => void;
+    onEditTableItem?: (medioEdit: MedioCreateAdapter) => void;
+    onAddTableItem?: (medioEdit: MedioCreateAdapter) => void;
+    isEditting?: boolean;
+    isCreatting?: boolean;
+}
 
+export const MedioContext = createContext<IMedioContext>(
+    {}
+);
 
 export default function MediosScreen() {
     const [searchText, setSearchText] = useState('');
+    const [editting, setEditting] = useState<MedioCreateAdapter | undefined>()
+    const [showModal, setShowModal] = useState(false)
+    const {
+        editedMedio,
+        isLoading: isEditting,
+        editMedio
+    } = useEditMedio()
+    const {
+        newMedio,
+        isLoading: isCreatting,
+        createMedio
+    } = useCreateMedio()
 
-    const [dataTable, setDataTable] = useState(data);
+    const {
+        isGetLoading,
+        medios,
+        getMedios,
+    } = useGetMedios()
+
+    const {
+       deleteMedio,
+        deletedMedioId,
+    } = useDeleteMedio()
+
     useEffect(() => {
-        setDataTable(
-            [...data].filter((row) => {
-                return Object.values(row).some((value) => {
-                    return value.toString().toLowerCase().includes(searchText.toLowerCase())
-                })
-            }))
-    }, [searchText]);
+        getMedios()
+    }, [editedMedio, newMedio , deletedMedioId]);
 
-    const [isAdding, setIsAdding] = useState(false);
+    const onDeleteTableItem = (deletedMedioId : string ) => {
+        deleteMedio(deletedMedioId)
+    }
 
-    const [editing, setEditing] = useState<Medio | null>(null);
+    const onEditTableItem = (asignaruraEdit: MedioCreateAdapter) => {
+        editMedio(asignaruraEdit)
+
+    }
+
+    const onAddTableItem = (medio: MedioCreateAdapter) => {
+        createMedio(medio)
+    }
     return (
-        <div className={"mx-4 w-11/12 h-dvh flex flex-col"}>
-            {isAdding && <AddMediosForm
-                onAccept={(formData) => {
-                    //todo POST request Medio
-                    setDataTable([...dataTable, formData])
-                    setIsAdding(false)
-                }}
-
-                onCancel={() => setIsAdding(false)}
-            />}
-            {editing && <AddMediosForm
-                onAccept={(formData) => {
-                    //todo PUT request Medio
-                    setDataTable(dataTable.map((item) => item.id === formData.id ? formData : item));
-                    setEditing(null)
-                }}
-                formDataEdit={editing}
-                onCancel={() => setEditing(null)}
-            />}
-            <div className={'self-end w-2/3 my-4 h-1/6 flex items-center justify-between px-5'}>
-                {/*<ToggleButton/>*/}
-                <SearchInput focus={true} searchText={searchText} setSearchText={(text: string) => {
-                    setSearchText(text)
-                }}/>
-                <AddButton onClick={() => setIsAdding(true)}/>
+        <MedioContext.Provider value={{
+            isGetLoading: isGetLoading,
+            dataTable: medios,
+            searchText: searchText,
+            editting: editting,
+            showModal: showModal,
+            setShowModal: setShowModal,
+            setEditting: setEditting,
+            setSearchText: setSearchText,
+            onDeleteTableItem: onDeleteTableItem,
+            onEditTableItem: onEditTableItem,
+            onAddTableItem: onAddTableItem,
+            isEditting: isEditting,
+            isCreatting: isCreatting
+        }
+        }>
+            <div className={'w-full h-dvh flex flex-col'}>
+                <ToolBar/>
+                <Body />
+                {(showModal || editting) &&
+                    <AddMedioForm />
+                }
             </div>
-            <Table className={'h-5/6'} Data={dataTable} header={header}
-                   onRemoveRow={(index) => {
-                       //todo DELETE request Medio
-                       console.log('delete')
-                       setDataTable(dataTable.filter((item) => {
-                           return item.id !== index
-                       }))
-                   }}
-                   onEditRow={(index) => {
-                        setEditing(
-                            dataTable.find((item) => item.id === index) || new Medio('', '', '', '')
-                        )
-                   }}
-            />
-        </div>
+        </MedioContext.Provider>
     )
 }
