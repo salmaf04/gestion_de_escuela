@@ -11,6 +11,4 @@ export type ProfesorDB = {
         "valoration": string
     }
 
-export type ProfesorGetResponse = {
-    [index: string]: ProfesorDB
-}
+export type ProfesorGetResponse = ProfesorDB[]
