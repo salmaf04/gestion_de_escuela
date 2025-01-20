@@ -1,4 +1,4 @@
-export function getToken(username: string, password: string) {
+function getToken(username: string, password: string) {
     const formData = new FormData();
     formData.append("username", username);
     formData.append("password", password);
@@ -6,4 +6,7 @@ export function getToken(username: string, password: string) {
         method: 'POST',
         body: formData,
     })
+}
+export default {
+    getToken
 }

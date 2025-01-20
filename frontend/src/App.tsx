@@ -1,6 +1,5 @@
 import LoginScreen from "./login/LoginScreen.tsx";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
-import {createContext, useEffect, useState} from "react";
 import Sidebar from "./components/Sidebar.tsx";
 import HomeScreen from "./home/HomeScreen.tsx";
 import EstudiantesScreen from "./estudiantes/EstudiantesScreen.tsx";
@@ -10,38 +9,42 @@ import MediosScreen from "./medios/MediosScreen.tsx";
 import MantenimientosScreen from "./mantenimientos/MantenimientosScreen.tsx";
 import AulasScreen from "./aulas/AulasScreen.tsx";
 import Notification from "./components/Notification.tsx";
+import {createContext, useEffect, useState} from "react";
 
 
 interface AppContextInterface {
     setError?: (error: Error) => void;
+    token?: string;
+    setToken?: (token: string) => void;
 }
 
 export const AppContext = createContext<AppContextInterface>({})
 
 function App() {
-    const [isLogged, setIsLogged] = useState(false)
     const [error, setError] = useState<Error | undefined>()
-
+    const [token, setToken] = useState<string>()
     useEffect(() => {
-        if (sessionStorage.getItem('token'))
-            setIsLogged(true)
-        else
-            setIsLogged(false)
+        const t = sessionStorage.getItem('token')
+        if (t)
+            setToken(t)
     }, []);
 
     return (
         <AppContext.Provider value={{
-            setError: setError
+            setError: setError,
+            token: token,
+            setToken: setToken
         }}>
             <BrowserRouter>
-                {isLogged ?
+                {error &&
+                    <Notification title={'Error:'} message={error.message} className={'bg-red-100 text-sm rounded-md py-1'} onClick={() => {
+                        setError(undefined)
+                        console.log('Error dismissed')
+                    }}/>
+                }
+                {token ?
                     (
                         <div className={'h-dvh bg-indigo-50 flex'}>
-                            {error &&
-                                <Notification title={'Error:'} message={error.message} className={'bg-red-200'} onClick={() => {
-                                    setError(undefined)
-                                }}/>
-                            }
                             <Sidebar/>
                             <Routes>
                                 <Route path={'/'} element={<Navigate to={'/inicio'}/>}/>
@@ -57,7 +60,7 @@ function App() {
                     ) :
                     (
                         <Routes>
-                            <Route path={'/'} element={<LoginScreen setIsLogged={setIsLogged}/>}/>
+                            <Route path={'/'} element={<LoginScreen />}/>
                             <Route path={'*'} element={<Navigate to={'/'}/>}/>
                         </Routes>
                     )
