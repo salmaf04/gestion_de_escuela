@@ -1,4 +1,4 @@
-from backend.domain.schemas.classroom import ClassroomModel
+from backend.domain.schemas.classroom import ClassroomModel, ClassroomModelPost
 from backend.domain.schemas.mean import MeanClassroomModel
 from backend.domain.models.tables import ClassroomTable
 
@@ -39,6 +39,12 @@ class ClassroomMapper :
                 )
                 serialized_values.append(new_classroom)
 
-        return serialized_values
+    def to_api_post(self,classroom: ClassroomTable) -> ClassroomModelPost :
+        return  ClassroomModelPost(
+            id = ClassroomTable.entity_id,
+            location = ClassroomTable.location,
+            capacity = ClassroomTable.capacity
+        )
+
     
                                                                         

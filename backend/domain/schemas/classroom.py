@@ -9,4 +9,7 @@ class ClassroomCreateModel(BaseModel):
 class ClassroomModel(ClassroomCreateModel):
     id: uuid.UUID
     means : list[MeanClassroomModel]
+
+class ClassroomModelPost(ClassroomCreateModel) :
+    id: uuid.UUID
     

@@ -22,7 +22,7 @@ async def create_classroom(
 
     response = classroom_service.create_classroom(session=session, classroom=classroom_input)
 
-    return mapper.to_api(response)
+    return mapper.to_api_post(response)
 
 @router.delete(
     "/classroom/{id}",
