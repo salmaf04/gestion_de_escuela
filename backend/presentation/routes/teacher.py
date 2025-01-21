@@ -10,6 +10,7 @@ from backend.configuration import get_db
 from backend.presentation.utils.auth import get_current_user
 from backend.domain.schemas.user import UserModel
 from backend.presentation.utils.auth import authorize
+from fastapi import Request
 
 
 router = APIRouter()
@@ -17,11 +18,12 @@ router = APIRouter()
 
 @router.post(
     "/teacher",
-    response_model=TeacherModel,
+    response_model=TeacherModel | dict[str, str],
     status_code=status.HTTP_201_CREATED
 )
 @authorize(role=["secretary"])
 async def create_teacher(
+    request: Request,
     teacher_input: TeacherCreateModel,
     current_user : UserModel = Depends(get_current_user),
     session: Session = Depends(get_db)
@@ -69,6 +71,7 @@ async def delete_teacher(
     status_code=status.HTTP_200_OK
 )
 async def read_teacher(
+    sanctions = False,
     technology_classroom = False,
     better_than_eight = False,
     user : UserModel = Depends(get_current_user),
@@ -84,6 +87,9 @@ async def read_teacher(
     elif technology_classroom :
         results = teacher_pagination_service.get_teachers_by_technological_classroom(session=session)
         return mapper.to_teachers_technological_classroom(results)
+    elif sanctions :
+        results, mean_data = teacher_pagination_service.get_teachers_by_sanctions(session=session)
+        return mapper.to_teachers_sanctions(results, mean_data)
 
 
     teachers, subjects = teacher_pagination_service.get_teachers(session=session, filter_params=filters)   

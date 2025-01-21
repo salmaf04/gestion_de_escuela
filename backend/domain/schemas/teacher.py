@@ -11,8 +11,10 @@ class TeacherModel(BaseModel):
     experience: int
     email: str
     username: str
+    salary: float
     list_of_subjects: list[str]
     valoration : Optional[float | str ] = None
+    
     
 
 class TeacherCreateModel(BaseModel):
@@ -23,4 +25,6 @@ class TeacherCreateModel(BaseModel):
     contract_type: str
     experience: int
     username: str
+    salary: float
     list_of_subjects: list[str]
+    
