@@ -1,6 +1,6 @@
 import {useContext, useState} from "react";
 import {AsignaturaCreateAdapter} from "../adapters/AsignaturaCreateAdapter.ts";
-import {AsignaturaCreateDto} from "../models/AsignaturaCreateDto.ts";
+import {AsignaturaCreateDto} from "../models/AsignaturaCreateDB.ts";
 import asignaturarApi from "../api/requests.ts";
 import {AppContext} from "../../App.tsx";
 

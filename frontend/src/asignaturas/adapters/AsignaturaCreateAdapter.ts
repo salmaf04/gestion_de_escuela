@@ -1,4 +1,4 @@
-import {AsignaturaCreateDto} from "../models/AsignaturaCreateDto.ts";
+import {AsignaturaCreateDto} from "../models/AsignaturaCreateDB.ts";
 
 export class AsignaturaCreateAdapter {
     static Properties = ['Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia', 'Correo', 'Usuario', 'Asignaturas']

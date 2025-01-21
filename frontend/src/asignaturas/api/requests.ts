@@ -1,5 +1,5 @@
 import {AsignaturaCreateAdapter} from "../adapters/AsignaturaCreateAdapter.ts";
-import {AsignaturaCreateDto} from "../models/AsignaturaCreateDto.ts";
+import {AsignaturaCreateDto} from "../models/AsignaturaCreateDB.ts";
 
 
 function postAsignatura(asignatura: AsignaturaCreateAdapter) {
