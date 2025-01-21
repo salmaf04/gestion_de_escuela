@@ -1,16 +1,16 @@
-import LoginScreen from "./login/LoginScreen.tsx";
+import LoginScreen from "./pages/login/LoginScreen.tsx";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Sidebar from "./components/Sidebar.tsx";
-import HomeScreen from "./home/HomeScreen.tsx";
+import HomeScreen from "./pages/home/HomeScreen.tsx";
 import Notification from "./components/Notification.tsx";
 import {createContext, useEffect, useState} from "react";
-import {ProfesorGetAdapter} from "./profesores/adapters/ProfesorGetAdapter.ts";
-import EstudiantesScreen from "./estudiantes/EstudiantesScreen.tsx";
-import ProfesoresScreen from "./profesores/ProfesoresScreen.tsx";
-import AulasScreen from "./aulas/AulasScreen.tsx";
-import AsignaturasScreen from "./asignaturas/AsignaturasScreen.tsx";
-import MediosScreen from "./medios/MediosScreen.tsx";
-import MantenimientosScreen from "./mantenimientos/MantenimientosScreen.tsx";
+import {ProfesorGetAdapter} from "./pages/profesores/adapters/ProfesorGetAdapter.ts";
+import EstudiantesScreen from "./pages/estudiantes/EstudiantesScreen.tsx";
+import ProfesoresScreen from "./pages/profesores/ProfesoresScreen.tsx";
+import AulasScreen from "./pages/aulas/AulasScreen.tsx";
+import AsignaturasScreen from "./pages/asignaturas/AsignaturasScreen.tsx";
+import MediosScreen from "./pages/medios/MediosScreen.tsx";
+import MantenimientosScreen from "./pages/mantenimientos/MantenimientosScreen.tsx";
 
 
 interface AppContextInterface {
