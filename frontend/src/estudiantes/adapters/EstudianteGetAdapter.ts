@@ -1,29 +1,22 @@
-import {DBObject} from "../../types.ts";
-import {EstudianteDB} from "../models/EstudianteGetResponse.ts";
+import { EstudianteGetDB } from "../models/EstudianteGetDB.ts";
 
-export class EstudianteGetAdapter implements DBObject{
-    static Properties = ['Id', 'Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia', 'Correo', 'Usuario', 'Estudiantes', 'Valoracion']
-    id: string
-    name: string
-    lastname: string
-    specialty: string
-    contractType: string
-    experience: number
-    email: string
-    username: string
-    estudiantes: string[]
-    valoracion: string
+export class EstudianteGetAdapter {
+    static Properties = ['Id', 'Nombre', 'Edad', 'Correo', 'ActividadesExtra', 'Usuario', 'Contraseña']
+    id: string;
+    name: string;
+    age: number;
+    email: string;
+    extraActivities: boolean;
+    username: string;
+    password: string;
 
-    constructor(estudianteModel: EstudianteDB) {
-        this.id = estudianteModel.id;
-        this.name = estudianteModel.name;
-        this.lastname = estudianteModel.fullname;
-        this.specialty = estudianteModel.specialty;
-        this.contractType = estudianteModel.contract_type;
-        this.experience = estudianteModel.experience;
-        this.email = estudianteModel.email;
-        this.username = estudianteModel.username;
-        this.estudiantes = estudianteModel.list_of_subjects;
-        this.valoracion = estudianteModel.valoration;
+    constructor(estudianteGetDB: EstudianteGetDB) {
+        this.id = estudianteGetDB.id;
+        this.name = estudianteGetDB.name;
+        this.age = estudianteGetDB.age;
+        this.email = estudianteGetDB.email;
+        this.extraActivities = estudianteGetDB.extra_activities;
+        this.username = estudianteGetDB.username;
+        this.password = estudianteGetDB.password;
     }
 }

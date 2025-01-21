@@ -16,7 +16,6 @@ function postProfesor(profesor: ProfesorCreateAdapter) {
         list_of_subjects: ['asdsad']
     }
 
-    console.log(profesorDB)
     return fetch('http://localhost:8000/teacher/', {
         method: 'POST',
         headers: {

@@ -2,7 +2,7 @@ import {useForm, SubmitHandler} from "react-hook-form"
 import {ProfesorCreateAdapter} from "../adapters/ProfesorCreateAdapter.ts";
 import {useContext, useEffect, useState} from "react";
 import {ProfesorContext} from "../ProfesoresScreen.tsx";
-import MySpinner from "./MySpinner.tsx";
+import MySpinner from "../../ui/MySpinner.tsx";
 
 export default function AddProfesorForm() {
     const {register, handleSubmit} = useForm<ProfesorCreateAdapter>()

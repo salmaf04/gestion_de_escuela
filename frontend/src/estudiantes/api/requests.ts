@@ -1,75 +1,64 @@
-import {EstudianteCreateAdapter} from "../adapters/EstudianteCreateAdapter.ts";
-import {EstudianteCreateDto} from "../models/EstudianteCreateDto.ts";
+import { EstudianteCreateAdapter } from "../adapters/EstudianteCreateAdapter.ts";
+import { EstudianteCreateDB } from "../models/EstudianteCreateDB.ts";
 
 
 function postEstudiante(estudiante: EstudianteCreateAdapter) {
-
-    const estudianteDB: EstudianteCreateDto = {
+    const estudianteDB: EstudianteCreateDB = {
         name: estudiante.name,
-        fullname: estudiante.lastname,
+        age: estudiante.age,
         email: estudiante.email,
-        specialty: estudiante.specialty,
-        contract_type: estudiante.contractType,
-        experience: estudiante.experience,
+        extra_activities: estudiante.extraActivities,
         username: estudiante.username,
-        //TODO Agregar las estudiantes
-        list_of_subjects: ['asdsad']
-    }
+        password: estudiante.password
+    };
 
     console.log(estudianteDB)
-    return fetch('http://localhost:8000/subject/', {
+
+    return fetch('http://localhost:8000/student/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
         },
-        body: JSON.stringify({
-            ...estudianteDB,
-            "password": estudianteDB.username
-        }),
-    })
+        body: JSON.stringify(estudianteDB),
+    });
 }
 
 function getEstudiantes() {
-    return fetch('http://localhost:8000/subject/', {
+    return fetch('http://localhost:8000/student/', {
         headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         }
-    })
+    });
 }
 
 function putEstudiante(estudiante: EstudianteCreateAdapter) {
-    const estudianteDB: EstudianteCreateDto = {
+    const estudianteDB: EstudianteCreateDB = {
         name: estudiante.name,
-        fullname: estudiante.lastname,
+        age: estudiante.age,
         email: estudiante.email,
-        specialty: estudiante.specialty,
-        contract_type: estudiante.contractType,
-        experience: estudiante.experience,
+        extra_activities: estudiante.extraActivities,
         username: estudiante.username,
-        list_of_subjects: estudiante.estudiantes
-    }
-    //todo revisar metodo
-    return fetch('http://localhost:8000/subject/', {
+        password: estudiante.password
+    };
+
+    return fetch(`http://localhost:8000/student/`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
         },
-        body: JSON.stringify({
-            ...estudianteDB,
-            "password": estudianteDB.username
-        }),
-    })
+        body: JSON.stringify(estudianteDB),
+    });
 }
 
 function deleteEstudiante(id: string) {
-    return fetch(`http://localhost:8000/subject/${id}`, {
+    return fetch(`http://localhost:8000/student/${id}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         }
-    })
+    });
 }
 
-export default {postEstudiante, getEstudiantes, putEstudiante, deleteEstudiante}
+export default { postEstudiante, getEstudiantes, putEstudiante, deleteEstudiante };

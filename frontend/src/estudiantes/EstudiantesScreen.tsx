@@ -1,13 +1,15 @@
-import {createContext, useEffect, useState} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { EstudianteGetAdapter } from "./adapters/EstudianteGetAdapter.ts";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
-import {EstudianteGetAdapter} from "./adapters/EstudianteGetAdapter.ts";
-import {EstudianteCreateAdapter} from "./adapters/EstudianteCreateAdapter.ts";
-import {useEditEstudiante} from "./hooks/useEditEstudiante.ts";
-import {useCreateEstudiante} from "./hooks/useCreateEstudiante.ts";
-import {useGetEstudiantes} from "./hooks/useGetEstudiante.ts";
-import {useDeleteEstudiante} from "./hooks/useDeleteEstudiante.ts";
+import { useGetEstudiantes } from "./hooks/useGetEstudiantes.ts";
+import { EstudianteCreateAdapter } from "./adapters/EstudianteCreateAdapter.ts";
+import { AppContext } from "../App.tsx";
 import AddEstudianteForm from "./components/AddEstudianteForm.tsx";
+import { useEditEstudiante } from "./hooks/useEditEstudiante.ts";
+import { useCreateEstudiante } from "./hooks/useCreateEstudiante.ts";
+import { useDeleteEstudiante } from "./hooks/useDeleteEstudiante.ts";
+
 interface IEstudianteContext {
     searchText?: string;
     dataTable?: EstudianteGetAdapter[];
@@ -24,52 +26,51 @@ interface IEstudianteContext {
     isCreatting?: boolean;
 }
 
-export const EstudianteContext = createContext<IEstudianteContext>(
-    {}
-);
+export const EstudianteContext = createContext<IEstudianteContext>({});
 
 export default function EstudiantesScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<EstudianteCreateAdapter | undefined>()
-    const [showModal, setShowModal] = useState(false)
+    const [editting, setEditting] = useState<EstudianteCreateAdapter | undefined>();
+    const [showModal, setShowModal] = useState(false);
+    const { setError } = useContext(AppContext);
     const {
         editedEstudiante,
         isLoading: isEditting,
         editEstudiante
-    } = useEditEstudiante()
+    } = useEditEstudiante();
     const {
         newEstudiante,
         isLoading: isCreatting,
         createEstudiante
-    } = useCreateEstudiante()
+    } = useCreateEstudiante();
 
     const {
         isGetLoading,
         estudiantes,
         getEstudiantes,
-    } = useGetEstudiantes()
+    } = useGetEstudiantes(setError!);
 
     const {
-       deleteEstudiante,
+        deleteEstudiante,
         deletedEstudianteId,
-    } = useDeleteEstudiante()
+    } = useDeleteEstudiante();
 
     useEffect(() => {
-        getEstudiantes()
-    }, [editedEstudiante, newEstudiante , deletedEstudianteId]);
+        getEstudiantes();
+    }, [editedEstudiante, newEstudiante, deletedEstudianteId]);
 
-    const onDeleteTableItem = (deletedEstudianteId : string ) => {
-        deleteEstudiante(deletedEstudianteId)
-    }
+    const onDeleteTableItem = (deletedEstudianteId: string) => {
+        deleteEstudiante(deletedEstudianteId, setError!);
+    };
 
-    const onEditTableItem = (asignaruraEdit: EstudianteCreateAdapter) => {
-        editEstudiante(asignaruraEdit)
-
-    }
+    const onEditTableItem = (estudianteEdit: EstudianteCreateAdapter) => {
+        editEstudiante(estudianteEdit, setError!);
+    };
 
     const onAddTableItem = (estudiante: EstudianteCreateAdapter) => {
-        createEstudiante(estudiante)
-    }
+        createEstudiante(estudiante, setError!);
+    };
+
     return (
         <EstudianteContext.Provider value={{
             isGetLoading: isGetLoading,
@@ -85,15 +86,14 @@ export default function EstudiantesScreen() {
             onAddTableItem: onAddTableItem,
             isEditting: isEditting,
             isCreatting: isCreatting
-        }
-        }>
+        }}>
             <div className={'w-full h-dvh flex flex-col'}>
-                <ToolBar/>
+                <ToolBar />
                 <Body />
                 {(showModal || editting) &&
                     <AddEstudianteForm />
                 }
             </div>
         </EstudianteContext.Provider>
-    )
+    );
 }
