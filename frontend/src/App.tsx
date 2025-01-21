@@ -51,18 +51,23 @@ function App() {
                 }
                 {token ?
                     (
-                        <div className={'h-dvh bg-indigo-50 flex'}>
-                            <Sidebar/>
-                            <Routes>
-                                <Route path={'/'} element={<Navigate to={'/inicio'}/>}/>
-                                <Route path={'/inicio'} element={<HomeScreen/>}/>
-                                <Route path={'/estudiantes'} element={<EstudiantesScreen/>}/>
-                                <Route path={'/profesores'} element={<ProfesoresScreen/>}/>
-                                <Route path={'/aulas'} element={<AulasScreen/>}/>
-                                <Route path={'/asignaturas'} element={<AsignaturasScreen/>}/>
-                                <Route path={'/medios'} element={<MediosScreen/>}/>
-                                <Route path={'/mantenimientos'} element={<MantenimientosScreen/>}/>
-                            </Routes>
+                        <div className={'h-dvh bg-indigo-50 flex w-full'}>
+                            <div className={'w-1/12'}>
+                                <Sidebar/>
+                            </div>
+                            <div className={'w-11/12 overflow-x-scroll'}>
+                                <Routes>
+                                    <Route path={'/'} element={<Navigate to={'/inicio'}/>}/>
+                                    <Route path={'/inicio'} element={<HomeScreen/>}/>
+                                    <Route path={'/estudiantes'} element={<EstudiantesScreen/>}/>
+                                    <Route path={'/profesores'} element={<ProfesoresScreen/>}/>
+                                    <Route path={'/aulas'} element={<AulasScreen/>}/>
+                                    <Route path={'/asignaturas'} element={<AsignaturasScreen/>}/>
+                                    <Route path={'/medios'} element={<MediosScreen/>}/>
+                                    <Route path={'/mantenimientos'} element={<MantenimientosScreen/>}/>
+                                </Routes>
+                            </div>
+
                         </div>
                     ) :
                     (

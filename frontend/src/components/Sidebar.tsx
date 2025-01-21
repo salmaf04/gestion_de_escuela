@@ -5,7 +5,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 function Sidebar() {
     const location = useLocation()
     const navigate = useNavigate()
-    return <div className={"w-1/12 h-full flex items-center px-4"}>
+    return <div className={"h-full flex items-center px-4"}>
         <div className={'flex flex-col items-center justify-center h-4/5'}>
             {
                 Object.values(Screens).map((screen: ScreenType) => {
