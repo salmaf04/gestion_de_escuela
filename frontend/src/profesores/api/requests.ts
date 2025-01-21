@@ -15,7 +15,6 @@ function postProfesor(profesor: ProfesorCreateAdapter) {
         list_of_subjects: ['TODO'],
         salary : profesor.salary
     }
-    console.log(profesorDB)
 
     return fetch('http://localhost:8000/teacher/', {
         method: 'POST',

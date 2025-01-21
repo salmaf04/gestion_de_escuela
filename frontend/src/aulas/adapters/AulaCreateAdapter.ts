@@ -1,16 +1,11 @@
-import {AulaCreateDto} from "../models/MedioCreateDto.ts";
+import { AulaCreateDB } from "../models/AulaCreateDB.ts";
 
 export class AulaCreateAdapter {
-    static Properties = ['Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia', 'Correo', 'Usuario', 'Aulas']
-    name: string
-    hourly_load: number
-    study_program: number
-    classroom_id: string
+    location: string;
+    capacity: number;
 
-    constructor(aulaCreateDB: AulaCreateDto) {
-        this.name = aulaCreateDB.name;
-        this.hourly_load = aulaCreateDB.hourly_load;
-        this.classroom_id = aulaCreateDB.classroom_id;
-        this.study_program = aulaCreateDB.study_program
+    constructor(aulaCreateDB: AulaCreateDB) {
+        this.location = aulaCreateDB.location;
+        this.capacity = aulaCreateDB.capacity;
     }
 }
