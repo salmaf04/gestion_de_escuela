@@ -1,5 +1,5 @@
 from backend.domain.schemas.classroom import ClassroomCreateModel, ClassroomModel
-from backend.domain.models.tables import ClassroomTable
+from backend.domain.models.tables import ClassroomTable, MeanTable
 from sqlalchemy.orm import Session
 from backend.domain.filters.classroom import ClassroomFilterSchema, ClassroomFilterSet, ChangeRequest
 from sqlalchemy import select, update
@@ -33,14 +33,19 @@ class ClassroomUpdateService :
 class ClassroomPaginationService :
     
     def get_classroom_by_id(self, session: Session, id:uuid.UUID ) -> ClassroomTable :
-        query = session.query(ClassroomTable).filter(ClassroomTable.entity_id == id)
-
-        result = query.scalar()
+        query = session.query(ClassroomTable, MeanTable)
+        query = query.join(MeanTable, ClassroomTable.entity_id == MeanTable.classroom_id)
+        query = query.filter(ClassroomTable.entity_id == id)
+    
+        result = query.all()
 
         return result
     
-    def get_classroom(self, session: Session, filter_params: ClassroomFilterSchema) -> list[ClassroomTable] :
-        query = select(ClassroomTable)
+    def get_classroom(self, session: Session, filter_params: ClassroomFilterSchema)  :
+        query = select(ClassroomTable, MeanTable)
+        query = query.join(MeanTable, ClassroomTable.entity_id == MeanTable.classroom_id)
         filter_set = ClassroomFilterSet(session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
-        return session.execute(query).scalars().all()
+        query = query.group_by(ClassroomTable, MeanTable)
+        query = query.order_by(ClassroomTable.entity_id)
+        return session.execute(query).all()
