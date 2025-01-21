@@ -2,20 +2,24 @@ import LoginScreen from "./login/LoginScreen.tsx";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Sidebar from "./components/Sidebar.tsx";
 import HomeScreen from "./home/HomeScreen.tsx";
-import EstudiantesScreen from "./estudiantes/EstudiantesScreen.tsx";
+import EstudiantesScreen from "./screens/estudiantes/EstudiantesScreen.tsx";
 import ProfesoresScreen from "./profesores/ProfesoresScreen.tsx";
-import AsignaturasScreen from "./asignaturas/AsignaturasScreen.tsx";
-import MediosScreen from "./medios/MediosScreen.tsx";
-import MantenimientosScreen from "./mantenimientos/MantenimientosScreen.tsx";
-import AulasScreen from "./aulas/AulasScreen.tsx";
+import AsignaturasScreen from "./screens/asignaturas/AsignaturasScreen.tsx";
+import MediosScreen from "./screens/medios/MediosScreen.tsx";
+import MantenimientosScreen from "./screens/mantenimientos/MantenimientosScreen.tsx";
+import AulasScreen from "./screens/aulas/AulasScreen.tsx";
 import Notification from "./components/Notification.tsx";
 import {createContext, useEffect, useState} from "react";
+import {ProfesorGetAdapter} from "./profesores/adapters/ProfesorGetAdapter.ts";
 
 
 interface AppContextInterface {
     setError?: (error: Error) => void;
     token?: string;
     setToken?: (token: string) => void;
+    profesores?: ProfesorGetAdapter[];
+    setProfesores?: (profesor: ProfesorGetAdapter[]) => void;
+
 }
 
 export const AppContext = createContext<AppContextInterface>({})
@@ -23,6 +27,7 @@ export const AppContext = createContext<AppContextInterface>({})
 function App() {
     const [error, setError] = useState<Error | undefined>()
     const [token, setToken] = useState<string>()
+    const [profesores, setProfesores] = useState<ProfesorGetAdapter[]>()
     useEffect(() => {
         const t = sessionStorage.getItem('token')
         if (t)
@@ -33,7 +38,9 @@ function App() {
         <AppContext.Provider value={{
             setError: setError,
             token: token,
-            setToken: setToken
+            setToken: setToken,
+            profesores: profesores,
+            setProfesores: setProfesores,
         }}>
             <BrowserRouter>
                 {error &&

@@ -21,4 +21,17 @@ export class ProfesorCreateAdapter {
         this.username = profesorCreateDB.username;
         this.asignaturas = profesorCreateDB.list_of_subjects;
     }
+
+    public getProfesorCreateDb(): ProfesorCreateDB{
+        return {
+            name: this.name,
+            fullname: this.lastname,
+            email: this.email,
+            specialty: this.specialty,
+            contract_type: this.contractType,
+            experience: this.experience,
+            username: this.username,
+            list_of_subjects: this.asignaturas,
+        }
+    }
 }
