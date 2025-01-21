@@ -1,7 +1,7 @@
 import {ProfesorCreateDB} from "../models/ProfesorCreateDB.ts";
 
 export class ProfesorCreateAdapter {
-    static Properties = ['Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia', 'Correo', 'Usuario', 'Asignaturas']
+    static Properties = ['Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia', 'Salario' ,  'Correo', 'Usuario', 'Asignaturas']
     name: string
     lastname: string
     email: string

@@ -12,8 +12,8 @@ function postProfesor(profesor: ProfesorCreateAdapter) {
         contract_type: profesor.contractType,
         experience: profesor.experience,
         username: profesor.username,
-        list_of_subjects: ['h'],
-        salary : 56
+        list_of_subjects: ['TODO'],
+        salary : profesor.salary
     }
     console.log(profesorDB)
 

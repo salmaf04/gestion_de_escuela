@@ -2,7 +2,7 @@ import {DBObject} from "../../types.ts";
 import {ProfesorDB} from "../models/ProfesorGetDB.ts";
 
 export class ProfesorGetAdapter implements DBObject{
-    static Properties = ['Id', 'Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia', 'Correo', 'Usuario', 'Asignaturas', 'Valoracion']
+    static Properties = ['Id', 'Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia','Salario', 'Correo' ,  'Usuario', 'Asignaturas', 'Valoracion']
     id: string
     name: string
     lastname: string

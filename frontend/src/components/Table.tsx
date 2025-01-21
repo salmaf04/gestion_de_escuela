@@ -13,7 +13,6 @@ interface Props {
 
 export default function Table({header, className, Data, onRemoveRow, onEditRow, isLoading}: Props) {
     useEffect(() => {
-        console.log(isLoading)
     }, [isLoading]);
     return (
         <>
