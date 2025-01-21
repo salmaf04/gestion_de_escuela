@@ -1,13 +1,13 @@
 import {createContext, useEffect, useState} from "react";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
-import {AulaGetAdapter} from "./adapters/MedioGetAdapter.ts";
-import {AulaCreateAdapter} from "./adapters/MedioCreateAdapter.ts";
-import {useEditAula} from "./hooks/useEditMedio.ts";
-import {useCreateAula} from "./hooks/useCreateMedio.ts";
-import {useGetAulas} from "./hooks/useGetMedio.ts";
-import {useDeleteAula} from "./hooks/useDeleteMedio.ts";
-import AddAulaForm from "./components/AddMedioForm.tsx";
+import {AulaGetAdapter} from "./adapters/AulaGetAdapter.ts";
+import {AulaCreateAdapter} from "./adapters/AulaCreateAdapter.ts";
+import {useEditAula} from "./hooks/useEditAula.ts";
+import {useCreateAula} from "./hooks/useCreateAula.ts";
+import {useGetAulas} from "./hooks/useGetAula.ts";
+import {useDeleteAula} from "./hooks/useDeleteAula.ts";
+import AddAulaForm from "./components/AddAulaForm.tsx";
 interface IAulaContext {
     searchText?: string;
     dataTable?: AulaGetAdapter[];

@@ -4,10 +4,10 @@ import Body from "./components/Body.tsx";
 import {MantenimientoGetAdapter} from "./adapters/MantenimientoGetAdapter.ts";
 import {MantenimientoCreateAdapter} from "./adapters/MantenimientoCreateAdapter.ts";
 import AddMantenimientoForm from "./components/AddMantenimientoForm.tsx";
-import {useEditMantenimiento} from "./hooks/useEditEstudiante.ts";
-import {useCreateMantenimiento} from "./hooks/useCreateEstudiante.ts";
+import {useEditMantenimiento} from "./hooks/useEditMantenimiento.ts";
+import {useCreateMantenimiento} from "./hooks/useCreateMantenimiento.ts";
 import {useGetMantenimientos} from "./hooks/useGetMantenimiento.ts";
-import {useDeleteMantenimiento} from "./hooks/useDeleteEstudiante.ts";
+import {useDeleteMantenimiento} from "./hooks/useDeleteMantenimiento.ts";
 interface IMantenimientoContext {
     searchText?: string;
     dataTable?: MantenimientoGetAdapter[];

@@ -1,7 +1,7 @@
 import SearchInput from "../../components/SearchInput.tsx";
 import AddButton from "../../components/AddButton.tsx";
 import {useContext} from "react";
-import {AulaContext} from "../MediosScreen.tsx";
+import {AulaContext} from "../AulasScreen.tsx";
 
 export default function ToolBar() {
     const {

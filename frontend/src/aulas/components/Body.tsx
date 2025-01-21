@@ -1,7 +1,7 @@
 import Table from "../../components/Table.tsx";
 import {useContext} from "react";
-import {AulaContext} from "../MediosScreen.tsx";
-import {AulaGetAdapter} from "../adapters/MedioGetAdapter.ts";
+import {AulaContext} from "../AulasScreen.tsx";
+import {AulaGetAdapter} from "../adapters/AulaGetAdapter.ts";
 
 export default function Body(){
     const {dataTable, setEditting, onDeleteTableItem, isGetLoading} = useContext(AulaContext)
