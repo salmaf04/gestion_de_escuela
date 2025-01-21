@@ -1,13 +1,10 @@
-import {createContext, useEffect, useState} from "react";
+import {createContext, useState} from "react";
 import {ProfesorGetAdapter} from "./adapters/ProfesorGetAdapter.ts";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
-import {useGetProfesores} from "./hooks/useGetProfesores.ts";
 import {ProfesorCreateAdapter} from "./adapters/ProfesorCreateAdapter.ts";
 import AddProfesorForm from "./components/AddProfesorForm.tsx";
-import {useEditProfesor} from "./hooks/useEditProfesor.ts";
-import {useCreateProfesor} from "./hooks/useCreateProfesor.ts";
-import {useDeleteProfesor} from "./hooks/useDeleteProfesor.ts";
+import {useApiProfesor} from "./hooks/useApiProfesor.ts";
 
 interface IProfesorContext {
     searchText?: string;
@@ -16,13 +13,10 @@ interface IProfesorContext {
     showModal?: boolean;
     setShowModal?: (text: boolean) => void;
     setEditting?: (profesor?: ProfesorCreateAdapter) => void;
-    isGetLoading?: boolean;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
     onEditTableItem?: (profesorEdit: ProfesorCreateAdapter) => void;
     onAddTableItem?: (profesorEdit: ProfesorCreateAdapter) => void;
-    isEditting?: boolean;
-    isCreatting?: boolean;
 }
 
 export const ProfesorContext = createContext<IProfesorContext>(
@@ -34,37 +28,17 @@ export default function ProfesoresScreen() {
     const [editting, setEditting] = useState<ProfesorCreateAdapter | undefined>()
     const [showModal, setShowModal] = useState(false)
     const {
-        editedProfesor,
-        isLoading: isEditting,
-        editProfesor
-    } = useEditProfesor()
-    const {
-        newProfesor,
-        isLoading: isCreatting,
-        createProfesor
-    } = useCreateProfesor()
-
-    const {
-        isGetLoading,
         profesores,
-        getProfesores,
-    } = useGetProfesores()
-
-    const {
-       deleteProfesor,
-        deletedProfesorId,
-    } = useDeleteProfesor()
-
-    useEffect(() => {
-        getProfesores()
-    }, [editedProfesor, newProfesor , deletedProfesorId]);
-
+        deleteProfesor,
+        createProfesor,
+        updateProfesor
+    } = useApiProfesor()
     const onDeleteTableItem = (deletedProfesorId : string ) => {
         deleteProfesor(deletedProfesorId )
     }
 
     const onEditTableItem = (profesorEdit: ProfesorCreateAdapter) => {
-        editProfesor(profesorEdit)
+        updateProfesor(profesorEdit)
 
     }
 
@@ -73,7 +47,6 @@ export default function ProfesoresScreen() {
     }
     return (
         <ProfesorContext.Provider value={{
-            isGetLoading: isGetLoading,
             dataTable: profesores,
             searchText: searchText,
             editting: editting,
@@ -84,8 +57,6 @@ export default function ProfesoresScreen() {
             onDeleteTableItem: onDeleteTableItem,
             onEditTableItem: onEditTableItem,
             onAddTableItem: onAddTableItem,
-            isEditting: isEditting,
-            isCreatting: isCreatting
         }
         }>
             <div className={'w-full h-dvh flex flex-col'}>

@@ -2,15 +2,15 @@ import LoginScreen from "./login/LoginScreen.tsx";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Sidebar from "./components/Sidebar.tsx";
 import HomeScreen from "./home/HomeScreen.tsx";
-import EstudiantesScreen from "./screens/estudiantes/EstudiantesScreen.tsx";
-import ProfesoresScreen from "./profesores/ProfesoresScreen.tsx";
-import AsignaturasScreen from "./screens/asignaturas/AsignaturasScreen.tsx";
-import MediosScreen from "./screens/medios/MediosScreen.tsx";
-import MantenimientosScreen from "./screens/mantenimientos/MantenimientosScreen.tsx";
-import AulasScreen from "./screens/aulas/AulasScreen.tsx";
 import Notification from "./components/Notification.tsx";
 import {createContext, useEffect, useState} from "react";
 import {ProfesorGetAdapter} from "./profesores/adapters/ProfesorGetAdapter.ts";
+import EstudiantesScreen from "./estudiantes/EstudiantesScreen.tsx";
+import ProfesoresScreen from "./profesores/ProfesoresScreen.tsx";
+import AulasScreen from "./aulas/AulasScreen.tsx";
+import AsignaturasScreen from "./asignaturas/AsignaturasScreen.tsx";
+import MediosScreen from "./medios/MediosScreen.tsx";
+import MantenimientosScreen from "./mantenimientos/MantenimientosScreen.tsx";
 
 
 interface AppContextInterface {

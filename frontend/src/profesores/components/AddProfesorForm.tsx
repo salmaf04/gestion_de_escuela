@@ -1,24 +1,22 @@
 import {useForm, SubmitHandler} from "react-hook-form"
 import {ProfesorCreateAdapter} from "../adapters/ProfesorCreateAdapter.ts";
-import {useContext, useEffect, useState} from "react";
+import {useContext} from "react";
 import {ProfesorContext} from "../ProfesoresScreen.tsx";
-import MySpinner from "./MySpinner.tsx";
+import {useApiProfesor} from "../hooks/useApiProfesor.ts";
+import MySpinner from "../../components/MySpinner.tsx";
 
 export default function AddProfesorForm() {
     const {register, handleSubmit} = useForm<ProfesorCreateAdapter>()
-    const {editting, isEditting, isCreatting, onEditTableItem, onAddTableItem, setEditting, setShowModal} = useContext(ProfesorContext)
-
-    const [isLoading, setIsLoading] = useState<boolean>(isEditting! || isCreatting!)
-
-    useEffect(() => {
-        setIsLoading(isEditting! || isCreatting!)
-    }, [isEditting, isCreatting]);
+    const {editting, onEditTableItem, onAddTableItem, setEditting, setShowModal} = useContext(ProfesorContext)
+    const {isLoading} = useApiProfesor()
 
     const onSubmit: SubmitHandler<ProfesorCreateAdapter> = (data) => {
         if (editting)
             onEditTableItem!(data)
-        else
+        else {
+            console.log(data)
             onAddTableItem!(data)
+        }
     }
     return (
         <div className={` fixed  z-20 inset-0 bg-black bg-opacity-50 flex justify-center items-center`}

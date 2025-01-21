@@ -8,7 +8,7 @@ import {ProfesorCreateAdapter} from "../adapters/ProfesorCreateAdapter.ts";
 
 const endpoint = EndpointType.PROFESORES
 
-export const useGetServer = () => {
+export const useApiProfesor = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [profesores, setProfesores] = useState<ProfesorGetAdapter[]>()
     const {setError, profesores: profesoresAppContext, setProfesores: setProfesoresAppContext} = useContext(AppContext)
