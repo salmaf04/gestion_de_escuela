@@ -1,5 +1,5 @@
 import {DBObject} from "../../types.ts";
-import {AsignaturaDB} from "../models/AsignaturaGeDB.ts";
+import {AsignaturaDB} from "../models/AsignaturaGetDB.ts";
 
 export class AsignaturaGetAdapter implements DBObject{
     static Properties = ['Id', 'Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia', 'Correo', 'Usuario', 'Asignaturas', 'Valoracion']

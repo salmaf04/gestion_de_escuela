@@ -1,4 +1,4 @@
-import {ProfesorDB} from "../models/AsignaturaGeDB.ts";
+import {ProfesorDB} from "../models/AsignaturaGetDB.ts";
 
 export const dataExample: ProfesorDB[] = Array.from({ length: 30 }, (_, index) => ({
     id: (index + 1).toString(),
