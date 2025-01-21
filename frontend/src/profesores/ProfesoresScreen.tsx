@@ -1,4 +1,4 @@
-import {createContext, useState} from "react";
+import {createContext, useEffect, useState} from "react";
 import {ProfesorGetAdapter} from "./adapters/ProfesorGetAdapter.ts";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
@@ -31,8 +31,12 @@ export default function ProfesoresScreen() {
         profesores,
         deleteProfesor,
         createProfesor,
-        updateProfesor
+        updateProfesor,
+        getProfesores,
     } = useApiProfesor()
+    useEffect(() => {
+        getProfesores()
+    }, []);
     const onDeleteTableItem = (deletedProfesorId : string ) => {
         deleteProfesor(deletedProfesorId )
     }

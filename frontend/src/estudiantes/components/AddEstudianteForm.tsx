@@ -2,7 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { EstudianteCreateAdapter } from "../adapters/EstudianteCreateAdapter.ts";
 import { useContext, useEffect, useState } from "react";
 import { EstudianteContext } from "../EstudiantesScreen.tsx";
-import MySpinner from "../../ui/MySpinner.tsx";
+import MySpinner from "../../components/MySpinner.tsx";
 
 export default function AddEstudianteForm() {
     const { register, handleSubmit } = useForm<EstudianteCreateAdapter>();

@@ -5,6 +5,7 @@ import {AppContext} from "../../App.tsx";
 import {EndpointType} from "../../api/EndpointType.ts";
 import apiRequest from "../../api/apiRequest.ts";
 import {ProfesorCreateAdapter} from "../adapters/ProfesorCreateAdapter.ts";
+import {getProfesorCreateDbFromAdapter} from "../utils/utils.ts";
 
 const endpoint = EndpointType.PROFESORES
 
@@ -15,7 +16,7 @@ export const useApiProfesor = () => {
 
     const getProfesores = async () => {
         setIsLoading(true)
-        if (profesores)
+        if (profesoresAppContext)
             setProfesores(profesoresAppContext)
         else {
             const res = await apiRequest.getApi(endpoint)
@@ -34,14 +35,15 @@ export const useApiProfesor = () => {
 
     const createProfesor = async (profesor: ProfesorCreateAdapter) => {
         setIsLoading(true)
-        const res = await apiRequest.postApi(endpoint, profesor.getProfesorCreateDb())
+        console.log(profesor)
+        const res = await apiRequest.postApi(endpoint, getProfesorCreateDbFromAdapter(profesor))
         if (!res.ok)
             setError!(new Error(res.statusText))
         setIsLoading(false)
     }
     const updateProfesor = async (profesor: ProfesorCreateAdapter) => {
         setIsLoading(true)
-        const res = await apiRequest.patchApi(endpoint, profesor.getProfesorCreateDb())
+        const res = await apiRequest.patchApi(endpoint, getProfesorCreateDbFromAdapter(profesor))
         if (!res.ok)
             setError!(new Error(res.statusText))
         setIsLoading(false)

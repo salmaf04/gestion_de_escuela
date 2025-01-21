@@ -29,4 +29,5 @@ export class ProfesorGetAdapter implements DBObject{
         this.asignaturas = profesorModel.list_of_subjects;
         this.valoracion = profesorModel.valoration;
     }
+
 }
