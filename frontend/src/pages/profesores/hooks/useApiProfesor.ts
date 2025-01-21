@@ -35,7 +35,7 @@ export const useApiProfesor = () => {
 
     const createProfesor = async (profesor: ProfesorCreateAdapter) => {
         setIsLoading(true)
-        console.log(profesor)
+        console.log(getProfesorCreateDbFromAdapter(profesor))
         const res = await apiRequest.postApi(endpoint, getProfesorCreateDbFromAdapter(profesor))
         if (!res.ok)
             setError!(new Error(res.statusText))
