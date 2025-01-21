@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from backend.domain.schemas.note import NoteCreateModel, NoteModel
 from sqlalchemy.orm import Session
-from backend.application.services.note import NoteCreateService, NotePaginationService
+from backend.application.services.note import NoteCreateService, NotePaginationService, NoteUpdateService
 from backend.application.serializers.note import NoteMapper
 from backend.configuration import get_db
 from backend.domain.filters.note import NoteFilterSchema
@@ -9,6 +9,14 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 import json
 from backend.application.serializers.note import NoteLessThanFifty
+from backend.domain.schemas.user import UserModel
+from backend.presentation.utils.auth import authorize
+from backend.presentation.utils.auth import get_current_user
+import uuid
+from fastapi.security import OAuth2PasswordBearer
+from fastapi import Request
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 router = APIRouter()
 
@@ -17,14 +25,17 @@ router = APIRouter()
     response_model=NoteModel,
     status_code=status.HTTP_201_CREATED
 ) 
+@authorize(role=['secretary','teacher'])
 async def create_note(
     note_input: NoteCreateModel,
-    session: Session = Depends(get_db)
+    session: Session = Depends(get_db),
+    user_id : str = None,
+    current_user: UserModel = Depends(get_current_user),    
 ) :
     note_service = NoteCreateService()
     mapper = NoteMapper()
-
-    response = note_service.create_note(session=session, note=note_input)
+    
+    response = note_service.create_note(session=session, note=note_input, modified_by=user_id)
 
     return mapper.to_api(response)
 
@@ -58,4 +69,40 @@ async def read_note(
     for i, note in enumerate(notes) :
         notes_mapped[i] = mapper.to_api(note)
         
-    return notes_mapped
+    return 
+
+
+@router.patch(
+    "/note/{id}",
+    status_code=status.HTTP_200_OK,
+    response_model=NoteModel,
+    responses={ 
+        status.HTTP_404_NOT_FOUND: {
+            "description": "Not found",
+        }
+    },
+) 
+@authorize(role=['secretary','teacher'])
+async def update_note(
+    id: str,
+    new_note: float,
+    request: Request,
+    current_user: UserModel = Depends(get_current_user),
+    user_id : str = None,
+    session: Session = Depends(get_db),
+) :
+    mapper = NoteMapper()
+    update_service = NoteUpdateService()
+    pagination_service = NotePaginationService()
+
+    note = pagination_service.get_note_by_id(session= session, id=id)
+
+    if not note : 
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="There is no note with that id"
+        )
+    
+    updated_note = update_service.update_note(session=session, note_id=id, modified_by=user_id, new_note=new_note)
+
+    return mapper.to_api(updated_note)

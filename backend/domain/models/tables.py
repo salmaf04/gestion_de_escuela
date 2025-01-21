@@ -38,6 +38,9 @@ class TableName(str, Enum):
     ABSENCE = "absence"
     CLASSROOM_REQUEST = "classroom_request"
     TEACHER_SUBJECT = "teacher_subject"
+    TEACHER_MEAN = 'teacher_request_mean'
+    TEACHER_CLASSROOM = 'teacher_request_classroom'
+    SANCTION = "sanction_table"
     
 
 class MeanState(str, Enum):
@@ -64,6 +67,21 @@ teacher_subject_table = Table(
 )
 
 
+teacher_request_classroom_table = Table(
+    TableName.TEACHER_CLASSROOM.value,
+    BaseTable.metadata,
+    Column("teacher_id", ForeignKey("teacher.id"), primary_key=True),
+    Column("classroom_id", ForeignKey("classroom.entity_id"), primary_key=True),
+)
+
+
+teacher_request_mean_table = Table(
+    TableName.TEACHER_MEAN.value,
+    BaseTable.metadata,
+    Column("teacher_id", ForeignKey("teacher.id"), primary_key=True),
+    Column("mean_id", ForeignKey("mean.entity_id"), primary_key=True),
+)
+
 class UserTable(BaseTable) :
     __tablename__ = TableName.USER.value
     
@@ -87,6 +105,7 @@ class TeacherTable(UserTable):
     contract_type = Column(String)
     experience = Column(Integer)
     average_valoration = Column(Double)
+    salary = Column(Double)
     """
     students: Mapped[List["Student"]] = relationship(
         secondary=f"{TableName.STUDENT.value}", back_populates="teacher", viewonly=True
@@ -95,6 +114,21 @@ class TeacherTable(UserTable):
         secondary=f"{TableName.SUBJECT.value}", back_populates="teacher", viewonly=True
     )
     """
+    
+    sanctions: Mapped[List["SanctionTable"]] = relationship(back_populates="teacher")
+
+    mean_request = relationship(
+        "MeanTable",
+        secondary=teacher_request_mean_table,
+        back_populates="teachers",
+    )
+
+    classroom_request = relationship(
+        "ClassroomTable",
+        secondary=teacher_request_classroom_table,
+        back_populates="teachers",
+    )
+
     student_note_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="teacher")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="teacher")
     teacher_subject_association = relationship("SubjectTable", secondary=teacher_subject_table, back_populates="teacher_subject_association")
@@ -204,7 +238,12 @@ class ClassroomTable(BaseTable) :
     location = Column(String)
     capacity = Column(Integer)
 
-    technological_means: Mapped[List["TechnologicalMeanTable"]] = relationship(back_populates="classroom")
+    teachers = relationship(
+        "TeacherTable",
+        secondary=teacher_request_classroom_table,
+        back_populates="classroom_request",
+    )
+    means: Mapped[List["MeanTable"]] = relationship(back_populates="classroom")
     subjects : Mapped[List["SubjectTable"]] = relationship(back_populates="classroom")
 
 
@@ -231,9 +270,19 @@ class MeanTable(BaseTable) :
     name = Column(String) 
     state: Mapped[MeanState] = mapped_column(String)
     location = Column(String)
+    classroom_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.CLASSROOM.value}.entity_id"))
     type: Mapped[MeanType] = mapped_column(String)
 
     mean_mainteniance_association: Mapped[List["MeanMaintenianceTable"]] = relationship(back_populates="mean")
+
+    classroom: Mapped["ClassroomTable"] = relationship(back_populates="means")
+
+    teachers = relationship(
+        "TeacherTable",
+        secondary=teacher_request_mean_table,
+        back_populates="mean_request",
+    )
+
 
     __mapper_args__ = {
         "polymorphic_identity": "mean",
@@ -245,10 +294,8 @@ class TechnologicalMeanTable(MeanTable) :
     __tablename__ = TableName.TECHNOLOGICAL_MEAN.value  
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.MEAN.value}.entity_id"), primary_key=True)
-    classroom_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.CLASSROOM.value}.entity_id"))
 
-    classroom: Mapped["ClassroomTable"] = relationship(back_populates="technological_means")
-
+    
     __mapper_args__ = {
         "polymorphic_identity": "technological_mean",
     }
@@ -278,7 +325,6 @@ class MyDateTable(BaseTable):
 
     date = Column(DateTime, unique= True)
 
-    mean_mainteniance_association: Mapped[List["MeanMaintenianceTable"]] = relationship(back_populates="date")
     
 
 class StudentNoteTable(BaseTable) :
@@ -288,11 +334,13 @@ class StudentNoteTable(BaseTable) :
     student_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.STUDENT.value}.id"), primary_key=True)
     subject_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.SUBJECT.value}.entity_id"), primary_key=True)
     
-    note_value = Column(Integer)
+    last_modified_by: Mapped[int] = mapped_column(ForeignKey(f"{TableName.USER.value}.entity_id"), nullable=False)
+
+    note_value = Column(Integer)    
     
-    teacher: Mapped["TeacherTable"] = relationship(back_populates="student_note_association")
-    student: Mapped["StudentTable"] = relationship(back_populates="student_note_association")
-    subject: Mapped["SubjectTable"] = relationship(back_populates="student_teacher_association")
+    teacher: Mapped["TeacherTable"] = relationship(back_populates="student_note_association", foreign_keys=[teacher_id])
+    student: Mapped["StudentTable"] = relationship(back_populates="student_note_association", foreign_keys=[student_id])
+    subject: Mapped["SubjectTable"] = relationship(back_populates="student_teacher_association", foreign_keys=[subject_id])
 
 
 class TeacherNoteTable(BaseTable) :
@@ -338,7 +386,16 @@ class MeanMaintenianceTable(BaseTable) :
     cost = Column(Double)
 
     mean: Mapped["MeanTable"] = relationship(back_populates="mean_mainteniance_association")
-    date: Mapped["MyDateTable"] = relationship(back_populates="mean_mainteniance_association")
+    date = Column(DateTime, nullable=False)
+
+
+class SanctionTable(BaseTable):
+    __tablename__ = TableName.SANCTION.value
+
+    teacher_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.TEACHER.value}.id"), nullable=False)
+    teacher: Mapped["TeacherTable"] = relationship(back_populates="sanctions")
+    amount: Mapped[Double] = mapped_column(Double, nullable=False)
+    date = Column(DateTime, nullable=False)
 
 
 

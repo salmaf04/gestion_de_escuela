@@ -22,21 +22,21 @@ class StudentCreateService :
 
 class StudentDeletionService:
     def delete_student(self, session: Session, student: StudentModel) -> None :
-        session.delete(student)
+        session.delete(student)        
         session.commit()
-        
+            
 
 class StudentUpdateService :
     def update_one(self, session : Session , changes : ChangeRequest , student : StudentModel ) -> StudentModel: 
         query = update(StudentTable).where(StudentTable.entity_id == student.id)
-        
+            
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
         session.execute(query)
         session.commit()
-        
+            
         student = student.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
         return student
-           
+            
 
 class StudentPaginationService :
     def get_student_by_email(self, session: Session, email: str) -> StudentTable :
@@ -45,20 +45,21 @@ class StudentPaginationService :
         result = query.first()
 
         return result
-    
+        
     def get_student_by_id(self, session: Session, id:uuid.UUID ) -> StudentTable :
         query = session.query(StudentTable).filter(StudentTable.entity_id == id)
 
         result = query.scalar()
 
         return result
-    
+        
     def get_students(self, session: Session, filter_params: StudentFilterSchema) -> list[StudentTable] :
         query = select(StudentTable)
         filter_set = StudentFilterSet(session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
         return session.execute(query).scalars().all()
     
+        
 
 class UpdateNoteAverageService : 
     def update_note_average(self, session: Session, student_id: str, new_note : int ) : 

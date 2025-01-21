@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 import uuid
+from backend.domain.schemas.mean import MeanClassroomModel
 
 class ClassroomCreateModel(BaseModel):
     location : str
@@ -7,4 +8,5 @@ class ClassroomCreateModel(BaseModel):
 
 class ClassroomModel(ClassroomCreateModel):
     id: uuid.UUID
+    means : list[MeanClassroomModel]
     

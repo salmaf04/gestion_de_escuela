@@ -2,12 +2,13 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from backend.domain.schemas.mean_mainteniance import MeanMaintenanceCreateModel, MeanMaintenanceModel
 from sqlalchemy.orm import Session
 from backend.application.services.mean_mainteniance import MeanMaintenanceCreateService, MeanMaintenancePaginationService
-from backend.application.serializers.mean_mainteniance import MeanMaintenanceMapper
+from backend.application.serializers.mean_mainteniance import MeanMaintenanceMapper, MeanMaintenanceDate
 from backend.configuration import get_db
 from backend.domain.filters.mean_mainteniance import MeanMaintenanceFilterSchema
 from typing import Annotated
 from fastapi import Query
 from fastapi.encoders import jsonable_encoder
+from typing import List, Any
 
 router = APIRouter()
 
@@ -30,10 +31,11 @@ async def create_mean_maintenance(
 
 @router.get(
     "/mean_mainteniance",
-    response_model=dict[int, MeanMaintenanceModel],
+    response_model=dict[int, MeanMaintenanceModel] | List[Any] | int,
     status_code=status.HTTP_200_OK
 )
 async def read_mean_maintenance(
+    date_filter = False,
     filters: MeanMaintenanceFilterSchema = Depends(),
     session: Session = Depends(get_db),
     mainteniance_by_classroom_filter : Annotated[
@@ -47,8 +49,11 @@ async def read_mean_maintenance(
     mapper = MeanMaintenanceMapper()
 
     if mainteniance_by_classroom_filter :
-        mainteniance_by_classroom = mean_maintenance_pagination_service.get_mainenance_by_classroom(session=session)
-        mean_maintenances_mapped = jsonable_encoder(mainteniance_by_classroom)
+        classroom, total = mean_maintenance_pagination_service.maintenance_by_classroom(session=session)
+        return mapper.to_classroom(classroom), {"total mainteniances after two years" : total }
+    elif date_filter :
+        mean_maintenances = mean_maintenance_pagination_service.maintenace_average(session=session)
+        return mapper.to_date(mean_maintenances)
     else :
         mean_maintenances = mean_maintenance_pagination_service.get_mean_maintenance(session=session, filter_params=filters)
 
