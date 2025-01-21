@@ -12,9 +12,10 @@ function postProfesor(profesor: ProfesorCreateAdapter) {
         contract_type: profesor.contractType,
         experience: profesor.experience,
         username: profesor.username,
-        list_of_subjects: profesor.asignaturas,
-        salary : profesor.salary
+        list_of_subjects: ['h'],
+        salary : 56
     }
+    console.log(profesorDB)
 
     return fetch('http://localhost:8000/teacher/', {
         method: 'POST',
@@ -46,6 +47,7 @@ function putProfesor(profesor: ProfesorCreateAdapter) {
         contract_type: profesor.contractType,
         experience: profesor.experience,
         username: profesor.username,
+        salary : profesor.salary,
         list_of_subjects: profesor.asignaturas
     }
     //todo revisar metodo
