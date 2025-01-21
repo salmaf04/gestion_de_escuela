@@ -15,3 +15,12 @@ class MeanCreateModel(BaseModel):
     location: str 
     classroom_id: uuid.UUID
     type: str
+
+
+class MeanClassroomModel (BaseModel):
+    id: uuid.UUID
+    name: str
+    state: str
+    location: str
+    type: str
+    

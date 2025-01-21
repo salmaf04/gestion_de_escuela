@@ -47,7 +47,7 @@ async def delete_classroom(
 
 @router.get(
     "/classroom",
-    response_model=dict[int, ClassroomModel],
+    response_model=list[ClassroomModel],
     status_code=status.HTTP_200_OK
 )
 async def read_classroom(
@@ -58,19 +58,14 @@ async def read_classroom(
     mapper = ClassroomMapper()
 
     classrooms = classroom_pagination_service.get_classroom(session=session, filter_params=filters)
-
+   
     if not classrooms :
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="There is no classroom with that id"
         )
-
-    classrooms_mapped = {}    
-     
-    for i, classroom in enumerate(classrooms) :
-        classrooms_mapped[i] = mapper.to_api(classroom)
-        
-    return classrooms_mapped
+         
+    return mapper.to_api(classrooms)
 
 @router.patch(
     "/classroom/{id}",

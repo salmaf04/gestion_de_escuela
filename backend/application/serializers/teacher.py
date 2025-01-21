@@ -3,6 +3,7 @@ from backend.domain.models.tables import TeacherTable
 from pydantic import BaseModel
 from datetime import datetime
 import uuid
+from fpdf import FPDF
 
 class TeacherBetterThanEight(BaseModel) :
     name : str
@@ -47,6 +48,22 @@ class TeacherMapper :
             valoration= teacher.average_valoration,
             salary=teacher.salary
         )
+    
+
+    def to_pdf(self, resultados) -> TeacherModel :
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=12)
+
+        # Agregar los datos al PDF
+        for resultado in resultados:
+            line = f"ID: {resultado.id}, Nombre: {resultado.name}, Especialidades: {resultado.specialty}, Email: {resultado.email}, Salario: {resultado.salary}"
+            pdf.cell(400, 20, txt=line, ln=True)
+
+        # Guardar el PDF
+        pdf.output("resultado.pdf")
+
+
     
     def to_subject_list(self, subjects) :
         names = []
@@ -106,6 +123,7 @@ class TeacherMapper :
             
 
         return serialized_values
+    
 
         
         
