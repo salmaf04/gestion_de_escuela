@@ -1,6 +1,7 @@
 import { AulaGetDB } from "../models/AulaGetDB.ts";
 
 export class AulaGetAdapter {
+    static Properties = ['Id', 'Ubicación', 'Capacidad']
     id: string;
     location: string;
     capacity: number;
