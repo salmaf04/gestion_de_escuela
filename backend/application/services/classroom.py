@@ -33,12 +33,10 @@ class ClassroomUpdateService :
 class ClassroomPaginationService :
     
     def get_classroom_by_id(self, session: Session, id:uuid.UUID ) -> ClassroomTable :
-        query = session.query(ClassroomTable, MeanTable)
-        query = query.join(MeanTable, ClassroomTable.entity_id == MeanTable.classroom_id)
+        query = session.query(ClassroomTable)
         query = query.filter(ClassroomTable.entity_id == id)
     
-        result = query.all()
-
+        result = session.execute(query).scalars().first()
         return result
     
     def get_classroom(self, session: Session, filter_params: ClassroomFilterSchema)  :
