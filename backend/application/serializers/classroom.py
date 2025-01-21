@@ -39,11 +39,11 @@ class ClassroomMapper :
                 )
                 serialized_values.append(new_classroom)
 
-    def to_api_post(self,classroom: ClassroomTable) -> ClassroomModelPost :
+    def to_api_post(self, classroom: ClassroomTable) -> ClassroomModelPost :
         return  ClassroomModelPost(
-            id = ClassroomTable.entity_id,
-            location = ClassroomTable.location,
-            capacity = ClassroomTable.capacity
+            id = classroom.entity_id,
+            location = classroom.location,
+            capacity = classroom.capacity
         )
 
     
