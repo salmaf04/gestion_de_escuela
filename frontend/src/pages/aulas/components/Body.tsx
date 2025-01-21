@@ -1,10 +1,10 @@
 import Table from "../../../components/Table.tsx";
 import {useContext} from "react";
-import {AulaContext} from "../AulasScreen.tsx";
+import {AulasContext} from "../AulasScreen.tsx";
 import {AulaGetAdapter} from "../adapters/AulaGetAdapter.ts";
 
 export default function Body(){
-    const {dataTable, setEditting, onDeleteTableItem, isGetLoading} = useContext(AulaContext)
+    const {dataTable, setEditting, onDeleteTableItem, isGetLoading} = useContext(AulasContext)
     return(
             <Table
                 className={'h-5/6'}
