@@ -12,8 +12,8 @@ function postProfesor(profesor: ProfesorCreateAdapter) {
         contract_type: profesor.contractType,
         experience: profesor.experience,
         username: profesor.username,
-        //TODO Agregar las asignaturas
-        list_of_subjects: ['asdsad']
+        list_of_subjects: profesor.asignaturas,
+        salary : profesor.salary
     }
 
     return fetch('http://localhost:8000/teacher/', {

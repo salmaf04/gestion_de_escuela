@@ -9,10 +9,12 @@ export class ProfesorGetAdapter implements DBObject{
     specialty: string
     contractType: string
     experience: number
+    salary : number
     email: string
     username: string
     asignaturas: string[]
     valoracion: string
+
 
     constructor(profesorModel: ProfesorDB) {
         this.id = profesorModel.id;
@@ -23,6 +25,7 @@ export class ProfesorGetAdapter implements DBObject{
         this.experience = profesorModel.experience;
         this.email = profesorModel.email;
         this.username = profesorModel.username;
+        this.salary = profesorModel.salary
         this.asignaturas = profesorModel.list_of_subjects;
         this.valoracion = profesorModel.valoration;
     }

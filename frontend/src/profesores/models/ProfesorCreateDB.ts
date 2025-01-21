@@ -6,5 +6,6 @@ export type ProfesorCreateDB = {
     "contract_type": string
     "experience": number
     "username": string
+    "salary" : number,
     "list_of_subjects": string[]
 }

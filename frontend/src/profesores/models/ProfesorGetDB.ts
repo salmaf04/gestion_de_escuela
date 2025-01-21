@@ -1,4 +1,5 @@
 export type ProfesorDB = {
+
         id: string
         "name": string
         "fullname": string
@@ -7,6 +8,7 @@ export type ProfesorDB = {
         "experience": number
         "email": string
         "username": string
+        "salary" : number,
         "list_of_subjects": string[]
         "valoration": string
     }
