@@ -2,8 +2,7 @@ import {useForm, SubmitHandler} from "react-hook-form"
 import {ProfesorCreateAdapter} from "../adapters/ProfesorCreateAdapter.ts";
 import {useContext} from "react";
 import {ProfesorContext} from "../ProfesoresScreen.tsx";
-import {useApiProfesor} from "../hooks/useApiProfesor.ts";
-import MySpinner from "../../components/MySpinner.tsx";
+import MySpinner from "./MySpinner.tsx";
 
 export default function AddProfesorForm() {
     const {register, handleSubmit} = useForm<ProfesorCreateAdapter>()
@@ -13,10 +12,8 @@ export default function AddProfesorForm() {
     const onSubmit: SubmitHandler<ProfesorCreateAdapter> = (data) => {
         if (editting)
             onEditTableItem!(data)
-        else {
-            console.log(data)
+        else
             onAddTableItem!(data)
-        }
     }
     return (
         <div className={` fixed  z-20 inset-0 bg-black bg-opacity-50 flex justify-center items-center`}
@@ -26,7 +23,8 @@ export default function AddProfesorForm() {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className={'grid grid-cols-2 gap-y-1 gap-x-10'}>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Nombre</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Nombre</label>
                             <input
                                 type="text"
                                 {...register("name", {
@@ -38,7 +36,8 @@ export default function AddProfesorForm() {
                             />
                         </div>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Apellidos</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Apellidos</label>
                             <input
                                 type="text" {...register("lastname", {
                                 required: true
@@ -48,7 +47,8 @@ export default function AddProfesorForm() {
                             />
                         </div>
                         <div className="group group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Usuario</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Usuario</label>
                             <input
                                 type="text" {...register("username", {
                                 required: true
@@ -58,7 +58,8 @@ export default function AddProfesorForm() {
                             />
                         </div>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Especialidad</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Especialidad</label>
                             <input
                                 type="text" {...register("specialty", {
                                 required: true
@@ -69,7 +70,8 @@ export default function AddProfesorForm() {
                             />
                         </div>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Contrato</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Contrato</label>
                             <input
                                 type="text" {...register("contractType", {
                                 required: true
@@ -80,7 +82,8 @@ export default function AddProfesorForm() {
                             />
                         </div>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Experiencia</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Experiencia</label>
                             <input
                                 type="number" {...register("experience", {
                                 required: true
@@ -91,7 +94,20 @@ export default function AddProfesorForm() {
                             />
                         </div>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Correo</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Salario</label>
+                            <input
+                                type="number" {...register("salary", {
+                                required: true
+                            })}
+                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
+
+                                defaultValue={editting?.salary}
+                            />
+                        </div>
+                        <div className="group mb-4">
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Correo</label>
                             <input
                                 type="text" {...register("email", {
                                 required: true

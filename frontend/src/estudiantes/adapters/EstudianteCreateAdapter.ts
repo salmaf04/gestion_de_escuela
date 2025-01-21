@@ -1,16 +1,20 @@
-import {EstudianteCreateDto} from "../models/EstudianteCreateDto.ts";
+import { EstudianteCreateDB } from "../models/EstudianteCreateDB.ts";
 
 export class EstudianteCreateAdapter {
-    static Properties = ['Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia', 'Correo', 'Usuario', 'Estudiantes']
-    name: string
-    hourly_load: number
-    study_program: number
-    classroom_id: string
+    static Properties = ['Nombre', 'Edad', 'Correo', 'ActividadesExtra', 'Usuario', 'Contraseña']
+    name: string;
+    age: number;
+    email: string;
+    extraActivities: boolean;
+    username: string;
+    password: string;
 
-    constructor(estudianteCreateDB: EstudianteCreateDto) {
+    constructor(estudianteCreateDB: EstudianteCreateDB) {
         this.name = estudianteCreateDB.name;
-        this.hourly_load = estudianteCreateDB.hourly_load;
-        this.classroom_id = estudianteCreateDB.classroom_id;
-        this.study_program = estudianteCreateDB.study_program
+        this.age = estudianteCreateDB.age;
+        this.email = estudianteCreateDB.email;
+        this.extraActivities = estudianteCreateDB.extra_activities;
+        this.username = estudianteCreateDB.username;
+        this.password = estudianteCreateDB.password;
     }
 }

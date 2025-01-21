@@ -1,12 +1,12 @@
 import {useContext, useState} from "react";
-import {AsignaturaDB, AsignaturaGetResponse} from "../models/AsignaturaGetResponse.ts";
+import {AsignaturaDB, AsignaturaGetDB} from "../models/AsignaturaGetDB.ts";
 import asignaturaApi from "../api/requests.ts";
 import {AppContext} from "../../App.tsx";
 import {AsignaturaGetAdapter} from "../adapters/AsignaturaGetAdapter.ts";
 
 export const useGetAsignaturas = () => {
     const [isGetLoading, setIsGetLoading] = useState(false)
-    const [asignaturas, setAsignaturas] = useState<AsignaturaGetResponse[]>()
+    const [asignaturas, setAsignaturas] = useState<AsignaturaGetDB[]>()
     const {setError} = useContext(AppContext)
 
 
@@ -14,7 +14,7 @@ export const useGetAsignaturas = () => {
         setIsGetLoading(true)
         const res = await asignaturaApi.getAsignaturas()
         if (res.ok) {
-            const data: AsignaturaGetResponse = await res.json()
+            const data: AsignaturaGetDB = await res.json()
 
             setAsignaturas(Object.values(data)
                 .map((asignatura: AsignaturaDB) => new AsignaturaGetAdapter(asignatura)))

@@ -1,29 +1,27 @@
-import {useContext, useState} from "react";
-import {EstudianteCreateAdapter} from "../adapters/EstudianteCreateAdapter.ts";
-import {EstudianteCreateDto} from "../models/EstudianteCreateDto.ts";
-import estudianterApi from "../api/requests.ts";
-import {AppContext} from "../../App.tsx";
+import { useState } from "react";
+import { EstudianteCreateAdapter } from "../adapters/EstudianteCreateAdapter.ts";
+import { EstudianteCreateDB } from "../models/EstudianteCreateDB.ts";
+import estudianteApi from "../api/requests.ts";
 
 export const useEditEstudiante = () => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [editedEstudiante, setEditedEstudiante] = useState<EstudianteCreateAdapter>()
-    const {setError} = useContext(AppContext)
+    const [isLoading, setIsLoading] = useState(false);
+    const [editedEstudiante, setEditedEstudiante] = useState<EstudianteCreateAdapter>();
 
-    const editEstudiante = async (estudiante: EstudianteCreateAdapter) => {
-        setIsLoading(true)
-        const res = await estudianterApi.putEstudiante(estudiante)
+    const editEstudiante = async (estudiante: EstudianteCreateAdapter, onError: (error: Error) => void) => {
+        setIsLoading(true);
+        const res = await estudianteApi.putEstudiante(estudiante);
         if (res.ok) {
-            const data: EstudianteCreateDto = await res.json()
-            setEditedEstudiante(new EstudianteCreateAdapter(data))
+            const data: EstudianteCreateDB = await res.json();
+            setEditedEstudiante(new EstudianteCreateAdapter(data));
         } else {
-            setError!(new Error(res.statusText))
+            onError(new Error(res.statusText));
         }
-        setIsLoading(false)
-    }
+        setIsLoading(false);
+    };
 
     return {
         isLoading,
         editedEstudiante,
         editEstudiante,
-    }
-}
+    };
+};

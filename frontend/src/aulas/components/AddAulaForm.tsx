@@ -1,8 +1,8 @@
 import {useForm, SubmitHandler} from "react-hook-form"
 import {useContext, useEffect, useState} from "react";
 import MySpinner from "../../components/MySpinner.tsx";
-import {AulaCreateAdapter} from "../adapters/MedioCreateAdapter.ts";
-import {AulaContext} from "../MediosScreen.tsx";
+import {AulaCreateAdapter} from "../adapters/AulaCreateAdapter.ts";
+import {AulaContext} from "../AulasScreen.tsx";
 
 export default function AddAulaForm() {
     const {register, handleSubmit} = useForm<AulaCreateAdapter>()

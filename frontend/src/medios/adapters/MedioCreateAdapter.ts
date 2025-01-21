@@ -1,16 +1,17 @@
-import {MedioCreateDto} from "../models/MedioCreateDto.ts";
+import { MedioCreateDB } from "../models/MedioCreateDB.ts";
 
 export class MedioCreateAdapter {
-    static Properties = ['Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia', 'Correo', 'Usuario', 'Medios']
-    name: string
-    hourly_load: number
-    study_program: number
-    classroom_id: string
+    name: string;
+    state: string;
+    location: string;
+    classroom_id: string;
+    type: string;
 
-    constructor(medioCreateDB: MedioCreateDto) {
+    constructor(medioCreateDB: MedioCreateDB) {
         this.name = medioCreateDB.name;
-        this.hourly_load = medioCreateDB.hourly_load;
+        this.state = medioCreateDB.state;
+        this.location = medioCreateDB.location;
         this.classroom_id = medioCreateDB.classroom_id;
-        this.study_program = medioCreateDB.study_program
+        this.type = medioCreateDB.type;
     }
 }
