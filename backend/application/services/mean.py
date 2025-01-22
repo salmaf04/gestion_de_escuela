@@ -4,8 +4,9 @@ from backend.domain.models.tables import MeanTable , TechnologicalMeanTable , Te
 from sqlalchemy import and_
 import uuid
 from sqlalchemy import select, update
-from backend.domain.filters.mean import MeanFilterSet , MeanFilterSchema, ChangeRequest
+from backend.domain.filters.mean import MeanFilterSet , MeanFilterSchema, MeanChangeRequest
 from backend.application.services.classroom import ClassroomPaginationService
+from fastapi import HTTPException, status
 
 class MeanCreateService() :
 
@@ -20,8 +21,17 @@ class MeanCreateService() :
         classroom = classroom_pagination_service.get_classroom_by_id(session=session, id=mean.classroom_id)
 
         mean_dict = mean.model_dump()
+        mean_type = table_to_insert.get(mean.type, None)
 
-        new_mean = table_to_insert.get(mean.type)(**mean_dict)
+        if mean_type is None :
+            mean_valid_types = ', '.join(table_to_insert.keys())
+
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Inserte un tipo de medio válido : {mean_valid_types}"
+            )
+
+        new_mean = mean_type(**mean_dict)
         new_mean.classroom_id = classroom.entity_id
         new_mean.classroom = classroom
         session.add(new_mean)
@@ -35,7 +45,7 @@ class MeanDeletionService:
         
         
 class MeanUpdateService :
-    def update_one(self, session : Session , changes : ChangeRequest , mean : MeanModel ) -> MeanModel: 
+    def update_one(self, session : Session , changes : MeanChangeRequest , mean : MeanModel ) -> MeanModel: 
         query = update(MeanTable).where(MeanTable.entity_id == mean.id)
         
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))

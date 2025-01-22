@@ -42,3 +42,4 @@ class ValorationPaginationService :
         filter_set = ValorationFilterSet(session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
         return session.execute(query).scalars().all()
+    

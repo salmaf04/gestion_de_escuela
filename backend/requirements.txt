@@ -7,3 +7,4 @@ PyJWT==2.10.1
 python-dotenv==1.0.1
 SQLAlchemy==2.0.36
 sqlalchemy_filterset==2.3.0
+alembic==1.14.0
