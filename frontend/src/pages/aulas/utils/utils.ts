@@ -1,4 +1,4 @@
-// frontend/src/aulas/utils/utils.ts
+
 import { AulaCreateDB } from "../models/AulaCreateDB.ts";
 import { AulaCreateAdapter } from "../adapters/AulaCreateAdapter.ts";
 

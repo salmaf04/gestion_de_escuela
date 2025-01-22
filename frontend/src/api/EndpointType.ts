@@ -2,5 +2,6 @@ export enum EndpointType {
     PROFESORES = "teacher",
     ESTUDIANTES = "student",
     AULAS = 'classroom',
-    MEDIOS = 'mean'
+    MEDIOS = 'mean',
+    ASIGNATURAS = 'subject',
 }

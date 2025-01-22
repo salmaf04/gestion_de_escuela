@@ -7,4 +7,4 @@ export type AsignaturaGetDB = {
     classroom_id: string;
 }
 
-export type AsignaturaGeDB = AsignaturaGetDB[]
+export type AsignaturaGetResponse = AsignaturaGetDB[]

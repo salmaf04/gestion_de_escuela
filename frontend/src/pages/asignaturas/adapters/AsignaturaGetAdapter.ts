@@ -1,7 +1,7 @@
 import { AsignaturaGetDB } from "../models/AsignaturaGetDB.ts";
 
 export class AsignaturaGetAdapter {
-    static Properties = ['Nombre', 'Carga Horaria', 'P de Estudio ']
+    static Properties = ['ID' , 'Nombre', 'Carga Horaria', 'P de Estudio ' ,' Aula ID']
     id: string;
     name: string;
     hourly_load: number;

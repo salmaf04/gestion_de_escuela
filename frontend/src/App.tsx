@@ -14,6 +14,7 @@ import MantenimientosScreen from "./pages/mantenimientos/MantenimientosScreen.ts
 import {AulaGetAdapter} from "./pages/aulas/adapters/AulaGetAdapter.ts";
 import {MedioGetAdapter} from "./pages/medios/adapters/MedioGetAdapter.ts";
 import UsuariosScreen from "./pages/usuarios/UsuariosScreen.tsx";
+import {AsignaturaGetAdapter} from "./pages/asignaturas/adapters/AsignaturaGetAdapter.ts";
 
 
 interface AppContextInterface {
@@ -26,6 +27,8 @@ interface AppContextInterface {
     setAulas?: (aulas: AulaGetAdapter[]) => void;
     medios?: MedioGetAdapter[];
     setMedios?: (medios: MedioGetAdapter[]) => void;
+    asignaturas?: AsignaturaGetAdapter[];
+    setAsignaturas?: (asignaturas: AsignaturaGetAdapter[]) => void;
 
 
 }
@@ -38,6 +41,7 @@ function App() {
     const [profesores, setProfesores] = useState<ProfesorGetAdapter[]>()
     const [aulas , setAulas] = useState<AulaGetAdapter[]>()
     const [medios, setMedios] = useState<MedioGetAdapter[]>()
+    const [asignaturas, setAsignaturas] = useState<AsignaturaGetAdapter[]>()
     useEffect(() => {
         const t = sessionStorage.getItem('token')
         if (t)
@@ -55,6 +59,8 @@ function App() {
             setAulas: setAulas,
             medios: medios,
             setMedios: setMedios,
+            asignaturas: asignaturas,
+            setAsignaturas: setAsignaturas,
         }}>
             <BrowserRouter>
                 {error &&
