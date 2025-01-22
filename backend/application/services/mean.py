@@ -6,6 +6,7 @@ import uuid
 from sqlalchemy import select, update
 from backend.domain.filters.mean import MeanFilterSet , MeanFilterSchema, ChangeRequest
 from backend.application.services.classroom import ClassroomPaginationService
+from fastapi import HTTPException, status
 
 class MeanCreateService() :
 
@@ -20,8 +21,15 @@ class MeanCreateService() :
         classroom = classroom_pagination_service.get_classroom_by_id(session=session, id=mean.classroom_id)
 
         mean_dict = mean.model_dump()
+        mean_type = table_to_insert.get(mean.type, None)
 
-        new_mean = table_to_insert.get(mean.type)(**mean_dict)
+        if mean_type is None :
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Inserte un tipo de medio válido"
+            )
+
+        new_mean = mean_type(**mean_dict)
         new_mean.classroom_id = classroom.entity_id
         new_mean.classroom = classroom
         session.add(new_mean)
