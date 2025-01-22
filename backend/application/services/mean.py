@@ -4,7 +4,7 @@ from backend.domain.models.tables import MeanTable , TechnologicalMeanTable , Te
 from sqlalchemy import and_
 import uuid
 from sqlalchemy import select, update
-from backend.domain.filters.mean import MeanFilterSet , MeanFilterSchema, ChangeRequest
+from backend.domain.filters.mean import MeanFilterSet , MeanFilterSchema, MeanChangeRequest
 from backend.application.services.classroom import ClassroomPaginationService
 from fastapi import HTTPException, status
 
@@ -45,7 +45,7 @@ class MeanDeletionService:
         
         
 class MeanUpdateService :
-    def update_one(self, session : Session , changes : ChangeRequest , mean : MeanModel ) -> MeanModel: 
+    def update_one(self, session : Session , changes : MeanChangeRequest , mean : MeanModel ) -> MeanModel: 
         query = update(MeanTable).where(MeanTable.entity_id == mean.id)
         
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))

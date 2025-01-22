@@ -16,6 +16,6 @@ class MeanFilterSchema(BaseModel):
     location : str | None = None
     type : str | None = None
     
-class ChangeRequest(BaseModel) :
+class MeanChangeRequest(BaseModel) :
     state : Optional[str] = None
     location : Optional[str] = None

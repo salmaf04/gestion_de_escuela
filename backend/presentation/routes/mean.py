@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, status
 from backend.domain.schemas.mean import MeanModel, MeanCreateModel
 from backend.application.services.mean import MeanCreateService, MeanPaginationService, MeanDeletionService, MeanUpdateService
 from sqlalchemy.orm import Session
-from backend.domain.filters.mean import MeanFilterSchema, ChangeRequest
+from backend.domain.filters.mean import MeanFilterSchema, MeanChangeRequest
 from backend.configuration import get_db
 
 
@@ -84,7 +84,7 @@ async def read_mean(
 )
 async def mean_update(
     id : str,
-    filters: ChangeRequest = Depends(),
+    filters: MeanChangeRequest = Depends(),
     session: Session = Depends(get_db)
 ) :
     mean_pagination_service = MeanPaginationService()
