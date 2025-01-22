@@ -13,7 +13,7 @@ class TeacherFilterSet(FilterSet):
     experience = RangeFilter(TeacherTable.experience)
 
 class TeacherFilterSchema(BaseModel):
-    id : uuid.UUID
+    id : uuid.UUID | None = None
     name : str | None = None
     email : str | None = None
     specialty : str | None = None
