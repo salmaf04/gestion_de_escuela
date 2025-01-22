@@ -27,6 +27,7 @@ router = APIRouter()
 ) 
 @authorize(role=['secretary','teacher'])
 async def create_note(
+    request: Request,
     note_input: NoteCreateModel,
     session: Session = Depends(get_db),
     user_id : str = None,
