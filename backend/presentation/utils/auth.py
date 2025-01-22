@@ -110,8 +110,8 @@ def authorize(role: list):
             user_id1 = user.id
             user_role = user.type
             
-            if check_id and check_id != str(user_id1) and method == 'PATCH' and url != 'note':
-                raise HTTPException(status_code=403, detail=f"User is not authorized to access")
+            #if check_id and check_id != str(user_id1) and method == 'PATCH' and url != 'note':
+                #raise HTTPException(status_code=403, detail=f"User is not authorized to access")
 
             if user_role not in role:
                 role_str = ','.join(role)
