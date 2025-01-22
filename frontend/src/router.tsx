@@ -14,4 +14,5 @@ export const Screens = {
     Asignaturas: new ScreenType('Asignaturas', AsignaturaIcon, '/asignaturas'),
     Medios: new ScreenType('Medios', MediosIcon, '/medios'),
     Mantenimientos: new ScreenType('Mantenimientos', MediosIcon, '/mantenimientos'),
+    Usuarios : new ScreenType('Usuarios' ,  MediosIcon , '/usuarios')
 }
