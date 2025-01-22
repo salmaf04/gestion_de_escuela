@@ -8,7 +8,7 @@ import apiRequest from "../../../api/apiRequest.ts";
 import { NotaCreateAdapter } from "../adapters/NotaCreateAdapter.ts";
 import { getNotaCreateDbFromAdapter } from "../utils/utils.ts";
 
-const endpoint = EndpointType.NOTA;
+const endpoint = EndpointType.NOTAS;
 
 export const useApiNotas = () => {
     const [isLoading, setIsLoading] = useState(false);
