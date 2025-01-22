@@ -24,9 +24,11 @@ class MeanCreateService() :
         mean_type = table_to_insert.get(mean.type, None)
 
         if mean_type is None :
+            mean_valid_types = ', '.join(table_to_insert.keys())
+
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Inserte un tipo de medio válido"
+                detail=f"Inserte un tipo de medio válido : {mean_valid_types}"
             )
 
         new_mean = mean_type(**mean_dict)
