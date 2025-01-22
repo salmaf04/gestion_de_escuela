@@ -1,11 +1,15 @@
+import {RolesEnum} from "./api/RolesEnum.ts";
+
 export default class ScreenType {
     title: string;
     icon: string;
     path: string;
-    constructor(title: string, icon: string, path: string) {
+    allowedRoles: RolesEnum[]
+    constructor(title: string, icon: string, path: string, allowedRoles: RolesEnum[]) {
         this.title = title;
         this.icon = icon;
         this.path = path;
+        this.allowedRoles = allowedRoles
     }
 
 }
