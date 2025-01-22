@@ -11,34 +11,31 @@ const endpoint = EndpointType.PROFESORES
 
 export const useApiProfesor = () => {
     const [isLoading, setIsLoading] = useState(false)
-    const [profesores, setProfesores] = useState<ProfesorGetAdapter[]>()
     const {setError, profesores: profesoresAppContext, setProfesores: setProfesoresAppContext} = useContext(AppContext)
 
     const getProfesores = async () => {
         setIsLoading(true)
-        if (profesoresAppContext)
-            setProfesores(profesoresAppContext)
-        else {
-            const res = await apiRequest.getApi(endpoint)
-            if (res.ok) {
-                const data: ProfesorGetResponse = await res.json()
-                const profesorArray = Object.values(data)
-                    .map((profesor: ProfesorDB) => new ProfesorGetAdapter(profesor))
-                setProfesores(profesorArray)
-                setProfesoresAppContext!(profesorArray)
-            } else {
-                setError!(new Error(res.statusText))
-            }
+        if (profesoresAppContext) {
+            setIsLoading(false)
         }
+         const res = await apiRequest.getApi(endpoint)
+         if (res.ok) {
+             const data: ProfesorGetResponse = await res.json()
+             const profesorArray = Object.values(data)
+                 .map((profesor: ProfesorDB) => new ProfesorGetAdapter(profesor))
+             setProfesoresAppContext!(profesorArray)
+         } else {
+             setError!(new Error(res.statusText))
+         }
         setIsLoading(false)
     }
 
     const createProfesor = async (profesor: ProfesorCreateAdapter) => {
         setIsLoading(true)
-        console.log(getProfesorCreateDbFromAdapter(profesor))
         const res = await apiRequest.postApi(endpoint, getProfesorCreateDbFromAdapter(profesor))
         if (!res.ok)
             setError!(new Error(res.statusText))
+        await getProfesores()
         setIsLoading(false)
     }
     const updateProfesor = async (profesor: ProfesorCreateAdapter) => {
@@ -46,6 +43,7 @@ export const useApiProfesor = () => {
         const res = await apiRequest.patchApi(endpoint, getProfesorCreateDbFromAdapter(profesor))
         if (!res.ok)
             setError!(new Error(res.statusText))
+        await getProfesores()
         setIsLoading(false)
     }
 
@@ -54,11 +52,11 @@ export const useApiProfesor = () => {
         const res = await apiRequest.deleteApi(endpoint, id);
         if (!res.ok)
             setError!(new Error(res.statusText));
+        await getProfesores()
         setIsLoading(false);
     };
 
     return {
-        profesores,
         isLoading,
         getProfesores,
         createProfesor,

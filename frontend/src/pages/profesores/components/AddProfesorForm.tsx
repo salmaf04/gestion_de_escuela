@@ -15,6 +15,9 @@ export default function AddProfesorForm() {
             onEditTableItem!(data)
         else
             onAddTableItem!(data)
+
+        setEditting!(undefined)
+        setShowModal!(false)
     }
     return (
         <div className={` fixed  z-20 inset-0 bg-black bg-opacity-50 flex justify-center items-center`}
