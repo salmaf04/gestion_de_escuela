@@ -13,6 +13,7 @@ import MediosScreen from "./pages/medios/MediosScreen.tsx";
 import MantenimientosScreen from "./pages/mantenimientos/MantenimientosScreen.tsx";
 import {AulaGetAdapter} from "./pages/aulas/adapters/AulaGetAdapter.ts";
 import {MedioGetAdapter} from "./pages/medios/adapters/MedioGetAdapter.ts";
+import UsuariosScreen from "./pages/usuarios/UsuariosScreen.tsx";
 
 
 interface AppContextInterface {
@@ -75,6 +76,7 @@ function App() {
                                 <Route path={'/asignaturas'} element={<AsignaturasScreen/>}/>
                                 <Route path={'/medios'} element={<MediosScreen/>}/>
                                 <Route path={'/mantenimientos'} element={<MantenimientosScreen/>}/>
+                                <Route path={'/usuarios'} element={<UsuariosScreen /> }/>
                             </Routes>
                         </div>
                     ) :
