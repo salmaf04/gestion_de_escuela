@@ -28,8 +28,8 @@ function getOneApi(endpoint: EndpointType, id: string) {
     })
 }
 
-function patchApi(endpoint: EndpointType, body: IApiObject) {
-    return fetch(`http://localhost:8000/${endpoint}`, {
+function patchApi(endpoint: EndpointType, id: string, body: IApiObject) {
+    return fetch(`http://localhost:8000/${endpoint}/${id}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',

@@ -9,9 +9,9 @@ import {ISelect} from "../../../types/ISelect.ts";
 
 export default function AddProfesorForm() {
     const {register, handleSubmit} = useForm<ProfesorCreateAdapter>()
-    const {editting, onEditTableItem, onAddTableItem, setEditting, setShowModal} = useContext(ProfesorContext)
+    const {editting, onEditTableItem, onAddTableItem, setShowModal} = useContext(ProfesorContext)
     const {isLoading} = useApiProfesor()
-    const [asignaturas, setAsignaturas] = useState(editting ? editting.asignaturas ?? [] : [])
+    const [arraySelect, setArraySelect] = useState<ISelect[]>([])
     const data = [
         { id: 1, name: 'Wade Cooper' },
         { id: 2, name: 'Arlene Mccoy' },
@@ -24,17 +24,17 @@ export default function AddProfesorForm() {
         { id: 9, name: 'Claudie Smitham' },
         { id: 10, name: 'Emil Schaefer' },
     ]
-    const [selected, setSelected] = useState<ISelect>(data[0])
-
 
     const onSubmit: SubmitHandler<ProfesorCreateAdapter> = (data) => {
-        console.log(data.asignaturas)
+        const data1 = {
+            ...data,
+            asignaturas: arraySelect.map((i)=>i.name)
+        }
         if (editting)
-            onEditTableItem!(data)
+            onEditTableItem!(data1)
         else
-            onAddTableItem!(data)
+            onAddTableItem!(data1)
 
-        setEditting!(undefined)
         setShowModal!(false)
     }
     return (
@@ -53,7 +53,7 @@ export default function AddProfesorForm() {
                                     required: "true"
                                 })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.name}
+                                defaultValue={editting?.body.name}
 
                             />
                         </div>
@@ -65,7 +65,7 @@ export default function AddProfesorForm() {
                                 required: true
                             })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.lastname}
+                                defaultValue={editting?.body.lastname}
                             />
                         </div>
                         <div className="group group ">
@@ -76,7 +76,7 @@ export default function AddProfesorForm() {
                                 required: true
                             })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.username}
+                                defaultValue={editting?.body.username}
                             />
                         </div>
                         <div className="group ">
@@ -88,7 +88,7 @@ export default function AddProfesorForm() {
                             })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
 
-                                defaultValue={editting?.specialty}
+                                defaultValue={editting?.body.specialty}
                             />
                         </div>
                         <div className="group ">
@@ -100,7 +100,7 @@ export default function AddProfesorForm() {
                             })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
 
-                                defaultValue={editting?.contractType}
+                                defaultValue={editting?.body.contractType}
                             />
                         </div>
                         <div className="group ">
@@ -112,7 +112,7 @@ export default function AddProfesorForm() {
                             })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
 
-                                defaultValue={editting?.experience}
+                                defaultValue={editting?.body.experience}
                             />
                         </div>
                         <div className="group ">
@@ -124,7 +124,7 @@ export default function AddProfesorForm() {
                             })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
 
-                                defaultValue={editting?.salary}
+                                defaultValue={editting?.body.salary}
                             />
                         </div>
                         <div className="group ">
@@ -136,24 +136,28 @@ export default function AddProfesorForm() {
                             })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
 
-                                defaultValue={editting?.email}
+                                defaultValue={editting?.body.email}
                             />
 
                         </div>
 
                         {
-                            asignaturas.map((_, index) => {
+                            arraySelect.map((item, index) => {
                                 return (
                                     <div className="group relative" key={index}>
                                         <Select
                                             {...register(`asignaturas.${index}`, {
-                                                value: selected.name
+                                                value: arraySelect[index].name
                                             })}
                                             label={`Asignatura ${index+1}`}
                                             labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
                                             data={data}
-                                            selected={selected}
-                                            setSelected={setSelected}
+                                            selected={item}
+                                            setSelected={(newItem)=>{setArraySelect((prev) =>
+                                                prev.map((item, idx) =>
+                                                    idx === index ? newItem : item
+                                                )
+                                            );}}
                                         />
 
                                     </div>
@@ -164,7 +168,7 @@ export default function AddProfesorForm() {
                             type={'button'}
                             className={'self-center w-full translate-y-3 py-2 h-10 text-center text-indigo-500 rounded-lg border-2 border-indigo-500 text-sm font-semibold hover:bg-indigo-50 transition-colors'}
                             onClick={() => {
-                                setAsignaturas((prev) => [...prev, ""])
+                                setArraySelect((prev) => [...prev, data[0]])
                             }}
                         >
                             Insertar asignatura
@@ -174,7 +178,6 @@ export default function AddProfesorForm() {
                     <div className="flex space-x-3 justify-center mt-10">
                         <button type="button" onClick={() => {
                             setShowModal!(false);
-                            setEditting!(undefined);
                         }}
                                 hidden={isLoading}
                                 className="hover:bg-gray-400 transition-colors w-full py-2 bg-gray-300 rounded-lg text-gray-900">Cancelar
