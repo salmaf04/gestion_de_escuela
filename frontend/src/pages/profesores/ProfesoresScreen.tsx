@@ -50,11 +50,27 @@ export default function ProfesoresScreen() {
 
     const onAddTableItem = (profesor: ProfesorCreateAdapter) => {
         createProfesor(profesor)
-
     }
+
+    const [dataTable, setDataTable] = useState<ProfesorGetAdapter[]>(profesores ?? [])
+    useEffect(() => {
+        setDataTable(profesores!)
+    }, [profesores]);
+    useEffect(() => {
+        setDataTable(
+            profesores?.filter((row) => {
+                return Object.values(row).some((value) => {
+                    return value?.toString().toLowerCase().includes(searchText.toLowerCase())
+                })
+            }) ?? []
+        )
+    }, [searchText, profesores]);
+
+
+
     return (
         <ProfesorContext.Provider value={{
-            dataTable: profesores,
+            dataTable: dataTable,
             searchText: searchText,
             editting: editting,
             showModal: showModal,
