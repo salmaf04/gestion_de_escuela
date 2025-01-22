@@ -149,6 +149,8 @@ export default function AddProfesorForm() {
                                             {...register(`asignaturas.${index}`, {
                                                 value: selected.name
                                             })}
+                                            label={`Asignatura ${index+1}`}
+                                            labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
                                             data={data}
                                             selected={selected}
                                             setSelected={setSelected}
