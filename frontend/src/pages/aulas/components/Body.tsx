@@ -4,7 +4,7 @@ import {AulasContext} from "../AulasScreen.tsx";
 import {AulaGetAdapter} from "../adapters/AulaGetAdapter.ts";
 
 export default function Body(){
-    const {dataTable, setEditting, onDeleteTableItem, isGetLoading} = useContext(AulasContext)
+    const {dataTable,  setEditting, onDeleteTableItem, isGetLoading} = useContext(AulasContext)
     return(
             <Table
                 className={'h-5/6'}
