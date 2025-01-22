@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from backend.application.services.student import StudentCreateService, StudentPaginationService, StudentDeletionService, StudentUpdateService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.student import StudentMapper
-from backend.domain.filters.student import StudentFilterSchema, ChangeRequest
+from backend.domain.filters.student import StudentFilterSchema, StudentChangeRequest
 from backend.configuration import get_db
 
 router = APIRouter()
@@ -96,12 +96,14 @@ async def read_student(
 )
 async def update_student(
     id : str,
-    filters: ChangeRequest = Depends(),
+    filters: StudentChangeRequest = Depends(),
     session: Session = Depends(get_db)
 ) :
     student_pagination_service = StudentPaginationService()
     student_update_service = StudentUpdateService()
     mapper = StudentMapper()
+
+    print(filters.name)
 
     student = student_pagination_service.get_student_by_id(session=session, id = id)
     student_model = mapper.to_api(student)
@@ -111,8 +113,7 @@ async def update_student(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="There is no student with that id"
         )
-    print(filters.specialty)
-
+    
     student_updated = student_update_service.update_one(session=session, changes=filters, student=student_model)
 
     return student_updated
