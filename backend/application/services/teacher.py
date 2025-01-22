@@ -6,7 +6,7 @@ from backend.domain.models.tables import TeacherTable, teacher_subject_table, Te
 from sqlalchemy import and_, update
 import uuid
 from sqlalchemy import select
-from backend.domain.filters.teacher import TeacherFilterSet , TeacherFilterSchema, ChangeRequest
+from backend.domain.filters.teacher import TeacherFilterSet , TeacherFilterSchema, TeacherChangeRequest
 from backend.domain.filters.subject import SubjectFilterSchema
 from ..utils.auth import get_password_hash, get_password
 from backend.application.services.subject import SubjectPaginationService
@@ -58,11 +58,24 @@ class TeacherDeletionService:
     def delete_teacher(self, session: Session, teacher: TeacherModel) -> None :
         session.delete(teacher)
         session.commit()
-        
-       
+
+
 class TeacherUpdateService :
-    pass
-    """ 
+    def update_one(self, session : Session , changes : TeacherChangeRequest , teacher : TeacherModel ) -> TeacherModel: 
+        query = update(TeacherTable).where(TeacherTable.entity_id == teacher.id)
+        query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
+        session.execute(query)
+        session.commit()
+            
+        teacher = teacher.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
+        return teacher
+            
+
+
+""" 
+class TeacherUpdateService :
+    
+   
     def update_one(self, session : Session , changes : ChangeRequest , teacher : TeacherModel ) -> TeacherModel: 
         print(changes.hash_password)
         if changes.hash_password :
@@ -81,7 +94,7 @@ class TeacherUpdateService :
         
         teacher = teacher.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
         return teacher
-        """
+"""
         
 
 class TeacherPaginationService :

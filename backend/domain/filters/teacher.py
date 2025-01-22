@@ -17,7 +17,7 @@ class TeacherFilterSchema(BaseModel):
     contract_type : str | None = None
     experince : tuple[int, int] | None = None
     
-class ChangeRequest(BaseModel) :
+class TeacherChangeRequest(BaseModel) :
     name : Optional[str] = None
     full_name : Optional[str] = None
     specialty : Optional[str] = None

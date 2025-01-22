@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from backend.application.services.teacher import TeacherCreateService, TeacherPaginationService, TeacherDeletionService, TeacherUpdateService, TeacherSubjectService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.teacher import TeacherMapper
-from backend.domain.filters.teacher import TeacherFilterSchema, ChangeRequest
+from backend.domain.filters.teacher import TeacherFilterSchema, TeacherChangeRequest
 from backend.configuration import get_db
 from backend.presentation.utils.auth import get_current_user
 from backend.domain.schemas.user import UserModel
@@ -114,8 +114,9 @@ async def read_teacher(
 )
 @authorize(role=["secretary","teacher"])
 async def update_teacher(
+    request: Request,
     id : str,
-    filters: ChangeRequest = Depends(),
+    filters: TeacherChangeRequest = Depends(),
     current_user : UserModel = Depends(get_current_user),
     session: Session = Depends(get_db)
 ) :
@@ -133,8 +134,7 @@ async def update_teacher(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="There is no teacher with that id"
         )
-    print(filters.specialty)
-
+    
     teacher_updated = teacher_update_service.update_one(session=session, changes=filters, teacher=teacher_model)
 
     return teacher_updated
