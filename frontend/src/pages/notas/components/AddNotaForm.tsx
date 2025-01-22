@@ -10,12 +10,6 @@ import { useFieldArray, useForm} from "react-hook-form";
 import {ISelect} from "../../../types/ISelect.ts";
 import {NotaCreateAdapter} from "../adapters/NotaCreateAdapter.ts";
 
-interface IRowAddNote{
-    estudianteId: string
-    asignaturaId: string
-    nota: number
-}
-
 export default function AddNotaForm() {
     const { onAddTableItem, setShowModal, editting, onEditTableItem, setEditting } = useContext(NotasContext);
     const {getEstudiantes, isLoading} = useApiEstudiante()
@@ -39,7 +33,6 @@ export default function AddNotaForm() {
                 student_id: data[`estudiante${i}`],
                 subject_id: data[`asignatura${i}`],
                 note_value: data[`note_value${i}`],
-                teacher_id: "asdsadasdasdadad"
             })
         }
         if (editting)
@@ -93,7 +86,7 @@ export default function AddNotaForm() {
                                                 })}
                                                 label={'Asignatura'}
                                                 labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
-                                                data={estudiantesSelect}
+                                                data={asignaturasSelect}
                                                 control={control}
                                             />
                                         </div>

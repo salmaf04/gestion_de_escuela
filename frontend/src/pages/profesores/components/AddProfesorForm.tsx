@@ -1,29 +1,31 @@
 import {useForm, SubmitHandler} from "react-hook-form"
 import {ProfesorCreateAdapter} from "../adapters/ProfesorCreateAdapter.ts";
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {ProfesorContext} from "../ProfesoresScreen.tsx";
 import MySpinner from "../../../components/MySpinner.tsx";
 import {useApiProfesor} from "../hooks/useApiProfesor.ts";
-import Select from "../../../components/Select.tsx";
 import {ISelect} from "../../../types/ISelect.ts";
+import {useApiAsignatura} from "../../asignaturas/hooks/useApiAsignatura.ts";
+import {AppContext} from "../../../App.tsx";
+import SelectProfesor from "./SelectProfesor.tsx";
 
 export default function AddProfesorForm() {
     const {register, handleSubmit} = useForm<ProfesorCreateAdapter>()
     const {editting, onEditTableItem, onAddTableItem, setShowModal, setEditting} = useContext(ProfesorContext)
     const {isLoading} = useApiProfesor()
+    const {getAsignaturas} = useApiAsignatura()
+    const {asignaturas} = useContext(AppContext)
+
+    useEffect(() => {
+        getAsignaturas()
+    }, []);
     const [arraySelect, setArraySelect] = useState<ISelect[]>([])
-    const data = [
-        { id: 1, name: 'Wade Cooper' },
-        { id: 2, name: 'Arlene Mccoy' },
-        { id: 3, name: 'Devon Webb' },
-        { id: 4, name: 'Tom Cook' },
-        { id: 5, name: 'Tanya Fox' },
-        { id: 6, name: 'Hellen Schmidt' },
-        { id: 7, name: 'Caroline Schultz' },
-        { id: 8, name: 'Mason Heaney' },
-        { id: 9, name: 'Claudie Smitham' },
-        { id: 10, name: 'Emil Schaefer' },
-    ]
+    const asignaturasSelect: ISelect[] = asignaturas?.map((item)=>{
+        return {
+            id: item.id,
+            name: item?.name
+        }
+    }) ?? []
 
     const onSubmit: SubmitHandler<ProfesorCreateAdapter> = (data) => {
         const data1 = {
@@ -145,13 +147,13 @@ export default function AddProfesorForm() {
                             arraySelect.map((item, index) => {
                                 return (
                                     <div className="group relative" key={index}>
-                                        <Select
+                                        <SelectProfesor
                                             {...register(`asignaturas.${index}`, {
                                                 value: arraySelect[index].name
                                             })}
                                             label={`Asignatura ${index+1}`}
                                             labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
-                                            data={data}
+                                            data={asignaturasSelect}
                                             selected={item}
                                             setSelected={(newItem)=>{setArraySelect((prev) =>
                                                 prev.map((item, idx) =>
@@ -168,7 +170,7 @@ export default function AddProfesorForm() {
                             type={'button'}
                             className={'self-center w-full translate-y-3 py-2 h-10 text-center text-indigo-500 rounded-lg border-2 border-indigo-500 text-sm font-semibold hover:bg-indigo-50 transition-colors'}
                             onClick={() => {
-                                setArraySelect((prev) => [...prev, data[0]])
+                                setArraySelect((prev) => [...prev, asignaturasSelect[0]])
                             }}
                         >
                             Insertar asignatura

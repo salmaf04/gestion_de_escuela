@@ -20,6 +20,7 @@ export default function AddAulaForm() {
             onEditTableItem!(data);
         else
             onAddTableItem!(data);
+        setShowModal!(false)
     };
 
     return (
