@@ -1,7 +1,7 @@
 import { NotaGetDB } from "../models/NotaGetDB.ts";
 
 export class NotaGetAdapter {
-    static Properties = ['Profesor_id', 'Estudiante_id', 'Asignatura_id', 'Valor_Nota'];
+    static Properties = ['Profesor', 'Estudiante', 'Asignatura', 'Nota'];
     id: string;
     teacher_id: string;
     student_id: string;
