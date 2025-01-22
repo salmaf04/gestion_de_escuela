@@ -16,7 +16,7 @@ class StudentFilterSchema(BaseModel):
     email : str | None = None
     extra_activities : bool | None = None
 
-class ChangeRequest(BaseModel) :
+class StudentChangeRequest(BaseModel) :
     name : Optional[str] = None
     age : Optional[int] = None
     email : Optional[str] = None

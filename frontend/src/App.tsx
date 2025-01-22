@@ -11,6 +11,9 @@ import AulasScreen from "./pages/aulas/AulasScreen.tsx";
 import AsignaturasScreen from "./pages/asignaturas/AsignaturasScreen.tsx";
 import MediosScreen from "./pages/medios/MediosScreen.tsx";
 import MantenimientosScreen from "./pages/mantenimientos/MantenimientosScreen.tsx";
+import {AulaGetAdapter} from "./pages/aulas/adapters/AulaGetAdapter.ts";
+import {MedioGetAdapter} from "./pages/medios/adapters/MedioGetAdapter.ts";
+import UsuariosScreen from "./pages/usuarios/UsuariosScreen.tsx";
 
 
 interface AppContextInterface {
@@ -19,6 +22,11 @@ interface AppContextInterface {
     setToken?: (token: string) => void;
     profesores?: ProfesorGetAdapter[];
     setProfesores?: (profesor: ProfesorGetAdapter[]) => void;
+    aulas?: AulaGetAdapter[];
+    setAulas?: (aulas: AulaGetAdapter[]) => void;
+    medios?: MedioGetAdapter[];
+    setMedios?: (medios: MedioGetAdapter[]) => void;
+
 
 }
 
@@ -28,6 +36,8 @@ function App() {
     const [error, setError] = useState<Error | undefined>()
     const [token, setToken] = useState<string>()
     const [profesores, setProfesores] = useState<ProfesorGetAdapter[]>()
+    const [aulas , setAulas] = useState<AulaGetAdapter[]>()
+    const [medios, setMedios] = useState<MedioGetAdapter[]>()
     useEffect(() => {
         const t = sessionStorage.getItem('token')
         if (t)
@@ -41,6 +51,10 @@ function App() {
             setToken: setToken,
             profesores: profesores,
             setProfesores: setProfesores,
+            aulas: aulas,
+            setAulas: setAulas,
+            medios: medios,
+            setMedios: setMedios,
         }}>
             <BrowserRouter>
                 {error &&
@@ -65,9 +79,9 @@ function App() {
                                     <Route path={'/asignaturas'} element={<AsignaturasScreen/>}/>
                                     <Route path={'/medios'} element={<MediosScreen/>}/>
                                     <Route path={'/mantenimientos'} element={<MantenimientosScreen/>}/>
-                                </Routes>
+                                <Route path={'/usuarios'} element={<UsuariosScreen /> }/>
+                            </Routes>
                             </div>
-
                         </div>
                     ) :
                     (

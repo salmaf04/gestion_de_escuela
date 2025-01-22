@@ -14,12 +14,14 @@ from sqlalchemy import func
 from backend.application.utils.valoration_average import get_teacher_valoration_average, calculate_teacher_average
 from backend.domain.models.tables import ClassroomTable, TechnologicalMeanTable, SubjectTable, teacher_subject_table
 from sqlalchemy.orm import aliased
+from fastapi import HTTPException, status
 
 class TeacherCreateService :
 
     def create_teacher(self, session: Session, teacher: TeacherCreateModel) -> TeacherTable :
         subject_service = SubjectPaginationService()
         subjects = subject_service.get_subjects(session=session, filter_params=SubjectFilterSchema(name=teacher.list_of_subjects))
+        self.check_subject(subjects, teacher.list_of_subjects)
         teacher_dict = teacher.model_dump(exclude={'password', 'list_of_subjects'})
         hashed_password = get_password_hash(get_password(teacher))
         new_teacher = TeacherTable(**teacher_dict, hash_password=hashed_password)
@@ -31,6 +33,27 @@ class TeacherCreateService :
         return new_teacher
     
     
+    def check_subject(self,subjects_in_table, subjects_in_request):
+        subjects_in_table_names = [subject.name for subject in subjects_in_table]
+        subjects_in_table_names.sort()
+        subjects_in_request.sort()
+        wrong_subjects = []
+
+        for subject_in_table, subject_in_request in zip(subjects_in_table_names, subjects_in_request):
+            if subject_in_table != subject_in_request:
+                wrong_subjects.append(subject_in_table)
+            
+        if wrong_subjects:
+            wrong_subjects_str = ', '.join(wrong_subjects)
+            if len(wrong_subjects) == 1:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail=f"Está intentando crear un nuevo profesor con una asignatura no válida: {wrong_subjects_str}"
+                )
+            raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail=f"Está intentando crear un nuevo profesor con asignaturas no válidas: {wrong_subjects_str}"
+                )
 class TeacherDeletionService:
     def delete_teacher(self, session: Session, teacher: TeacherModel) -> None :
         session.delete(teacher)

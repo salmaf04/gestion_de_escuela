@@ -1,99 +1,86 @@
-import {createContext, useEffect, useState} from "react";
+// frontend/src/pages/medios/MediosScreen.tsx
+import { createContext, useEffect, useState } from "react";
+import { MedioGetAdapter } from "./adapters/MedioGetAdapter.ts";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
-import {MedioGetAdapter} from "./adapters/MedioGetAdapter.ts";
-import {MedioCreateAdapter} from "./adapters/MedioCreateAdapter.ts";
+import { MedioCreateAdapter } from "./adapters/MedioCreateAdapter.ts";
 import AddMedioForm from "./components/AddMedioForm.tsx";
-import {useEditMedio} from "./hooks/useEditMedio.ts";
-import {useCreateMedio} from "./hooks/useCreateMedio.ts";
-import {useGetMedios} from "./hooks/useGetMedio.ts";
-import {useDeleteMedio} from "./hooks/useDeleteMedio.ts";
+import { useApiMedios } from "./hooks/useApiMedios.ts";
+
 interface IMedioContext {
     searchText?: string;
     dataTable?: MedioGetAdapter[];
     editting?: MedioCreateAdapter;
     showModal?: boolean;
+    isGetLoading?: boolean;
+    isCreatting?: boolean;
+    isEditting?: boolean;
     setShowModal?: (text: boolean) => void;
     setEditting?: (medio?: MedioCreateAdapter) => void;
-    isGetLoading?: boolean;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
     onEditTableItem?: (medioEdit: MedioCreateAdapter) => void;
     onAddTableItem?: (medioEdit: MedioCreateAdapter) => void;
-    isEditting?: boolean;
-    isCreatting?: boolean;
 }
 
-export const MedioContext = createContext<IMedioContext>(
-    {}
-);
+export const MedioContext = createContext<IMedioContext>({});
 
 export default function MediosScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<MedioCreateAdapter | undefined>()
-    const [showModal, setShowModal] = useState(false)
+    const [editting, setEditting] = useState<MedioCreateAdapter | undefined>();
+    const [showModal, setShowModal] = useState(false);
+    const [isCreating, setIsCreating] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const {
-        editedMedio,
-        isLoading: isEditting,
-        editMedio
-    } = useEditMedio()
-    const {
-        newMedio,
-        isLoading: isCreatting,
-        createMedio
-    } = useCreateMedio()
-
-    const {
-        isGetLoading,
         medios,
+        deleteMedio,
+        createMedio,
+        updateMedio,
         getMedios,
-    } = useGetMedios()
-
-    const {
-       deleteMedio,
-        deletedMedioId,
-    } = useDeleteMedio()
+    } = useApiMedios();
 
     useEffect(() => {
-        getMedios()
-    }, [editedMedio, newMedio , deletedMedioId]);
+        getMedios();
+    }, []);
 
-    const onDeleteTableItem = (deletedMedioId : string ) => {
-        deleteMedio(deletedMedioId)
-    }
+    const onDeleteTableItem = (deletedMedioId: string) => {
+        deleteMedio(deletedMedioId);
+    };
 
     const onEditTableItem = (medioEdit: MedioCreateAdapter) => {
-        editMedio(medioEdit)
-
-    }
+        setIsEditing(true);
+        updateMedio(medioEdit);
+        setIsEditing(false);
+    };
 
     const onAddTableItem = (medio: MedioCreateAdapter) => {
-        createMedio(medio)
-    }
+        setIsCreating(true);
+        createMedio(medio);
+        setIsCreating(false);
+    };
+
     return (
         <MedioContext.Provider value={{
-            isGetLoading: isGetLoading,
             dataTable: medios,
             searchText: searchText,
             editting: editting,
             showModal: showModal,
+            isCreatting: isCreating,
+            isEditting: isEditing,
             setShowModal: setShowModal,
             setEditting: setEditting,
             setSearchText: setSearchText,
             onDeleteTableItem: onDeleteTableItem,
             onEditTableItem: onEditTableItem,
             onAddTableItem: onAddTableItem,
-            isEditting: isEditting,
-            isCreatting: isCreatting
-        }
-        }>
+        }}>
             <div className={'w-full h-dvh flex flex-col'}>
-                <ToolBar/>
+                <ToolBar />
                 <Body />
                 {(showModal || editting) &&
                     <AddMedioForm />
                 }
             </div>
         </MedioContext.Provider>
-    )
+    );
 }

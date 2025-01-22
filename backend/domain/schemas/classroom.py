@@ -8,5 +8,8 @@ class ClassroomCreateModel(BaseModel):
 
 class ClassroomModel(ClassroomCreateModel):
     id: uuid.UUID
-    means : list[MeanClassroomModel]
+    means : list[MeanClassroomModel] | None = None
+
+class ClassroomModelPost(ClassroomCreateModel) :
+    id: uuid.UUID
     
