@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select, update
-from backend.domain.filters.student import StudentFilterSet , StudentFilterSchema, ChangeRequest
+from backend.domain.filters.student import StudentFilterSet , StudentFilterSchema, StudentChangeRequest
 from backend.domain.schemas.student import StudentCreateModel, StudentModel
 from backend.domain.models.tables import StudentTable
 from ..utils.auth import get_password_hash
@@ -27,9 +27,8 @@ class StudentDeletionService:
             
 
 class StudentUpdateService :
-    def update_one(self, session : Session , changes : ChangeRequest , student : StudentModel ) -> StudentModel: 
+    def update_one(self, session : Session , changes : StudentChangeRequest , student : StudentModel ) -> StudentModel: 
         query = update(StudentTable).where(StudentTable.entity_id == student.id)
-            
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
         session.execute(query)
         session.commit()
