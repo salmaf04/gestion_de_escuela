@@ -41,7 +41,7 @@ class ClassroomPaginationService :
     
     def get_classroom(self, session: Session, filter_params: ClassroomFilterSchema)  :
         query = select(ClassroomTable, MeanTable)
-        query = query.join(MeanTable, ClassroomTable.entity_id == MeanTable.classroom_id)
+        query = query.outerjoin(MeanTable, ClassroomTable.entity_id == MeanTable.classroom_id)
         filter_set = ClassroomFilterSet(session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
         query = query.group_by(ClassroomTable, MeanTable)

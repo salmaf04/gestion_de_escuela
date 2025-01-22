@@ -35,9 +35,11 @@ class ClassroomMapper :
                             location = classroom[1].location,
                             type = classroom[1].type
                         )
-                    ]
+                    ] if classroom[1] else None
                 )
                 serialized_values.append(new_classroom)
+
+        return serialized_values
 
     def to_api_post(self, classroom: ClassroomTable) -> ClassroomModelPost :
         return  ClassroomModelPost(
