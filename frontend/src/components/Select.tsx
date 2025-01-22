@@ -3,23 +3,42 @@ import { Label, Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@h
 import { ChevronUpDownIcon } from '@heroicons/react/16/solid'
 import { CheckIcon } from '@heroicons/react/20/solid'
 import {ISelect} from "../types/ISelect.ts";
+import {useController, UseControllerProps} from "react-hook-form";
+import {useEffect, useState} from "react";
 
 
 interface Props{
     data: ISelect[],
-    selected: ISelect,
-    setSelected: (item: ISelect) => void,
     label?: string,
     labelClassName?: string,
+    defaultValue?: ISelect,
 }
-export default function Select({data, selected, setSelected, label, labelClassName}: Props) {
+export default function Select(props: UseControllerProps & Props) {
+    const { field } = useController(props);
+    const {data, label, labelClassName, defaultValue} = props
+    const [selected, setSelected] = useState<ISelect | null>(null);
 
+    useEffect(() => {
+        const current = data.find(
+            (item) => item.id === defaultValue || field.value === item.id
+        );
+        if (current) {
+            setSelected(current);
+            field.onChange(current.id);
+        }
+    }, [defaultValue]);
     return (
-        <Listbox value={selected} onChange={setSelected}>
+        <Listbox value={selected} onChange={(e)=>{
+            setSelected(e);
+            field.onChange(e?.id);
+        }}
+        defaultValue={field.value}
+
+        >
             <Label className={labelClassName}>{label}</Label>
             <div className="relative">
-                <ListboxButton className="grid w-full cursor-default grid-cols-1 rounded-md bg-white py-1.5 pl-3 pr-2 text-left text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                    <span className="col-start-1 row-start-1 truncate pr-6">{selected.name}</span>
+                <ListboxButton {...field} className="grid w-full cursor-default grid-cols-1 rounded-md bg-white py-1.5 pl-3 pr-2 text-left text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                    <span className="col-start-1 row-start-1 truncate pr-6">{selected?.name ?? "Seleccione"}</span>
                     <ChevronUpDownIcon
                         aria-hidden="true"
                         className="col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 sm:size-4"

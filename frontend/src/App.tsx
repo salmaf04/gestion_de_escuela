@@ -18,6 +18,7 @@ import {AsignaturaGetAdapter} from "./pages/asignaturas/adapters/AsignaturaGetAd
 import {RolesEnum} from "./api/RolesEnum.ts";
 import {EstudianteGetAdapter} from "./pages/estudiantes/adapters/EstudianteGetAdapter.ts";
 import {NotaGetAdapter} from "./pages/notas/adapters/NotaGetAdapter.ts";
+import NotasScreen from "./pages/notas/NotasScreen.tsx";
 
 
 interface AppContextInterface {
@@ -94,7 +95,6 @@ function App() {
                     <Notification title={'Error:'} message={error.message}
                                   className={'bg-red-100 text-sm rounded-md py-1'} onClick={() => {
                         setError(undefined)
-                        console.log('Error dismissed')
                     }}/>
                 }
                 {token ?
@@ -127,6 +127,9 @@ function App() {
                                     }
                                     {allowRoles([RolesEnum.SECRETARY, RolesEnum.DEAN]) &&
                                         <Route path={'/usuarios'} element={<UsuariosScreen/>}/>
+                                    }
+                                    {allowRoles([RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.TEACHER]) &&
+                                        <Route path={'/nota'} element={<NotasScreen/>}/>
                                     }
                                 </Routes>
                             </div>

@@ -6,6 +6,7 @@ import AsignaturaIcon from '../assets/asignatura.svg';
 import MediosIcon from '../assets/medios.svg';
 import ScreenType from "../types.ts";
 import {RolesEnum} from "../api/RolesEnum.ts";
+import NotaIcon from '../assets/nota.svg'
 
 export const Screens = {
     Inicio: new ScreenType('Inicio', HomeIcon, '/inicio', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN,RolesEnum.ADMIN, RolesEnum.STUDENT]),
@@ -15,5 +16,6 @@ export const Screens = {
     Asignaturas: new ScreenType('Asignaturas', AsignaturaIcon, '/asignaturas', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
     Medios: new ScreenType('Medios', MediosIcon, '/medios', [RolesEnum.TEACHER, RolesEnum.DEAN,RolesEnum.ADMIN]),
     Mantenimientos: new ScreenType('Mantenimientos', MediosIcon, '/mantenimientos', [RolesEnum.DEAN,RolesEnum.ADMIN]),
-    Usuarios : new ScreenType('Usuarios' ,  MediosIcon , '/usuarios', [RolesEnum.SECRETARY, RolesEnum.DEAN])
+    Usuarios : new ScreenType('Usuarios' ,  MediosIcon , '/usuarios', [RolesEnum.SECRETARY, RolesEnum.DEAN]),
+    Notas: new ScreenType('Notas', NotaIcon, '/nota', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN])
 }

@@ -19,8 +19,8 @@ interface INotasContext {
     setEditting?: (nota?: NotaCreateAdapter) => void;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
-    onEditTableItem?: (notaEdit: NotaCreateAdapter) => void;
-    onAddTableItem?: (notaEdit: NotaCreateAdapter) => void;
+    onEditTableItem?: (notaEdit: NotaCreateAdapter[]) => void;
+    onAddTableItem?: (notaEdit: NotaCreateAdapter[]) => void;
 }
 
 export const NotasContext = createContext<INotasContext>({});
@@ -47,15 +47,19 @@ export default function NotasScreen() {
         deleteNota(deletedNotaId);
     };
 
-    const onEditTableItem = (notaEdit: NotaCreateAdapter) => {
+    const onEditTableItem = (notasEdit: NotaCreateAdapter[]) => {
         setIsEditing(true);
-        updateNota(notaEdit);
+        notasEdit.forEach((item)=>{
+            updateNota(item);
+        })
         setIsEditing(false);
     };
 
-    const onAddTableItem = (nota: NotaCreateAdapter) => {
+    const onAddTableItem = (notas: NotaCreateAdapter[]) => {
         setIsCreating(true);
-        createNota(nota);
+        notas.forEach((item)=>{
+            createNota(item);
+        })
         setIsCreating(false);
     };
 

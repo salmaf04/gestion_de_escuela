@@ -3,12 +3,12 @@ import { useContext, useState } from "react";
 import { NotaGetAdapter } from "../adapters/NotaGetAdapter.ts";
 import { NotaGetDB, NotaGetResponse } from "../models/NotaGetDB.ts";
 import { AppContext } from "../../../App.tsx";
-import { EndpointType } from "../../../api/EndpointType.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import { NotaCreateAdapter } from "../adapters/NotaCreateAdapter.ts";
 import { getNotaCreateDbFromAdapter } from "../utils/utils.ts";
+import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 
-const endpoint = EndpointType.NOTAS;
+const endpoint = EndpointEnum.NOTAS;
 
 export const useApiNotas = () => {
     const [isLoading, setIsLoading] = useState(false);

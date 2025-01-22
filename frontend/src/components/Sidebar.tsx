@@ -3,14 +3,11 @@ import {Screens} from "../utils/router.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useContext} from "react";
 import {AppContext} from "../App.tsx";
-import {RolesEnum} from "../api/RolesEnum.ts";
 
 function Sidebar() {
     const location = useLocation()
     const navigate = useNavigate()
     const {allowRoles} = useContext(AppContext)
-    console.log(allowRoles!([RolesEnum.SECRETARY, RolesEnum.TEACHER]))
-    console.log(Object.values(Screens).filter((item) => allowRoles!(item.allowedRoles)))
     return <div className={"h-full flex items-center px-4"}>
         <div className={'flex flex-col items-center justify-center h-4/5'}>
             {
