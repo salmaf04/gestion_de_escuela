@@ -103,8 +103,6 @@ async def update_student(
     student_update_service = StudentUpdateService()
     mapper = StudentMapper()
 
-    print(filters.name)
-
     student = student_pagination_service.get_student_by_id(session=session, id = id)
     student_model = mapper.to_api(student)
 
