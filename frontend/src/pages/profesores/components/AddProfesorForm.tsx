@@ -4,17 +4,31 @@ import {useContext, useState} from "react";
 import {ProfesorContext} from "../ProfesoresScreen.tsx";
 import MySpinner from "../../../components/MySpinner.tsx";
 import {useApiProfesor} from "../hooks/useApiProfesor.ts";
-import CancelIcon from "../../../assets/cancel.svg";
+import Select from "../../../components/Select.tsx";
+import {ISelect} from "../../../types/ISelect.ts";
 
 export default function AddProfesorForm() {
     const {register, handleSubmit} = useForm<ProfesorCreateAdapter>()
     const {editting, onEditTableItem, onAddTableItem, setEditting, setShowModal} = useContext(ProfesorContext)
     const {isLoading} = useApiProfesor()
     const [asignaturas, setAsignaturas] = useState(editting ? editting.asignaturas ?? [] : [])
+    const data = [
+        { id: 1, name: 'Wade Cooper' },
+        { id: 2, name: 'Arlene Mccoy' },
+        { id: 3, name: 'Devon Webb' },
+        { id: 4, name: 'Tom Cook' },
+        { id: 5, name: 'Tanya Fox' },
+        { id: 6, name: 'Hellen Schmidt' },
+        { id: 7, name: 'Caroline Schultz' },
+        { id: 8, name: 'Mason Heaney' },
+        { id: 9, name: 'Claudie Smitham' },
+        { id: 10, name: 'Emil Schaefer' },
+    ]
+    const [selected, setSelected] = useState<ISelect>(data[0])
 
 
     const onSubmit: SubmitHandler<ProfesorCreateAdapter> = (data) => {
-        console.log(data)
+        console.log(data.asignaturas)
         if (editting)
             onEditTableItem!(data)
         else
@@ -128,24 +142,16 @@ export default function AddProfesorForm() {
                         </div>
 
                         {
-                            asignaturas.map((item, index) => {
+                            asignaturas.map((_, index) => {
                                 return (
                                     <div className="group relative" key={index}>
-                                        <label
-                                            className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Asignatura {index + 1}</label>
-
-
-                                        <input
-                                            type="text" {...register(`asignaturas.${index}`, {
-                                            required: true
-                                        })}
-                                            className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-
-                                            defaultValue={item}
-                                        />
-                                        <img src={CancelIcon} alt={'quitar'}
-                                             className={`transition-all rounded-full p-[1px] hover:bg-red-100 cursor-pointer absolute right-2 top-1/2`}
-                                             onClick={() => setAsignaturas((prev) => prev.filter((_,indx) => index !== indx))}
+                                        <Select
+                                            {...register(`asignaturas.${index}`, {
+                                                value: selected.name
+                                            })}
+                                            data={data}
+                                            selected={selected}
+                                            setSelected={setSelected}
                                         />
 
                                     </div>
@@ -153,8 +159,11 @@ export default function AddProfesorForm() {
                             })
                         }
                         <button
+                            type={'button'}
                             className={'self-center w-full translate-y-3 py-2 h-10 text-center text-indigo-500 rounded-lg border-2 border-indigo-500 text-sm font-semibold hover:bg-indigo-50 transition-colors'}
-                            onClick={() => setAsignaturas((prev)=>[...prev, ""])}
+                            onClick={() => {
+                                setAsignaturas((prev) => [...prev, ""])
+                            }}
                         >
                             Insertar asignatura
                         </button>

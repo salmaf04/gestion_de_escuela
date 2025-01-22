@@ -21,7 +21,7 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow, 
                     </div>)
 
                     :
-                    (<div className={` flex flex-col text-indigo-950 ${className}`}>
+                    (<div className={` flex flex-col text-indigo-950 scrollbar-hide overflow-y-scroll  ${className}`}>
                         <div className={'flex justify-around me-2 text-sm mb-1'}>
                             {header.map((item, index) => {
                                 return (
@@ -39,7 +39,7 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow, 
                                 </div>
                             </div>
                         </div>
-                        <div className={'overflow-y-scroll scrollbar-hide text-sm'}>
+                        <div className={'scrollbar-hide text-sm'}>
                             {(Data).map((row) => {
                                 return (
                                     <div key={row.id} onClick={() => onEditRow(row.id)}
