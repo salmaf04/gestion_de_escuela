@@ -9,7 +9,7 @@ import {ISelect} from "../../../types/ISelect.ts";
 
 export default function AddProfesorForm() {
     const {register, handleSubmit} = useForm<ProfesorCreateAdapter>()
-    const {editting, onEditTableItem, onAddTableItem, setShowModal} = useContext(ProfesorContext)
+    const {editting, onEditTableItem, onAddTableItem, setShowModal, setEditting} = useContext(ProfesorContext)
     const {isLoading} = useApiProfesor()
     const [arraySelect, setArraySelect] = useState<ISelect[]>([])
     const data = [
@@ -53,7 +53,7 @@ export default function AddProfesorForm() {
                                     required: "true"
                                 })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.body.name}
+                                defaultValue={editting?.body?.name}
 
                             />
                         </div>
@@ -178,6 +178,7 @@ export default function AddProfesorForm() {
                     <div className="flex space-x-3 justify-center mt-10">
                         <button type="button" onClick={() => {
                             setShowModal!(false);
+                            setEditting!(undefined)
                         }}
                                 hidden={isLoading}
                                 className="hover:bg-gray-400 transition-colors w-full py-2 bg-gray-300 rounded-lg text-gray-900">Cancelar
