@@ -2,12 +2,12 @@ import {useContext, useState} from "react";
 import {ProfesorGetAdapter} from "../adapters/ProfesorGetAdapter.ts";
 import {ProfesorDB, ProfesorGetResponse} from "../models/ProfesorGetDB.ts";
 import {AppContext} from "../../../App.tsx";
-import {EndpointType} from "../../../api/EndpointType.ts";
+import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {ProfesorCreateAdapter} from "../adapters/ProfesorCreateAdapter.ts";
 import {getProfesorCreateDbFromAdapter} from "../utils/utils.ts";
 
-const endpoint = EndpointType.PROFESORES
+const endpoint = EndpointEnum.PROFESORES
 
 export const useApiProfesor = () => {
     const [isLoading, setIsLoading] = useState(false)

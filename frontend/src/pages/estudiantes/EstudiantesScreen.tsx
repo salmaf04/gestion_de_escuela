@@ -2,21 +2,20 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { EstudianteGetAdapter } from "./adapters/EstudianteGetAdapter.ts";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
-import { useGetEstudiantes } from "./hooks/useGetEstudiantes.ts";
 import { EstudianteCreateAdapter } from "./adapters/EstudianteCreateAdapter.ts";
 import { AppContext } from "../../App.tsx";
 import AddEstudianteForm from "./components/AddEstudianteForm.tsx";
-import { useEditEstudiante } from "./hooks/useEditEstudiante.ts";
-import { useCreateEstudiante } from "./hooks/useCreateEstudiante.ts";
-import { useDeleteEstudiante } from "./hooks/useDeleteEstudiante.ts";
+import {useApiEstudiante} from "./hooks/useApiEstudiante.ts";
+import {IEditRow} from "../../types/IEditRow.ts";
+
 
 interface IEstudianteContext {
     searchText?: string;
     dataTable?: EstudianteGetAdapter[];
-    editting?: EstudianteCreateAdapter;
+    editting?: IEditRow<EstudianteCreateAdapter>;
     showModal?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEditting?: (estudiante?: EstudianteCreateAdapter) => void;
+    setEditting?: (estudiante?: IEditRow<EstudianteCreateAdapter>) => void;
     isGetLoading?: boolean;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
@@ -30,51 +29,50 @@ export const EstudianteContext = createContext<IEstudianteContext>({});
 
 export default function EstudiantesScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<EstudianteCreateAdapter | undefined>();
+    const [editting, setEditting] = useState<IEditRow<EstudianteCreateAdapter> | undefined>();
     const [showModal, setShowModal] = useState(false);
-    const { setError } = useContext(AppContext);
+    const {estudiantes} = useContext(AppContext)
     const {
-        editedEstudiante,
-        isLoading: isEditting,
-        editEstudiante
-    } = useEditEstudiante();
-    const {
-        newEstudiante,
-        isLoading: isCreatting,
-        createEstudiante
-    } = useCreateEstudiante();
-
-    const {
-        isGetLoading,
-        estudiantes,
         getEstudiantes,
-    } = useGetEstudiantes(setError!);
-
-    const {
         deleteEstudiante,
-        deletedEstudianteId,
-    } = useDeleteEstudiante();
+        updateEstudiante,
+        createEstudiante,
+        isLoading
+    } = useApiEstudiante()
 
     useEffect(() => {
-        getEstudiantes();
-    }, [editedEstudiante, newEstudiante, deletedEstudianteId]);
+        getEstudiantes!();
+    }, []);
 
     const onDeleteTableItem = (deletedEstudianteId: string) => {
-        deleteEstudiante(deletedEstudianteId, setError!);
+        deleteEstudiante(deletedEstudianteId);
     };
 
     const onEditTableItem = (estudianteEdit: EstudianteCreateAdapter) => {
-        editEstudiante(estudianteEdit, setError!);
+        updateEstudiante(editting!.id, estudianteEdit);
+        setEditting!(undefined);
     };
 
     const onAddTableItem = (estudiante: EstudianteCreateAdapter) => {
-        createEstudiante(estudiante, setError!);
+        createEstudiante(estudiante);
     };
-
+    const [dataTable, setDataTable] = useState<EstudianteGetAdapter[]>(estudiantes ?? [])
+    useEffect(() => {
+        setDataTable(estudiantes!)
+    }, [estudiantes]);
+    useEffect(() => {
+        setDataTable(
+            estudiantes?.filter((row) => {
+                return Object.values(row).some((value) => {
+                    return value?.toString().toLowerCase().includes(searchText.toLowerCase())
+                })
+            }) ?? []
+        )
+    }, [searchText, estudiantes]);
     return (
         <EstudianteContext.Provider value={{
-            isGetLoading: isGetLoading,
-            dataTable: estudiantes,
+            isGetLoading: isLoading,
+            dataTable: dataTable,
             searchText: searchText,
             editting: editting,
             showModal: showModal,
@@ -84,8 +82,6 @@ export default function EstudiantesScreen() {
             onDeleteTableItem: onDeleteTableItem,
             onEditTableItem: onEditTableItem,
             onAddTableItem: onAddTableItem,
-            isEditting: isEditting,
-            isCreatting: isCreatting
         }}>
             <div className={'w-full h-dvh flex flex-col'}>
                 <ToolBar />

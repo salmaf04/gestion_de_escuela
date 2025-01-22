@@ -17,7 +17,7 @@ export default function Body() {
             onEditRow={(index) => {
                 const item = dataTable!.find((item) => item.id === index);
                 console.log(item);
-                setEditting!(item!);
+                setEditting!({id: index, body: item!});
             }}
         />
     );

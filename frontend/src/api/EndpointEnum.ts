@@ -1,4 +1,4 @@
-export enum EndpointType {
+export enum EndpointEnum {
     PROFESORES = "teacher",
     ESTUDIANTES = "student",
     AULAS = 'classroom',

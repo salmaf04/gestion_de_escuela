@@ -3,12 +3,12 @@ import { useContext, useState } from "react";
 import { MedioGetAdapter } from "../adapters/MedioGetAdapter.ts";
 import { MedioGetDB, MedioGetResponse } from "../models/MedioGetDB.ts";
 import { AppContext } from "../../../App.tsx";
-import { EndpointType } from "../../../api/EndpointType.ts";
+import { EndpointEnum } from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import { MedioCreateAdapter } from "../adapters/MedioCreateAdapter.ts";
 import { getMedioCreateDbFromAdapter } from "../utils/utils.ts";
 
-const endpoint = EndpointType.MEDIOS;
+const endpoint = EndpointEnum.MEDIOS;
 
 export const useApiMedios = () => {
     const [isLoading, setIsLoading] = useState(false);

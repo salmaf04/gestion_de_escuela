@@ -6,19 +6,15 @@ import {ProfesorCreateAdapter} from "./adapters/ProfesorCreateAdapter.ts";
 import AddProfesorForm from "./components/AddProfesorForm.tsx";
 import {useApiProfesor} from "./hooks/useApiProfesor.ts";
 import {AppContext} from "../../App.tsx";
-
-interface IEditProfesor {
-    id: string,
-    body: ProfesorCreateAdapter
-}
+import {IEditRow} from "../../types/IEditRow.ts";
 
 interface IProfesorContext {
     searchText?: string;
     dataTable?: ProfesorGetAdapter[];
-    editting?: IEditProfesor;
+    editting?: IEditRow<ProfesorCreateAdapter>;
     showModal?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEditting?: (edit: IEditProfesor | undefined) => void;
+    setEditting?: (edit: IEditRow<ProfesorCreateAdapter> | undefined) => void;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
     onEditTableItem?: (profesorEdit: ProfesorCreateAdapter) => void;
@@ -31,7 +27,7 @@ export const ProfesorContext = createContext<IProfesorContext>(
 
 export default function ProfesoresScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<IEditProfesor | undefined>()
+    const [editting, setEditting] = useState<IEditRow<ProfesorCreateAdapter> | undefined>()
     const [showModal, setShowModal] = useState(false)
     const {profesores} = useContext(AppContext)
     const {

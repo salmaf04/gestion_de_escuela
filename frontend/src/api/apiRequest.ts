@@ -1,8 +1,8 @@
-import {EndpointType} from "./EndpointType.ts";
+import {EndpointEnum} from "./EndpointEnum.ts";
 import {IApiObject} from "./IApiObject.ts";
 
 
-function postApi(endpoint: EndpointType, body: IApiObject) {
+function postApi(endpoint: EndpointEnum, body: IApiObject) {
     return fetch(`http://localhost:8000/${endpoint}`, {
         method: 'POST',
         headers: {
@@ -13,14 +13,14 @@ function postApi(endpoint: EndpointType, body: IApiObject) {
     })
 }
 
-function getApi(endpoint: EndpointType) {
+function getApi(endpoint: EndpointEnum) {
     return fetch(`http://localhost:8000/${endpoint}`, {
         headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         }
     })
 }
-function getOneApi(endpoint: EndpointType, id: string) {
+function getOneApi(endpoint: EndpointEnum, id: string) {
     return fetch(`http://localhost:8000/${endpoint}/${id}`, {
         headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('token')}`
@@ -28,7 +28,7 @@ function getOneApi(endpoint: EndpointType, id: string) {
     })
 }
 
-function patchApi(endpoint: EndpointType, id: string, body: IApiObject) {
+function patchApi(endpoint: EndpointEnum, id: string, body: IApiObject) {
     return fetch(`http://localhost:8000/${endpoint}/${id}`, {
         method: 'PATCH',
         headers: {
@@ -39,7 +39,7 @@ function patchApi(endpoint: EndpointType, id: string, body: IApiObject) {
     })
 }
 
-function deleteApi(endpoint: EndpointType, id: string) {
+function deleteApi(endpoint: EndpointEnum, id: string) {
     return fetch(`http://localhost:8000/${endpoint}/${id}`, {
         method: 'DELETE',
         headers: {

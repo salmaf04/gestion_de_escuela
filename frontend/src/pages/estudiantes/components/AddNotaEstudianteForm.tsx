@@ -91,27 +91,27 @@ export default function AddEstudianteForm() {
                                 defaultValue={editting?.body.password}
                             />
                         </div>
-            </div>
+                    </div>
 
-            <div className="flex space-x-3 justify-center">
-                <button type="button" onClick={() => {
-                    setShowModal!(false);
-                    setEditting!(undefined);
-                }}
-                        hidden={isLoading}
-                        className="hover:bg-gray-400 transition-colors w-full py-2 bg-gray-300 rounded-lg text-gray-900">Cancelar
-                </button>
-                <button type="submit"
-                        className={`${isLoading ? 'hover:bg-indigo-300 bg-indigo-300 cursor-default' : 'bg-indigo-500 hover:bg-indigo-600 '} transition-colors w-full flex justify-center py-2  text-indigo-50 rounded-lg`}>
-                    {isLoading ? <MySpinner className={'h-6 w-6'}/> : null}
-                    <p className={`${isLoading ? 'invisible' : 'visible'}`}>
-                        {editting ? 'Editar' : 'Guardar'}
-                    </p>
-                </button>
+                    <div className="flex space-x-3 justify-center">
+                        <button type="button" onClick={() => {
+                            setShowModal!(false);
+                            setEditting!(undefined);
+                        }}
+                                hidden={isLoading}
+                                className="hover:bg-gray-400 transition-colors w-full py-2 bg-gray-300 rounded-lg text-gray-900">Cancelar
+                        </button>
+                        <button type="submit"
+                                className={`${isLoading ? 'hover:bg-indigo-300 bg-indigo-300 cursor-default' : 'bg-indigo-500 hover:bg-indigo-600 '} transition-colors w-full flex justify-center py-2  text-indigo-50 rounded-lg`}>
+                            {isLoading ? <MySpinner className={'h-6 w-6'}/> : null}
+                            <p className={`${isLoading ? 'invisible' : 'visible'}`}>
+                                {editting ? 'Editar' : 'Guardar'}
+                            </p>
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
-</div>
-</div>
-)
-    ;
+        </div>
+    )
+        ;
 }

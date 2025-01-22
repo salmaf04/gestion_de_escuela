@@ -53,8 +53,8 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow, 
                                                 return (
                                                     <div key={index}  className={'w-full text-center py-1 flex items-center justify-center'}>
                                                         <div
-                                                             className={`${item ? 'bg-green-200 text-green-950' : 'bg-red-200 text-red-950'} rounded-full w-fit py-1 px-4`}>
-                                                            {item ? "Si" : "No"}
+                                                             className={`${item ? 'bg-green-200 text-green-950' : 'bg-red-200 text-red-950'} rounded-full py-2 w-16 font-bold text-xs`}>
+                                                            {item ? "Sí" : "No"}
                                                         </div>
                                                     </div>
 

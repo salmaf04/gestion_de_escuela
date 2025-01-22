@@ -3,12 +3,12 @@ import { useContext, useState } from "react";
 import { AulaGetAdapter } from "../adapters/AulaGetAdapter.ts";
 import { AulaGetDB, AulaGetResponse } from "../models/AulaGetDB.ts";
 import { AppContext } from "../../../App.tsx";
-import { EndpointType } from "../../../api/EndpointType.ts";
+import { EndpointEnum } from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import { AulaCreateAdapter } from "../adapters/AulaCreateAdapter.ts";
 import { getAulaCreateDbFromAdapter } from "../utils/utils.ts";
 
-const endpoint = EndpointType.AULAS;
+const endpoint = EndpointEnum.AULAS;
 
 export const useApiAulas = () => {
     const [isLoading, setIsLoading] = useState(false);
