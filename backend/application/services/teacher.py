@@ -38,10 +38,12 @@ class TeacherCreateService :
         subjects_in_table_names.sort()
         subjects_in_request.sort()
         wrong_subjects = []
+        print(subjects_in_table_names)
+        print(subjects_in_request)
 
         for subject_in_table, subject_in_request in zip(subjects_in_table_names, subjects_in_request):
             if subject_in_table != subject_in_request:
-                wrong_subjects.append(subject_in_table)
+                wrong_subjects.append(subject_in_request)
             
         if wrong_subjects:
             wrong_subjects_str = ', '.join(wrong_subjects)

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from backend.application.services.subject import SubjectCreateService, SubjectPaginationService, SubjectDeletionService, SubjectUpdateService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.subject import SubjectMapper
-from backend.domain.filters.subject import SubjectFilterSchema, ChangeRequest
+from backend.domain.filters.subject import SubjectFilterSchema, SubjectChangeRequest
 from backend.configuration import get_db
 
 router = APIRouter()
@@ -81,7 +81,7 @@ async def read_subject(
 )
 async def update_subject(
     id : str,
-    filters: ChangeRequest = Depends(),
+    filters: SubjectChangeRequest = Depends(),
     session: Session = Depends(get_db)
 ) :
     subject_pagination_service = SubjectPaginationService()
@@ -96,8 +96,7 @@ async def update_subject(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="There is no subject with that id"
         )
-    print(filters.specialty)
-
+   
     subject_updated = subject_update_service.update_one(session=session, changes=filters, subject=subject_model)
 
     return subject_updated

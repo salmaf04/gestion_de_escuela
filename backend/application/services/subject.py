@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select, update
-from backend.domain.filters.subject import SubjectFilterSet , SubjectFilterSchema, ChangeRequest
+from backend.domain.filters.subject import SubjectFilterSet , SubjectFilterSchema, SubjectChangeRequest
 from backend.domain.schemas.subject import SubjectCreateModel, SubjectModel
 from backend.domain.models.tables import SubjectTable
 import uuid
@@ -28,7 +28,7 @@ class SubjectDeletionService:
         
 
 class SubjectUpdateService :
-    def update_one(self, session : Session , changes : ChangeRequest , subject : SubjectModel ) -> SubjectModel: 
+    def update_one(self, session : Session , changes : SubjectChangeRequest , subject : SubjectModel ) -> SubjectModel: 
         query = update(SubjectTable).where(SubjectTable.entity_id == subject.id)
         
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))

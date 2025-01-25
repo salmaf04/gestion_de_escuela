@@ -14,7 +14,7 @@ class SubjectFilterSchema(BaseModel):
     hourly_load : tuple[int, int] | None = None
     study_program : tuple[int, int] | None = None
 
-class ChangeRequest(BaseModel) :
+class SubjectChangeRequest(BaseModel) :
     name : Optional[str] = None
     hourly_load : Optional[int] = None
     study_program : Optional[int] = None

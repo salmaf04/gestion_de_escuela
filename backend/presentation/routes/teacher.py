@@ -95,10 +95,7 @@ async def read_teacher(
     teachers, subjects = teacher_pagination_service.get_teachers(session=session, filter_params=filters)   
 
     if not teachers :
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="There is no teacher with that email"
-        )
+        return []
 
     teachers_mapped = []  
   
