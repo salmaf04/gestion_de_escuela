@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import select, update
+from sqlalchemy import select, update, func
 from backend.domain.filters.student import StudentFilterSet , StudentFilterSchema, StudentChangeRequest
 from backend.domain.schemas.student import StudentCreateModel, StudentModel
-from backend.domain.models.tables import StudentTable
+from backend.domain.models.tables import StudentTable, StudentNoteTable
 from ..utils.auth import get_password_hash
 from ..utils.note_average import  calculate_student_average
 import uuid
@@ -57,6 +57,16 @@ class StudentPaginationService :
         filter_set = StudentFilterSet(session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
         return session.execute(query).scalars().all()
+    
+    
+    def get_academic_information(self, session: Session , student_id: str) :
+        query = select(StudentTable.id , StudentNoteTable.subject_id , (func.sum(StudentNoteTable.note_value)/func.count()).label("academic_performance"))
+        query = query.join(StudentNoteTable, StudentTable.id == StudentNoteTable.student_id)
+        query = query.where(StudentTable.id == student_id)
+        query = query.group_by(StudentTable.id , StudentNoteTable.subject_id)
+        print(session.execute(query).all())
+        result = session.execute(query).all()
+        return result
     
         
 

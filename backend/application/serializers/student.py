@@ -1,5 +1,6 @@
-from backend.domain.schemas.student import StudentModel
+from backend.domain.schemas.student import StudentModel, StudentAcademicPerformance, StudentSubjectPerformance
 from backend.domain.models.tables import StudentTable
+
 
 class StudentMapper :
 
@@ -14,4 +15,30 @@ class StudentMapper :
             hash_password= student.hash_password
         )
         
+    def to_academic_performance(self, data) :
+        started = False
+        
+        for average in data :
+            if not started :
+                started = True
+                student = StudentAcademicPerformance(
+                    id = average.id,
+                    performance = [
+                        StudentSubjectPerformance(
+                            subject_id = average.subject_id,
+                            average_subject_performance = average.academic_performance
+                        )
+                    ]
+                )
+            else :
+                student.performance.append(
+                    StudentSubjectPerformance(
+                        subject_id = average.subject_id,
+                        average_subject_performance = average.academic_performance
+                    )
+                )
+                
+        return student
+
+
 

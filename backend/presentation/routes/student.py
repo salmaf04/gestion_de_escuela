@@ -1,5 +1,5 @@
 from fastapi import  HTTPException, status, Depends, APIRouter
-from backend.domain.schemas.student import  StudentModel, StudentCreateModel
+from backend.domain.schemas.student import  StudentModel, StudentCreateModel, StudentAcademicPerformance
 from sqlalchemy.orm import Session
 from backend.application.services.student import StudentCreateService, StudentPaginationService, StudentDeletionService, StudentUpdateService
 from fastapi.exceptions import HTTPException
@@ -59,10 +59,12 @@ async def delete_student(
 
 @router.get(
     "/student",
-    response_model=dict[int, StudentModel],
+    response_model=dict[int, StudentModel] | StudentAcademicPerformance,
     status_code=status.HTTP_200_OK
 )
 async def read_student(
+    id : str = None,
+    academic_performance = False,
     student_note_less_than_fifty = False,
     filters: StudentFilterSchema = Depends(),
     session: Session = Depends(get_db)
@@ -73,6 +75,10 @@ async def read_student(
     if student_note_less_than_fifty :
         students = student_pagination_service.grade_less_than_fifty(session=session)
         return mapper.to_less_than_fifty(students)
+    elif academic_performance :
+        students = student_pagination_service.get_academic_information(session=session, student_id=id)
+        return mapper.to_academic_performance(students)
+    
 
     students = student_pagination_service.get_students(session=session, filter_params=filters)
 
@@ -84,6 +90,7 @@ async def read_student(
 
     students_mapped = {}    
      
+    
     for i, student in enumerate(students) :
         students_mapped[i] = mapper.to_api(student)
         

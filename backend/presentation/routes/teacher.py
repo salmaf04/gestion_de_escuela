@@ -78,7 +78,7 @@ async def read_teacher(
     filters: TeacherFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
-    teacher_pagination_service = TeacherPaginationService()
+    teacher_pagination_service = TeacherPaginationService() 
     mapper = TeacherMapper()
 
     if better_than_eight :

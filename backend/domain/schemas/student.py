@@ -17,3 +17,14 @@ class StudentCreateModel(BaseModel):
     extra_activities: bool
     username: str
     password: str
+
+class StudentSubjectPerformance(BaseModel):
+    subject_id : uuid.UUID
+    average_subject_performance : float
+
+class StudentAcademicPerformance(BaseModel):
+    id : uuid.UUID
+    performance : list[StudentSubjectPerformance]
+
+
+
