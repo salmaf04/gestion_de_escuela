@@ -30,7 +30,7 @@ class SubjectDeletionService:
 class SubjectUpdateService :
     def update_one(self, session : Session , changes : SubjectChangeRequest , subject : SubjectModel ) -> SubjectModel: 
         query = update(SubjectTable).where(SubjectTable.entity_id == subject.id)
-        
+ 
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
         session.execute(query)
         session.commit()
