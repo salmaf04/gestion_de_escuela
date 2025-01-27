@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Depends, HTTPException
-from backend.domain.schemas.valoration import ValorationCreateModel, ValorationModel
+from backend.domain.schemas.valoration import ValorationCreateModel, ValorationModel, TeacherValoration
 from sqlalchemy.orm import Session
 from backend.application.services.valoration import ValorationCreateService, ValorationPaginationService
 from backend.application.serializers.valoration import ValorationMapper
@@ -26,15 +26,21 @@ async def create_valoration(
 
 @router.get(
     "/valoration",
-    response_model=dict[int, ValorationModel],
+    response_model=dict[int, ValorationModel] | TeacherValoration,
     status_code=status.HTTP_200_OK
 )
 async def read_valoration(
+    by_teacher_id : str = None,
     filters: ValorationFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
     valoration_pagination_service = ValorationPaginationService()
     mapper = ValorationMapper()
+
+    if by_teacher_id :
+        valorations = valoration_pagination_service.get_valoration_by_teacher_id(session=session, teacher_id=by_teacher_id)
+        valorations_mapped = mapper.to_valoration_by_subject(valorations)
+        return valorations_mapped
 
     valorations = valoration_pagination_service.get_valoration(session=session, filter_params=filters)
 

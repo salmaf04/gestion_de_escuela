@@ -11,3 +11,12 @@ class ValorationCreateModel(BaseModel):
 
 class ValorationModel(ValorationCreateModel):
     id : uuid.UUID
+
+
+class TeacherSubjectValoration(BaseModel):
+    subject_id : uuid.UUID
+    average_subject_performance : float
+
+class TeacherValoration(BaseModel):
+    id : uuid.UUID
+    performance : list[TeacherSubjectValoration]

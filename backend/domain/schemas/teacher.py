@@ -15,7 +15,6 @@ class TeacherModel(BaseModel):
     list_of_subjects: list[str]
     valoration : Optional[float | str ] = None
     
-    
 
 class TeacherCreateModel(BaseModel):
     name: str

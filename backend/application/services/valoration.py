@@ -6,7 +6,7 @@ from backend.application.services.subject import SubjectPaginationService
 from backend.application.services.teacher import TeacherPaginationService
 from backend.application.services.course import CoursePaginationService
 from backend.domain.filters.valoration import ValorationFilterSchema, ValorationFilterSet
-from sqlalchemy import select
+from sqlalchemy import select, func
 from backend.application.services.teacher import TeacherValorationService
 
 class ValorationCreateService :
@@ -42,4 +42,11 @@ class ValorationPaginationService :
         filter_set = ValorationFilterSet(session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
         return session.execute(query).scalars().all()
+    
+
+    def get_valoration_by_teacher_id(self, session: Session, teacher_id: str) :
+        query = select(TeacherNoteTable.teacher_id , TeacherNoteTable.subject_id, (func.sum(TeacherNoteTable.grade)/func.count()).label("valoration")) 
+        query = query.group_by(TeacherNoteTable.teacher_id , TeacherNoteTable.subject_id)
+        query = query.where(TeacherNoteTable.teacher_id == teacher_id)
+        return session.execute(query).all()
     
