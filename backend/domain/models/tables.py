@@ -178,6 +178,8 @@ class StudentTable(UserTable) :
     age = Column(Integer)
     extra_activities = Column(Boolean, nullable=True)
     average_note = Column(Double)
+
+    course_id : Mapped[uuid.UUID] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id"))
     """
     teacher: Mapped["Teacher"] = relationship(
         secondary=f"{TableName.TEACHER.value}", back_populates="students", viewonly=True
@@ -192,6 +194,7 @@ class StudentTable(UserTable) :
         secondary=f"{TableName.COURSE.value}", back_populates="students"
     )
     """
+    course = relationship('CourseTable', back_populates="students")
     student_note_association: Mapped[List["StudentNoteTable"]] = relationship('StudentNoteTable', back_populates="student")
     student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="student")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="student")
@@ -257,6 +260,7 @@ class CourseTable(BaseTable) :
         secondary=f"{TableName.SUBJECT.value}", back_populates="course"
     )
     """
+    students = relationship('StudentTable', back_populates="course")
     student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="course")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="course")
 
