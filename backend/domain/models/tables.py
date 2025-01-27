@@ -252,6 +252,9 @@ class ClassroomTable(BaseTable) :
 
 class CourseTable(BaseTable) :
     __tablename__ = TableName.COURSE.value
+
+    year = Column(Integer, nullable=False, unique=True)
+
     """
     students: Mapped[List["Student"]] = relationship(
         secondary=f"{TableName.STUDENT.value}", back_populates="course"
@@ -264,8 +267,6 @@ class CourseTable(BaseTable) :
     student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="course")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="course")
 
-    start_year = Column(Integer,nullable=False)
-    end_year = Column(Integer, nullable=False)
 
 
 class MeanTable(BaseTable) :
