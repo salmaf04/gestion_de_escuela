@@ -1,86 +1,100 @@
-// frontend/src/pages/aulas/AulasScreen.tsx
-import { createContext, useEffect, useState } from "react";
-import { AulaGetAdapter } from "./adapters/AulaGetAdapter.ts";
+import {createContext, useContext, useEffect, useState} from "react";
+import {AulaGetAdapter} from "./adapters/AulaGetAdapter.ts";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
-import { AulaCreateAdapter } from "./adapters/AulaCreateAdapter.ts";
+import {AulaCreateAdapter} from "./adapters/AulaCreateAdapter.ts";
 import AddAulaForm from "./components/AddAulaForm.tsx";
-import { useApiAulas } from "./hooks/useApiAulas.ts";
+import {AppContext} from "../../App.tsx";
+import {IEditRow} from "../../types/IEditRow.ts";
+import {useApiAulas} from "./hooks/useApiAulas.ts";
 
-interface IAulasContext {
+interface IAulaContext {
     searchText?: string;
     dataTable?: AulaGetAdapter[];
-    editting?: AulaCreateAdapter;
+    editting?: IEditRow<AulaCreateAdapter>;
     showModal?: boolean;
-    isGetLoading?: boolean;
-    isCreatting?: boolean;
-    isEditting?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEditting?: (aula?: AulaCreateAdapter) => void;
+    setEditting?: (edit: IEditRow<AulaCreateAdapter> | undefined) => void;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
     onEditTableItem?: (aulaEdit: AulaCreateAdapter) => void;
     onAddTableItem?: (aulaEdit: AulaCreateAdapter) => void;
+    isLoading?: boolean
 }
 
-export const AulasContext = createContext<IAulasContext>({});
+export const AulasContext = createContext<IAulaContext>(
+    {}
+);
 
 export default function AulasScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<AulaCreateAdapter | undefined>();
-    const [showModal, setShowModal] = useState(false);
-    const [isCreating, setIsCreating] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
+    const [editting, setEditting] = useState<IEditRow<AulaCreateAdapter> | undefined>()
+    const [showModal, setShowModal] = useState(false)
+    const {aulas} = useContext(AppContext)
     const {
-        aulas,
         deleteAula,
         createAula,
         updateAula,
         getAulas,
-    } = useApiAulas();
-
+        isLoading
+    } = useApiAulas()
     useEffect(() => {
-        getAulas();
+        getAulas()
     }, []);
 
-    const onDeleteTableItem = (deletedAulaId: string) => {
-        deleteAula(deletedAulaId);
-    };
+    const onDeleteTableItem = (deletedAulaId : string ) => {
+        deleteAula(deletedAulaId )
+        getAulas()
+    }
 
     const onEditTableItem = (aulaEdit: AulaCreateAdapter) => {
-        setIsEditing(true);
-        updateAula(aulaEdit);
-        setIsEditing(false);
-    };
+        updateAula(editting!.id, aulaEdit)
+        setEditting!(undefined);
+    }
 
     const onAddTableItem = (aula: AulaCreateAdapter) => {
-        setIsCreating(true);
-        createAula(aula);
-        setIsCreating(false);
-    };
+        createAula(aula)
+    }
+
+    const [dataTable, setDataTable] = useState<AulaGetAdapter[]>(aulas ?? [])
+    useEffect(() => {
+        setDataTable(aulas!)
+        console.log(aulas)
+    }, [aulas]);
+    useEffect(() => {
+        setDataTable(
+            aulas?.filter((row) => {
+                return Object.values(row).some((value) => {
+                    return value?.toString().toLowerCase().includes(searchText.toLowerCase())
+                })
+            }) ?? []
+        )
+    }, [searchText, aulas]);
+
+
 
     return (
         <AulasContext.Provider value={{
-            dataTable: aulas,
+            dataTable: dataTable,
             searchText: searchText,
             editting: editting,
             showModal: showModal,
-            isCreatting: isCreating,
-            isEditting: isEditing,
             setShowModal: setShowModal,
             setEditting: setEditting,
             setSearchText: setSearchText,
             onDeleteTableItem: onDeleteTableItem,
             onEditTableItem: onEditTableItem,
             onAddTableItem: onAddTableItem,
-        }}>
+            isLoading: isLoading,
+        }
+        }>
             <div className={'w-full h-dvh flex flex-col'}>
-                <ToolBar />
+                <ToolBar/>
                 <Body />
                 {(showModal || editting) &&
                     <AddAulaForm />
                 }
             </div>
         </AulasContext.Provider>
-    );
+    )
 }

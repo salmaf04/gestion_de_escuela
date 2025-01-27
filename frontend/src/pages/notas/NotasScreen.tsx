@@ -2,54 +2,45 @@
 import {createContext, useContext, useEffect, useState} from "react";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
-import {NotaCreateAdapter} from "./adapters/NotaCreateAdapter.ts";
 import AddNotaForm from "./components/AddNotaForm.tsx";
 import {useApiNotas} from "./hooks/useApiNotas.ts";
 import {DBObject} from "../../types.ts";
 import {AppContext} from "../../App.tsx";
-import {useApiEstudiante} from "../estudiantes/hooks/useApiEstudiante.ts";
-import {useApiAsignatura} from "../asignaturas/hooks/useApiAsignatura.ts";
-import {useApiProfesor} from "../profesores/hooks/useApiProfesor.ts";
+import {INotaDB} from "./models/INotaDB.ts";
 
 interface INotasContext {
     searchText?: string;
     dataTable?: INotaTableRow[];
-    editting?: NotaCreateAdapter;
+    editting?: INotaDB;
     showModal?: boolean;
     isGetLoading?: boolean;
     isCreatting?: boolean;
-    isEditting?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEditting?: (nota?: NotaCreateAdapter) => void;
+    setEditting?: (NotaDB?: INotaDB) => void;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
-    onEditTableItem?: (notaEdit: NotaCreateAdapter[]) => void;
-    onAddTableItem?: (notaEdit: NotaCreateAdapter[]) => void;
+    onEditTableItem?: (notaEdit: Partial<INotaDB>) => void;
+    onAddTableItem?: (notaEdit: Partial<INotaDB>[]) => void;
 }
 
 export const NotasContext = createContext<INotasContext>({});
 
 interface INotaTableRow extends DBObject {
     id: string,
-    teacher: string;
-    student: string;
-    subject: string;
+    teacherName?: string;
+    studentName?: string;
+    subjectName?: string;
     note_value: number;
 }
 
 
 export default function NotasScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<NotaCreateAdapter | undefined>();
+    const [editting, setEditting] = useState<INotaDB | undefined>();
     const [showModal, setShowModal] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
-    const {getEstudiantes} = useApiEstudiante()
-    const {getAsignaturas} = useApiAsignatura()
-    const {getProfesores} = useApiProfesor()
-    const {asignaturas, estudiantes, profesores} = useContext(AppContext)
+    const {notas} = useContext(AppContext)
     const {
-        notas,
         deleteNota,
         createNota,
         updateNota,
@@ -58,24 +49,18 @@ export default function NotasScreen() {
 
     useEffect(() => {
         getNotas();
-        getAsignaturas()
-        getEstudiantes()
-        getProfesores()
     }, []);
 
     const onDeleteTableItem = (deletedNotaId: string) => {
         deleteNota(deletedNotaId);
     };
 
-    const onEditTableItem = (notasEdit: NotaCreateAdapter[]) => {
-        setIsEditing(true);
-        notasEdit.forEach((item) => {
-            updateNota(item);
-        })
-        setIsEditing(false);
+    const onEditTableItem = (notasEdit: Partial<INotaDB>) => {
+        updateNota(editting!.id, notasEdit)
+        setEditting(undefined)
     };
 
-    const onAddTableItem = (notas: NotaCreateAdapter[]) => {
+    const onAddTableItem = (notas: Partial<INotaDB>[]) => {
         setIsCreating(true);
         notas.forEach((item) => {
             createNota(item);
@@ -84,16 +69,16 @@ export default function NotasScreen() {
     };
     const [dataTable, setDataTable] = useState<INotaTableRow[]>([])
     useEffect(() => {
-        const data: INotaTableRow[] = notas?.map((item) => {
-            return {
-                id: item.id,
-                student: estudiantes?.find((i) => i.id === item.student_id)?.name ?? "Desconocido",
-                teacher: profesores?.find((i) => i.id === item.teacher_id)?.name ?? "Desconocido",
-                subject: asignaturas?.find((i) => i.id === item.subject_id)?.name ?? "Desconocido",
-                note_value: item.note_value
-            }
-        }) ?? []
-        setDataTable(data)
+            const data: INotaTableRow[] = notas?.map((item) => {
+                return {
+                    id: item.id,
+                    student: item.student.name,
+                    teacher: item.teacher.name,
+                    subject: item.subject.name,
+                    note_value: item.note_value
+                }
+            }) ?? []
+            setDataTable(data)
     }, [notas]);
     useEffect(() => {
         setDataTable(
@@ -113,7 +98,6 @@ export default function NotasScreen() {
             editting: editting,
             showModal: showModal,
             isCreatting: isCreating,
-            isEditting: isEditing,
             setShowModal: setShowModal,
             setEditting: setEditting,
             setSearchText: setSearchText,

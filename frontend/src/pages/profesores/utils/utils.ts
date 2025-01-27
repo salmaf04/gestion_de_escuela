@@ -1,4 +1,4 @@
-import { ProfesorGetResponse} from "../models/ProfesorGetDB.ts";
+import {ProfesorGetResponse} from "../models/ProfesorGetDB.ts";
 import {ProfesorGetAdapter} from "../adapters/ProfesorGetAdapter.ts";
 import {ProfesorCreateDB} from "../models/ProfesorCreateDB.ts";
 import {ProfesorCreateAdapter} from "../adapters/ProfesorCreateAdapter.ts";
@@ -13,7 +13,7 @@ export function getProfesorFromResponse(profesorResponse: ProfesorGetResponse) {
 }
 
 
-export function getProfesorCreateDbFromAdapter(profesorAdapter: ProfesorCreateAdapter): ProfesorCreateDB{
+export function getProfesorCreateDbFromAdapter(profesorAdapter: ProfesorCreateAdapter): ProfesorCreateDB {
     return {
         name: profesorAdapter.name,
         fullname: profesorAdapter.lastname,
@@ -25,4 +25,11 @@ export function getProfesorCreateDbFromAdapter(profesorAdapter: ProfesorCreateAd
         list_of_subjects: profesorAdapter.asignaturas,
         salary: profesorAdapter.salary
     }
+}
+
+export function getTextEllipsis(text?: string, length: number = 10): string {
+    if (text?.split(" ").length === 1) {
+        return text ? text.length > length ? text.slice(0, length) + '...' : text : ""
+    }
+    return text ?? ""
 }

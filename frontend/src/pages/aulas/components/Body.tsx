@@ -4,19 +4,18 @@ import {AulasContext} from "../AulasScreen.tsx";
 import {AulaGetAdapter} from "../adapters/AulaGetAdapter.ts";
 
 export default function Body(){
-    const {dataTable,  setEditting, onDeleteTableItem, isGetLoading} = useContext(AulasContext)
+    const {dataTable,  setEditting, onDeleteTableItem, isLoading} = useContext(AulasContext)
     return(
             <Table
                 className={'h-5/6'}
-                isLoading={isGetLoading!}
+                isLoading={isLoading!}
                 Data={dataTable ?? []} header={AulaGetAdapter.Properties.slice(1)}
                    onRemoveRow={(index) => {
                        onDeleteTableItem!(index)
                    }}
                    onEditRow={(index) => {
                        const item = dataTable!.find((item) => item.id === index)
-                       console.log(item)
-                       setEditting!(item!)
+                       setEditting!({id: item!.id, body: item!})
                    }}
             />
     )

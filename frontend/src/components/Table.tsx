@@ -1,5 +1,6 @@
 import {DBObject} from "../types.ts";
 import MySpinner from "./MySpinner.tsx";
+import {getTextEllipsis} from "../pages/profesores/utils/utils.ts";
 
 interface Props {
     header: string[],
@@ -43,17 +44,25 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow, 
                             {(Data).map((row) => {
                                 return (
                                     <div key={row.id} onClick={() => onEditRow(row.id)}
-                                         className={'flex w-full py-2 items-center hover:bg-indigo-100 cursor-pointer'}>
+                                         className={'flex w-full py-2 items-center hover:bg-indigo-100 cursor-pointer '}>
                                         {Object.values(row).slice(1).map((item, index) => {
                                             if (typeof item === "string" || typeof item === "number")
-                                                return <div key={index}
-                                                            className={`w-full text-center py-1`}>{item}</div>
+                                                return (
+                                                    <div key={index}
+                                                         className={`w-full text-center py-1`}>{getTextEllipsis(item.toString(), 10)}
+                                                        <div
+                                                            className={'absolute rounded-lg invisible group-hover:visible transition-all opacity-0 group-hover:opacity-100 text-xs z-20 text-slate-600 grid grid-cols-2 gap-3 size-fit p-2 bg-white'}>
+                                                            <p>{item}</p>
+                                                        </div>
+                                                    </div>
+                                                )
 
                                             else if (typeof item === "boolean") {
                                                 return (
-                                                    <div key={index}  className={'w-full text-center py-1 flex items-center justify-center'}>
+                                                    <div key={index}
+                                                         className={'w-full text-center py-1 flex items-center justify-center'}>
                                                         <div
-                                                             className={`${item ? 'bg-green-200 text-green-950' : 'bg-red-200 text-red-950'} rounded-full py-2 w-16 font-bold text-xs`}>
+                                                            className={`${item ? 'bg-green-200 text-green-950' : 'bg-red-200 text-red-950'} rounded-full py-2 w-16 font-bold text-xs`}>
                                                             {item ? "Sí" : "No"}
                                                         </div>
                                                     </div>
@@ -63,12 +72,12 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow, 
                                                 return (
                                                     <div key={index}
                                                          className={'w-full group flex justify-center items-center text-center py-1'}>
-                                                        {item?.toString().slice(1, item.toString().length) ?? ""}
+                                                        {getTextEllipsis(item?.toString(), 10) ?? ""}
                                                         <div
                                                             className={'absolute rounded-lg invisible group-hover:visible transition-all opacity-0 group-hover:opacity-100 text-xs z-20 text-slate-600 grid grid-cols-2 gap-3 size-fit p-2 bg-white'}>
                                                             {
-                                                                (item as Array<string>)?.map((value) => {
-                                                                    return <p>{value}</p>
+                                                                (item as Array<string>)?.map((value, indx) => {
+                                                                    return <p key={indx}>{value}</p>
                                                                 })
                                                             }
                                                         </div>

@@ -17,8 +17,8 @@ import UsuariosScreen from "./pages/usuarios/UsuariosScreen.tsx";
 import {AsignaturaGetAdapter} from "./pages/asignaturas/adapters/AsignaturaGetAdapter.ts";
 import {RolesEnum} from "./api/RolesEnum.ts";
 import {EstudianteGetAdapter} from "./pages/estudiantes/adapters/EstudianteGetAdapter.ts";
-import {NotaGetAdapter} from "./pages/notas/adapters/NotaGetAdapter.ts";
 import NotasScreen from "./pages/notas/NotasScreen.tsx";
+import {INotaLocal} from "./pages/notas/models/INotaLocal.ts";
 
 
 interface AppContextInterface {
@@ -35,8 +35,8 @@ interface AppContextInterface {
     setMedios?: (medios: MedioGetAdapter[]) => void;
     asignaturas?: AsignaturaGetAdapter[];
     setAsignaturas?: (asignaturas: AsignaturaGetAdapter[]) => void;
-    notas?: NotaGetAdapter[];
-    setNotas?: (notas: NotaGetAdapter[]) => void;
+    notas?: INotaLocal[];
+    setNotas?: (notas: INotaLocal[]) => void;
 
     setRole?: (role: RolesEnum) => void,
     role?: RolesEnum,
@@ -53,7 +53,7 @@ function App() {
     const [aulas, setAulas] = useState<AulaGetAdapter[]>()
     const [medios, setMedios] = useState<MedioGetAdapter[]>()
     const [asignaturas, setAsignaturas] = useState<AsignaturaGetAdapter[]>()
-    const [notas, setNotas] = useState<NotaGetAdapter[]>()
+    const [notas, setNotas] = useState<INotaLocal[]>()
     const [estudiantes, setEstudiantes] = useState<EstudianteGetAdapter[]>()
     const [role, setRole] = useState<RolesEnum>()
     useEffect(() => {
