@@ -42,7 +42,7 @@ async def create_note(
 
 @router.get(
     "/note",
-    response_model=list[NoteModel] | list[NoteLessThanFifty],
+    response_model=list[NoteModel] | list[NoteLessThanFifty] | list,
     status_code=status.HTTP_200_OK
 )
 async def read_note(
@@ -60,10 +60,7 @@ async def read_note(
         return mapper.to_less_than_fifty(notes)
 
     if not notes :
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="There is no note with that fields"
-        )
+        return []
 
     notes_mapped = {}    
      
