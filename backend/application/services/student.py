@@ -3,6 +3,7 @@ from sqlalchemy import select, update, func
 from backend.domain.filters.student import StudentFilterSet , StudentFilterSchema, StudentChangeRequest
 from backend.domain.schemas.student import StudentCreateModel, StudentModel
 from backend.domain.models.tables import StudentTable, StudentNoteTable
+from backend.application.services.course import CoursePaginationService
 from ..utils.auth import get_password_hash
 from ..utils.note_average import  calculate_student_average
 import uuid
@@ -12,9 +13,11 @@ import uuid
 class StudentCreateService :
 
     def create_student(self, session: Session, student:StudentCreateModel) -> StudentTable :
+        course_pagination_service = CoursePaginationService()
+        course = course_pagination_service.get_course_by_year(session=session, year=student.course_year)
         student_dict = student.model_dump(exclude={'password'})
         hashed_password = get_password_hash(student.password)
-        new_student = StudentTable(**student_dict, hash_password=hashed_password)
+        new_student = StudentTable(**student_dict, hash_password=hashed_password, course_id=course.entity_id)
         session.add(new_student)
         session.commit()
         return new_student

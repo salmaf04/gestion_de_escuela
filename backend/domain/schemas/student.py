@@ -9,6 +9,7 @@ class StudentModel(BaseModel):
     extra_activities: bool
     username: str
     hash_password: str
+    course_year : int
     
 class StudentCreateModel(BaseModel):
     name: str
@@ -17,6 +18,7 @@ class StudentCreateModel(BaseModel):
     extra_activities: bool
     username: str
     password: str
+    course_year : int
 
 class StudentSubjectPerformance(BaseModel):
     subject_id : uuid.UUID
