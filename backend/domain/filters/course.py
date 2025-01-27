@@ -5,13 +5,10 @@ from typing import Optional
 
 
 class CourseFilterSet(FilterSet):
-    start_year = RangeFilter(CourseTable.start_year)
-    end_year = RangeFilter(CourseTable.end_year)
+    year = RangeFilter(CourseTable.year)
 
 class CourseFilterSchema(BaseModel):
-    start_year : tuple[int, int] | None = None
-    end_year : tuple[int, int] | None = None
+    year : int | None = None
 
 class ChangeRequest(BaseModel) :
-    start_year : Optional[int] = None
-    end_year : Optional[int] = None
+    year : Optional[int] = None

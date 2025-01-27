@@ -44,6 +44,11 @@ class CoursePaginationService :
 
         return result
     
+    def get_course_by_year(self, session: Session, year: int) -> CourseTable :
+        query = session.query(CourseTable).filter(CourseTable.year == year)
+        result = query.scalar()
+        return result
+    
     def get_courses(self, session: Session, start_year: int, end_year: int) -> list[CourseTable] :
         query = select(CourseTable).where(and_(CourseTable.start_year == start_year, CourseTable.end_year == end_year))
         return session.execute(query).scalars().first()

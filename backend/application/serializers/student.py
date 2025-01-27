@@ -12,7 +12,8 @@ class StudentMapper :
             email= student.email,
             extra_activities= student.extra_activities,  
             username= student.username,
-            hash_password= student.hash_password
+            hash_password= student.hash_password,
+            course_year = student.course_year 
         )
         
     def to_academic_performance(self, data) :
