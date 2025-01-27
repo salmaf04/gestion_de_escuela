@@ -43,7 +43,7 @@ export default function AddNotaForm() {
         else{
             console.log(data)
             const dataParse: Partial<INotaDB>[] = []
-            for (let i = 0; i <= fields.length; i++) {
+            for (let i = 0; i < fields.length; i++) {
                 dataParse.push({
                     teacher_id: data[`profesor${i}`],
                     student_id: data[`estudiante${i}`],
@@ -51,6 +51,7 @@ export default function AddNotaForm() {
                     note_value: data[`note_value${i}`],
                 })
             }
+            console.log(dataParse)
             onAddTableItem!(dataParse)
         }
         setShowModal!(false)
