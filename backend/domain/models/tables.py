@@ -178,7 +178,6 @@ class StudentTable(UserTable) :
     age = Column(Integer)
     extra_activities = Column(Boolean, nullable=True)
     average_note = Column(Double)
-    course_year = Column(Integer)
     course_id : Mapped[uuid.UUID] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id"))
     """
     teacher: Mapped["Teacher"] = relationship(
@@ -212,7 +211,6 @@ class SubjectTable(BaseTable) :
     study_program = Column(Integer)
 
     classroom_id : Mapped[int] = mapped_column(ForeignKey(f"{TableName.CLASSROOM.value}.entity_id"))
-    course_year = Column(Integer)
     course_id : Mapped[uuid.UUID] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id"))
 
     """
@@ -230,13 +228,13 @@ class SubjectTable(BaseTable) :
     )
     """
     
-    classroom: Mapped["ClassroomTable"] = relationship(back_populates="subjects")
-    course: Mapped['CourseTable'] = relationship(back_populates="subjects")
+    classroom: Mapped["ClassroomTable"] = relationship(back_populates="subjects", cascade="all, delete")
+    course: Mapped['CourseTable'] = relationship(back_populates="subjects", cascade="all, delete")
 
-    student_teacher_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="subject")
-    student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="subject")
-    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="subject")
-    teacher_subject_association = relationship("TeacherTable", secondary=teacher_subject_table, back_populates="teacher_subject_association")
+    student_teacher_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="subject", cascade="all, delete")
+    student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="subject", cascade="all, delete")
+    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="subject", cascade="all, delete")
+    teacher_subject_association = relationship("TeacherTable", secondary=teacher_subject_table, back_populates="teacher_subject_association", cascade="all, delete")
     
 class ClassroomTable(BaseTable) : 
     __tablename__ = TableName.CLASSROOM.value
@@ -264,7 +262,10 @@ class CourseTable(BaseTable) :
     )
     """
 
-    subjects: Mapped[List["SubjectTable"]] = relationship( back_populates="course") 
+    subjects: Mapped[List["SubjectTable"]] = relationship(
+        back_populates="course",
+        cascade="all, delete-orphan"
+    )
     students: Mapped[List["StudentTable"]] = relationship(back_populates="course")
     student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="course")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="course")

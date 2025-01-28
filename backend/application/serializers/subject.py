@@ -10,6 +10,6 @@ class SubjectMapper :
             hourly_load= subject.hourly_load,
             study_program= subject.study_program,
             classroom_id= subject.classroom_id,
-            course_year= subject.course_year
+            course_id = subject.course_id
         )
         
