@@ -62,12 +62,7 @@ async def read_note(
     if not notes :
         return []
 
-    notes_mapped = {}    
-     
-    for i, note in enumerate(notes) :
-        notes_mapped[i] = mapper.to_api(note)
-        
-    return 
+    return mapper.to_api(notes)
 
 
 @router.patch(

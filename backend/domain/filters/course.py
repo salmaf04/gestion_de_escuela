@@ -5,7 +5,7 @@ from typing import Optional
 
 
 class CourseFilterSet(FilterSet):
-    year = RangeFilter(CourseTable.year)
+    year = Filter(CourseTable.year)
 
 class CourseFilterSchema(BaseModel):
     year : int | None = None

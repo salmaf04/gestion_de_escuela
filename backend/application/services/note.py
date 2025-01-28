@@ -30,10 +30,8 @@ class NoteCreateService :
         session.add(new_note)
         session.commit()
         return new_note
-    
 
 
-    
 class NotePaginationService :
     def get_note_by_id(self, session: Session, id : str) -> StudentNoteTable :
         query = select(StudentNoteTable).where(StudentNoteTable.entity_id == id)

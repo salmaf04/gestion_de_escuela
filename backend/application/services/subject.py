@@ -5,15 +5,19 @@ from backend.domain.schemas.subject import SubjectCreateModel, SubjectModel
 from backend.domain.models.tables import SubjectTable
 import uuid
 from backend.application.services.classroom import ClassroomPaginationService
+from backend.application.services.course import CoursePaginationService
 
 class SubjectCreateService :
 
     def create_subject(self, session: Session, subject:SubjectCreateModel) -> SubjectTable :
+        course_pagination_service = CoursePaginationService()
+        course = course_pagination_service.get_course_by_year(session=session, year=subject.course_year)
+        course_id = course.entity_id
         classroom_service = ClassroomPaginationService()
         classroom = classroom_service.get_classroom_by_id(session=session, id=subject.classroom_id)
          
         subject_dict = subject.model_dump()
-        new_subject = SubjectTable(**subject_dict)
+        new_subject = SubjectTable(**subject_dict, course_id=course_id)
         new_subject.classroom = classroom
         classroom.subjects.append(new_subject)
         session.add(new_subject)

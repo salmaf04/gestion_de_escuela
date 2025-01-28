@@ -8,11 +8,13 @@ class SubjectFilterSet(FilterSet):
     name = InFilter(SubjectTable.name)
     hourly_load = RangeFilter(SubjectTable.hourly_load)
     study_program = RangeFilter(SubjectTable.study_program)
+    course_year = Filter(SubjectTable.course_year)
 
 class SubjectFilterSchema(BaseModel):
     name : list[str] | None = None
     hourly_load : tuple[int, int] | None = None
     study_program : tuple[int, int] | None = None
+    course_year : int | None = None
 
 class SubjectChangeRequest(BaseModel) :
     name : Optional[str] = None

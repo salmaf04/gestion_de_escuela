@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select, update , and_
-from backend.domain.filters.course import  ChangeRequest
+from backend.domain.filters.course import  ChangeRequest, CourseFilterSchema, CourseFilterSet
 from backend.domain.schemas.course import CourseCreateModel, CourseModel
 from backend.domain.models.tables import CourseTable
 
@@ -49,6 +49,8 @@ class CoursePaginationService :
         result = query.scalar()
         return result
     
-    def get_courses(self, session: Session, start_year: int, end_year: int) -> list[CourseTable] :
-        query = select(CourseTable).where(and_(CourseTable.start_year == start_year, CourseTable.end_year == end_year))
-        return session.execute(query).scalars().first()
+    def get_course(self, session: Session, filter_params: CourseFilterSchema) -> list[CourseTable] :
+        query = select(CourseTable)
+        filter_set = CourseFilterSet(session, query=query)
+        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
+        return session.execute(query).scalars().all()
