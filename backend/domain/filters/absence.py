@@ -7,11 +7,9 @@ import uuid
 class AbsenceFilterSet(FilterSet):
     student_id = Filter(AbsenceTable.student_id)
     subject_id = Filter(AbsenceTable.subject_id)
-    course_id = Filter(AbsenceTable.course_id)
-    absences = Filter(AbsenceTable.absences)
+    date = Filter(AbsenceTable.date)
 
 class AbsenceFilterSchema(BaseModel):
     student_id : uuid.UUID | None = None
     subject_id : uuid.UUID | None = None
-    course_id : uuid.UUID | None = None
-    absences : int | None = None
+    date : str | None = None

@@ -267,7 +267,6 @@ class CourseTable(BaseTable) :
         cascade="all, delete-orphan"
     )
     students: Mapped[List["StudentTable"]] = relationship(back_populates="course")
-    student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="course")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="course")
 
 
@@ -374,14 +373,11 @@ class AbsenceTable(BaseTable) :
 
     student_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.STUDENT.value}.id"), primary_key=True)
     subject_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.SUBJECT.value}.entity_id"), primary_key=True)
-    course_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id"))
-    
-    absences = Column(Integer)
+
+    date = Column(DateTime, nullable=False)
 
     student: Mapped["StudentTable"] = relationship(back_populates="student_absence_association")
     subject: Mapped["SubjectTable"] = relationship(back_populates="student_absence_association")
-    course: Mapped["CourseTable"] = relationship(back_populates="student_absence_association")
-
 
 
 #Tablas de relación
