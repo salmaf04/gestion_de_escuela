@@ -13,11 +13,9 @@ import uuid
 class StudentCreateService :
 
     def create_student(self, session: Session, student:StudentCreateModel) -> StudentTable :
-        course_pagination_service = CoursePaginationService()
-        course = course_pagination_service.get_course_by_year(session=session, year=student.course_year)
         student_dict = student.model_dump(exclude={'password'})
         hashed_password = get_password_hash(student.password)
-        new_student = StudentTable(**student_dict, hash_password=hashed_password, course_id=course.entity_id)
+        new_student = StudentTable(**student_dict, hash_password=hashed_password)
         session.add(new_student)
         session.commit()
         return new_student
