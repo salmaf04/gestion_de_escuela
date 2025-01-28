@@ -33,11 +33,10 @@ class AbsencePaginationService :
         query = query.group_by(AbsenceTable.subject_id)
         query = query.subquery()
 
-        final_query = select(query.c.subject_id, query.c.absences_by_subject, AbsenceTable, SubjectTable)
+        final_query = select(query.c.subject_id,query.c.absences_by_subject,SubjectTable, AbsenceTable)
         final_query = final_query.join(query, query.c.subject_id == AbsenceTable.subject_id)
         final_query = final_query.join(SubjectTable, SubjectTable.entity_id == query.c.subject_id)
-        final_query = final_query.where(AbsenceTable.student_id == student_id)
-        final_query = final_query.order_by(AbsenceTable.subject_id)
+        final_query = final_query.distinct(SubjectTable.entity_id)
         return session.execute(final_query).all()
 
     
