@@ -28,24 +28,15 @@ export default function AddCursoForm() {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className={'grid grid-cols-2 gap-y-1 gap-x-10'}>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Año de inicio</label>
+                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Año
+                                de inicio</label>
                             <input
                                 type="number"
-                                {...register("start_year", { required: true })}
+                                {...register("year", {required: true})}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.start_year}
+                                defaultValue={editting?.year}
                             />
                         </div>
-                        <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Año de fin</label>
-                            <input
-                                type="number"
-                                {...register("end_year", { required: true })}
-                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.end_year}
-                            />
-                        </div>
-
                     </div>
 
                     <div className="flex space-x-3 justify-center mt-4 h-full items-end">
