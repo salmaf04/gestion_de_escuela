@@ -7,6 +7,7 @@ import Select from "../../../components/Select.tsx";
 import {ICursoGetLocal} from "../../cursos/models/ICursoGetLocal.ts";
 import {ISelect} from "../../../types/ISelect.ts";
 import {AppContext} from "../../../App.tsx";
+import {AulaGetAdapter} from "../../aulas/adapters/AulaGetAdapter.ts";
 
 export default function AddAsignaturaForm() {
     const { register, handleSubmit, control} = useForm<AsignaturaCreateAdapter>();
@@ -20,15 +21,24 @@ export default function AddAsignaturaForm() {
     }, [isEditting, isCreatting]);
 
     const onSubmit: SubmitHandler<AsignaturaCreateAdapter> = (data) => {
+        console.log(data)
         if (editting)
             onEditTableItem!(data);
         else
             onAddTableItem!(data);
+
     };
     const cursosSelect: ISelect[] = cursos?.map((item: ICursoGetLocal)=>{
         return {
             id: item.id,
             name: item.year.toString()
+        }
+    }) ?? []
+
+    const aulasSelect: ISelect[] = aulas?.map((item: AulaGetAdapter)=>{
+        return {
+            id: item.id,
+            name: item.location
         }
     }) ?? []
     return (
@@ -67,17 +77,18 @@ export default function AddAsignaturaForm() {
                                 defaultValue={editting?.study_program}
                             />
                         </div>
-                        <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">ID
-                                del Aula</label>
-                            <input
-                                type="text"
-                                {...register("classroom_id", {required: true})}
-                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting && aulas?.find((i) => i.location === editting.classroom_name)?.id}
+                        <div className={'w-full mb-4'}>
+                            <Select
+                                {...register(`classroom_id`, {
+                                    required: true,
+                                })}
+                                label={'Aula'}
+                                labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
+                                data={aulasSelect}
+                                control={control}
                             />
                         </div>
-                        <div className={'w-full'}>
+                        <div className={'w-full mb-4'}>
                             <Select
                                 {...register(`course_id`, {
                                     required: true,
@@ -90,7 +101,7 @@ export default function AddAsignaturaForm() {
                         </div>
                     </div>
 
-                    <div className="flex space-x-3 justify-center">
+                    <div className="flex space-x-3 justify-center mt-4">
                         <button type="button" onClick={() => {
                             setShowModal!(false);
                             setEditting!(undefined);

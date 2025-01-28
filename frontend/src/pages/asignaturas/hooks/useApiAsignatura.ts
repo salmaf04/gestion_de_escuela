@@ -5,7 +5,6 @@ import {AppContext} from "../../../App.tsx";
 import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {AsignaturaCreateAdapter} from "../adapters/AsignaturaCreateAdapter.ts";
-import {getAsignaturaCreateDbFromAdapter} from "../utils/utils.ts";
 import {useApiCurso} from "../../cursos/hooks/useApiCurso.ts";
 
 const endpoint = EndpointEnum.ASIGNATURAS
@@ -35,15 +34,15 @@ export const useApiAsignatura = () => {
 
     const createAsignatura = async (asignatura: AsignaturaCreateAdapter) => {
         setIsLoading(true)
-        const res = await apiRequest.postApi(endpoint, getAsignaturaCreateDbFromAdapter(asignatura))
+        const res = await apiRequest.postApi(endpoint, asignatura)
         if (!res.ok)
             setError!(new Error(res.statusText))
         await getAsignaturas()
         setIsLoading(false)
     }
-    const updateAsignatura = async (id: string, asignatura: AsignaturaCreateAdapter) => {
+    const updateAsignatura = async (id: string, asignatura: Partial<AsignaturaCreateAdapter>) => {
         setIsLoading(true)
-        const res = await apiRequest.patchApi(endpoint, id, getAsignaturaCreateDbFromAdapter(asignatura))
+        const res = await apiRequest.patchApi(endpoint, id, asignatura)
         if (!res.ok)
             setError!(new Error(res.statusText))
         await getAsignaturas()
