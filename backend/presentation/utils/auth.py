@@ -124,7 +124,8 @@ def authorize(role: list):
                 role_str = ','.join(role)
                 raise HTTPException(status_code=403, detail=f"User is not authorized to access , only avaliable for {role_str}")
             
-            if method == 'PATCH' or method == 'POST' and url == 'note':
+            if (method == 'PATCH' or method == 'POST') and url == 'note':
+                print("hola")
                 kwargs['user_id']=user_id1
             
             return await func(*args, **kwargs)
