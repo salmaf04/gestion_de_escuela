@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from backend.configuration import get_db
 from backend.application.serializers.classroom import ClassroomMapper
 from backend.application.services.classroom import ClassroomCreateService, ClassroomPaginationService, ClassroomDeletionService, ClassroomUpdateService
-from backend.domain.filters.classroom import ClassroomFilterSchema, ChangeRequest
+from backend.domain.filters.classroom import ClassroomFilterSchema, ClassroomChangeRequest
 
 router = APIRouter()
 
@@ -22,7 +22,7 @@ async def create_classroom(
 
     response = classroom_service.create_classroom(session=session, classroom=classroom_input)
 
-    return mapper.to_api_post(response)
+    return mapper.to_api_default(response)
 
 @router.delete(
     "/classroom/{id}",
@@ -76,7 +76,7 @@ async def read_classroom(
 )
 async def update_classroom(
     id : str,
-    filters: ChangeRequest = Depends(),
+    filters: ClassroomChangeRequest = Depends(),
     session: Session = Depends(get_db)
 ) :
     classroom_pagination_service = ClassroomPaginationService()
@@ -84,15 +84,14 @@ async def update_classroom(
     mapper = ClassroomMapper()
 
     classroom = classroom_pagination_service.get_classroom_by_id(session=session, id = id)
-    classroom_model = mapper.to_api(classroom)
+    classroom_model = mapper.to_api_default(classroom)
 
     if not classroom :
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="There is no classroom with that id"
         )
-    print(filters.specialty)
-
+ 
     classroom_updated = classroom_update_service.update_one(session=session, changes=filters, classroom=classroom_model)
 
     return classroom_updated

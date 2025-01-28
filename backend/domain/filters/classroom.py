@@ -13,6 +13,6 @@ class ClassroomFilterSchema(BaseModel):
     location : str | None = None
     capacity : tuple[int, int] | None = None
 
-class ChangeRequest(BaseModel) :
+class ClassroomChangeRequest(BaseModel) :
     location : Optional[str] = None
     capacity : Optional[int] = None

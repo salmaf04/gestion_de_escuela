@@ -81,7 +81,7 @@ async def read_subject(
 )
 async def update_subject(
     id : str,
-    filters: SubjectChangeRequest = Depends(),
+    filter_params: SubjectChangeRequest = Depends(),
     session: Session = Depends(get_db)
 ) :
     subject_pagination_service = SubjectPaginationService()
@@ -96,7 +96,9 @@ async def update_subject(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="There is no subject with that id"
         )
+    
+    print(filter_params)
    
-    subject_updated = subject_update_service.update_one(session=session, changes=filters, subject=subject_model)
+    subject_updated = subject_update_service.update_one(session=session, changes=filter_params, subject=subject_model)
 
     return subject_updated
