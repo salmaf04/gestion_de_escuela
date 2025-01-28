@@ -178,7 +178,7 @@ class StudentTable(UserTable) :
     age = Column(Integer)
     extra_activities = Column(Boolean, nullable=True)
     average_note = Column(Double)
-    course_id : Mapped[uuid.UUID] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id"))
+    course_id : Mapped[uuid.UUID] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id", ondelete='CASCADE'))
     """
     teacher: Mapped["Teacher"] = relationship(
         secondary=f"{TableName.TEACHER.value}", back_populates="students", viewonly=True
@@ -194,9 +194,9 @@ class StudentTable(UserTable) :
     )
     """
     course: Mapped['CourseTable'] = relationship(back_populates="students")
-    student_note_association: Mapped[List["StudentNoteTable"]] = relationship('StudentNoteTable', back_populates="student")
-    student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="student")
-    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="student")
+    student_note_association: Mapped[List["StudentNoteTable"]] = relationship('StudentNoteTable', back_populates="student", cascade="all, delete")
+    student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="student", cascade="all, delete")
+    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="student",cascade="all, delete")
 
     __mapper_args__ = {
         "polymorphic_identity": "student",
