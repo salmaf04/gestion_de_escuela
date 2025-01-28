@@ -11,12 +11,12 @@ import {INotaDB} from "./models/INotaDB.ts";
 interface INotasContext {
     searchText?: string;
     dataTable?: INotaTableRow[];
-    editting?: INotaDB;
+    editting?: INotaTableRow;
     showModal?: boolean;
     isGetLoading?: boolean;
     isCreatting?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEditting?: (NotaDB?: INotaDB) => void;
+    setEditting?: (NotaDB?: INotaTableRow) => void;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
     onEditTableItem?: (notaEdit: Partial<INotaDB>) => void;
@@ -36,7 +36,7 @@ interface INotaTableRow extends DBObject {
 
 export default function NotasScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<INotaDB | undefined>();
+    const [editting, setEditting] = useState<INotaTableRow | undefined>();
     const [showModal, setShowModal] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
     const {notas} = useContext(AppContext)

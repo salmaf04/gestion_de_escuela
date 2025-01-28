@@ -1,15 +1,15 @@
 import Table from "../../../components/Table.tsx";
 import {useContext} from "react";
-import {NotasContext} from "../NotasScreen.tsx";
-import {NotaAdapter} from "../adapters/NotaAdapter.ts";
+import {CursoContext} from "../CursosScreen.tsx";
+import {CursoGetAdapter} from "../adapters/CursoGetAdapter.ts";
 
 export default function Body(){
-    const {dataTable, setEditting, onDeleteTableItem, isGetLoading} = useContext(NotasContext)
+    const {dataTable, setEditting, onDeleteTableItem, isLoading} = useContext(CursoContext)
     return(
             <Table
                 className={'h-5/6'}
-                isLoading={isGetLoading!}
-                Data={dataTable ?? []} header={NotaAdapter.Properties.slice(1)}
+                isLoading={isLoading!}
+                Data={dataTable ?? []} header={CursoGetAdapter.Properties.slice(1)}
                    onRemoveRow={(index) => {
                        onDeleteTableItem!(index)
                    }}

@@ -1,4 +1,4 @@
-// frontend/src/pages/asignaturas/AsignaturasScreen.tsx
+// frontend/src/pages/asignaturas/CursosScreen.tsx
 import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";

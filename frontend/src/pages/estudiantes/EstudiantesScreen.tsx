@@ -2,25 +2,26 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { EstudianteGetAdapter } from "./adapters/EstudianteGetAdapter.ts";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
-import { EstudianteCreateAdapter } from "./adapters/EstudianteCreateAdapter.ts";
 import { AppContext } from "../../App.tsx";
 import AddEstudianteForm from "./components/AddEstudianteForm.tsx";
 import {useApiEstudiante} from "./hooks/useApiEstudiante.ts";
 import {IEditRow} from "../../types/IEditRow.ts";
+import {IEstudianteLocal} from "./models/IEstudianteLocal.ts";
+import {IEstudianteDB} from "./models/IEstudianteDB.ts";
 
 
 interface IEstudianteContext {
     searchText?: string;
     dataTable?: EstudianteGetAdapter[];
-    editting?: IEditRow<EstudianteCreateAdapter>;
+    editting?: IEditRow<Partial<IEstudianteLocal>>;
     showModal?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEditting?: (estudiante?: IEditRow<EstudianteCreateAdapter>) => void;
+    setEditting?: (estudiante?: IEditRow<Partial<IEstudianteLocal>>) => void;
     isGetLoading?: boolean;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
-    onEditTableItem?: (estudianteEdit: EstudianteCreateAdapter) => void;
-    onAddTableItem?: (estudianteEdit: EstudianteCreateAdapter) => void;
+    onEditTableItem?: (estudianteEdit: Partial<IEstudianteLocal>) => void;
+    onAddTableItem?: (estudianteEdit: Partial<IEstudianteLocal>) => void;
     isEditting?: boolean;
     isCreatting?: boolean;
 }
@@ -29,7 +30,7 @@ export const EstudianteContext = createContext<IEstudianteContext>({});
 
 export default function EstudiantesScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<IEditRow<EstudianteCreateAdapter> | undefined>();
+    const [editting, setEditting] = useState<IEditRow<Partial<IEstudianteLocal>> | undefined>();
     const [showModal, setShowModal] = useState(false);
     const {estudiantes} = useContext(AppContext)
     const {
@@ -48,13 +49,21 @@ export default function EstudiantesScreen() {
         deleteEstudiante(deletedEstudianteId);
     };
 
-    const onEditTableItem = (estudianteEdit: EstudianteCreateAdapter) => {
-        updateEstudiante(editting!.id, estudianteEdit);
+    const onEditTableItem = (estudianteEdit: Partial<IEstudianteLocal>) => {
+        const toEdit: Partial<IEstudianteDB> = {
+            ...estudianteEdit,
+            course_id: estudianteEdit.course?.id
+        }
+        updateEstudiante(editting!.id, toEdit);
         setEditting!(undefined);
     };
 
-    const onAddTableItem = (estudiante: EstudianteCreateAdapter) => {
-        createEstudiante(estudiante);
+    const onAddTableItem = (estudiante: Partial<IEstudianteLocal>) => {
+        const toCreate: Partial<IEstudianteDB> = {
+            ...estudiante,
+            course_id: estudiante.course?.id
+        }
+        createEstudiante(toCreate);
     };
     const [dataTable, setDataTable] = useState<EstudianteGetAdapter[]>(estudiantes ?? [])
     useEffect(() => {

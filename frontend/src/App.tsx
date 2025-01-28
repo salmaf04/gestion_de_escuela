@@ -19,6 +19,8 @@ import {RolesEnum} from "./api/RolesEnum.ts";
 import {EstudianteGetAdapter} from "./pages/estudiantes/adapters/EstudianteGetAdapter.ts";
 import NotasScreen from "./pages/notas/NotasScreen.tsx";
 import {INotaLocal} from "./pages/notas/models/INotaLocal.ts";
+import {ICursoGetLocal} from "./pages/cursos/models/ICursoGetLocal.ts";
+import CursosScreen from "./pages/cursos/CursosScreen.tsx";
 
 
 interface AppContextInterface {
@@ -37,11 +39,12 @@ interface AppContextInterface {
     setAsignaturas?: (asignaturas: AsignaturaGetAdapter[]) => void;
     notas?: INotaLocal[];
     setNotas?: (notas: INotaLocal[]) => void;
+    cursos?: ICursoGetLocal[];
+    setCursos?: (cursos: ICursoGetLocal[]) => void;
 
     setRole?: (role: RolesEnum) => void,
     role?: RolesEnum,
     allowRoles?: (roles: RolesEnum[]) => boolean
-
 }
 
 export const AppContext = createContext<AppContextInterface>({})
@@ -55,6 +58,7 @@ function App() {
     const [asignaturas, setAsignaturas] = useState<AsignaturaGetAdapter[]>()
     const [notas, setNotas] = useState<INotaLocal[]>()
     const [estudiantes, setEstudiantes] = useState<EstudianteGetAdapter[]>()
+    const [cursos, setCursos] = useState<ICursoGetLocal[]>()
     const [role, setRole] = useState<RolesEnum>()
     useEffect(() => {
         const t = sessionStorage.getItem('token')
@@ -88,7 +92,9 @@ function App() {
             estudiantes: estudiantes,
             setEstudiantes: setEstudiantes,
             notas: notas,
-            setNotas: setNotas
+            setNotas: setNotas,
+            cursos: cursos,
+            setCursos: setCursos,
         }}>
             <BrowserRouter>
                 {error &&
@@ -130,6 +136,9 @@ function App() {
                                     }
                                     {allowRoles([RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.TEACHER]) &&
                                         <Route path={'/nota'} element={<NotasScreen/>}/>
+                                    }
+                                    {allowRoles([RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.TEACHER, RolesEnum.STUDENT]) &&
+                                        <Route path={'/curso'} element={<CursosScreen/>}/>
                                     }
                                 </Routes>
                             </div>

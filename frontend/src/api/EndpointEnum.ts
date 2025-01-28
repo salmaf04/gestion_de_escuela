@@ -5,4 +5,5 @@ export enum EndpointEnum {
     MEDIOS = 'mean',
     ASIGNATURAS = 'subject',
     NOTAS = 'note',
+    CURSOS = 'course',
 }
