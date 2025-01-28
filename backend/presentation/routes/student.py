@@ -6,6 +6,10 @@ from fastapi.exceptions import HTTPException
 from backend.application.serializers.student import StudentMapper
 from backend.domain.filters.student import StudentFilterSchema, StudentChangeRequest
 from backend.configuration import get_db
+from backend.presentation.utils.auth import authorize, get_current_user
+from backend.domain.schemas.user import UserModel
+from fastapi import Request
+
 
 router = APIRouter()
 
@@ -59,15 +63,20 @@ async def delete_student(
 
 @router.get(
     "/student",
-    response_model=dict[int, StudentModel] | StudentAcademicPerformance,
+    response_model=dict[int, StudentModel] | StudentAcademicPerformance | list[StudentModel],
     status_code=status.HTTP_200_OK
 )
+@authorize(role=['secretary','teacher'])
 async def read_student(
+    request: Request,
     id : str = None,
+    teacher_id : str = None,
     academic_performance = False,
     student_note_less_than_fifty = False,
+    students_by_teacher = False,
     filters: StudentFilterSchema = Depends(),
-    session: Session = Depends(get_db)
+    session: Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user)
 ) :
     student_pagination_service = StudentPaginationService()
     mapper = StudentMapper()
@@ -78,7 +87,9 @@ async def read_student(
     elif academic_performance :
         students = student_pagination_service.get_academic_information(session=session, student_id=id)
         return mapper.to_academic_performance(students)
-    
+    elif students_by_teacher :
+        students = student_pagination_service.get_students_by_teacher(session=session, teacher_id=teacher_id)
+        return mapper.to_student_by_teacher(students)
 
     students = student_pagination_service.get_students(session=session, filter_params=filters)
 

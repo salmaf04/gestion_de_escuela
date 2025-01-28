@@ -27,6 +27,7 @@ class StudentSubjectPerformance(BaseModel):
 class StudentAcademicPerformance(BaseModel):
     id : uuid.UUID
     performance : list[StudentSubjectPerformance]
+    
 
 
 

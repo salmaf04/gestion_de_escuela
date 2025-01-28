@@ -67,7 +67,12 @@ async def read_course(
             detail="There is no course with that id"
         )
 
-    return mapper.to_api(courses)
+    courses_mapped = []
+
+    for course in courses :
+        courses_mapped.append(mapper.to_api(course))
+
+    return courses_mapped
 
 @router.patch(
     "/course/{id}",
