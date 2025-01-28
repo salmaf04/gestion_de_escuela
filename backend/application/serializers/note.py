@@ -13,18 +13,15 @@ class NoteLessThanFifty(BaseModel) :
    
 
 class NoteMapper :
-    def to_api(self, notes: list[StudentNoteTable]) -> list[NoteModel] :
-        serialized_notes = []
-        for note in notes :
-            serialized_notes.append(NoteModel(
+    def to_api(self, note: StudentNoteTable) -> NoteModel :
+            return NoteModel(
                 id = note.entity_id,
                 teacher = note.teacher.name,
                 student = note.student.name,
                 subject = note.subject.name,
                 note_value = note.note_value,
                 last_modified_by = note.last_modified_by
-            ))
-        return serialized_notes
+            )
 
     def to_less_than_fifty(self, data) :
         serialized_values = []
