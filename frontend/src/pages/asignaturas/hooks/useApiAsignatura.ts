@@ -6,12 +6,14 @@ import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {AsignaturaCreateAdapter} from "../adapters/AsignaturaCreateAdapter.ts";
 import {getAsignaturaCreateDbFromAdapter} from "../utils/utils.ts";
+import {useApiCurso} from "../../cursos/hooks/useApiCurso.ts";
 
 const endpoint = EndpointEnum.ASIGNATURAS
 
 export const useApiAsignatura = () => {
     const [isLoading, setIsLoading] = useState(false)
-    const {setError, asignaturas: asignaturasAppContext, setAsignaturas: setAsignaturasAppContext} = useContext(AppContext)
+    const {setError, asignaturas: asignaturasAppContext, setAsignaturas: setAsignaturasAppContext, cursos} = useContext(AppContext)
+    const {getCursos} = useApiCurso()
 
     const getAsignaturas = async () => {
         setIsLoading(true)
@@ -19,10 +21,11 @@ export const useApiAsignatura = () => {
             setIsLoading(false)
         }
         const res = await apiRequest.getApi(endpoint)
+        await getCursos()
         if (res.ok) {
             const data: AsignaturaGetResponse = await res.json()
             const asignaturaArray = Object.values(data)
-                .map((asignatura: AsignaturaGetDB) => new AsignaturaGetAdapter(asignatura))
+                .map((asignatura: AsignaturaGetDB) => new AsignaturaGetAdapter(asignatura, cursos!.find((item) => item.id === asignatura.course_id)!))
             setAsignaturasAppContext!(asignaturaArray)
         } else {
             setError!(new Error(res.statusText))

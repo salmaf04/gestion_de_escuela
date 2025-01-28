@@ -4,6 +4,7 @@ import {AppContext} from "../../../App.tsx";
 import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {ICursoCreateDB} from "../models/ICursoCreateDB.ts";
+import {ICursoGetLocal} from "../models/ICursoGetLocal.ts";
 
 const endpoint = EndpointEnum.CURSOS
 
@@ -19,8 +20,13 @@ export const useApiCurso = () => {
         const res = await apiRequest.getApi(endpoint)
         if (res.ok) {
             const data: ICursoGetDB[] = await res.json()
-            const cursoArray = Object.values(data)
-                .map((curso: ICursoGetDB) => curso)
+            const cursoArray: ICursoGetLocal[] = Object.values(data)
+                .map((curso: ICursoGetDB) => {
+                    return {
+                        id: curso.id,
+                        year: curso.year,
+                    }
+                })
             setCursosAppContext!(cursoArray)
         } else {
             setError!(new Error(res.statusText))

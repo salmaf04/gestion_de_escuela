@@ -19,6 +19,7 @@ export default function AddCursoForm() {
             onEditTableItem!(data);
         else
             onAddTableItem!(data);
+        setShowModal!(false)
     };
 
     return (

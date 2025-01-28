@@ -7,6 +7,7 @@ import {IEstudianteDB} from "../models/IEstudianteDB.ts";
 import {AppContext} from "../../../App.tsx";
 import {ISelect} from "../../../types/ISelect.ts";
 import Select from "../../../components/Select.tsx";
+import {ICursoGetLocal} from "../../cursos/models/ICursoGetLocal.ts";
 
 export default function AddEstudianteForm() {
     const { register, handleSubmit, control } = useForm<Partial<IEstudianteDB>>();
@@ -23,10 +24,10 @@ export default function AddEstudianteForm() {
         setShowModal!(false)
     };
 
-    const cursosSelect: ISelect[] = cursos?.map((item)=>{
+    const cursosSelect: ISelect[] = cursos?.map((item: ICursoGetLocal)=>{
         return {
             id: item.id,
-            name: `${item.start_year} - ${item.end_year}`
+            name: item.year.toString()
         }
     }) ?? []
 

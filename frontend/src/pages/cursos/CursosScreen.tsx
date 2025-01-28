@@ -64,6 +64,7 @@ export default function CursosScreen() {
 
     const [dataTable, setDataTable] = useState<ICursoGetDB[]>([])
     useEffect(() => {
+        console.log(cursos)
         setDataTable(cursos!)
     }, [cursos]);
     useEffect(() => {
