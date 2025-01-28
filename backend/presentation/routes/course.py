@@ -49,7 +49,7 @@ async def delete_course(
 
 @router.get(
     "/course",
-    response_model=dict[int, CourseModel],
+    response_model=list[CourseModel],
     status_code=status.HTTP_200_OK
 )
 async def read_course(
@@ -59,7 +59,7 @@ async def read_course(
     course_pagination_service = CoursePaginationService()
     mapper = CourseMapper()
 
-    courses = course_pagination_service.get_courses(session=session, filter_params=filters)
+    courses = course_pagination_service.get_course(session=session, filter_params=filters)
 
     if not courses :
         raise HTTPException(
@@ -67,12 +67,7 @@ async def read_course(
             detail="There is no course with that id"
         )
 
-    courses_mapped = {}    
-     
-    for i, course in enumerate(courses) :
-        courses_mapped[i] = mapper.to_api(course)
-        
-    return courses_mapped
+    return mapper.to_api(courses)
 
 @router.patch(
     "/course/{id}",
