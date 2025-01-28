@@ -13,7 +13,7 @@ class StudentMapper :
             extra_activities= student.extra_activities,  
             username= student.username,
             hash_password= student.hash_password,
-            course_year = student.course_year 
+            course_id = student.course_id 
         )
         
     def to_academic_performance(self, data) :
@@ -53,7 +53,7 @@ class StudentMapper :
                 extra_activities= tuple[3].extra_activities,  
                 username= tuple[3].username,
                 hash_password= tuple[3].hash_password,
-                course_year = tuple[3].course_year 
+                course_id = tuple[3].course_id 
             )
             serialized_students.append(student)
         return serialized_students

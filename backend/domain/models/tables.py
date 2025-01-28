@@ -178,7 +178,6 @@ class StudentTable(UserTable) :
     age = Column(Integer)
     extra_activities = Column(Boolean, nullable=True)
     average_note = Column(Double)
-    course_year = Column(Integer)
     course_id : Mapped[uuid.UUID] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id"))
     """
     teacher: Mapped["Teacher"] = relationship(
@@ -212,7 +211,6 @@ class SubjectTable(BaseTable) :
     study_program = Column(Integer)
 
     classroom_id : Mapped[int] = mapped_column(ForeignKey(f"{TableName.CLASSROOM.value}.entity_id"))
-    course_year = Column(Integer)
     course_id : Mapped[uuid.UUID] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id"))
 
     """
