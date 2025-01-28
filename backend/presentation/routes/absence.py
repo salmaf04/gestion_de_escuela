@@ -27,10 +27,11 @@ async def create_absence(
 
 @router.get(
     "/absence",
-    response_model=list[AbsenceModel] | list,
+    response_model=list[AbsenceModel] | list | dict,
     status_code=status.HTTP_200_OK
 )
 async def read_absence(
+    stu_id : str = None,
     filters: AbsenceFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
@@ -45,7 +46,8 @@ async def read_absence(
             detail="There is no absence with that fields"
         )
     
-    if filters.student_id :
+    if stu_id :
+        absences = absence_pagination_service.get_absence_by_student(session=session, student_id=stu_id)
         return mapper.to_abscence_by_student(absences)
     
     mapped_absences = []
