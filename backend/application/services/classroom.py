@@ -1,7 +1,7 @@
 from backend.domain.schemas.classroom import ClassroomCreateModel, ClassroomModel
 from backend.domain.models.tables import ClassroomTable, MeanTable
 from sqlalchemy.orm import Session
-from backend.domain.filters.classroom import ClassroomFilterSchema, ClassroomFilterSet, ChangeRequest
+from backend.domain.filters.classroom import ClassroomFilterSchema, ClassroomFilterSet, ClassroomChangeRequest
 from sqlalchemy import select, update
 import uuid
 
@@ -19,7 +19,7 @@ class ClassroomDeletionService:
         
         
 class ClassroomUpdateService :
-    def update_one(self, session : Session , changes : ChangeRequest , classroom : ClassroomModel ) -> ClassroomModel: 
+    def update_one(self, session : Session , changes : ClassroomChangeRequest , classroom : ClassroomModel ) -> ClassroomModel: 
         query = update(ClassroomTable).where(ClassroomTable.entity_id == classroom.id)
         
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
