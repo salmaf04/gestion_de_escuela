@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func
 from backend.domain.schemas.absence import AbsenceCreateModel
-from backend.domain.models.tables import AbsenceTable, StudentTable
+from backend.domain.models.tables import AbsenceTable, StudentTable, SubjectTable
 from backend.application.services.student import StudentPaginationService
 from backend.application.services.course import CoursePaginationService
 from backend.application.services.subject import SubjectPaginationService
@@ -33,8 +33,9 @@ class AbsencePaginationService :
         query = query.group_by(AbsenceTable.subject_id)
         query = query.subquery()
 
-        final_query = select(query.c.subject_id, query.c.absences_by_subject, AbsenceTable)
+        final_query = select(query.c.subject_id, query.c.absences_by_subject, AbsenceTable, SubjectTable)
         final_query = final_query.join(query, query.c.subject_id == AbsenceTable.subject_id)
+        final_query = final_query.join(SubjectTable, SubjectTable.entity_id == query.c.subject_id)
         final_query = final_query.where(AbsenceTable.student_id == student_id)
         final_query = final_query.order_by(AbsenceTable.subject_id)
         return session.execute(final_query).all()
