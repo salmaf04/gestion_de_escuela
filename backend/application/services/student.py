@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, update, func
 from backend.domain.filters.student import StudentFilterSet , StudentFilterSchema, StudentChangeRequest
 from backend.domain.schemas.student import StudentCreateModel, StudentModel
-from backend.domain.models.tables import StudentTable, StudentNoteTable
+from backend.domain.models.tables import StudentTable, StudentNoteTable, TeacherTable, CourseTable, SubjectTable, teacher_subject_table
 from backend.application.services.course import CoursePaginationService
 from ..utils.auth import get_password_hash
 from ..utils.note_average import  calculate_student_average
@@ -70,6 +70,17 @@ class StudentPaginationService :
         print(session.execute(query).all())
         result = session.execute(query).all()
         return result
+    
+    def get_students_by_teacher(self, session: Session, teacher_id: str) :
+        query = select(TeacherTable.id, SubjectTable, CourseTable, StudentTable)
+        query = query.join(teacher_subject_table, TeacherTable.id == teacher_subject_table.c.teacher_id)
+        query = query.join(SubjectTable, teacher_subject_table.c.subject_id == SubjectTable.entity_id)
+        query = query.join(CourseTable, SubjectTable.course_id == CourseTable.entity_id)
+        query = query.join(StudentTable, CourseTable.entity_id == StudentTable.course_id)
+        query = query.where(TeacherTable.id == teacher_id)
+        query = query.distinct(StudentTable.id)
+        return session.execute(query).all()
+
     
         
 
