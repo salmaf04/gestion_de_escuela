@@ -27,7 +27,7 @@ async def create_absence(
 
 @router.get(
     "/absence",
-    response_model=dict[int, AbsenceModel],
+    response_model=list[AbsenceModel] | list,
     status_code=status.HTTP_200_OK
 )
 async def read_absence(
@@ -44,10 +44,13 @@ async def read_absence(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="There is no absence with that fields"
         )
+    
+    if filters.student_id :
+        return mapper.to_abscence_by_student(absences)
+    
+    mapped_absences = []
 
-    absences_mapped = {}    
-     
-    for i, absence in enumerate(absences) :
-        absences_mapped[i] = mapper.to_api(absence)
-        
-    return absences_mapped
+    for absence in absences :
+        mapped_absences.append(mapper.to_api(absence))
+
+    return mapped_absences
