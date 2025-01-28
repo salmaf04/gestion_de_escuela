@@ -212,6 +212,8 @@ class SubjectTable(BaseTable) :
     study_program = Column(Integer)
 
     classroom_id : Mapped[int] = mapped_column(ForeignKey(f"{TableName.CLASSROOM.value}.entity_id"))
+    course_year = Column(Integer)
+    course_id : Mapped[uuid.UUID] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id"))
 
     """
     teacher: Mapped["Teacher"] = relationship(
@@ -229,6 +231,7 @@ class SubjectTable(BaseTable) :
     """
     
     classroom: Mapped["ClassroomTable"] = relationship(back_populates="subjects")
+    course: Mapped['CourseTable'] = relationship(back_populates="subjects")
 
     student_teacher_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="subject")
     student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="subject")
@@ -259,10 +262,9 @@ class CourseTable(BaseTable) :
     students: Mapped[List["Student"]] = relationship(
         secondary=f"{TableName.STUDENT.value}", back_populates="course"
     )
-    subjects: Mapped[List["Subject"]] = relationship(
-        secondary=f"{TableName.SUBJECT.value}", back_populates="course"
-    )
     """
+
+    subjects: Mapped[List["SubjectTable"]] = relationship( back_populates="course") 
     students: Mapped[List["StudentTable"]] = relationship(back_populates="course")
     student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="course")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="course")
