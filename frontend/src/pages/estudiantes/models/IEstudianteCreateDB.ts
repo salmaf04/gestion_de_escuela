@@ -2,8 +2,8 @@ export type IEstudianteCreateDB = {
     name: string,
     age: number,
     email: string,
-    extra_activities: true,
+    extra_activities: boolean,
     username: string,
-    course_year: number,
-    course: string,
+    password?: string,
+    course_id: string,
 }

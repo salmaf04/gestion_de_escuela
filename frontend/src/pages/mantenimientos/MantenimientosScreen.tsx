@@ -1,99 +1,126 @@
-import {createContext, useEffect, useState} from "react";
+// frontend/src/pages/mantenimientos/CursosScreen.tsx
+import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
-import {MantenimientoGetAdapter} from "./adapters/MantenimientoGetAdapter.ts";
-import {MantenimientoCreateAdapter} from "./adapters/MantenimientoCreateAdapter.ts";
 import AddMantenimientoForm from "./components/AddMantenimientoForm.tsx";
-import {useEditMantenimiento} from "./hooks/useEditMantenimiento.ts";
-import {useCreateMantenimiento} from "./hooks/useCreateMantenimiento.ts";
-import {useGetMantenimientos} from "./hooks/useGetMantenimiento.ts";
-import {useDeleteMantenimiento} from "./hooks/useDeleteMantenimiento.ts";
+import {AppContext} from "../../App.tsx";
+import {AulaGetAdapter} from "../aulas/adapters/AulaGetAdapter.ts";
+import {DBObject} from "../../types.ts";
+import {MantenimientoGetAdapter} from "./adapters/MantenimientoGetAdapter.ts";
+import {useApiMantenimiento} from "./hooks/useApiMantenimientos.ts";
+import {IMantenimientoDB} from "./models/IMantenimientoDB.ts";
+
 interface IMantenimientoContext {
     searchText?: string;
-    dataTable?: MantenimientoGetAdapter[];
-    editting?: MantenimientoCreateAdapter;
+    dataTable?: IMantenimientoTableRow[];
+    editting?: IMantenimientoTableRow;
     showModal?: boolean;
+    isCreatting?: boolean;
+    isEditting?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEditting?: (mantenimiento?: MantenimientoCreateAdapter) => void;
-    isGetLoading?: boolean;
+    setEditting?: (idMantenimiento?: IMantenimientoTableRow) => void;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
-    onEditTableItem?: (mantenimientoEdit: MantenimientoCreateAdapter) => void;
-    onAddTableItem?: (mantenimientoEdit: MantenimientoCreateAdapter) => void;
-    isEditting?: boolean;
-    isCreatting?: boolean;
+    onEditTableItem?: (mantenimientoEdit: IMantenimientoDB) => void;
+    onAddTableItem?: (mantenimientoEdit: IMantenimientoDB) => void;
+    aulas?: AulaGetAdapter[],
+    mantenimientos?: MantenimientoGetAdapter[],
+    isLoading?: boolean
 }
 
-export const MantenimientoContext = createContext<IMantenimientoContext>(
-    {}
-);
+interface IMantenimientoTableRow extends DBObject {
+    id: string
+    mean_name: string,
+    date: string,
+    cost: number
+}
+
+export const MantenimientoContext = createContext<IMantenimientoContext>({});
 
 export default function MantenimientosScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<MantenimientoCreateAdapter | undefined>()
-    const [showModal, setShowModal] = useState(false)
+    const [editting, setEditting] = useState<IMantenimientoTableRow | undefined>(); //id del elemento que se esta editando
+    const [showModal, setShowModal] = useState(false);
+    const [isCreating, setIsCreating] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const {mantenimientos} = useContext(AppContext)
     const {
-        editedMantenimiento,
-        isLoading: isEditting,
-        editMantenimiento
-    } = useEditMantenimiento()
-    const {
-        newMantenimiento,
-        isLoading: isCreatting,
-        createMantenimiento
-    } = useCreateMantenimiento()
-
-    const {
-        isGetLoading,
-        mantenimientos,
+        deleteMantenimiento,
+        createMantenimiento,
+        updateMantenimiento,
         getMantenimientos,
-    } = useGetMantenimientos()
-
-    const {
-       deleteMantenimiento,
-        deletedMantenimientoId,
-    } = useDeleteMantenimiento()
+        isLoading
+    } = useApiMantenimiento();
 
     useEffect(() => {
-        getMantenimientos()
-    }, [editedMantenimiento, newMantenimiento , deletedMantenimientoId]);
+        getMantenimientos();
+    }, []);
 
-    const onDeleteTableItem = (deletedMantenimientoId : string ) => {
-        deleteMantenimiento(deletedMantenimientoId)
-    }
+    const onDeleteTableItem = (deletedMantenimientoId: string) => {
+        deleteMantenimiento(deletedMantenimientoId);
+    };
 
-    const onEditTableItem = (mantenimientoEdit: MantenimientoCreateAdapter) => {
-        editMantenimiento(mantenimientoEdit)
+    const onEditTableItem = (mantenimientoEdit: Partial<IMantenimientoDB>) => {
+        setIsEditing(true);
+        updateMantenimiento!(editting!.id, mantenimientoEdit);
+        setEditting(undefined)
+        setIsEditing(false);
+    };
 
-    }
+    const onAddTableItem = (mantenimiento: IMantenimientoDB) => {
+        setIsCreating(true);
+        createMantenimiento(mantenimiento);
+        setIsCreating(false);
+    };
 
-    const onAddTableItem = (mantenimiento: MantenimientoCreateAdapter) => {
-        createMantenimiento(mantenimiento)
-    }
+    const [dataTable, setDataTable] = useState<IMantenimientoTableRow[]>([])
+    const data = useMemo<IMantenimientoTableRow[]>(() => {
+        return mantenimientos?.map((item) => {
+            return {
+                id: item.id,
+                mean_name: item.mean!.name,
+                date: item.date,
+                cost: item.cost
+            }
+        }) ?? []
+    }, [mantenimientos]);
+
+    useEffect(() => {
+
+        setDataTable(data)
+    }, [mantenimientos]);
+    useEffect(() => {
+        const filteredData = data?.filter((item) => {
+            return Object.values(item).some((value) =>
+                value?.toString().toLowerCase().includes(searchText.toLowerCase())
+            );
+        }) ?? [];
+        setDataTable(filteredData);
+    }, [searchText, mantenimientos]);
     return (
         <MantenimientoContext.Provider value={{
-            isGetLoading: isGetLoading,
-            dataTable: mantenimientos,
+            dataTable: dataTable,
             searchText: searchText,
             editting: editting,
             showModal: showModal,
+            isCreatting: isCreating,
+            isEditting: isEditing,
             setShowModal: setShowModal,
             setEditting: setEditting,
             setSearchText: setSearchText,
             onDeleteTableItem: onDeleteTableItem,
             onEditTableItem: onEditTableItem,
             onAddTableItem: onAddTableItem,
-            isEditting: isEditting,
-            isCreatting: isCreatting
-        }
-        }>
+            mantenimientos: mantenimientos,
+            isLoading: isLoading
+        }}>
             <div className={'w-full h-dvh flex flex-col'}>
-                <ToolBar/>
+                <ToolBar />
                 <Body />
                 {(showModal || editting) &&
                     <AddMantenimientoForm />
                 }
             </div>
         </MantenimientoContext.Provider>
-    )
+    );
 }

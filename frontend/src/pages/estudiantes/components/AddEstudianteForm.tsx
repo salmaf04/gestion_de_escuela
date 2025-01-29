@@ -8,6 +8,7 @@ import {AppContext} from "../../../App.tsx";
 import {ISelect} from "../../../types/ISelect.ts";
 import Select from "../../../components/Select.tsx";
 import {ICursoGetLocal} from "../../cursos/models/ICursoGetLocal.ts";
+import {IEstudianteCreateDB} from "../models/IEstudianteCreateDB.ts";
 
 export default function AddEstudianteForm() {
     const { register, handleSubmit, control } = useForm<Partial<IEstudianteDB>>();
@@ -16,11 +17,12 @@ export default function AddEstudianteForm() {
 
     const {isLoading} = useApiEstudiante()
 
-    const onSubmit: SubmitHandler<Partial<IEstudianteDB>> = (data) => {
+    const onSubmit: SubmitHandler<Partial<IEstudianteCreateDB>> = (data) => {
         if (editting)
             onEditTableItem!(data);
         else
             onAddTableItem!(data);
+        console.log(data)
         setShowModal!(false)
     };
 
@@ -100,7 +102,6 @@ export default function AddEstudianteForm() {
                                 required: true
                             })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.body.password}
                             />
                         </div>
                         <div className={'w-full'}>

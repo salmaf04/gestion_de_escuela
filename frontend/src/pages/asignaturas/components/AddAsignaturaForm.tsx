@@ -21,7 +21,6 @@ export default function AddAsignaturaForm() {
     }, [isEditting, isCreatting]);
 
     const onSubmit: SubmitHandler<AsignaturaCreateAdapter> = (data) => {
-        console.log(data)
         if (editting)
             onEditTableItem!(data);
         else

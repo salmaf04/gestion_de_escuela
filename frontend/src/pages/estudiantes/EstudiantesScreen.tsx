@@ -1,5 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { EstudianteGetAdapter } from "./adapters/EstudianteGetAdapter.ts";
+import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
 import { AppContext } from "../../App.tsx";
@@ -8,15 +7,16 @@ import {useApiEstudiante} from "./hooks/useApiEstudiante.ts";
 import {IEditRow} from "../../types/IEditRow.ts";
 import {IEstudianteLocal} from "./models/IEstudianteLocal.ts";
 import {IEstudianteDB} from "./models/IEstudianteDB.ts";
+import {IEstudianteCreateDB} from "./models/IEstudianteCreateDB.ts";
 
 
 interface IEstudianteContext {
     searchText?: string;
-    dataTable?: EstudianteGetAdapter[];
+    dataTable?: IEstudianteTableRow[];
     editting?: IEditRow<Partial<IEstudianteLocal>>;
     showModal?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEditting?: (estudiante?: IEditRow<Partial<IEstudianteLocal>>) => void;
+    setEditting?: (estudiante?: IEditRow<Partial<IEstudianteTableRow>>) => void;
     isGetLoading?: boolean;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
@@ -24,6 +24,16 @@ interface IEstudianteContext {
     onAddTableItem?: (estudianteEdit: Partial<IEstudianteLocal>) => void;
     isEditting?: boolean;
     isCreatting?: boolean;
+}
+
+interface IEstudianteTableRow{
+    id: string;
+    name: string;
+    age: number;
+    email: string;
+    extra_activities: boolean;
+    username: string;
+    course_year: number;
 }
 
 export const EstudianteContext = createContext<IEstudianteContext>({});
@@ -58,25 +68,40 @@ export default function EstudiantesScreen() {
         setEditting!(undefined);
     };
 
-    const onAddTableItem = (estudiante: Partial<IEstudianteLocal>) => {
-        const toCreate: Partial<IEstudianteDB> = {
+    const onAddTableItem = (estudiante: Partial<IEstudianteCreateDB>) => {
+        const toCreate: Partial<IEstudianteCreateDB> = {
             ...estudiante,
-            course_id: estudiante.course?.id
+            course_id: estudiante.course_id
         }
         createEstudiante(toCreate);
     };
-    const [dataTable, setDataTable] = useState<EstudianteGetAdapter[]>(estudiantes ?? [])
+    const [dataTable, setDataTable] = useState<IEstudianteTableRow[]>([])
+
+    const data = useMemo<IEstudianteTableRow[]>(() => {
+        return estudiantes?.map((item) => {
+            return {
+                id: item.id,
+                name: item.name,
+                age: item.age,
+                email: item.email,
+                extra_activities: item.extra_activities,
+                username: item.username,
+                course_year: item.course?.year,
+            }
+        }) ?? []
+    }, [estudiantes]);
+
     useEffect(() => {
-        setDataTable(estudiantes!)
+
+        setDataTable(data)
     }, [estudiantes]);
     useEffect(() => {
-        setDataTable(
-            estudiantes?.filter((row) => {
-                return Object.values(row).some((value) => {
-                    return value?.toString().toLowerCase().includes(searchText.toLowerCase())
-                })
-            }) ?? []
-        )
+        const filteredData = data?.filter((item) => {
+            return Object.values(item).some((value) =>
+                value?.toString().toLowerCase().includes(searchText.toLowerCase())
+            );
+        }) ?? [];
+        setDataTable(filteredData);
     }, [searchText, estudiantes]);
     return (
         <EstudianteContext.Provider value={{

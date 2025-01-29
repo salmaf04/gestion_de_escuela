@@ -7,7 +7,5 @@ export interface IEstudianteLocal {
     email: string,
     extra_activities: boolean,
     username: string,
-    password: string
-    course_year: number,
     course: ICursoGetDB,
 }

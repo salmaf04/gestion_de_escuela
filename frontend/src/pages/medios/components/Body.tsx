@@ -4,11 +4,11 @@ import {MedioGetAdapter} from "../adapters/MedioGetAdapter.ts";
 import {MedioContext} from "../MediosScreen.tsx";
 
 export default function Body(){
-    const {dataTable, setEditting, onDeleteTableItem, isGetLoading} = useContext(MedioContext)
+    const {dataTable, setEditting, onDeleteTableItem, isLoading} = useContext(MedioContext)
     return(
             <Table
                 className={'h-5/6'}
-                isLoading={isGetLoading!}
+                isLoading={isLoading!}
                 Data={dataTable ?? []} header={MedioGetAdapter.Properties.slice(1)}
                    onRemoveRow={(index) => {
                        onDeleteTableItem!(index)

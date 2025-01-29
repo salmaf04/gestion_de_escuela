@@ -1,25 +1,36 @@
 import {useForm, SubmitHandler} from "react-hook-form"
 import {useContext, useEffect, useState} from "react";
 import MySpinner from "../../../components/MySpinner.tsx";
-import {MantenimientoCreateAdapter} from "../adapters/MantenimientoCreateAdapter.ts";
 import {MantenimientoContext} from "../MantenimientosScreen.tsx";
+import Select from "../../../components/Select.tsx";
+import {MedioGetAdapter} from "../../medios/adapters/MedioGetAdapter.ts";
+import {ISelect} from "../../../types/ISelect.ts";
+import {AppContext} from "../../../App.tsx";
+import {IMantenimientoDB} from "../models/IMantenimientoDB.ts";
 
 export default function AddMantenimientoForm() {
-    const {register, handleSubmit} = useForm<MantenimientoCreateAdapter>()
+    const {register, handleSubmit, control} = useForm<Partial<IMantenimientoDB>>()
     const {editting, isEditting, isCreatting, onEditTableItem, onAddTableItem, setEditting, setShowModal} = useContext(MantenimientoContext)
-
+    const {medios} = useContext(AppContext)
     const [isLoading, setIsLoading] = useState<boolean>(isEditting! || isCreatting!)
 
     useEffect(() => {
         setIsLoading(isEditting! || isCreatting!)
     }, [isEditting, isCreatting]);
 
-    const onSubmit: SubmitHandler<MantenimientoCreateAdapter> = (data) => {
+    const onSubmit: SubmitHandler<IMantenimientoDB> = (data) => {
         if (editting)
             onEditTableItem!(data)
         else
             onAddTableItem!(data)
     }
+
+    const mediosSelect: ISelect[] = medios?.map((item: MedioGetAdapter) => {
+        return {
+            id: item.id,
+            name: item.name
+        }
+    }) ?? []
     return (
         <div className={` fixed  z-20 inset-0 bg-black bg-opacity-50 flex justify-center items-center`}
         >
@@ -27,80 +38,40 @@ export default function AddMantenimientoForm() {
                 <h2 className="text-2xl text-indigo-600 text-center font-bold group mb-4">{`${editting ? 'Editar Registro' : 'Añadir Registro'}`}</h2>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className={'grid grid-cols-2 gap-y-1 gap-x-10'}>
+                        <div className={'w-full mb-4'}>
+                            <Select
+                                {...register(`mean_id`, {
+                                    required: true,
+                                })}
+                                label={'Mantenimiento'}
+                                labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
+                                data={mediosSelect}
+                                control={control}
+                            />
+                        </div>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Nombre</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Fecha</label>
                             <input
-                                type="text"
-                                {...register("name", {
+                                type="date"
+                                {...register("date", {
                                     required: "true"
                                 })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.name}
+                                defaultValue={editting?.date}
 
                             />
                         </div>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Apellidos</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Costo</label>
                             <input
-                                type="text" {...register("lastname", {
-                                required: true
-                            })}
-                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.lastname}
-                            />
-                        </div>
-                        <div className="group group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Usuario</label>
-                            <input
-                                type="text" {...register("username", {
-                                required: true
-                            })}
-                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.username}
-                            />
-                        </div>
-                        <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Especialidad</label>
-                            <input
-                                type="text" {...register("specialty", {
+                                type="number" {...register("cost", {
                                 required: true
                             })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
 
-                                defaultValue={editting?.specialty}
-                            />
-                        </div>
-                        <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Contrato</label>
-                            <input
-                                type="text" {...register("contractType", {
-                                required: true
-                            })}
-                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-
-                                defaultValue={editting?.contractType}
-                            />
-                        </div>
-                        <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Experiencia</label>
-                            <input
-                                type="number" {...register("experience", {
-                                required: true
-                            })}
-                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-
-                                defaultValue={editting?.experience}
-                            />
-                        </div>
-                        <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Correo</label>
-                            <input
-                                type="text" {...register("email", {
-                                required: true
-                            })}
-                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-
-                                defaultValue={editting?.email}
+                                defaultValue={editting?.cost}
                             />
                         </div>
                     </div>

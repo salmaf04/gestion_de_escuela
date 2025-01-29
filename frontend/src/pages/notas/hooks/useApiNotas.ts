@@ -28,28 +28,27 @@ export const useApiNotas = () => {
         setIsLoading(true);
         if (notasAppContext)
             setNotas(notasAppContext);
-        else {
-            await getProfesores()
-            await getEstudiantes()
-            await getAsignaturas()
-            const res = await apiRequest.getApi(endpoint);
-            if (res.ok) {
-                const data: INotaDB[] = await res.json();
-                const notaArray: INotaLocal[] = Object.values(data)
-                    .map((nota: INotaDB) => {
-                        return new NotaAdapter(
-                            nota,
-                            estudiantes!.find((estudiante) => estudiante.id === nota.student_id)!,
-                            asignaturas!.find((asignatura) => asignatura.id === nota.subject_id)!,
-                            profesores!.find((profesor) => profesor.id === nota.teacher_id)!,
-                    )
 
-                    });
-                setNotas(notaArray);
-                setNotasAppContext!(notaArray);
-            } else {
-                setError!(new Error(res.statusText));
-            }
+        await getProfesores()
+        await getEstudiantes()
+        await getAsignaturas()
+        const res = await apiRequest.getApi(endpoint);
+        if (res.ok) {
+            const data: INotaDB[] = await res.json();
+            console.log(data)
+            const notaArray: INotaLocal[] = Object.values(data)
+                .map((nota: INotaDB) => {
+                    return new NotaAdapter(
+                        nota,
+                        estudiantes!.find((estudiante) => estudiante.id === nota.student_id)!,
+                        asignaturas!.find((asignatura) => asignatura.id === nota.subject_id)!,
+                        profesores!.find((profesor) => profesor.id === nota.teacher_id)!,)
+
+                });
+            setNotas(notaArray);
+            setNotasAppContext!(notaArray);
+        } else {
+            setError!(new Error(res.statusText));
         }
         setIsLoading(false);
     };

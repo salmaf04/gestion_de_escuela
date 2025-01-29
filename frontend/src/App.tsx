@@ -21,6 +21,8 @@ import NotasScreen from "./pages/notas/NotasScreen.tsx";
 import {INotaLocal} from "./pages/notas/models/INotaLocal.ts";
 import {ICursoGetLocal} from "./pages/cursos/models/ICursoGetLocal.ts";
 import CursosScreen from "./pages/cursos/CursosScreen.tsx";
+import {Screens} from "./utils/router.tsx";
+import {IMantenimientoLocal} from "./pages/mantenimientos/models/IMantenimientoLocal.ts";
 
 
 interface AppContextInterface {
@@ -41,6 +43,8 @@ interface AppContextInterface {
     setNotas?: (notas: INotaLocal[]) => void;
     cursos?: ICursoGetLocal[];
     setCursos?: (cursos: ICursoGetLocal[]) => void;
+    mantenimientos?: IMantenimientoLocal[],
+    setMantenimientos?: (mantenimiento: IMantenimientoLocal[]) => void,
 
     setRole?: (role: RolesEnum) => void,
     role?: RolesEnum,
@@ -59,6 +63,7 @@ function App() {
     const [notas, setNotas] = useState<INotaLocal[]>()
     const [estudiantes, setEstudiantes] = useState<EstudianteGetAdapter[]>()
     const [cursos, setCursos] = useState<ICursoGetLocal[]>()
+    const [mantenimientos, setMantenimientos] = useState<IMantenimientoLocal[]>()
     const [role, setRole] = useState<RolesEnum>()
     useEffect(() => {
         const t = sessionStorage.getItem('token')
@@ -95,6 +100,8 @@ function App() {
             setNotas: setNotas,
             cursos: cursos,
             setCursos: setCursos,
+            mantenimientos: mantenimientos,
+            setMantenimientos: setMantenimientos
         }}>
             <BrowserRouter>
                 {error &&
@@ -113,32 +120,35 @@ function App() {
                                 <Routes>
                                     <Route path={'/'} element={<Navigate to={'/inicio'}/>}/>
                                     <Route path={'/inicio'} element={<HomeScreen/>}/>
-                                    {allowRoles([RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN]) &&
+                                    {allowRoles(Screens.Estudiantes.allowedRoles) &&
                                         <Route path={'/estudiantes'} element={<EstudiantesScreen/>}/>
                                     }
-                                    {allowRoles([RolesEnum.STUDENT, RolesEnum.SECRETARY, RolesEnum.DEAN]) &&
+                                    {allowRoles(Screens.Profesores.allowedRoles) &&
                                         <Route path={'/profesores'} element={<ProfesoresScreen/>}/>
                                     }
-                                    {allowRoles([RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]) &&
+                                    {allowRoles(Screens.Aulas.allowedRoles) &&
                                         <Route path={'/aulas'} element={<AulasScreen/>}/>
                                     }
-                                    {allowRoles([RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]) &&
+                                    {allowRoles(Screens.Asignaturas.allowedRoles) &&
                                         <Route path={'/asignaturas'} element={<AsignaturasScreen/>}/>
                                     }
-                                    {allowRoles([RolesEnum.ADMIN, RolesEnum.TEACHER, RolesEnum.DEAN]) &&
+                                    {allowRoles(Screens.Medios.allowedRoles) &&
                                         <Route path={'/medios'} element={<MediosScreen/>}/>
                                     }
-                                    {allowRoles([RolesEnum.ADMIN, RolesEnum.SECRETARY, RolesEnum.DEAN]) &&
+                                    {allowRoles(Screens.Cursos.allowedRoles) &&
                                         <Route path={'/mantenimientos'} element={<MantenimientosScreen/>}/>
                                     }
-                                    {allowRoles([RolesEnum.SECRETARY, RolesEnum.DEAN]) &&
+                                    {allowRoles(Screens.Usuarios.allowedRoles) &&
                                         <Route path={'/usuarios'} element={<UsuariosScreen/>}/>
                                     }
-                                    {allowRoles([RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.TEACHER]) &&
+                                    {allowRoles(Screens.Notas.allowedRoles) &&
                                         <Route path={'/nota'} element={<NotasScreen/>}/>
                                     }
-                                    {allowRoles([RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.TEACHER, RolesEnum.STUDENT]) &&
+                                    {allowRoles(Screens.Cursos.allowedRoles) &&
                                         <Route path={'/curso'} element={<CursosScreen/>}/>
+                                    }
+                                    {allowRoles(Screens.Mantenimientos.allowedRoles) &&
+                                        <Route path={'/mantenimiento'} element={<MantenimientosScreen/>}/>
                                     }
                                 </Routes>
                             </div>
