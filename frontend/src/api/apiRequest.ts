@@ -2,8 +2,8 @@ import {EndpointEnum} from "./EndpointEnum.ts";
 import {IApiObject} from "./IApiObject.ts";
 
 
-function postApi(endpoint: EndpointEnum, body: IApiObject) {
-    return fetch(`http://localhost:8000/${endpoint}`, {
+function postApi(endpoint: string, body: IApiObject, queryParams: string = "") {
+    return fetch(`http://localhost:8000/${endpoint}${queryParams}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

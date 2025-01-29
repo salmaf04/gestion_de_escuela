@@ -11,7 +11,7 @@ const endpoint = EndpointEnum.MEDIOS
 
 export const useApiMedio = () => {
     const [isLoading, setIsLoading] = useState(false)
-    const {setError, medios: mediosAppContext, setMedios: setMediosAppContext, aulas} = useContext(AppContext)
+    const {setError, medios: mediosAppContext, setMedios: setMediosAppContext, aulas, personalId} = useContext(AppContext)
     const {getAulas} = useApiAulas()
 
     const getMedios = async () => {
@@ -60,11 +60,21 @@ export const useApiMedio = () => {
         setIsLoading(false);
     };
 
+    const solicitarMedio = async (body: {mean_id: string}) => {
+        setIsLoading(true);
+        const res = await apiRequest.postApi(EndpointEnum.MEAN_REQUEST+"/"+personalId, body);
+        if (!res.ok)
+            setError!(new Error(res.statusText));
+        await getAulas()
+        setIsLoading(false);
+    };
+
     return {
         isLoading,
         getMedios,
         createMedio,
         deleteMedio,
-        updateMedio
+        updateMedio,
+        solicitarMedio
     }
 }

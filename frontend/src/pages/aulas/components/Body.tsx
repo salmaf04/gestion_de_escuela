@@ -3,9 +3,12 @@ import {useContext} from "react";
 import {AulasContext} from "../AulasScreen.tsx";
 import {AulaGetAdapter} from "../adapters/AulaGetAdapter.ts";
 import SolicitarIcon from "../../../assets/solicitar.svg";
+import {useApiAulas} from "../hooks/useApiAulas.ts";
 
 export default function Body(){
     const {dataTable,  setEditting, onDeleteTableItem, isLoading} = useContext(AulasContext)
+    const {solicitarAula} = useApiAulas()
+
     return(
             <Table
                 className={'h-5/6'}
@@ -21,7 +24,7 @@ export default function Body(){
                 actions={[
                     {
                         action: (row) => {
-                            console.log(row)
+                            solicitarAula({classroom_id: row.id})
                         },
                         color: 'green',
                         title: "Solicitar",

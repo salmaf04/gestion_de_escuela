@@ -49,6 +49,8 @@ interface AppContextInterface {
     setRole?: (role: RolesEnum) => void,
     role?: RolesEnum,
     allowRoles?: (roles: RolesEnum[]) => boolean
+    personalId?: string,
+    setPersonalId?: (personalId: string) => void
 }
 
 export const AppContext = createContext<AppContextInterface>({})
@@ -65,13 +67,14 @@ function App() {
     const [cursos, setCursos] = useState<ICursoGetLocal[]>()
     const [mantenimientos, setMantenimientos] = useState<IMantenimientoLocal[]>()
     const [role, setRole] = useState<RolesEnum>()
+    const [personalId, setPersonalId] = useState<string>()
     useEffect(() => {
         const t = sessionStorage.getItem('token')
         if (t) {
             setToken(t)
             setRole(JSON.parse(atob(t!.split(".")[1])).type)
+            setPersonalId(JSON.parse(atob(t!.split(".")[1])).user_id)
         }
-
     }, []);
     const allowRoles = useCallback((roles: RolesEnum[]) => {
 
@@ -101,7 +104,9 @@ function App() {
             cursos: cursos,
             setCursos: setCursos,
             mantenimientos: mantenimientos,
-            setMantenimientos: setMantenimientos
+            setMantenimientos: setMantenimientos,
+            personalId,
+            setPersonalId: setPersonalId
         }}>
             <BrowserRouter>
                 {error &&

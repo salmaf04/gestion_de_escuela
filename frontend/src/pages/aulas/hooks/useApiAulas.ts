@@ -11,7 +11,7 @@ const endpoint = EndpointEnum.AULAS
 
 export const useApiAulas = () => {
     const [isLoading, setIsLoading] = useState(false)
-    const {setError, aulas: aulasAppContext, setAulas: setAulasAppContext} = useContext(AppContext)
+    const {setError, aulas: aulasAppContext, setAulas: setAulasAppContext, personalId} = useContext(AppContext)
 
     const getAulas = async () => {
         setIsLoading(true)
@@ -57,11 +57,21 @@ export const useApiAulas = () => {
         setIsLoading(false);
     };
 
+    const solicitarAula = async (classRoom: {classroom_id: string}) => {
+        setIsLoading(true);
+        const res = await apiRequest.postApi(EndpointEnum.CLASSROOM_REQUEST+"/"+personalId, classRoom, `?classroom_id=${classRoom.classroom_id}`);
+        if (!res.ok)
+            setError!(new Error(res.statusText));
+        await getAulas()
+        setIsLoading(false);
+    };
+
     return {
         isLoading,
         getAulas,
         createAula,
         deleteAula,
-        updateAula
+        updateAula,
+        solicitarAula
     }
 }
