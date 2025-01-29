@@ -1,0 +1,10 @@
+services:
+  postgres-db:
+    image: postgres
+    hostname: localhost
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: local
+      POSTGRES_PASSWORD: local
+    ports:
+      - 5432:5432

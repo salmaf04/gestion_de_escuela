@@ -1,0 +1,5 @@
+### GET request to example server
+GET http://localhost:8000/student/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZHJpYW4iLCJ0eXBlIjoidXNlciIsImV4cCI6MTczNzMyODAxNn0.B3f_34GnxIS8sAswfyODlZC9ehTvDLh5PP5eb6qZYQU
+
+###
