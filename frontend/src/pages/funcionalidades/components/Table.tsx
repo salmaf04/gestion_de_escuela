@@ -1,9 +1,10 @@
 import React from 'react';
 import {ProfesorEspGetAdapter} from "../adapters/ProfesorEspGetAdapter.ts";
 import {FiltrodeMantenimientoGetAdapter} from "../adapters/FiltrodeMantenimientoGetAdapter.ts";
+import {CostoPromedioGetAdapter} from "../adapters/CostoPromedioGetAdapter.ts";
 
 interface ProfesoresTableProps {
-    items: ProfesorEspGetAdapter[] | FiltrodeMantenimientoGetAdapter[];
+    items: ProfesorEspGetAdapter[] | CostoPromedioGetAdapter[]| FiltrodeMantenimientoGetAdapter[];
     headers: string[]
     showHeaders: string[]
 }
