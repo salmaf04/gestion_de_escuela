@@ -13,8 +13,8 @@ function postApi(endpoint: string, body: IApiObject, queryParams: string = "") {
     })
 }
 
-function getApi(endpoint: EndpointEnum) {
-    return fetch(`http://localhost:8000/${endpoint}`, {
+function getApi(endpoint: EndpointEnum, queryParams: string = "") {
+    return fetch(`http://localhost:8000/${endpoint}${queryParams}`, {
         headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         }

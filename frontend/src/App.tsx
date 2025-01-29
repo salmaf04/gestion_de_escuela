@@ -25,6 +25,7 @@ import {Screens} from "./utils/router.tsx";
 import {IMantenimientoLocal} from "./pages/mantenimientos/models/IMantenimientoLocal.ts";
 import {IAusenciaLocal} from "./pages/ausencias/models/IAusenciaLocal.ts";
 import AusenciasScreen from "./pages/ausencias/AusenciasScreen.tsx";
+import InfoScreen from "./pages/info/InfoScreen.tsx";
 
 
 interface AppContextInterface {
@@ -178,6 +179,7 @@ function App() {
                                     {allowRoles(Screens.Ausencias.allowedRoles) &&
                                         <Route path={'/ausencias'} element={<AusenciasScreen/>}/>
                                     }
+                                    <Route path={'/info'} element={<InfoScreen/>}/>
                                 </Routes>
                             </div>
                         </div>

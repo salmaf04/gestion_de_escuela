@@ -14,6 +14,7 @@ const endpoint = EndpointEnum.PROFESORES
 export const useApiProfesor = () => {
     const [isLoading, setIsLoading] = useState(false)
     const {setError, profesores: profesoresAppContext, setProfesores: setProfesoresAppContext, setMessage} = useContext(AppContext)
+    const [profesor, setProfesor] = useState<ProfesorGetAdapter>()
 
     const getProfesores = async () => {
         setIsLoading(true)
@@ -69,6 +70,19 @@ export const useApiProfesor = () => {
         setIsLoading(false);
     };
 
+    const getProfesor = async (id: string) => {
+        setIsLoading(true);
+        const res = await apiRequest.getApi(endpoint, getQueryParamsFromObject({id: id}));
+        if (res.ok){
+            const data: ProfesorDB = await res.json()
+            setProfesor(new ProfesorGetAdapter(data))
+        }
+        if (!res.ok)
+            setError!(new Error(res.statusText));
+        await getProfesores()
+        setIsLoading(false);
+    };
+
 
     return {
         isLoading,
@@ -76,6 +90,8 @@ export const useApiProfesor = () => {
         createProfesor,
         deleteProfesor,
         updateProfesor,
-        valorarProfesor
+        valorarProfesor,
+        getProfesor,
+        profesor
     }
 }
