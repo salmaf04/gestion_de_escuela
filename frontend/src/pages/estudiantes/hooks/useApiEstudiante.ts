@@ -8,6 +8,8 @@ import {IEstudianteLocal} from "../models/IEstudianteLocal.ts";
 import {useApiCurso} from "../../cursos/hooks/useApiCurso.ts";
 import {IEstudianteCreateDB} from "../models/IEstudianteCreateDB.ts";
 import {getQueryParamsFromObject} from "../../../utils/utils.ts";
+import {ProfesorDB} from "../../profesores/models/ProfesorGetDB.ts";
+import {ProfesorGetAdapter} from "../../profesores/adapters/ProfesorGetAdapter.ts";
 
 const endpoint = EndpointEnum.ESTUDIANTES
 
@@ -15,7 +17,7 @@ export const useApiEstudiante = () => {
     const [isLoading, setIsLoading] = useState(false)
     const {getCursos} = useApiCurso()
     const {setError, estudiantes: estudiantesAppContext, setEstudiantes: setEstudiantesAppContext, cursos} = useContext(AppContext)
-
+    const [estudiante, setEstudiante] = useState<IEstudianteLocal>()
     const getEstudiantes = async () => {
         setIsLoading(true)
         if (estudiantesAppContext) {
@@ -60,11 +62,27 @@ export const useApiEstudiante = () => {
         setIsLoading(false);
     };
 
+    const getEstudiante = async (id: string) => {
+        setIsLoading(true);
+        await getCursos()
+        const res = await apiRequest.getApi(endpoint, getQueryParamsFromObject({id: id}));
+        if (res.ok){
+            const data: IEstudianteDB[] = await res.json()
+            setEstudiante(new EstudianteGetAdapter(data[0], cursos!.find((item)=> item.id === data[0].course_id)!))
+        }
+        if (!res.ok)
+            setError!(new Error(res.statusText));
+        await getEstudiantes()
+        setIsLoading(false);
+    };
+
     return {
         isLoading,
         getEstudiantes,
         createEstudiante,
         deleteEstudiante,
-        updateEstudiante
+        updateEstudiante,
+        getEstudiante,
+        estudiante
     }
 }

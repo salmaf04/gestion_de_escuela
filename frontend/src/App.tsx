@@ -165,9 +165,6 @@ function App() {
                                     {allowRoles(Screens.Cursos.allowedRoles) &&
                                         <Route path={'/mantenimientos'} element={<MantenimientosScreen/>}/>
                                     }
-                                    {allowRoles(Screens.Usuarios.allowedRoles) &&
-                                        <Route path={'/usuarios'} element={<UsuariosScreen/>}/>
-                                    }
                                     {allowRoles(Screens.Notas.allowedRoles) &&
                                         <Route path={'/nota'} element={<NotasScreen/>}/>
                                     }

@@ -15,5 +15,6 @@ export enum EndpointEnum {
     COSTO_PROMEDIO = 'mean_maintenance/?date_filter=true',
     VALORACION_PROMEDIO_PROFESOR = 'teacher/?better_than_eight=true ',
     VALORACION_PROMEDIO_ESTUDIANTE = 'student/?student_note_less_than_fifty=true',
-    SALARIOS_PROFESORES = 'teacher/?sanctions=true'
+    SALARIOS_PROFESORES = 'teacher/?sanctions=true',
+    AUSENCIAS = "absence"
 }

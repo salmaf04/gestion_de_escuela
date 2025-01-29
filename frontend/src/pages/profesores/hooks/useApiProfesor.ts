@@ -74,8 +74,8 @@ export const useApiProfesor = () => {
         setIsLoading(true);
         const res = await apiRequest.getApi(endpoint, getQueryParamsFromObject({id: id}));
         if (res.ok){
-            const data: ProfesorDB = await res.json()
-            setProfesor(new ProfesorGetAdapter(data))
+            const data: ProfesorDB[] = await res.json()
+            setProfesor(new ProfesorGetAdapter(data[0]))
         }
         if (!res.ok)
             setError!(new Error(res.statusText));

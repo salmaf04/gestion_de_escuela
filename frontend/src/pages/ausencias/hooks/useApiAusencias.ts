@@ -11,7 +11,7 @@ import {IAusenciaLocal} from "../models/IAusenciaLocal.ts";
 import {AusenciaAdapter} from "../adapters/AusenciaAdapter.ts";
 import {getQueryParamsFromObject} from "../../../utils/utils.ts";
 
-const endpoint = EndpointEnum.NOTAS;
+const endpoint = EndpointEnum.AUSENCIAS;
 
 export const useApiAusencias = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -56,6 +56,7 @@ export const useApiAusencias = () => {
         const res = await apiRequest.postApi(endpoint, ausencia);
         if (!res.ok)
             setError!(new Error(res.statusText));
+        getAusencias()
         setIsLoading(false);
     };
 
@@ -64,6 +65,7 @@ export const useApiAusencias = () => {
         const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(ausencia))
         if (!res.ok)
             setError!(new Error(res.statusText));
+        getAusencias()
         setIsLoading(false);
     };
 
@@ -72,6 +74,7 @@ export const useApiAusencias = () => {
         const res = await apiRequest.deleteApi(endpoint, id);
         if (!res.ok)
             setError!(new Error(res.statusText));
+        getAusencias()
         setIsLoading(false);
     };
 

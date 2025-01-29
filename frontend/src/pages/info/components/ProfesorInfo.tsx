@@ -10,8 +10,19 @@ export default function ProfesorInfo(){
     }, []);
     return(
         <>
-            <h2>Nombre</h2>
-            <p>{profesor?.name}</p>
+            <div className={''}>
+
+            </div>
+            <span>Nombre: {profesor?.name}</span>
+            <span>Apellidos: {profesor?.lastname}</span>
+            <span>Especialidad: {profesor?.specialty}</span>
+            <span>Especialidad: {profesor?.contractType}</span>
+            <span>Experiencia: {profesor?.experience}</span>
+            <span>Salario: {profesor?.salary}</span>
+            <span>Correo: {profesor?.email}</span>
+            <span>Usuario:{profesor?.username}</span>
+            <span>Asignaturas: {profesor?.specialty}</span>
+            <span>Valoracion: {profesor?.valoracion}</span>
         </>
     )
 }

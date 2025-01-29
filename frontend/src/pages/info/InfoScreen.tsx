@@ -3,6 +3,7 @@ import {AppContext} from "../../App.tsx";
 import {useContext} from "react";
 import {RolesEnum} from "../../api/RolesEnum.ts";
 import ProfesorInfo from "./components/ProfesorInfo.tsx";
+import EstudianteInfo from "./components/EstudianteInfo.tsx";
 
 export default function InfoScreen() {
     const {role} = useContext(AppContext)
@@ -14,6 +15,9 @@ export default function InfoScreen() {
             </h1>
             {role === RolesEnum.TEACHER &&
                 <ProfesorInfo/>
+            }
+            {role === RolesEnum.STUDENT &&
+                <EstudianteInfo />
             }
         </div>
     );
