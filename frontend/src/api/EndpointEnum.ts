@@ -7,5 +7,6 @@ export enum EndpointEnum {
     NOTAS = 'note',
     CURSOS = 'course',
     MANTENIMIENTOS = 'mean_maintenance',
-    ESP_PROFESOR = 'teacher/?technology_classroom=true'
+    ESP_PROFESOR = 'teacher/?technology_classroom=true',
+    COSTO_PROMEDIO = 'mean_maintenance/?mainteniance_by_classroom_filter=true'
 }

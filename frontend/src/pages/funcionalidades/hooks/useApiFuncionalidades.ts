@@ -3,17 +3,20 @@ import { EndpointEnum } from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 
 import { AppContext } from "../../../App.tsx";
-import {ProfesorEspGetDB} from "../models/models.ts";
-import {ProfesorEspGetAdapter} from "../adapters/ProfesorEspGetAdapter.ts";
+import { ProfesorEspGetDB, FiltrodeMantenimientoGetDB } from "../models/models.ts";
+import { ProfesorEspGetAdapter } from "../adapters/ProfesorEspGetAdapter.ts";
+import { FiltrodeMantenimientoGetAdapter } from "../adapters/FiltrodeMantenimientoGetAdapter.ts";
 
-const endpoint = EndpointEnum.ESP_PROFESOR;
+const profesorEndpoint = EndpointEnum.ESP_PROFESOR;
+const filtrodeMantenimentoEndpoint = EndpointEnum.COSTO_PROMEDIO;
 
 export const useApiFuncionalidades = () => {
     const [profesores, setProfesores] = useState<ProfesorEspGetAdapter[]>([]);
+    const [filtrodeMantenimento, setfiltrodeMantenimento] = useState<FiltrodeMantenimientoGetAdapter[]>([]);
     const { setError } = useContext(AppContext);
 
     const getEspProfesores = async () => {
-        const res = await apiRequest.getApi(endpoint);
+        const res = await apiRequest.getApi(profesorEndpoint);
         if (res.ok) {
             const data: ProfesorEspGetAdapter[] = await res.json();
             const profesoresArray = Object.values(data).map((profesor: ProfesorEspGetDB) => new ProfesorEspGetAdapter(profesor));
@@ -23,9 +26,22 @@ export const useApiFuncionalidades = () => {
         }
     };
 
+   const getFiltrodeMaintenimiento = async () => {
+    const res = await apiRequest.getApi(filtrodeMantenimentoEndpoint);
+    if (res.ok) {
+        const data: FiltrodeMantenimientoGetDB = await res.json();
+        const [classrooms, summary] = data;
+        const costoPromedioArray = classrooms.map(classroom => new FiltrodeMantenimientoGetAdapter(classroom, summary));
+        setfiltrodeMantenimento(costoPromedioArray);
+    } else {
+        setError!(new Error(res.statusText));
+    }
+};
+
     useEffect(() => {
         getEspProfesores();
+        getFiltrodeMaintenimiento();
     }, []);
 
-    return { profesores };
+    return { profesores, filtrodeMantenimento };
 };
