@@ -17,3 +17,9 @@ export type FiltrodeMantenimientoGetDB = [
         "total maintenances after two years": number
     }
 ];
+
+export type CostoPromedioGetDB = {
+    "average_cost": string,
+    "mean_id": string,
+    "mean_name": string,
+}
