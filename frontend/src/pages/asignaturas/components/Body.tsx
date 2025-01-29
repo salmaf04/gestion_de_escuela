@@ -4,7 +4,7 @@ import {useContext} from "react";
 import {AsignaturaContext} from "../AsignaturasScreen.tsx";
 
 export default function Body(){
-    const {dataTable, setEdittingId, onDeleteTableItem, isLoading} = useContext(AsignaturaContext)
+    const {dataTable, setEditting, onDeleteTableItem, isLoading} = useContext(AsignaturaContext)
     return(
             <Table
                 className={'h-5/6'}
@@ -15,7 +15,7 @@ export default function Body(){
                    }}
                    onEditRow={(index) => {
                        const item = dataTable!.find((item) => item.id === index)
-                       setEdittingId!(item!.id)
+                       setEditting!(item!)
                    }}
             />
     )

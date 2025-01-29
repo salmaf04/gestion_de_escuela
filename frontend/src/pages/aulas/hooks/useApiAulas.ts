@@ -5,13 +5,13 @@ import {AppContext} from "../../../App.tsx";
 import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {AulaCreateAdapter} from "../adapters/AulaCreateAdapter.ts";
-import {getAulaCreateDbFromAdapter} from "../utils/utils.ts";
+import {getQueryParamsFromObject} from "../../../utils/utils.ts";
 
 const endpoint = EndpointEnum.AULAS
 
 export const useApiAulas = () => {
     const [isLoading, setIsLoading] = useState(false)
-    const {setError, aulas: aulasAppContext, setAulas: setAulasAppContext} = useContext(AppContext)
+    const {setError, aulas: aulasAppContext, setAulas: setAulasAppContext, personalId, setMessage} = useContext(AppContext)
 
     const getAulas = async () => {
         setIsLoading(true)
@@ -33,7 +33,7 @@ export const useApiAulas = () => {
 
     const createAula = async (aula: AulaCreateAdapter) => {
         setIsLoading(true)
-        const res = await apiRequest.postApi(endpoint, getAulaCreateDbFromAdapter(aula))
+        const res = await apiRequest.postApi(endpoint, aula)
         if (!res.ok)
             setError!(new Error(res.statusText))
         await getAulas()
@@ -41,7 +41,7 @@ export const useApiAulas = () => {
     }
     const updateAula = async (id: string, aula: AulaCreateAdapter) => {
         setIsLoading(true)
-        const res = await apiRequest.patchApi(endpoint, id, getAulaCreateDbFromAdapter(aula))
+        const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(aula))
         if (!res.ok)
             setError!(new Error(res.statusText))
         await getAulas()
@@ -57,11 +57,23 @@ export const useApiAulas = () => {
         setIsLoading(false);
     };
 
+    const solicitarAula = async (classRoom: {classroom_id: string}) => {
+        setIsLoading(true);
+        const res = await apiRequest.postApi(EndpointEnum.CLASSROOM_REQUEST+"/"+personalId, classRoom);
+        if (!res.ok)
+            setError!(new Error(res.statusText));
+        else
+            setMessage!("Solicitud enviada correctamente")
+        await getAulas()
+        setIsLoading(false);
+    };
+
     return {
         isLoading,
         getAulas,
         createAula,
         deleteAula,
-        updateAula
+        updateAula,
+        solicitarAula
     }
 }

@@ -6,12 +6,15 @@ import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {ProfesorCreateAdapter} from "../adapters/ProfesorCreateAdapter.ts";
 import {getProfesorCreateDbFromAdapter} from "../utils/utils.ts";
+import {getQueryParamsFromObject} from "../../../utils/utils.ts";
+import {IValorationCreate} from "../models/IValorationCreate.ts";
 
 const endpoint = EndpointEnum.PROFESORES
 
 export const useApiProfesor = () => {
     const [isLoading, setIsLoading] = useState(false)
-    const {setError, profesores: profesoresAppContext, setProfesores: setProfesoresAppContext} = useContext(AppContext)
+    const {setError, profesores: profesoresAppContext, setProfesores: setProfesoresAppContext, setMessage} = useContext(AppContext)
+    const [profesor, setProfesor] = useState<ProfesorGetAdapter>()
 
     const getProfesores = async () => {
         setIsLoading(true)
@@ -40,7 +43,7 @@ export const useApiProfesor = () => {
     }
     const updateProfesor = async (id: string, profesor: ProfesorCreateAdapter) => {
         setIsLoading(true)
-        const res = await apiRequest.patchApi(endpoint, id, getProfesorCreateDbFromAdapter(profesor))
+        const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(profesor))
         if (!res.ok)
             setError!(new Error(res.statusText))
         await getProfesores()
@@ -56,11 +59,39 @@ export const useApiProfesor = () => {
         setIsLoading(false);
     };
 
+    const valorarProfesor = async (valoracion: IValorationCreate) => {
+        setIsLoading(true);
+        const res = await apiRequest.postApi(EndpointEnum.VALORATION, valoracion);
+        if (!res.ok)
+            setError!(new Error(res.statusText));
+        else
+            setMessage!("Solicitud enviada correctamente")
+        await getProfesores()
+        setIsLoading(false);
+    };
+
+    const getProfesor = async (id: string) => {
+        setIsLoading(true);
+        const res = await apiRequest.getApi(endpoint, getQueryParamsFromObject({id: id}));
+        if (res.ok){
+            const data: ProfesorDB = await res.json()
+            setProfesor(new ProfesorGetAdapter(data))
+        }
+        if (!res.ok)
+            setError!(new Error(res.statusText));
+        await getProfesores()
+        setIsLoading(false);
+    };
+
+
     return {
         isLoading,
         getProfesores,
         createProfesor,
         deleteProfesor,
-        updateProfesor
+        updateProfesor,
+        valorarProfesor,
+        getProfesor,
+        profesor
     }
 }

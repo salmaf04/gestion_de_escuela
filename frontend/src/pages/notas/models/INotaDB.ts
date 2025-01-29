@@ -1,7 +1,7 @@
 export interface INotaDB {
     id: string
-    teacher_id: string,
-    student_id: string,
-    subject_id: string,
+    teacher: string,
+    student: string,
+    subject: string,
     note_value: number,
 }

@@ -4,11 +4,15 @@ import { useContext, useEffect, useState } from "react";
 import MySpinner from "../../../components/MySpinner.tsx";
 import { MedioCreateAdapter } from "../adapters/MedioCreateAdapter.ts";
 import { MedioContext } from "../MediosScreen.tsx";
+import {ISelect} from "../../../types/ISelect.ts";
+import {AulaGetAdapter} from "../../aulas/adapters/AulaGetAdapter.ts";
+import {AppContext} from "../../../App.tsx";
+import Select from "../../../components/Select.tsx";
 
 export default function AddMedioForm() {
-    const { register, handleSubmit } = useForm<MedioCreateAdapter>();
+    const { register, handleSubmit, control } = useForm<MedioCreateAdapter>();
     const { editting, isEditting, isCreatting, onEditTableItem, onAddTableItem, setEditting, setShowModal } = useContext(MedioContext);
-
+    const { aulas } = useContext(AppContext);
     const [isLoading, setIsLoading] = useState<boolean>(isEditting! || isCreatting!);
 
     useEffect(() => {
@@ -21,6 +25,13 @@ export default function AddMedioForm() {
         else
             onAddTableItem!(data);
     };
+
+    const aulasSelect: ISelect[] = aulas?.map((item: AulaGetAdapter)=>{
+        return {
+            id: item.id,
+            name: item.location
+        }
+    }) ?? []
 
     return (
         <div className={`fixed z-20 inset-0 bg-black bg-opacity-50 flex justify-center items-center`}>
@@ -55,20 +66,23 @@ export default function AddMedioForm() {
                                 defaultValue={editting?.location}
                             />
                         </div>
-                        <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">ID del Aula</label>
-                            <input
-                                type="text"
-                                {...register("classroom_id", { required: true })}
-                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.classroom_id}
+                        <div className={'w-full mb-4'}>
+                            <Select
+                                {...register(`classroom_id`, {
+                                    required: true,
+                                })}
+                                label={'Aula'}
+                                labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
+                                data={aulasSelect}
+                                control={control}
                             />
                         </div>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Tipo</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Tipo</label>
                             <input
                                 type="text"
-                                {...register("type", { required: true })}
+                                {...register("type", {required: true})}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
                                 defaultValue={editting?.type}
                             />

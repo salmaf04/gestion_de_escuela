@@ -1,23 +1,37 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import { EstudianteCreateAdapter } from "../adapters/EstudianteCreateAdapter.ts";
 import { useContext} from "react";
 import { EstudianteContext } from "../EstudiantesScreen.tsx";
 import MySpinner from "../../../components/MySpinner.tsx";
 import {useApiEstudiante} from "../hooks/useApiEstudiante.ts";
+import {IEstudianteDB} from "../models/IEstudianteDB.ts";
+import {AppContext} from "../../../App.tsx";
+import {ISelect} from "../../../types/ISelect.ts";
+import Select from "../../../components/Select.tsx";
+import {ICursoGetLocal} from "../../cursos/models/ICursoGetLocal.ts";
+import {IEstudianteCreateDB} from "../models/IEstudianteCreateDB.ts";
 
 export default function AddEstudianteForm() {
-    const { register, handleSubmit } = useForm<EstudianteCreateAdapter>();
+    const { register, handleSubmit, control } = useForm<Partial<IEstudianteDB>>();
     const { editting, onEditTableItem, onAddTableItem, setEditting, setShowModal } = useContext(EstudianteContext);
+    const {cursos} = useContext(AppContext)
 
     const {isLoading} = useApiEstudiante()
 
-    const onSubmit: SubmitHandler<EstudianteCreateAdapter> = (data) => {
+    const onSubmit: SubmitHandler<Partial<IEstudianteCreateDB>> = (data) => {
         if (editting)
             onEditTableItem!(data);
         else
             onAddTableItem!(data);
+        console.log(data)
         setShowModal!(false)
     };
+
+    const cursosSelect: ISelect[] = cursos?.map((item: ICursoGetLocal)=>{
+        return {
+            id: item.id,
+            name: item.year.toString()
+        }
+    }) ?? []
 
     return (
         <div className={` fixed  z-20 inset-0 bg-black bg-opacity-50 flex justify-center items-center`}>
@@ -64,9 +78,9 @@ export default function AddEstudianteForm() {
                                 className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Actividades
                                 Extras</label>
                             <input
-                                type="checkbox" {...register("extraActivities")}
+                                type="checkbox" {...register("extra_activities")}
                                 className={"rounded-lg mx-4 p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50"}
-                                defaultChecked={editting?.body.extraActivities}
+                                defaultChecked={editting?.body.extra_activities}
                             />
                         </div>
                         <div className="group mb-4">
@@ -88,22 +102,32 @@ export default function AddEstudianteForm() {
                                 required: true
                             })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.body.password}
                             />
                         </div>
-            </div>
+                        <div className={'w-full'}>
+                            <Select
+                                {...register(`course_id`, {
+                                    required: true,
+                                })}
+                                label={'Curso'}
+                                labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
+                                data={cursosSelect}
+                                control={control}
+                            />
+                        </div>
+                    </div>
 
-            <div className="flex space-x-3 justify-center">
-                <button type="button" onClick={() => {
-                    setShowModal!(false);
-                    setEditting!(undefined);
-                }}
-                        hidden={isLoading}
-                        className="hover:bg-gray-400 transition-colors w-full py-2 bg-gray-300 rounded-lg text-gray-900">Cancelar
-                </button>
-                <button type="submit"
-                        className={`${isLoading ? 'hover:bg-indigo-300 bg-indigo-300 cursor-default' : 'bg-indigo-500 hover:bg-indigo-600 '} transition-colors w-full flex justify-center py-2  text-indigo-50 rounded-lg`}>
-                    {isLoading ? <MySpinner className={'h-6 w-6'}/> : null}
+                    <div className="flex space-x-3 justify-center">
+                        <button type="button" onClick={() => {
+                            setShowModal!(false);
+                            setEditting!(undefined);
+                        }}
+                                hidden={isLoading}
+                                className="hover:bg-gray-400 transition-colors w-full py-2 bg-gray-300 rounded-lg text-gray-900">Cancelar
+                        </button>
+                        <button type="submit"
+                                className={`${isLoading ? 'hover:bg-indigo-300 bg-indigo-300 cursor-default' : 'bg-indigo-500 hover:bg-indigo-600 '} transition-colors w-full flex justify-center py-2  text-indigo-50 rounded-lg`}>
+                            {isLoading ? <MySpinner className={'h-6 w-6'}/> : null}
                     <p className={`${isLoading ? 'invisible' : 'visible'}`}>
                         {editting ? 'Editar' : 'Guardar'}
                     </p>

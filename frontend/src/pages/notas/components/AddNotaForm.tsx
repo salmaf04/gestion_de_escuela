@@ -1,4 +1,4 @@
-// frontend/src/pages/notas/components/AddNotaForm.tsx
+// frontend/src/pages/notas/components/AddAusenciaForm.tsx
 import {useContext, useEffect} from "react";
 import { NotasContext } from "../NotasScreen.tsx";
 import {useApiEstudiante} from "../../estudiantes/hooks/useApiEstudiante.ts";

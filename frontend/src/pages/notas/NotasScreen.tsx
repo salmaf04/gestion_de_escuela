@@ -1,5 +1,5 @@
-// frontend/src/pages/notas/NotasScreen.tsx
-import {createContext, useContext, useEffect, useState} from "react";
+// frontend/src/pages/notas/AusenciasScreen.tsx
+import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
 import AddNotaForm from "./components/AddNotaForm.tsx";
@@ -11,12 +11,12 @@ import {INotaDB} from "./models/INotaDB.ts";
 interface INotasContext {
     searchText?: string;
     dataTable?: INotaTableRow[];
-    editting?: INotaDB;
+    editting?: INotaTableRow;
     showModal?: boolean;
     isGetLoading?: boolean;
     isCreatting?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEditting?: (NotaDB?: INotaDB) => void;
+    setEditting?: (NotaDB?: INotaTableRow) => void;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
     onEditTableItem?: (notaEdit: Partial<INotaDB>) => void;
@@ -36,7 +36,7 @@ interface INotaTableRow extends DBObject {
 
 export default function NotasScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<INotaDB | undefined>();
+    const [editting, setEditting] = useState<INotaTableRow | undefined>();
     const [showModal, setShowModal] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
     const {notas} = useContext(AppContext)
@@ -68,29 +68,30 @@ export default function NotasScreen() {
         setIsCreating(false);
     };
     const [dataTable, setDataTable] = useState<INotaTableRow[]>([])
+    const data = useMemo<INotaTableRow[]>(() => {
+        return notas?.map((item) => {
+            return {
+                id: item.id,
+                studentName: item.student.name,
+                teacherName: item.teacher.name,
+                subjectName: item.subject.name,
+                note_value: item.note_value
+            }
+        }) ?? []
+    }, [notas]);
+
     useEffect(() => {
-            const data: INotaTableRow[] = notas?.map((item) => {
-                return {
-                    id: item.id,
-                    student: item.student.name,
-                    teacher: item.teacher.name,
-                    subject: item.subject.name,
-                    note_value: item.note_value
-                }
-            }) ?? []
-            setDataTable(data)
+
+        setDataTable(data)
     }, [notas]);
     useEffect(() => {
-        setDataTable(
-            dataTable?.filter((row) => {
-                return Object.values(row).some((value) => {
-                    return value?.toString().toLowerCase().includes(searchText.toLowerCase())
-                })
-            }) ?? []
-        )
+        const filteredData = data?.filter((item) => {
+            return Object.values(item).some((value) =>
+                value?.toString().toLowerCase().includes(searchText.toLowerCase())
+            );
+        }) ?? [];
+        setDataTable(filteredData);
     }, [searchText, notas]);
-
-
     return (
         <NotasContext.Provider value={{
             dataTable: dataTable,

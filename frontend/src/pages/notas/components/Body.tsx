@@ -4,7 +4,7 @@ import {NotasContext} from "../NotasScreen.tsx";
 import {NotaAdapter} from "../adapters/NotaAdapter.ts";
 
 export default function Body(){
-    const {dataTable,  setEdittingId, onDeleteTableItem, isGetLoading} = useContext(NotasContext)
+    const {dataTable, setEditting, onDeleteTableItem, isGetLoading} = useContext(NotasContext)
     return(
             <Table
                 className={'h-5/6'}
@@ -15,7 +15,7 @@ export default function Body(){
                    }}
                    onEditRow={(index) => {
                        const item = dataTable!.find((item) => item.id === index)
-                       setEdittingId!(item!.id)
+                       setEditting!(item!)
                    }}
             />
     )

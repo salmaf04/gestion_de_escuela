@@ -19,6 +19,14 @@ import {RolesEnum} from "./api/RolesEnum.ts";
 import {EstudianteGetAdapter} from "./pages/estudiantes/adapters/EstudianteGetAdapter.ts";
 import NotasScreen from "./pages/notas/NotasScreen.tsx";
 import {INotaLocal} from "./pages/notas/models/INotaLocal.ts";
+import {ICursoGetLocal} from "./pages/cursos/models/ICursoGetLocal.ts";
+import CursosScreen from "./pages/cursos/CursosScreen.tsx";
+import {Screens} from "./utils/router.tsx";
+import {IMantenimientoLocal} from "./pages/mantenimientos/models/IMantenimientoLocal.ts";
+import FuncionalidadesScreen from "./pages/funcionalidades/FuncionalidadesScreen.tsx";
+import {IAusenciaLocal} from "./pages/ausencias/models/IAusenciaLocal.ts";
+import AusenciasScreen from "./pages/ausencias/AusenciasScreen.tsx";
+import InfoScreen from "./pages/info/InfoScreen.tsx";
 
 
 interface AppContextInterface {
@@ -37,11 +45,21 @@ interface AppContextInterface {
     setAsignaturas?: (asignaturas: AsignaturaGetAdapter[]) => void;
     notas?: INotaLocal[];
     setNotas?: (notas: INotaLocal[]) => void;
+    cursos?: ICursoGetLocal[];
+    setCursos?: (cursos: ICursoGetLocal[]) => void;
+    mantenimientos?: IMantenimientoLocal[],
+    setMantenimientos?: (mantenimiento: IMantenimientoLocal[]) => void,
+    ausencias?: IAusenciaLocal[],
+    setAusencias?: (ausencia: IAusenciaLocal[]) => void,
 
     setRole?: (role: RolesEnum) => void,
     role?: RolesEnum,
     allowRoles?: (roles: RolesEnum[]) => boolean
+    personalId?: string,
+    setPersonalId?: (personalId: string) => void
 
+    message?: string,
+    setMessage?: (message: string) => void
 }
 
 export const AppContext = createContext<AppContextInterface>({})
@@ -55,14 +73,20 @@ function App() {
     const [asignaturas, setAsignaturas] = useState<AsignaturaGetAdapter[]>()
     const [notas, setNotas] = useState<INotaLocal[]>()
     const [estudiantes, setEstudiantes] = useState<EstudianteGetAdapter[]>()
+    const [cursos, setCursos] = useState<ICursoGetLocal[]>()
+    const [mantenimientos, setMantenimientos] = useState<IMantenimientoLocal[]>()
+    const [ausencias, setAusencias] = useState<IAusenciaLocal[]>()
     const [role, setRole] = useState<RolesEnum>()
+    const [personalId, setPersonalId] = useState<string>()
+    const [message, setMessage] = useState<string | undefined>()
+
     useEffect(() => {
         const t = sessionStorage.getItem('token')
         if (t) {
             setToken(t)
             setRole(JSON.parse(atob(t!.split(".")[1])).type)
+            setPersonalId(JSON.parse(atob(t!.split(".")[1])).user_id)
         }
-
     }, []);
     const allowRoles = useCallback((roles: RolesEnum[]) => {
 
@@ -88,7 +112,17 @@ function App() {
             estudiantes: estudiantes,
             setEstudiantes: setEstudiantes,
             notas: notas,
-            setNotas: setNotas
+            setNotas: setNotas,
+            cursos: cursos,
+            setCursos: setCursos,
+            mantenimientos: mantenimientos,
+            setMantenimientos: setMantenimientos,
+            personalId,
+            setPersonalId: setPersonalId,
+            message,
+            setMessage,
+            ausencias: ausencias,
+            setAusencias: setAusencias
         }}>
             <BrowserRouter>
                 {error &&
@@ -97,40 +131,59 @@ function App() {
                         setError(undefined)
                     }}/>
                 }
+                {message &&
+                    <Notification title={'Mensaje:'} message={message}
+                                  className={'bg-indigo-100 opacity-90 text-sm rounded-md py-1'} onClick={() => {
+                        setMessage(undefined)
+                    }}/>
+                }
                 {token ?
                     (
                         <div className={'h-dvh bg-indigo-50 flex w-full'}>
                             <div className={'w-1/12'}>
                                 <Sidebar/>
                             </div>
-                            <div className={'w-11/12'}>
+                            <div className={' p-6 w-11/12'}>
                                 <Routes>
                                     <Route path={'/'} element={<Navigate to={'/inicio'}/>}/>
                                     <Route path={'/inicio'} element={<HomeScreen/>}/>
-                                    {allowRoles([RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN]) &&
+                                    {allowRoles(Screens.Estudiantes.allowedRoles) &&
                                         <Route path={'/estudiantes'} element={<EstudiantesScreen/>}/>
                                     }
-                                    {allowRoles([RolesEnum.STUDENT, RolesEnum.SECRETARY, RolesEnum.DEAN]) &&
+                                    {allowRoles(Screens.Profesores.allowedRoles) &&
                                         <Route path={'/profesores'} element={<ProfesoresScreen/>}/>
                                     }
-                                    {allowRoles([RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]) &&
+                                    {allowRoles(Screens.Aulas.allowedRoles) &&
                                         <Route path={'/aulas'} element={<AulasScreen/>}/>
                                     }
-                                    {allowRoles([RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]) &&
+                                    {allowRoles(Screens.Asignaturas.allowedRoles) &&
                                         <Route path={'/asignaturas'} element={<AsignaturasScreen/>}/>
                                     }
-                                    {allowRoles([RolesEnum.ADMIN, RolesEnum.TEACHER, RolesEnum.DEAN]) &&
+                                    {allowRoles(Screens.Medios.allowedRoles) &&
                                         <Route path={'/medios'} element={<MediosScreen/>}/>
                                     }
-                                    {allowRoles([RolesEnum.ADMIN, RolesEnum.SECRETARY, RolesEnum.DEAN]) &&
+                                    {allowRoles(Screens.Cursos.allowedRoles) &&
                                         <Route path={'/mantenimientos'} element={<MantenimientosScreen/>}/>
                                     }
-                                    {allowRoles([RolesEnum.SECRETARY, RolesEnum.DEAN]) &&
+                                    {allowRoles(Screens.Usuarios.allowedRoles) &&
                                         <Route path={'/usuarios'} element={<UsuariosScreen/>}/>
                                     }
-                                    {allowRoles([RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.TEACHER]) &&
+                                    {allowRoles(Screens.Notas.allowedRoles) &&
                                         <Route path={'/nota'} element={<NotasScreen/>}/>
                                     }
+                                    {allowRoles(Screens.Cursos.allowedRoles) &&
+                                        <Route path={'/curso'} element={<CursosScreen/>}/>
+                                    }
+                                    {allowRoles(Screens.Mantenimientos.allowedRoles) &&
+                                        <Route path={'/mantenimiento'} element={<MantenimientosScreen/>}/>
+                                    }
+                                    {allowRoles(Screens.Mantenimientos.allowedRoles) &&
+                                        <Route path={'/funcionalidades'} element={<FuncionalidadesScreen/>}/>
+                                    }
+                                    {allowRoles(Screens.Ausencias.allowedRoles) &&
+                                        <Route path={'/ausencias'} element={<AusenciasScreen/>}/>
+                                    }
+                                    <Route path={'/info'} element={<InfoScreen/>}/>
                                 </Routes>
                             </div>
                         </div>

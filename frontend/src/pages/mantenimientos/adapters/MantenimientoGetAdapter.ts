@@ -1,29 +1,19 @@
-import {DBObject} from "../../../types.ts";
-import {MantenimientoDB} from "../models/MantenimientoGetResponse.ts";
+import {IMantenimientoLocal} from "../models/IMantenimientoLocal.ts";
+import { MedioGetAdapter } from "../../medios/adapters/MedioGetAdapter.ts";
+import {IMantenimientoDB} from "../models/IMantenimientoDB.ts";
 
-export class MantenimientoGetAdapter implements DBObject{
-    static Properties = ['Id', 'Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia', 'Correo', 'Usuario', 'Mantenimientos', 'Valoracion']
+export class MantenimientoGetAdapter implements IMantenimientoLocal {
+    static Properties = ['Id', 'Medio', 'Fecha', 'Costo']
     id: string
-    name: string
-    lastname: string
-    specialty: string
-    contractType: string
-    experience: number
-    email: string
-    username: string
-    mantenimientos: string[]
-    valoracion: string
+    mean: MedioGetAdapter;
+    date: string;
+    cost: number;
 
-    constructor(mantenimientoModel: MantenimientoDB) {
-        this.id = mantenimientoModel.id;
-        this.name = mantenimientoModel.name;
-        this.lastname = mantenimientoModel.fullname;
-        this.specialty = mantenimientoModel.specialty;
-        this.contractType = mantenimientoModel.contract_type;
-        this.experience = mantenimientoModel.experience;
-        this.email = mantenimientoModel.email;
-        this.username = mantenimientoModel.username;
-        this.mantenimientos = mantenimientoModel.list_of_subjects;
-        this.valoracion = mantenimientoModel.valoration;
+    constructor(mantenimientoDB: IMantenimientoDB, medio: MedioGetAdapter) {
+        this.id = mantenimientoDB.id;
+        this.mean = medio;
+        this.date = mantenimientoDB.date;
+        this.cost = mantenimientoDB.cost;
     }
+
 }

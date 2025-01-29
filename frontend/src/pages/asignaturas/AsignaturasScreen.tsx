@@ -1,4 +1,4 @@
-// frontend/src/pages/asignaturas/AsignaturasScreen.tsx
+// frontend/src/pages/asignaturas/CursosScreen.tsx
 import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
@@ -14,12 +14,12 @@ import {useApiAulas} from "../aulas/hooks/useApiAulas.ts";
 interface IAsignaturaContext {
     searchText?: string;
     dataTable?: IAsignaturaTableRow[];
-    edittingId?: string;
+    editting?: IAsignaturaTableRow;
     showModal?: boolean;
     isCreatting?: boolean;
     isEditting?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEdittingId?: (idAsignatura?: string) => void;
+    setEditting?: (idAsignatura?: IAsignaturaTableRow) => void;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
     onEditTableItem?: (asignaturaEdit: AsignaturaCreateAdapter) => void;
@@ -35,13 +35,14 @@ interface IAsignaturaTableRow extends DBObject {
     hourly_load: number;
     classroom_name: string
     study_program: number;
+    course_year: number
 }
 
 export const AsignaturaContext = createContext<IAsignaturaContext>({});
 
 export default function AsignaturasScreen() {
     const [searchText, setSearchText] = useState('');
-    const [edittingId, setEdittingId] = useState<string | undefined>(); //id del elemento que se esta editando
+    const [editting, setEditting] = useState<IAsignaturaTableRow | undefined>(); //id del elemento que se esta editando
     const [showModal, setShowModal] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -66,8 +67,8 @@ export default function AsignaturasScreen() {
 
     const onEditTableItem = (asignaturaEdit: AsignaturaCreateAdapter) => {
         setIsEditing(true);
-        updateAsignatura!(edittingId!, asignaturaEdit);
-        setEdittingId(undefined)
+        updateAsignatura!(editting!.id, asignaturaEdit);
+        setEditting(undefined)
         setIsEditing(false);
     };
 
@@ -87,6 +88,7 @@ export default function AsignaturasScreen() {
                 hourly_load: item.hourly_load ?? 0,
                 study_program: item.study_program ?? 0,
                 classroom_name: aulas?.find((i) => i.id === item.classroom_id)?.location ?? "Desconocido",
+                course_year: item.course.year ?? 0
             }
         }) ?? []
     }, [asignaturas]);
@@ -107,12 +109,12 @@ export default function AsignaturasScreen() {
         <AsignaturaContext.Provider value={{
             dataTable: dataTable,
             searchText: searchText,
-            edittingId: edittingId,
+            editting: editting,
             showModal: showModal,
             isCreatting: isCreating,
             isEditting: isEditing,
             setShowModal: setShowModal,
-            setEdittingId: setEdittingId,
+            setEditting: setEditting,
             setSearchText: setSearchText,
             onDeleteTableItem: onDeleteTableItem,
             onEditTableItem: onEditTableItem,
@@ -124,7 +126,7 @@ export default function AsignaturasScreen() {
             <div className={'w-full h-dvh flex flex-col'}>
                 <ToolBar />
                 <Body />
-                {(showModal || edittingId) &&
+                {(showModal || editting) &&
                     <AddAsignaturaForm />
                 }
             </div>

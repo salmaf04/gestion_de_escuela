@@ -2,8 +2,8 @@ import {EndpointEnum} from "./EndpointEnum.ts";
 import {IApiObject} from "./IApiObject.ts";
 
 
-function postApi(endpoint: EndpointEnum, body: IApiObject) {
-    return fetch(`http://localhost:8000/${endpoint}`, {
+function postApi(endpoint: string, body: IApiObject, queryParams: string = "") {
+    return fetch(`http://localhost:8000/${endpoint}${queryParams}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -13,8 +13,8 @@ function postApi(endpoint: EndpointEnum, body: IApiObject) {
     })
 }
 
-function getApi(endpoint: EndpointEnum) {
-    return fetch(`http://localhost:8000/${endpoint}`, {
+function getApi(endpoint: EndpointEnum, queryParams: string = "") {
+    return fetch(`http://localhost:8000/${endpoint}${queryParams}`, {
         headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         }
@@ -28,8 +28,8 @@ function getOneApi(endpoint: EndpointEnum, id: string) {
     })
 }
 //todo id path everybody
-function patchApi(endpoint: EndpointEnum, id: string = "", body: IApiObject) {
-    return fetch(`http://localhost:8000/${endpoint}/${id}`, {
+function patchApi(endpoint: EndpointEnum, id: string = "", body: IApiObject, queryParams: string = "") {
+    return fetch(`http://localhost:8000/${endpoint}/${id}${queryParams}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',

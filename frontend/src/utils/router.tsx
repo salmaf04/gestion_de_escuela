@@ -14,8 +14,12 @@ export const Screens = {
     Profesores: new ScreenType('Profesores', ProfesorIcon, '/profesores', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
     Aulas: new ScreenType('Aulas', AulaIcon, '/aulas', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
     Asignaturas: new ScreenType('Asignaturas', AsignaturaIcon, '/asignaturas', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
-    Medios: new ScreenType('Medios', MediosIcon, '/medios', [RolesEnum.TEACHER, RolesEnum.DEAN,RolesEnum.ADMIN]),
-    Mantenimientos: new ScreenType('Mantenimientos', MediosIcon, '/mantenimientos', [RolesEnum.DEAN,RolesEnum.ADMIN]),
+    Medios: new ScreenType('Medios', MediosIcon, '/medios', [RolesEnum.TEACHER, RolesEnum.DEAN,RolesEnum.ADMIN, RolesEnum.SECRETARY]),
+    Mantenimientos: new ScreenType('Mantenimientos', MediosIcon, '/mantenimientos', [RolesEnum.DEAN,RolesEnum.ADMIN, RolesEnum.SECRETARY]),
     Usuarios : new ScreenType('Usuarios' ,  MediosIcon , '/usuarios', [RolesEnum.SECRETARY, RolesEnum.DEAN]),
-    Notas: new ScreenType('Notas', NotaIcon, '/nota', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN])
-}
+    Notas: new ScreenType('Notas', NotaIcon, '/nota', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN]),
+    Cursos: new ScreenType('Cursos', NotaIcon, '/curso', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
+    Ausencias: new ScreenType('Ausencias', NotaIcon, '/ausencias', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
+    Info: new ScreenType('Sobre mí', NotaIcon, '/info', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT, RolesEnum.ADMIN]),
+    Funcionalidades: new ScreenType('Funcionalidades', NotaIcon, '/funcionalidades', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
+    }
