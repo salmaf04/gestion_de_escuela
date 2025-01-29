@@ -40,9 +40,9 @@ export const useApiNotas = () => {
                 .map((nota: INotaDB) => {
                     return new NotaAdapter(
                         nota,
-                        estudiantes!.find((estudiante) => estudiante.id === nota.student_id)!,
-                        asignaturas!.find((asignatura) => asignatura.id === nota.subject_id)!,
-                        profesores!.find((profesor) => profesor.id === nota.teacher_id)!,)
+                        estudiantes!.find((estudiante) => estudiante.name === nota.student)!,
+                        asignaturas!.find((asignatura) => asignatura.name === nota.subject)!,
+                        profesores!.find((profesor) => profesor.name === nota.teacher)!,)
 
                 });
             setNotas(notaArray);

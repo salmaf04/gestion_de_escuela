@@ -20,7 +20,7 @@ export const useApiAsignatura = () => {
             setIsLoading(false)
         }
         const res = await apiRequest.getApi(endpoint)
-        await getCursos()
+        getCursos()
         if (res.ok) {
             const data: AsignaturaGetResponse = await res.json()
             const asignaturaArray = Object.values(data)

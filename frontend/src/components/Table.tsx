@@ -9,9 +9,15 @@ interface Props {
     onEditRow: (index: string) => void
     onRemoveRow: (index: string) => void
     isLoading: boolean
+    actions?: {
+        title: string,
+        icon: JSX.Element,
+        action: (row: DBObject) => void,
+        color: string,
+    }[]
 }
 
-export default function Table({header, className, Data, onRemoveRow, onEditRow, isLoading}: Props) {
+export default function Table({header, className, Data, onRemoveRow, onEditRow, isLoading, actions}: Props) {
 
     return (
         <>
@@ -33,6 +39,18 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow, 
                                         </div>
                                     </div>)
                             })}
+                            {
+                                actions?.map((action, index) => {
+                                    return (
+                                        <div key={index} className={'w-full flex justify-center'}>
+                                            <div className={'w-fit'}>
+                                                <div className={`font-bold w-full`}>{action.title}</div>
+                                                <div className={`h-[3px] w-full rounded-full bg-${action.color}-500`}/>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
                             <div className={'w-full flex justify-center'}>
                                 <div className={'w-fit'}>
                                     <div className={`font-bold w-full`}>Eliminar</div>
@@ -84,6 +102,24 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow, 
                                                     </div>
                                                 )
                                         })}
+                                        {
+                                            actions?.map((action, index) => {
+                                                return (
+                                                    <div key={index} className={'w-full flex justify-center'}>
+                                                        <div
+                                                            onClick={(e) => {
+                                                                action.action(row)
+                                                                e.stopPropagation()
+                                                            }}
+                                                            className={`size-9 flex items-center justify-center rounded-full hover:bg-${action.color}-200 cursor-pointer`}>
+
+                                                            {action.icon}
+                                                        </div>
+
+                                                    </div>
+                                                )
+                                            })
+                                        }
                                         <div className={'w-full flex justify-center'}>
                                             <div
                                                 onClick={(e) => {

@@ -20,7 +20,7 @@ export const useApiMedio = () => {
             setIsLoading(false)
         }
         const res = await apiRequest.getApi(endpoint)
-        await getAulas()
+        getAulas()
         if (res.ok) {
             const data: MedioGetResponse = await res.json()
             const medioArray = Object.values(data)
