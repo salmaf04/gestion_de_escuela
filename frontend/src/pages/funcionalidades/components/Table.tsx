@@ -2,9 +2,12 @@ import React from 'react';
 import {ProfesorEspGetAdapter} from "../adapters/ProfesorEspGetAdapter.ts";
 import {FiltrodeMantenimientoGetAdapter} from "../adapters/FiltrodeMantenimientoGetAdapter.ts";
 import {CostoPromedioGetAdapter} from "../adapters/CostoPromedioGetAdapter.ts";
+import {ValoracionPromediodeProfesorGetAdapter} from "../adapters/ValoracionPromediodeProfesorGetAdapter.ts";
+import {ValoracionPromediodeEstudianteGetAdapter} from "../adapters/ValoracionPromediodeEstudianteGetAdapter.ts";
+import {SalariosdeProfesoresGetAdapter} from "../adapters/SalariosdeProfesorGetAdapter.ts";
 
 interface ProfesoresTableProps {
-    items: ProfesorEspGetAdapter[] | CostoPromedioGetAdapter[]| FiltrodeMantenimientoGetAdapter[];
+    items: ProfesorEspGetAdapter[] | CostoPromedioGetAdapter[]| FiltrodeMantenimientoGetAdapter[] | ValoracionPromediodeProfesorGetAdapter[] | ValoracionPromediodeEstudianteGetAdapter[] | SalariosdeProfesoresGetAdapter[]
     headers: string[]
     showHeaders: string[]
 }
