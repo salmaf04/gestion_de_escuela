@@ -32,6 +32,7 @@ async def create_absence(
 )
 async def read_absence(
     by_student : str = None,
+    by_student_by_teacher : str = None,
     filters: AbsenceFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
@@ -49,6 +50,9 @@ async def read_absence(
     if by_student :
         absences = absence_pagination_service.get_absence_by_student(session=session, student_id=by_student)
         return mapper.to_abscence_by_student(absences)
+    elif by_student_by_teacher :
+        absences = absence_pagination_service.get_absence_by_student_by_teacher(session=session, teacher_id=by_student_by_teacher)
+        return mapper.to_absence_by_student_by_teacher(absences)
     
     mapped_absences = []
 
