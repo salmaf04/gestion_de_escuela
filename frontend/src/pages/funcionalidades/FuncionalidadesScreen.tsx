@@ -9,8 +9,9 @@ function FuncionalidadesScreen() {
 
     const profesor_Esp_headers = ['name', 'specialty', 'mean', 'state'];
     const  profesor_Esp_showHeaders = ['Nombre', 'Especialidad', 'Medio', 'Estado'];
-    const filtrodemantenimiento_headers = ['mean_id', 'mean_name', 'average_cost' , 'total_maintenance'];
-    const filtrodemantenimiento_showHeaders = ['Id', 'Nombre', 'Costo Promedio' , 'mantenimientos_totales'];
+    const filtrodemantenimiento_headers = ['classroom_id', 'other', 'teaching_material', 'technological_mean', 'total maintenances after two years']
+
+    const filtrodemantenimiento_showHeaders = ['ID de aula', 'Otro', 'Material de enseñanza', 'Medio tecnológico', 'Total'];
     console.log(filtrodeMantenimento)
 
 
