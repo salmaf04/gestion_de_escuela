@@ -17,3 +17,5 @@ export class ProfesorEspGetAdapter {
     [key: string]: string;
 }
 
+
+

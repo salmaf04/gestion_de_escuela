@@ -5,3 +5,9 @@ export type ProfesorEspGetDB = {
     "mean": string,
     "state": string,
 }
+
+export type CostoPromedioGetDB = {
+    "average_cost": string,
+    "mean_id": string ,
+    "mean_name": string ,
+}
