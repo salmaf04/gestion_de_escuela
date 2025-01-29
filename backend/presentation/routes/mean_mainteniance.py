@@ -13,7 +13,7 @@ from typing import List, Any
 router = APIRouter()
 
 @router.post(
-    "/mean_mainteniance",
+    "/mean_maintenance",
     response_model=MeanMaintenanceModel,
     status_code=status.HTTP_201_CREATED
 )
@@ -30,7 +30,7 @@ async def create_mean_maintenance(
 
 
 @router.get(
-    "/mean_mainteniance",
+    "/mean_maintenance",
     response_model=dict[int, MeanMaintenanceModel] | List[Any] | int,
     status_code=status.HTTP_200_OK
 )

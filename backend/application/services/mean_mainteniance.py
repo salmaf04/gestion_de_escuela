@@ -17,22 +17,18 @@ class MeanMaintenanceCreateService :
 
     def create_mean_maintenance(self, session: Session, mean_maintenance:MeanMaintenanceCreateModel) -> MeanMaintenianceTable :
         check_replacement_service = CheckReplacementService()
-        
-        
-        mean_maintenance_dict = mean_maintenance.model_dump()
-        new_mean_maintenance = MeanMaintenianceTable(**mean_maintenance_dict)
-        
-        mean = MeanPaginationService().get_mean_by_id(session=session, id=mean_maintenance.mean_id)
-        date = DatePaginationService().get_date_by_id(session=session, id=mean_maintenance.date_id)
-        
-        check_replacement = check_replacement_service.check_replacement(session=session, date=date.date, mean_id=mean_maintenance.mean_id)
+        date_converted = datetime.strptime(mean_maintenance.date, "%d-%m-%Y")
+    
+        mean_maintenance_dict = mean_maintenance.model_dump(exclude={"date"})
+        new_mean_maintenance = MeanMaintenianceTable(**mean_maintenance_dict, date=date_converted)
+        mean = MeanPaginationService().get_mean_by_id(session=session, id=mean_maintenance.mean_id)    
+        check_replacement = check_replacement_service.check_replacement(session=session, date=date_converted, mean_id=mean_maintenance.mean_id)
 
         if check_replacement :
             mean.to_be_replaced = True
 
         new_mean_maintenance.mean = mean
-        new_mean_maintenance.date = date.date
-
+        
         mean.mean_mainteniance_association.append(new_mean_maintenance)
 
         session.add(new_mean_maintenance)
@@ -110,8 +106,6 @@ class CheckReplacementService :
         query = query.where(and_(MeanMaintenianceTable.date >= date, MeanMaintenianceTable.mean_id == mean_id))
 
         result = session.execute(query).scalars().first()
-
-        print(result)
 
         if result >= 2 : 
             return True
