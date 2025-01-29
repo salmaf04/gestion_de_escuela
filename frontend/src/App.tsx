@@ -117,7 +117,7 @@ function App() {
                             <div className={'w-1/12'}>
                                 <Sidebar/>
                             </div>
-                            <div className={'w-11/12'}>
+                            <div className={' p-6 w-11/12'}>
                                 <Routes>
                                     <Route path={'/'} element={<Navigate to={'/inicio'}/>}/>
                                     <Route path={'/inicio'} element={<HomeScreen/>}/>
