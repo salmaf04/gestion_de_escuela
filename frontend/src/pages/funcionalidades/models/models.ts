@@ -23,3 +23,24 @@ export type CostoPromedioGetDB = {
     "mean_id": string,
     "mean_name": string,
 }
+
+// Model for the first example
+export interface ValoracionPromediodeProfesorGetDB {
+    name: string;
+    average_valoration: number;
+    subjects: string[];
+}
+
+export interface ValoracionPromediodeEstudianteGetDB {
+    name: string;
+    student_id: string;
+    teacher_name: string;
+    teacher_valoration: number | null;
+}
+
+export interface SalariosdeProfesoresGetDB {
+    name: string;
+    valorations: number[];
+    date: string;
+    means: boolean;
+}
