@@ -18,7 +18,7 @@ def calculate_teacher_average(session: Session, teacher_id: str, new_note: int) 
     note_sum = session.execute(value).scalars().first()
     
     if note_sum is None :
-        return None
+        return new_note
     updated_note_sum = note_sum + new_note
     rows = select(func.count(TeacherNoteTable.grade)).where(TeacherNoteTable.teacher_id == teacher_id)
     total_valorations = session.execute(rows).scalars().first()

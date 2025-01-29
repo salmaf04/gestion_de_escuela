@@ -151,10 +151,33 @@ class TeacherPaginationService :
         query = query.distinct(TechnologicalMeanTable.id,ClassroomTable.entity_id, TeacherTable.id)
         query = query.order_by(asc(TeacherTable.id))
         return session.execute(query).all()
-        
-
     
-
+    def get_teachers_by_sanctions(self, session: Session) :
+        latest_sanction_subquery = (
+        select(
+            SanctionTable.teacher_id,
+            func.max(SanctionTable.date).label('latest_sanction_date')
+        )
+        .group_by(SanctionTable.teacher_id)
+        .subquery()
+        )
+        grade_rank = func.row_number().over(
+        partition_by=TeacherTable.id,
+        order_by=asc(TeacherNoteTable.grade)
+        ).label('grade_rank')
+        query = select(TeacherTable.id, TeacherTable.name, latest_sanction_subquery.c.latest_sanction_date, TeacherNoteTable.grade)
+        query = query.add_columns(grade_rank)
+        query = query.join(latest_sanction_subquery, TeacherTable.id == latest_sanction_subquery.c.teacher_id)
+        query = query.join(TeacherNoteTable, TeacherTable.id == TeacherNoteTable.teacher_id)
+        query = query.where(TeacherTable.id.in_(select(SanctionTable.teacher_id)))
+        query = query.order_by(
+            TeacherTable.id,
+            TeacherNoteTable.grade,
+        )
+        subquery = query.subquery()
+        final_query = select(subquery).where(subquery.c.grade_rank <= 3)
+        return session.execute(final_query).all(), self.get_teachers_by_technological_classroom(session)
+        
 class TeacherSubjectService :
     def create_teacher_subject(self, session: Session, teacher_id: str, subject_id: str) :
         teacher_subject = teacher_subject_table.insert().values(teacher_id=teacher_id, subject_id=subject_id)
