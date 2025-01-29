@@ -115,7 +115,7 @@ class TeacherMapper :
                 
                 new_teacher = TeacherSanctions(
                     name= teacher[1],
-                    valorations= [teacher[3]],
+                    valorations= [teacher[3]] if teacher[3] else [],
                     date= teacher[2],
                     means= True if teacher[0] in mean_data else False
                 )

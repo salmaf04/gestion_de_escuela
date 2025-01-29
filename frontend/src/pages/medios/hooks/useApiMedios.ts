@@ -6,12 +6,13 @@ import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {MedioCreateAdapter} from "../adapters/MedioCreateAdapter.ts";
 import {useApiAulas} from "../../aulas/hooks/useApiAulas.ts";
+import {getQueryParamsFromObject} from "../../../utils/utils.ts";
 
 const endpoint = EndpointEnum.MEDIOS
 
 export const useApiMedio = () => {
     const [isLoading, setIsLoading] = useState(false)
-    const {setError, medios: mediosAppContext, setMedios: setMediosAppContext, aulas} = useContext(AppContext)
+    const {setError, medios: mediosAppContext, setMedios: setMediosAppContext, aulas, personalId, setMessage} = useContext(AppContext)
     const {getAulas} = useApiAulas()
 
     const getMedios = async () => {
@@ -20,7 +21,7 @@ export const useApiMedio = () => {
             setIsLoading(false)
         }
         const res = await apiRequest.getApi(endpoint)
-        await getAulas()
+        getAulas()
         if (res.ok) {
             const data: MedioGetResponse = await res.json()
             const medioArray = Object.values(data)
@@ -44,7 +45,7 @@ export const useApiMedio = () => {
     }
     const updateMedio = async (id: string, medio: Partial<MedioCreateAdapter>) => {
         setIsLoading(true)
-        const res = await apiRequest.patchApi(endpoint, id, medio)
+        const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(medio))
         if (!res.ok)
             setError!(new Error(res.statusText))
         await getMedios()
@@ -60,11 +61,23 @@ export const useApiMedio = () => {
         setIsLoading(false);
     };
 
+    const solicitarMedio = async (body: {mean_id: string}) => {
+        setIsLoading(true);
+        const res = await apiRequest.postApi(EndpointEnum.MEAN_REQUEST+"/"+personalId, body);
+        if (!res.ok)
+            setError!(new Error(res.statusText));
+        else
+            setMessage!("Solicitud enviada correctamente")
+        await getAulas()
+        setIsLoading(false);
+    };
+
     return {
         isLoading,
         getMedios,
         createMedio,
         deleteMedio,
-        updateMedio
+        updateMedio,
+        solicitarMedio
     }
 }

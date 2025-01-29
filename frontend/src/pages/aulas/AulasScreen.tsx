@@ -36,7 +36,7 @@ export default function AulasScreen() {
         createAula,
         updateAula,
         getAulas,
-        isLoading
+        isLoading,
     } = useApiAulas()
     useEffect(() => {
         getAulas()

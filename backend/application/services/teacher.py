@@ -156,19 +156,19 @@ class TeacherPaginationService :
         latest_sanction_subquery = (
         select(
             SanctionTable.teacher_id,
-            func.max(SanctionTable.date).label('latest_sanction_date')
+            func.min(SanctionTable.date).label('latest_sanction_date')
         )
         .group_by(SanctionTable.teacher_id)
         .subquery()
         )
         grade_rank = func.row_number().over(
         partition_by=TeacherTable.id,
-        order_by=asc(TeacherNoteTable.grade)
+        order_by=TeacherNoteTable.grade
         ).label('grade_rank')
         query = select(TeacherTable.id, TeacherTable.name, latest_sanction_subquery.c.latest_sanction_date, TeacherNoteTable.grade)
         query = query.add_columns(grade_rank)
         query = query.join(latest_sanction_subquery, TeacherTable.id == latest_sanction_subquery.c.teacher_id)
-        query = query.join(TeacherNoteTable, TeacherTable.id == TeacherNoteTable.teacher_id)
+        query = query.outerjoin(TeacherNoteTable, TeacherTable.id == TeacherNoteTable.teacher_id)
         query = query.where(TeacherTable.id.in_(select(SanctionTable.teacher_id)))
         query = query.order_by(
             TeacherTable.id,

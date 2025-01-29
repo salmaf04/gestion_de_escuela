@@ -1,6 +1,6 @@
-// frontend/src/pages/notas/components/AddAusenciaForm.tsx
+// frontend/src/pages/ausencias/components/AddAusenciaForm.tsx
 import {useContext, useEffect} from "react";
-import { NotasContext } from "../NotasScreen.tsx";
+import { AusenciasContext } from "../AusenciasScreen.tsx";
 import {useApiEstudiante} from "../../estudiantes/hooks/useApiEstudiante.ts";
 import {useApiAsignatura} from "../../asignaturas/hooks/useApiAsignatura.ts";
 import {AppContext} from "../../../App.tsx";
@@ -9,14 +9,15 @@ import MySpinner from "../../../components/MySpinner.tsx";
 import { useFieldArray, useForm} from "react-hook-form";
 import {ISelect} from "../../../types/ISelect.ts";
 import {useApiProfesor} from "../../profesores/hooks/useApiProfesor.ts";
-import {INotaDB} from "../models/INotaDB.ts";
+import {IAusenciaDB} from "../models/IAusenciaDB.ts";
+import {reverseDate} from "../../../utils/utils.ts";
 
-export default function AddNotaForm() {
-    const { onAddTableItem, setShowModal, editting, onEditTableItem, setEditting } = useContext(NotasContext);
+export default function AddAusenciaForm() {
+    const { onAddTableItem, setShowModal, editting, onEditTableItem, setEditting } = useContext(AusenciasContext);
     const {getEstudiantes, isLoading} = useApiEstudiante()
     const {getAsignaturas} = useApiAsignatura()
     const {getProfesores} = useApiProfesor()
-    const {asignaturas, estudiantes, profesores} = useContext(AppContext)
+    const {asignaturas, estudiantes} = useContext(AppContext)
     useEffect(() => {
         getAsignaturas()
         getEstudiantes()
@@ -26,29 +27,26 @@ export default function AddNotaForm() {
     const {register, control, handleSubmit}=useForm()
     const {fields, append, remove} = useFieldArray({
         control,
-        name: "notas",
+        name: "ausencias",
     });
 
     const onSubmit = (data) => {
-
         if (editting){
-            const dataParse: Partial<INotaDB> = {
-                teacher_id: data[`profesor${0}`],
+            const dataParse: Partial<IAusenciaDB> = {
                 student_id: data[`estudiante${0}`],
                 subject_id: data[`asignatura${0}`],
-                note_value: data[`note_value${0}`],
+                date: reverseDate(data[`date${0}`]),
             }
             onEditTableItem!(dataParse)
         }
         else{
             console.log(data)
-            const dataParse: Partial<INotaDB>[] = []
+            const dataParse: Partial<IAusenciaDB>[] = []
             for (let i = 0; i < fields.length; i++) {
                 dataParse.push({
-                    teacher_id: data[`profesor${i}`],
                     student_id: data[`estudiante${i}`],
                     subject_id: data[`asignatura${i}`],
-                    note_value: data[`note_value${i}`],
+                    date: reverseDate(data[`date${i}`]),
                 })
             }
             console.log(dataParse)
@@ -75,12 +73,6 @@ export default function AddNotaForm() {
         }
     }) ?? []
 
-    const profesoresSelect: ISelect[] = profesores?.map((item)=>{
-        return {
-            id: item.id,
-            name: item?.name
-        }
-    }) ?? []
 
 
 
@@ -95,17 +87,7 @@ export default function AddNotaForm() {
                             fields.map((item, index) => {
                                 return (
                                     <div className="relative flex w-full items-center space-x-4" key={item.id}>
-                                        <div className={'w-full'}>
-                                            <Select
-                                                {...register(`profesor${index}`, {
-                                                    required: true,
-                                                })}
-                                                labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
-                                                label={'Profesor: '}
-                                                data={profesoresSelect}
-                                                control={control}
-                                            />
-                                        </div>
+
                                         <div className={'w-full'}>
                                             <Select
                                                 {...register(`estudiante${index}`, {
@@ -131,14 +113,14 @@ export default function AddNotaForm() {
 
                                         <div className="group w-full">
                                             <label
-                                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Nota</label>
+                                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Fecha</label>
                                             <input
-                                                type="number" {...register(`note_value${index}`, {
+                                                type="date" {...register(`date${index}`, {
                                                 required: true
                                             })}
                                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
 
-                                                defaultValue={editting?.note_value}
+                                                defaultValue={editting?.date}
                                             />
 
                                         </div>
@@ -154,7 +136,7 @@ export default function AddNotaForm() {
                                 className={'self-center w-full translate-y-3 py-2 h-10 text-center text-indigo-500 rounded-lg border-2 border-indigo-500 text-sm font-semibold hover:bg-indigo-50 transition-colors'}
                                 onClick={() => append({})}
                             >
-                                Nueva Nota
+                                Nueva Ausencia
                             </button>
                         }
 

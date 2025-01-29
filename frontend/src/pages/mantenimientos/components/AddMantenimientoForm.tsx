@@ -19,6 +19,10 @@ export default function AddMantenimientoForm() {
     }, [isEditting, isCreatting]);
 
     const onSubmit: SubmitHandler<IMantenimientoDB> = (data) => {
+        if (data.date) {
+            const [day, month, year] = data.date.split('-');
+            data.date = `${year}-${month}-${day}`;
+        }
         if (editting)
             onEditTableItem!(data)
         else

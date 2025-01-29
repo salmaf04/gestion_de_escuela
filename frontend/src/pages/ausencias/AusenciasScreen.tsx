@@ -1,89 +1,87 @@
-// frontend/src/pages/notas/AusenciasScreen.tsx
+// frontend/src/pages/ausencias/AusenciasScreen.tsx
 import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
-import AddNotaForm from "./components/AddNotaForm.tsx";
-import {useApiNotas} from "./hooks/useApiNotas.ts";
+import AddAusenciaForm from "./components/AddAusenciaForm.tsx";
+import {useApiAusencias} from "./hooks/useApiAusencias.ts";
 import {DBObject} from "../../types.ts";
 import {AppContext} from "../../App.tsx";
-import {INotaDB} from "./models/INotaDB.ts";
+import {IAusenciaDB} from "./models/IAusenciaDB.ts";
 
-interface INotasContext {
+interface IAusenciasContext {
     searchText?: string;
-    dataTable?: INotaTableRow[];
-    editting?: INotaTableRow;
+    dataTable?: IAusenciaTableRow[];
+    editting?: IAusenciaTableRow;
     showModal?: boolean;
     isGetLoading?: boolean;
     isCreatting?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEditting?: (NotaDB?: INotaTableRow) => void;
+    setEditting?: (AusenciaDB?: IAusenciaTableRow) => void;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
-    onEditTableItem?: (notaEdit: Partial<INotaDB>) => void;
-    onAddTableItem?: (notaEdit: Partial<INotaDB>[]) => void;
+    onEditTableItem?: (ausenciaEdit: Partial<IAusenciaDB>) => void;
+    onAddTableItem?: (ausenciaEdit: Partial<IAusenciaDB>[]) => void;
 }
 
-export const NotasContext = createContext<INotasContext>({});
+export const AusenciasContext = createContext<IAusenciasContext>({});
 
-interface INotaTableRow extends DBObject {
+interface IAusenciaTableRow extends DBObject {
     id: string,
-    teacherName?: string;
     studentName?: string;
     subjectName?: string;
-    note_value: number;
+    date: string;
 }
 
 
-export default function NotasScreen() {
+export default function AusenciasScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<INotaTableRow | undefined>();
+    const [editting, setEditting] = useState<IAusenciaTableRow | undefined>();
     const [showModal, setShowModal] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
-    const {notas} = useContext(AppContext)
+    const {ausencias} = useContext(AppContext)
     const {
-        deleteNota,
-        createNota,
-        updateNota,
-        getNotas,
-    } = useApiNotas();
+        deleteAusencia,
+        createAusencia,
+        updateAusencia,
+        getAusencias,
+    } = useApiAusencias();
 
     useEffect(() => {
-        getNotas();
+        getAusencias();
     }, []);
 
-    const onDeleteTableItem = (deletedNotaId: string) => {
-        deleteNota(deletedNotaId);
+    const onDeleteTableItem = (deletedAusenciaId: string) => {
+        deleteAusencia(deletedAusenciaId);
     };
 
-    const onEditTableItem = (notasEdit: Partial<INotaDB>) => {
-        updateNota(editting!.id, notasEdit)
+    const onEditTableItem = (ausenciasEdit: Partial<IAusenciaDB>) => {
+        updateAusencia(editting!.id, ausenciasEdit)
         setEditting(undefined)
     };
 
-    const onAddTableItem = (notas: Partial<INotaDB>[]) => {
+    const onAddTableItem = (ausencias: Partial<IAusenciaDB>[]) => {
         setIsCreating(true);
-        notas.forEach((item) => {
-            createNota(item);
+        ausencias.forEach((item) => {
+            createAusencia(item);
         })
         setIsCreating(false);
     };
-    const [dataTable, setDataTable] = useState<INotaTableRow[]>([])
-    const data = useMemo<INotaTableRow[]>(() => {
-        return notas?.map((item) => {
+    const [dataTable, setDataTable] = useState<IAusenciaTableRow[]>([])
+    const data = useMemo<IAusenciaTableRow[]>(() => {
+        return ausencias?.map((item) => {
             return {
                 id: item.id,
                 studentName: item.student.name,
-                teacherName: item.teacher.name,
                 subjectName: item.subject.name,
-                note_value: item.note_value
+                date: item.date
             }
         }) ?? []
-    }, [notas]);
+    }, [ausencias]);
 
     useEffect(() => {
 
         setDataTable(data)
-    }, [notas]);
+    }, [ausencias]);
     useEffect(() => {
         const filteredData = data?.filter((item) => {
             return Object.values(item).some((value) =>
@@ -91,9 +89,9 @@ export default function NotasScreen() {
             );
         }) ?? [];
         setDataTable(filteredData);
-    }, [searchText, notas]);
+    }, [searchText, ausencias]);
     return (
-        <NotasContext.Provider value={{
+        <AusenciasContext.Provider value={{
             dataTable: dataTable,
             searchText: searchText,
             editting: editting,
@@ -110,9 +108,9 @@ export default function NotasScreen() {
                 <ToolBar/>
                 <Body/>
                 {(showModal || editting) &&
-                    <AddNotaForm/>
+                    <AddAusenciaForm/>
                 }
             </div>
-        </NotasContext.Provider>
+        </AusenciasContext.Provider>
     );
 }

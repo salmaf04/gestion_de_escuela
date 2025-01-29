@@ -6,6 +6,7 @@ import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {AsignaturaCreateAdapter} from "../adapters/AsignaturaCreateAdapter.ts";
 import {useApiCurso} from "../../cursos/hooks/useApiCurso.ts";
+import {getQueryParamsFromObject} from "../../../utils/utils.ts";
 
 const endpoint = EndpointEnum.ASIGNATURAS
 
@@ -20,7 +21,7 @@ export const useApiAsignatura = () => {
             setIsLoading(false)
         }
         const res = await apiRequest.getApi(endpoint)
-        await getCursos()
+        getCursos()
         if (res.ok) {
             const data: AsignaturaGetResponse = await res.json()
             const asignaturaArray = Object.values(data)
@@ -42,7 +43,7 @@ export const useApiAsignatura = () => {
     }
     const updateAsignatura = async (id: string, asignatura: Partial<AsignaturaCreateAdapter>) => {
         setIsLoading(true)
-        const res = await apiRequest.patchApi(endpoint, id, asignatura)
+        const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(asignatura))
         if (!res.ok)
             setError!(new Error(res.statusText))
         await getAsignaturas()
