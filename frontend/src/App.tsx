@@ -23,6 +23,8 @@ import {ICursoGetLocal} from "./pages/cursos/models/ICursoGetLocal.ts";
 import CursosScreen from "./pages/cursos/CursosScreen.tsx";
 import {Screens} from "./utils/router.tsx";
 import {IMantenimientoLocal} from "./pages/mantenimientos/models/IMantenimientoLocal.ts";
+import {IAusenciaLocal} from "./pages/ausencias/models/IAusenciaLocal.ts";
+import AusenciasScreen from "./pages/ausencias/AusenciasScreen.tsx";
 
 
 interface AppContextInterface {
@@ -45,6 +47,8 @@ interface AppContextInterface {
     setCursos?: (cursos: ICursoGetLocal[]) => void;
     mantenimientos?: IMantenimientoLocal[],
     setMantenimientos?: (mantenimiento: IMantenimientoLocal[]) => void,
+    ausencias?: IAusenciaLocal[],
+    setAusencias?: (ausencia: IAusenciaLocal[]) => void,
 
     setRole?: (role: RolesEnum) => void,
     role?: RolesEnum,
@@ -69,9 +73,11 @@ function App() {
     const [estudiantes, setEstudiantes] = useState<EstudianteGetAdapter[]>()
     const [cursos, setCursos] = useState<ICursoGetLocal[]>()
     const [mantenimientos, setMantenimientos] = useState<IMantenimientoLocal[]>()
+    const [ausencias, setAusencias] = useState<IAusenciaLocal[]>()
     const [role, setRole] = useState<RolesEnum>()
     const [personalId, setPersonalId] = useState<string>()
     const [message, setMessage] = useState<string | undefined>()
+
     useEffect(() => {
         const t = sessionStorage.getItem('token')
         if (t) {
@@ -112,7 +118,9 @@ function App() {
             personalId,
             setPersonalId: setPersonalId,
             message,
-            setMessage
+            setMessage,
+            ausencias: ausencias,
+            setAusencias: setAusencias
         }}>
             <BrowserRouter>
                 {error &&
@@ -166,6 +174,9 @@ function App() {
                                     }
                                     {allowRoles(Screens.Mantenimientos.allowedRoles) &&
                                         <Route path={'/mantenimiento'} element={<MantenimientosScreen/>}/>
+                                    }
+                                    {allowRoles(Screens.Ausencias.allowedRoles) &&
+                                        <Route path={'/ausencias'} element={<AusenciasScreen/>}/>
                                     }
                                 </Routes>
                             </div>

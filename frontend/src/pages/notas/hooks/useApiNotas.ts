@@ -1,4 +1,4 @@
-// frontend/src/pages/notas/hooks/useApiNotas.ts
+// frontend/src/pages/notas/hooks/useApiAusencias.ts
 import { useContext, useState } from "react";
 import { INotaDB } from "../models/INotaDB.ts";
 import { AppContext } from "../../../App.tsx";
