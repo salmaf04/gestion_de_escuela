@@ -35,7 +35,8 @@ class MeanMaintenanceMapper :
         return MeanMaintenanceModel(
             id = mean_maintenance.entity_id,
             mean = mean_maintenance.mean.name,
-            cost = mean_maintenance.cost
+            cost = mean_maintenance.cost,
+            date = mean_maintenance.date.strftime("%d-%m-%Y")
         )
     
 
