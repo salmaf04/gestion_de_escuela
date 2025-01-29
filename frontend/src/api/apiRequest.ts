@@ -28,8 +28,8 @@ function getOneApi(endpoint: EndpointEnum, id: string) {
     })
 }
 //todo id path everybody
-function patchApi(endpoint: EndpointEnum, id: string = "", body: IApiObject) {
-    return fetch(`http://localhost:8000/${endpoint}/${id}`, {
+function patchApi(endpoint: EndpointEnum, id: string = "", body: IApiObject, queryParams: string = "") {
+    return fetch(`http://localhost:8000/${endpoint}/${id}${queryParams}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',

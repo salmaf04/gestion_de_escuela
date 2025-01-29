@@ -9,4 +9,5 @@ export enum EndpointEnum {
     MANTENIMIENTOS = 'mean_maintenance',
     CLASSROOM_REQUEST = 'classroom_request',
     MEAN_REQUEST = 'mean_request',
+    VALORATION = 'valoration'
 }

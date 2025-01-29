@@ -3,13 +3,13 @@ import { useContext, useState } from "react";
 import { INotaDB } from "../models/INotaDB.ts";
 import { AppContext } from "../../../App.tsx";
 import apiRequest from "../../../api/apiRequest.ts";
-import { getNotaCreateDbFromAdapter } from "../utils/utils.ts";
 import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import {useApiEstudiante} from "../../estudiantes/hooks/useApiEstudiante.ts";
 import {useApiAsignatura} from "../../asignaturas/hooks/useApiAsignatura.ts";
 import {useApiProfesor} from "../../profesores/hooks/useApiProfesor.ts";
 import {INotaLocal} from "../models/INotaLocal.ts";
 import {NotaAdapter} from "../adapters/NotaAdapter.ts";
+import {getQueryParamsFromObject} from "../../../utils/utils.ts";
 
 const endpoint = EndpointEnum.NOTAS;
 
@@ -35,7 +35,6 @@ export const useApiNotas = () => {
         const res = await apiRequest.getApi(endpoint);
         if (res.ok) {
             const data: INotaDB[] = await res.json();
-            console.log(data)
             const notaArray: INotaLocal[] = Object.values(data)
                 .map((nota: INotaDB) => {
                     return new NotaAdapter(
@@ -55,7 +54,7 @@ export const useApiNotas = () => {
 
     const createNota = async (nota: Partial<INotaDB>) => {
         setIsLoading(true);
-        const res = await apiRequest.postApi(endpoint, getNotaCreateDbFromAdapter(nota));
+        const res = await apiRequest.postApi(endpoint, nota);
         if (!res.ok)
             setError!(new Error(res.statusText));
         setIsLoading(false);
@@ -63,7 +62,7 @@ export const useApiNotas = () => {
 
     const updateNota = async (id: string, nota: Partial<INotaDB>) => {
         setIsLoading(true);
-        const res = await apiRequest.patchApi(endpoint, id ,getNotaCreateDbFromAdapter(nota));
+        const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(nota))
         if (!res.ok)
             setError!(new Error(res.statusText));
         setIsLoading(false);

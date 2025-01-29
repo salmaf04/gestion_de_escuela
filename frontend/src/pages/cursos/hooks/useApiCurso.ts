@@ -5,6 +5,7 @@ import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {ICursoCreateDB} from "../models/ICursoCreateDB.ts";
 import {ICursoGetLocal} from "../models/ICursoGetLocal.ts";
+import {getQueryParamsFromObject} from "../../../utils/utils.ts";
 
 const endpoint = EndpointEnum.CURSOS
 
@@ -44,7 +45,7 @@ export const useApiCurso = () => {
     }
     const updateCurso = async (id: string, curso: Partial<ICursoCreateDB>) => {
         setIsLoading(true)
-        const res = await apiRequest.patchApi(endpoint, id, curso)
+        const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(curso))
         if (!res.ok)
             setError!(new Error(res.statusText))
         await getCursos()

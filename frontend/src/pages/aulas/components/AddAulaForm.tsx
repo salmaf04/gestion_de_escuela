@@ -1,19 +1,15 @@
 // frontend/src/pages/aulas/components/AddAulaForm.tsx
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import MySpinner from "../../../components/MySpinner.tsx";
 import { AulaCreateAdapter } from "../adapters/AulaCreateAdapter.ts";
 import { AulasContext } from "../AulasScreen.tsx";
 
 export default function AddAulaForm() {
     const { register, handleSubmit } = useForm<AulaCreateAdapter>();
-    const { editting, isEditting, isCreatting, onEditTableItem, onAddTableItem, setEditting, setShowModal } = useContext(AulasContext);
+    const { editting, onEditTableItem, onAddTableItem, setEditting, setShowModal } = useContext(AulasContext);
 
-    const [isLoading, setIsLoading] = useState<boolean>(isEditting! || isCreatting!);
-
-    useEffect(() => {
-        setIsLoading(isEditting! || isCreatting!);
-    }, [isEditting, isCreatting]);
+    const isLoading = false;
 
     const onSubmit: SubmitHandler<AulaCreateAdapter> = (data) => {
         if (editting)
@@ -35,7 +31,7 @@ export default function AddAulaForm() {
                                 type="text"
                                 {...register("location", { required: true })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.location}
+                                defaultValue={editting?.body.location}
                             />
                         </div>
                         <div className="group mb-4">
@@ -44,7 +40,7 @@ export default function AddAulaForm() {
                                 type="number"
                                 {...register("capacity", { required: true })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.capacity}
+                                defaultValue={editting?.body.capacity}
                             />
                         </div>
                     </div>

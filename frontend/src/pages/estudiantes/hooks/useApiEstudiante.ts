@@ -7,6 +7,7 @@ import {IEstudianteDB} from "../models/IEstudianteDB.ts";
 import {IEstudianteLocal} from "../models/IEstudianteLocal.ts";
 import {useApiCurso} from "../../cursos/hooks/useApiCurso.ts";
 import {IEstudianteCreateDB} from "../models/IEstudianteCreateDB.ts";
+import {getQueryParamsFromObject} from "../../../utils/utils.ts";
 
 const endpoint = EndpointEnum.ESTUDIANTES
 
@@ -43,7 +44,7 @@ export const useApiEstudiante = () => {
     }
     const updateEstudiante = async (id: string, estudiante: Partial<IEstudianteDB>) => {
         setIsLoading(true)
-        const res = await apiRequest.patchApi(endpoint, id, estudiante)
+        const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(estudiante))
         if (!res.ok)
             setError!(new Error(res.statusText))
         await getEstudiantes()
