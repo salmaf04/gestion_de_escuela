@@ -6,5 +6,6 @@ export enum EndpointEnum {
     ASIGNATURAS = 'subject',
     NOTAS = 'note',
     CURSOS = 'course',
-    MANTENIMIENTOS = 'mean_mainteniance',
+    MANTENIMIENTOS = 'mean_maintenance',
+    ESP_PROFESOR = 'teacher/?technology_classroom=true'
 }

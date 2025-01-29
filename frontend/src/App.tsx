@@ -23,6 +23,7 @@ import {ICursoGetLocal} from "./pages/cursos/models/ICursoGetLocal.ts";
 import CursosScreen from "./pages/cursos/CursosScreen.tsx";
 import {Screens} from "./utils/router.tsx";
 import {IMantenimientoLocal} from "./pages/mantenimientos/models/IMantenimientoLocal.ts";
+import FuncionalidadesScreen from "./pages/funcionalidades/FuncionalidadesScreen.tsx";
 
 
 interface AppContextInterface {
@@ -149,6 +150,9 @@ function App() {
                                     }
                                     {allowRoles(Screens.Mantenimientos.allowedRoles) &&
                                         <Route path={'/mantenimiento'} element={<MantenimientosScreen/>}/>
+                                    }
+                                    {allowRoles(Screens.Mantenimientos.allowedRoles) &&
+                                        <Route path={'/funcionalidades'} element={<FuncionalidadesScreen/>}/>
                                     }
                                 </Routes>
                             </div>
