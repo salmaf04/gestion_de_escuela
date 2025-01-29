@@ -51,6 +51,9 @@ interface AppContextInterface {
     allowRoles?: (roles: RolesEnum[]) => boolean
     personalId?: string,
     setPersonalId?: (personalId: string) => void
+
+    message?: string,
+    setMessage?: (message: string) => void
 }
 
 export const AppContext = createContext<AppContextInterface>({})
@@ -68,6 +71,7 @@ function App() {
     const [mantenimientos, setMantenimientos] = useState<IMantenimientoLocal[]>()
     const [role, setRole] = useState<RolesEnum>()
     const [personalId, setPersonalId] = useState<string>()
+    const [message, setMessage] = useState<string | undefined>()
     useEffect(() => {
         const t = sessionStorage.getItem('token')
         if (t) {
@@ -106,13 +110,21 @@ function App() {
             mantenimientos: mantenimientos,
             setMantenimientos: setMantenimientos,
             personalId,
-            setPersonalId: setPersonalId
+            setPersonalId: setPersonalId,
+            message,
+            setMessage
         }}>
             <BrowserRouter>
                 {error &&
                     <Notification title={'Error:'} message={error.message}
                                   className={'bg-red-100 text-sm rounded-md py-1'} onClick={() => {
                         setError(undefined)
+                    }}/>
+                }
+                {message &&
+                    <Notification title={'Mensaje:'} message={message}
+                                  className={'bg-indigo-100 opacity-90 text-sm rounded-md py-1'} onClick={() => {
+                        setMessage(undefined)
                     }}/>
                 }
                 {token ?

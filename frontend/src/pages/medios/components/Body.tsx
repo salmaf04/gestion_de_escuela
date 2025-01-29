@@ -3,9 +3,11 @@ import {useContext} from "react";
 import {MedioGetAdapter} from "../adapters/MedioGetAdapter.ts";
 import {MedioContext} from "../MediosScreen.tsx";
 import SolicitarIcon from "../../../assets/solicitar.svg";
+import {useApiMedio} from "../hooks/useApiMedios.ts";
 
 export default function Body(){
     const {dataTable, setEditting, onDeleteTableItem, isLoading} = useContext(MedioContext)
+    const {solicitarMedio} = useApiMedio()
     return(
             <Table
                 className={'h-5/6 accentgree'}
@@ -22,7 +24,7 @@ export default function Body(){
                 actions={[
                     {
                         action: (row) => {
-                            console.log(row)
+                            solicitarMedio!({mean_id: row.id})
                         },
                         color: 'green',
                         title: "Solicitar",
