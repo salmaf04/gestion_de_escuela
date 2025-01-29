@@ -66,7 +66,7 @@ async def delete_student(
     response_model=dict[int, StudentModel] | StudentAcademicPerformance | list[StudentModel],
     status_code=status.HTTP_200_OK
 )
-@authorize(role=['secretary','teacher'])
+@authorize(role=['secretary','teacher','student'])
 async def read_student(
     request: Request,
     id : str = None,

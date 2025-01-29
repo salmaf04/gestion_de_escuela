@@ -25,7 +25,7 @@ export default function AddAusenciaForm() {
     }, []);
 
     const {register, control, handleSubmit}=useForm()
-    const {fields, append, remove} = useFieldArray({
+    const {fields, append} = useFieldArray({
         control,
         name: "ausencias",
     });
