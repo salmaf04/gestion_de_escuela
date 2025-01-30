@@ -1,5 +1,5 @@
 ## main.py
-from fastapi import APIRouter, HTTPException, Depends, status, Body
+from fastapi import APIRouter, HTTPException, Depends, status, Body, Header
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta
 
@@ -45,6 +45,15 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     )
     
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.post(
+    "/logout",
+    status_code=status.HTTP_200_OK,
+    response_model=dict
+)
+def user_logout(Authorization: str = Header(None)):
+    oauth2_scheme.revoke_token(Authorization)
+    return {"message": "Token revoked"} 
 
 
 # Define a route for registering a new user
@@ -107,7 +116,6 @@ async def update_user(
     )
     
     user = await create_user.get_user_by_id(id=id, session=session)
-    print
     user = mapper.to_api(user)
 
     if user is None:

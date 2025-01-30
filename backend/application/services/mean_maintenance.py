@@ -4,7 +4,7 @@ from backend.domain.models.tables import MeanMaintenanceTable
 from sqlalchemy import select, update
 from backend.application.services.mean import MeanPaginationService
 from backend.application.services.my_date import DatePaginationService
-from backend.domain.filters.mean_maintenance import MeanMaintenanceFilterSet , MeanMaintenanceFilterSchema
+from backend.domain.filters.mean_maintenance import MeanMaintenanceFilterSet , MeanMaintenanceFilterSchema,  MeanMaintenanceChangeRequest
 from backend.domain.models.tables import MeanMaintenanceTable, TechnologicalMeanTable, MeanTable, ClassroomTable
 import uuid
 from datetime import datetime, timedelta, timezone
@@ -41,6 +41,12 @@ class MeanMaintenancePaginationService :
         filter_set = MeanMaintenanceFilterSet(session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True)) 
         return session.execute(query).scalars().all()
+    
+    def get_mean_maintenance_by_id(self, session: Session, id: str) -> MeanMaintenanceTable :
+        query = select(MeanMaintenanceTable).where(MeanMaintenanceTable.entity_id == id)
+        result = session.execute(query).scalars().first()
+        print(result)
+        return result
     
 
     def get_mainenance_by_classroom(self, session: Session) :
@@ -111,5 +117,15 @@ class CheckReplacementService :
             return True
         
         return False
+    
+class MeanMaintenanceUpdateService :
+    def update_one(self, session : Session , changes : MeanMaintenanceChangeRequest , mean_maintenance : MeanMaintenanceModel ) -> MeanMaintenanceModel:
+        query = update(MeanMaintenanceTable).where(MeanMaintenanceTable.entity_id == mean_maintenance.id)
+        query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
+        session.execute(query)
+        session.commit()
+            
+        mean_maintenance = mean_maintenance.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
+        return mean_maintenance
 
     

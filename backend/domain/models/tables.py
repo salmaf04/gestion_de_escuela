@@ -385,7 +385,8 @@ class MeanMaintenanceTable(BaseTable) :
 
 
     mean_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.MEAN.value}.entity_id"), primary_key= True)
-                                     
+    finished = Column(Boolean, default=False)
+
     cost = Column(Double)
 
     mean: Mapped["MeanTable"] = relationship(back_populates="mean_maintenance_association")

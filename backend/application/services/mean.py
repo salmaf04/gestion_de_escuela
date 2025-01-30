@@ -79,7 +79,7 @@ class MeanPaginationService :
             MeanTable.entity_id.notin_(
                 select(teacher_request_mean_table.c.mean_id)),
             MeanTable.entity_id.notin_(
-                select(MeanMaintenanceTable.mean_id)
+                select(MeanMaintenanceTable.mean_id).where(MeanMaintenanceTable.finished == False)
             ))
         )
         return session.execute(query).scalars().all()

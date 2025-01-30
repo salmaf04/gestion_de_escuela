@@ -36,7 +36,8 @@ class MeanMaintenanceMapper :
             id = mean_maintenance.entity_id,
             mean = mean_maintenance.mean.name,
             cost = mean_maintenance.cost,
-            date = mean_maintenance.date.strftime("%d-%m-%Y")
+            date = mean_maintenance.date.strftime("%d-%m-%Y"),
+            finished = mean_maintenance.finished
         )
     
 
