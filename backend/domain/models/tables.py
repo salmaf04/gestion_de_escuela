@@ -87,7 +87,7 @@ class UserTable(BaseTable) :
     
     username = Column(String, unique=True)
     email = Column(String, unique =True)
-    hash_password = Column(String)
+    hashed_password = Column(String)
     type = Column(String)
     __mapper_args__ = {
         "polymorphic_identity": "user",

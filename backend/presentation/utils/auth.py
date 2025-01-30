@@ -83,9 +83,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 # Dependency to get current user based on token
 async def get_current_user(token: str = Depends(oauth2_scheme), session: Session = Depends(get_db)):
     payload = jwt.decode(jwt=token, key=SECRET_KEY, algorithms=[ALGORITHM])
-    username: str = payload.get("sub")
+    user_id: str = payload.get("user_id")
     user_service = UserCreateService()  
-    user = user_service.get_user_by_username(username=username, session=session)
+    user = user_service.get_user_by_id(id=user_id, session=session)
     if user is None:
         return None
     return user
@@ -110,10 +110,8 @@ def authorize(role: list):
             user =  await kwargs.get("current_user")
             user_id1 = user.id
             user_role = user.type
-            #check_id =  kwargs.get("id")
+            check_id =  kwargs.get("id", None)
             
-            #if check_id and check_id != str(user_id1) and method == 'PATCH' and url != 'note':
-                #raise HTTPException(status_code=403, detail=f"User is not authorized to access")
 
             if method == 'GET' and url == 'student' :
                 if user_role == 'teacher' :
@@ -125,8 +123,11 @@ def authorize(role: list):
                 raise HTTPException(status_code=403, detail=f"User is not authorized to access , only avaliable for {role_str}")
             
             if (method == 'PATCH' or method == 'POST') and url == 'note':
-                print("hola")
                 kwargs['user_id']=user_id1
+
+            if method == 'PATCH' and url == 'user':
+                if check_id and check_id != str(user_id1):
+                    raise HTTPException(status_code=403, detail="Usted solo tiene permitido modificar su propio perfil")
             
             return await func(*args, **kwargs)
         return wrapper

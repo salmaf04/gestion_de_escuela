@@ -8,6 +8,6 @@ class UserMapper() :
             id=user.entity_id,
             email=user.email,
             username=user.username,
-            hashed_password=user.hash_password,
+            hashed_password=user.hashed_password,
             type=user.type
         )
