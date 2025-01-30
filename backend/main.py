@@ -12,7 +12,7 @@ from .presentation.routes.course import router as course_router
 from .presentation.routes.absence import router as absence_router
 from .presentation.routes.valoration import router as valoration_router
 from .presentation.routes.my_date import router as date_router
-from .presentation.routes.mean_mainteniance import router as mean_maintenance_router
+from .presentation.routes.mean_maintenance import router as mean_maintenance_router
 from .presentation.routes.dean import router as dean_router
 from .presentation.routes.sanction import router as sanction_router
 from .presentation.routes.mean_request import router as mean_request_router

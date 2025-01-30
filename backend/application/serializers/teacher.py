@@ -38,7 +38,7 @@ class TeacherMapper :
         return TeacherModel(
             id = teacher.entity_id,
             name=teacher.name,
-            fullname=teacher.fullname,
+            lastname=teacher.lastname,
             email=teacher.email,
             specialty=teacher.specialty,
             contract_type=teacher.contract_type,

@@ -15,7 +15,7 @@ def get_password_hash(password):
 def get_password(schema: BaseModel) -> str:
     name = schema.name
     username = schema.username
-    lastname = schema.fullname 
+    lastname = schema.lastname 
     
     new_password = name[0].lower() + lastname[0].lower() + username 
     return new_password

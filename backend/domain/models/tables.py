@@ -85,6 +85,8 @@ teacher_request_mean_table = Table(
 class UserTable(BaseTable) :
     __tablename__ = TableName.USER.value
     
+    name = Column(String)
+    lastname = Column(String)
     username = Column(String, unique=True)
     email = Column(String, unique =True)
     hashed_password = Column(String)
@@ -99,8 +101,7 @@ class TeacherTable(UserTable):
     __tablename__ = TableName.TEACHER.value
     
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
-    name = Column(String)
-    fullname = Column(String)
+    
     specialty = Column(String)
     contract_type = Column(String)
     experience = Column(Integer)
@@ -121,6 +122,7 @@ class TeacherTable(UserTable):
         "MeanTable",
         secondary=teacher_request_mean_table,
         back_populates="teachers",
+        cascade="all, delete"
     )
 
     classroom_request = relationship(
@@ -152,7 +154,6 @@ class SecretaryTable(UserTable) :
     __tablename__ = TableName.SECRETARY.value
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
-    name = Column(String)
 
     __mapper_args__ = {
         "polymorphic_identity": "secretary",
@@ -163,7 +164,6 @@ class AdministratorTable(UserTable) :
     __tablename__ = TableName.ADMINISTRATOR.value
     
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
-    name = Column(String)
 
     __mapper_args__ = {
         "polymorphic_identity": "administrator",
@@ -174,7 +174,6 @@ class StudentTable(UserTable) :
     __tablename__ = TableName.STUDENT.value
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
-    name = Column(String)
     age = Column(Integer)
     extra_activities = Column(Boolean, nullable=True)
     average_note = Column(Double)
@@ -281,7 +280,7 @@ class MeanTable(BaseTable) :
     to_be_replaced = Column(Boolean, default=False)
     type: Mapped[MeanType] = mapped_column(String)
 
-    mean_mainteniance_association: Mapped[List["MeanMaintenianceTable"]] = relationship(back_populates="mean")
+    mean_maintenance_association: Mapped[List["MeanMaintenanceTable"]] = relationship(back_populates="mean")
 
     classroom: Mapped["ClassroomTable"] = relationship(back_populates="means")
 
@@ -381,7 +380,7 @@ class AbsenceTable(BaseTable) :
 
 
 #Tablas de relación
-class MeanMaintenianceTable(BaseTable) :
+class MeanMaintenanceTable(BaseTable) :
     __tablename__ = TableName.MEAN_MAINTENANCE_TABLE.value
 
 
@@ -389,7 +388,7 @@ class MeanMaintenianceTable(BaseTable) :
                                      
     cost = Column(Double)
 
-    mean: Mapped["MeanTable"] = relationship(back_populates="mean_mainteniance_association")
+    mean: Mapped["MeanTable"] = relationship(back_populates="mean_maintenance_association")
     date = Column(DateTime, nullable=False)
 
 

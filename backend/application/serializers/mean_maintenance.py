@@ -1,5 +1,5 @@
-from backend.domain.schemas.mean_mainteniance import MeanMaintenanceModel
-from backend.domain.models.tables import MeanMaintenianceTable
+from backend.domain.schemas.mean_maintenance import MeanMaintenanceModel
+from backend.domain.models.tables import MeanMaintenanceTable
 from pydantic import BaseModel
 import uuid
 
@@ -31,7 +31,7 @@ class MeanMaintenanceClassroom(BaseModel) :
 
 class MeanMaintenanceMapper :
 
-    def to_api(self, mean_maintenance: MeanMaintenianceTable) -> MeanMaintenianceTable :
+    def to_api(self, mean_maintenance: MeanMaintenanceTable) -> MeanMaintenanceTable :
         return MeanMaintenanceModel(
             id = mean_maintenance.entity_id,
             mean = mean_maintenance.mean.name,

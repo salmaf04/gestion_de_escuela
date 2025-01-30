@@ -1,13 +1,13 @@
 from sqlalchemy_filterset import FilterSet, Filter, RangeFilter
 from pydantic import BaseModel
-from backend.domain.models.tables import MeanMaintenianceTable
+from backend.domain.models.tables import MeanMaintenanceTable
 from typing import Optional
 import uuid
 
 
 class MeanMaintenanceFilterSet(FilterSet):
-    mean_id = Filter(MeanMaintenianceTable.mean_id)
-    cost = Filter(MeanMaintenianceTable.cost)
+    mean_id = Filter(MeanMaintenanceTable.mean_id)
+    cost = Filter(MeanMaintenanceTable.cost)
 
 
 class MeanMaintenanceFilterSchema(BaseModel):

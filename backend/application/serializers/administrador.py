@@ -7,7 +7,8 @@ class AdministratorMapper:
         return AdministratorModel(
             id=administrator.entity_id,
             name=administrator.name,
+            lastname=administrator.lastname,
             username=administrator.username,
             email=administrator.email,
-            hash_password=administrator.hash_password   
+            hash_password=administrator.hashed_password   
         )

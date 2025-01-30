@@ -5,14 +5,14 @@ from backend.domain.models.tables import AdministratorTable
 from sqlalchemy.orm import Session
 from sqlalchemy import update
 import uuid
-from ..utils.auth import get_password_hash
+from ..utils.auth import get_password_hash, get_password
 
 class AdministratorCreateService :
 
     def create_administrator(self, session: Session, administrator:AdministratorCreateModel) -> AdministratorTable :
         administrator_dict = administrator.model_dump(exclude={'password'})
-        hashed_password = get_password_hash(administrator.password)
-        new_administrator = AdministratorTable(**administrator_dict, hash_password=hashed_password)
+        hashed_password = get_password_hash(get_password(administrator))
+        new_administrator = AdministratorTable(**administrator_dict, hashed_password=hashed_password)
         session.add(new_administrator)
         session.commit()
         return new_administrator

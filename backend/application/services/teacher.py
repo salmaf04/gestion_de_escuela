@@ -24,7 +24,7 @@ class TeacherCreateService :
         self.check_subject(subjects, teacher.list_of_subjects)
         teacher_dict = teacher.model_dump(exclude={'password', 'list_of_subjects'})
         hashed_password = get_password_hash(get_password(teacher))
-        new_teacher = TeacherTable(**teacher_dict, hash_password=hashed_password)
+        new_teacher = TeacherTable(**teacher_dict, hashed_password=hashed_password)
         new_teacher.teacher_subject_association = subjects
         session.add(new_teacher)
         session.commit()

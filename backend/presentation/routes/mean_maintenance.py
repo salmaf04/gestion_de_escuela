@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, status, Depends
-from backend.domain.schemas.mean_mainteniance import MeanMaintenanceCreateModel, MeanMaintenanceModel
+from backend.domain.schemas.mean_maintenance import MeanMaintenanceCreateModel, MeanMaintenanceModel
 from sqlalchemy.orm import Session
-from backend.application.services.mean_mainteniance import MeanMaintenanceCreateService, MeanMaintenancePaginationService
-from backend.application.serializers.mean_mainteniance import MeanMaintenanceMapper, MeanMaintenanceDate
+from backend.application.services.mean_maintenance import MeanMaintenanceCreateService, MeanMaintenancePaginationService
+from backend.application.serializers.mean_maintenance import MeanMaintenanceMapper, MeanMaintenanceDate
 from backend.configuration import get_db
-from backend.domain.filters.mean_mainteniance import MeanMaintenanceFilterSchema
+from backend.domain.filters.mean_maintenance import MeanMaintenanceFilterSchema
 from typing import Annotated
 from fastapi import Query
 from fastapi.encoders import jsonable_encoder
@@ -50,7 +50,7 @@ async def read_mean_maintenance(
 
     if mainteniance_by_classroom_filter :
         classroom, total = mean_maintenance_pagination_service.maintenance_by_classroom(session=session)
-        return mapper.to_classroom(classroom), {"total mainteniances after two years" : total }
+        return mapper.to_classroom(classroom), {"total maintenances after two years" : total }
     elif date_filter :
         mean_maintenances = mean_maintenance_pagination_service.maintenace_average(session=session)
         return mapper.to_date(mean_maintenances)

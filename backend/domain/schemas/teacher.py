@@ -6,7 +6,7 @@ from backend.domain.schemas.user import UserCreateModel
 class TeacherModel(BaseModel):
     id : uuid.UUID
     name: str
-    fullname: str
+    lastname: str
     specialty: str
     contract_type: str  
     experience: int
@@ -18,8 +18,6 @@ class TeacherModel(BaseModel):
     
 
 class TeacherCreateModel(UserCreateModel):
-    name: str
-    fullname: str
     specialty: str
     contract_type: str
     experience: int
