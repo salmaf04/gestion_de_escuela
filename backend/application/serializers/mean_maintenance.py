@@ -27,6 +27,7 @@ class MeanMaintenanceClassroom(BaseModel) :
     other : int = 0
     teaching_material : int = 0
     technological_mean : int = 0
+    total_after_two_years : int = 0
     
 
 class MeanMaintenanceMapper :
@@ -56,7 +57,7 @@ class MeanMaintenanceMapper :
         return serialized_values
     
 
-    def to_classroom(self, data1) :
+    def to_classroom(self, data1, data2) :
         serialized_values = []
         classroom_ids = []
 
@@ -75,9 +76,13 @@ class MeanMaintenanceMapper :
                     classroom_id = classroom[1],
                     other = classroom[2] if classroom[0] == "other" else 0,
                     teaching_material = classroom[2] if classroom[0] == "teaching_material" else 0,
-                    technological_mean = classroom[2] if classroom[0] == "technological_mean" else 0
+                    technological_mean = classroom[2] if classroom[0] == "technological_mean" else 0,
+                    total_after_two_years = 0
                 )
                 serialized_values.append(new_classroom)
+
+            for mapped_classroom, total in zip(serialized_values, data2) :
+                mapped_classroom.total_after_two_years = total[1]
 
         return serialized_values
     

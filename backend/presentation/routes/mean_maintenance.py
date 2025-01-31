@@ -54,7 +54,7 @@ async def read_mean_maintenance(
 
     if mainteniance_by_classroom_filter :
         classroom, total = mean_maintenance_pagination_service.maintenance_by_classroom(session=session)
-        return mapper.to_classroom(classroom), {"total maintenances after two years" : total }
+        return mapper.to_classroom(classroom, total)
     elif date_filter :
         mean_maintenances = mean_maintenance_pagination_service.maintenace_average(session=session)
         return mapper.to_date(mean_maintenances)
