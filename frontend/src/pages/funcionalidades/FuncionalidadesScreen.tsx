@@ -12,7 +12,6 @@ function FuncionalidadesScreen() {
         salariosProfesores
     } = useApiFuncionalidades();
 
-    console.log(salariosProfesores)
 
     const profesor_Esp_headers = ['name', 'specialty', 'mean', 'state'];
     const profesor_Esp_showHeaders = ['Nombre', 'Especialidad', 'Medio', 'Estado'];
@@ -22,8 +21,8 @@ function FuncionalidadesScreen() {
     const costoPromedio_showHeaders = [ 'Nombre del Medio','Costo Promedio'];
     const valoracionPromedioProfesor_headers = ['name', 'average_valoration', 'subjects'];
     const valoracionPromedioProfesor_showHeaders = ['Nombre', 'Valoración Promedio', 'Asignaturas'];
-    const valoracionPromedioEstudiante_headers = ['name', 'student_id', 'teacher_name', 'teacher_valoration'];
-    const valoracionPromedioEstudiante_showHeaders = ['Nombre', 'ID del Estudiante', 'Nombre del Profesor', 'Valoración del Profesor'];
+    const valoracionPromedioEstudiante_headers = ['name',  'teacher_name', 'teacher_valoration'];
+    const valoracionPromedioEstudiante_showHeaders = ['Nombre', 'Nombre del Profesor', 'Valoración del Profesor'];
     const salariosProfesores_headers = ['name', 'valorations', 'date', 'means'];
     const salariosProfesores_showHeaders = ['Nombre', 'Valoraciones', 'Fecha', 'Medios'];
 
