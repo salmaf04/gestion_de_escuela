@@ -24,9 +24,9 @@ class IRepository(Generic[CreateModel, Model, ChangeRequest, FilterSchema], ABC)
         pass
 
     @abstractmethod
-    def create(self, entity: CreateModel) :
+    def create(self, entity: CreateModel, *args, **kwargs) :
         pass
 
     @abstractmethod
-    def update(self, changes: ChangeRequest, entity: Model) :
+    def update(self, changes: ChangeRequest, entity: Model, *args, **kwargs) :
         pass

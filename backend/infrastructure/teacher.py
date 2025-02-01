@@ -104,7 +104,7 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         mapper = TeacherMapper()
 
         for teacher in results :
-            teacher = self.get_teacher_by_id(session=self.session, id=teacher.id)
+            teacher = self.get_by_id(id=teacher.id)
             subjects.append(mapper.to_subject_list(teacher.teacher_subject_association))
 
         return results, subjects

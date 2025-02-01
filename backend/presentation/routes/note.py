@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from backend.application.services.note import NoteCreateService, NotePaginationService, NoteUpdateService
 from backend.application.serializers.note import NoteMapper
 from backend.configuration import get_db
-from backend.domain.filters.note import NoteFilterSchema
+from backend.domain.filters.note import NoteFilterSchema, NoteChangeRequest
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 import json
@@ -83,7 +83,7 @@ async def read_note(
 @authorize(role=['secretary','teacher'])
 async def update_note(
     id: str,
-    new_note: float,
+    new_note: NoteChangeRequest,
     request: Request,
     current_user: UserModel = Depends(get_current_user),
     user_id : str = None,
