@@ -107,15 +107,8 @@ class TeacherTable(UserTable):
     experience = Column(Integer)
     average_valoration = Column(Double)
     salary = Column(Double)
-    """
-    students: Mapped[List["Student"]] = relationship(
-        secondary=f"{TableName.STUDENT.value}", back_populates="teacher", viewonly=True
-    )
-    subjects: Mapped[List["Subject"]] = relationship(
-        secondary=f"{TableName.SUBJECT.value}", back_populates="teacher", viewonly=True
-    )
-    """
-    
+    less_than_three_valoration = Column(Integer, default=0)     
+
     sanctions: Mapped[List["SanctionTable"]] = relationship(back_populates="teacher")
 
     mean_request = relationship(
@@ -178,20 +171,7 @@ class StudentTable(UserTable) :
     extra_activities = Column(Boolean, nullable=True)
     average_note = Column(Double)
     course_id : Mapped[uuid.UUID] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id", ondelete='CASCADE'))
-    """
-    teacher: Mapped["Teacher"] = relationship(
-        secondary=f"{TableName.TEACHER.value}", back_populates="students", viewonly=True
-    )
-    subject_notes: Mapped[List["Subject"]] = relationship(
-        secondary=f"{TableName.SUBJECT.value}", back_populates="student_notes", viewonly=True
-    )
-    subject_absences: Mapped[List["Subject"]] = relationship(
-        secondary=f"{TableName.ABSENCE.value}", back_populates="student_absences"
-    )
-    course: Mapped["Course"] = relationship(
-        secondary=f"{TableName.COURSE.value}", back_populates="students"
-    )
-    """
+   
     course: Mapped['CourseTable'] = relationship(back_populates="students")
     student_note_association: Mapped[List["StudentNoteTable"]] = relationship('StudentNoteTable', back_populates="student", cascade="all, delete")
     student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="student", cascade="all, delete")
@@ -211,22 +191,7 @@ class SubjectTable(BaseTable) :
 
     classroom_id : Mapped[int] = mapped_column(ForeignKey(f"{TableName.CLASSROOM.value}.entity_id"))
     course_id : Mapped[uuid.UUID] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id"))
-
-    """
-    teacher: Mapped["Teacher"] = relationship(
-        secondary=f"{TableName.TEACHER.value}", back_populates="subjects", viewonly=True
-    )
-    student_notes: Mapped[List["Student"]] = relationship(
-        secondary=f"{TableName.STUDENT.value}", back_populates="subjects", viewonly=True
-    )
-    student_absences: Mapped[List["Student"]] = relationship(
-        secondary=f"{TableName.STUDENT.value}", back_populates="subject_absences", viewonly=True
-    )
-    course: Mapped["Course"] = relationship(
-        secondary=f"{TableName.COURSE.value}", back_populates="subjects"
-    )
-    """
-    
+  
     classroom: Mapped["ClassroomTable"] = relationship(back_populates="subjects", cascade="all, delete")
     course: Mapped['CourseTable'] = relationship(back_populates="subjects", cascade="all, delete")
 
