@@ -96,10 +96,7 @@ async def read_student(
     students = student_pagination_service.get_students(session=session, filter_params=filters)
 
     if not students :
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="There is no student with that email"
-        )
+        return []
 
     students_mapped = {}    
      
