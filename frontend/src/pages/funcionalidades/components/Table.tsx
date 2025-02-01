@@ -5,6 +5,7 @@ import { CostoPromedioGetAdapter } from "../adapters/CostoPromedioGetAdapter.ts"
 import { ValoracionPromediodeProfesorGetAdapter } from "../adapters/ValoracionPromediodeProfesorGetAdapter.ts";
 import { ValoracionPromediodeEstudianteGetAdapter } from "../adapters/ValoracionPromediodeEstudianteGetAdapter.ts";
 import { SalariosdeProfesoresGetAdapter } from "../adapters/SalariosdeProfesorGetAdapter.ts";
+import {ChevronDownIcon, ChevronRightIcon} from '@heroicons/react/20/solid';
 
 interface ProfesoresTableProps {
     items: ProfesorEspGetAdapter[] | CostoPromedioGetAdapter[] | FiltrodeMantenimientoGetAdapter[] | ValoracionPromediodeProfesorGetAdapter[] | ValoracionPromediodeEstudianteGetAdapter[] | SalariosdeProfesoresGetAdapter[];
@@ -26,18 +27,21 @@ const Table: React.FC<ProfesoresTableProps> = ({ title, items, headers, showHead
 
     return (
         <>
-            <div className="m-2 flex flex-row items-center justify-around gap-28">
-                <h1>{title} </h1>
+            <div className="m-2 flex flex-row px-6 py-4 mb-4">
+                <div className={'w-[98%]'}>
+                    <h1 className={' font-semibold text-2xl'}>{title} </h1>
+                    <div
+                        className={`${isVisible ? 'w-[98%]' : 'w-[50%]'} h-[2px] bg-indigo-500 rounded-full transition-all duration-300`}/>
+                </div>
                 <button onClick={toggleVisibility} className="ml-2">
-                    {isVisible ? '▼' : '▶'}
+                    {isVisible ? <ChevronDownIcon className="h-5 w-5"/> : <ChevronRightIcon className="h-5 w-5"/>}
                 </button>
             </div>
-            < hr className={'mb-8'}/>
             {isVisible && (
                 <table className="mb-10 min-w-full divide-y">
                     <thead>
-                        <tr>
-                            {showHeaders.map(header => (
+                    <tr>
+                    {showHeaders.map(header => (
                                 <th key={header} className=" w-20 px-6 py-3 text-left text-xs">
                                     {header}
                                 </th>
@@ -49,6 +53,7 @@ const Table: React.FC<ProfesoresTableProps> = ({ title, items, headers, showHead
                         <tr key={index}>
                             {headers.map(header => (
                                 <td key={header} className="px-6 py-4 text-sm" style={{width: '150px'}}>
+
                                     {Array.isArray(item[header]) ? (
                                         item[header].join(', ')
                                     ) : typeof item[header] === "boolean" ? (
