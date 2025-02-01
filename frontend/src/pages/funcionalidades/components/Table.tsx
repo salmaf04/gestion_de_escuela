@@ -4,7 +4,7 @@ import { FiltrodeMantenimientoGetAdapter } from "../adapters/FiltrodeMantenimien
 import { CostoPromedioGetAdapter } from "../adapters/CostoPromedioGetAdapter.ts";
 import { ValoracionPromediodeProfesorGetAdapter } from "../adapters/ValoracionPromediodeProfesorGetAdapter.ts";
 import { ValoracionPromediodeEstudianteGetAdapter } from "../adapters/ValoracionPromediodeEstudianteGetAdapter.ts";
-import { SalariosdeProfesoresGetAdapter } from "../adapters/SalariosdeProfesoresGetAdapter.ts";
+import { SalariosdeProfesoresGetAdapter } from "../adapters/SalariosdeProfesorGetAdapter.ts";
 
 interface ProfesoresTableProps {
     items: ProfesorEspGetAdapter[] | CostoPromedioGetAdapter[] | FiltrodeMantenimientoGetAdapter[] | ValoracionPromediodeProfesorGetAdapter[] | ValoracionPromediodeEstudianteGetAdapter[] | SalariosdeProfesoresGetAdapter[];

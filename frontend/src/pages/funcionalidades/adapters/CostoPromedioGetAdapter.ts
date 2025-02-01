@@ -10,4 +10,5 @@ export class CostoPromedioGetAdapter {
         this.mean_id = data.mean_id;
         this.mean_name = data.mean_name;
     }
+    [key: string]: string | number;
 }
