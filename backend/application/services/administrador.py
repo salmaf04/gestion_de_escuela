@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.administrador import AdministratorCreateModel, AdministratorModel
-from backend.domain.filters.administrador import AdministratorChangeRequest
+from backend.domain.filters.administrador import AdministratorChangeRequest, AdministratorFilterSchema, AdministratorFilterSet
 from backend.domain.models.tables import AdministratorTable
 from sqlalchemy.orm import Session
-from sqlalchemy import update
+from sqlalchemy import update, select
 import uuid
 from ..utils.auth import get_password_hash, get_password
 
@@ -33,6 +33,12 @@ class AdministratorPaginationService :
         result = query.scalar()
 
         return result
+    
+    def get(self, session: Session, filter_params: AdministratorFilterSchema) -> list[AdministratorTable] :
+        query = select(AdministratorTable)
+        filter_set = AdministratorFilterSet(session, query=query)
+        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
+        return session.execute(query).scalars().all()
 
     
 class AdministratorDeletionService:
