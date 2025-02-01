@@ -9,11 +9,15 @@ from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Double
 from sqlalchemy import Tuple
+from sqlalchemy import event, select, func, inspect
+from sqlalchemy.schema import DDL
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm.attributes import get_history
+
 
 import uuid
 
@@ -41,6 +45,7 @@ class TableName(str, Enum):
     TEACHER_MEAN = 'teacher_request_mean'
     TEACHER_CLASSROOM = 'teacher_request_classroom'
     SANCTION = "sanction_table"
+    VALORATION_PERIOD = "valoration_period"
     
 
 class MeanState(str, Enum):
@@ -298,6 +303,9 @@ class MyDateTable(BaseTable):
     date = Column(DateTime, unique= True)
 
     
+class ValorationPeriodTable(BaseTable):
+    __tablename__ = TableName.VALORATION_PERIOD.value   
+    open = Column(Boolean, default=False)
 
 class StudentNoteTable(BaseTable) :
     __tablename__ = TableName.STUDENT_NOTE.value
@@ -330,8 +338,6 @@ class TeacherNoteTable(BaseTable) :
     subject: Mapped["SubjectTable"] = relationship(back_populates="teacher_note_association")
     course: Mapped["CourseTable"] = relationship(back_populates="teacher_note_association")
         
-    
-
 class AbsenceTable(BaseTable) :
     __tablename__ = TableName.ABSENCE.value
 
@@ -367,11 +373,53 @@ class SanctionTable(BaseTable):
     date = Column(DateTime, nullable=False)
 
 
+@event.listens_for(TeacherNoteTable, 'after_insert')
+def update_teacher_average(mapper, connection, target):
+    # Actualizar el promedio de valoraciones del profesor
+    connection.execute(
+        TeacherTable.__table__.update().
+        where(TeacherTable.id == target.teacher_id).
+        values(average_valoration=(
+            select((func.sum(TeacherNoteTable.grade)/func.count())).
+            where(TeacherNoteTable.teacher_id == target.teacher_id)
+        ))
+    )
+
+@event.listens_for(BaseTable.metadata, 'after_create')
+def insert_default_valoration_period(target, connection, **kw):
+    # Verificar si la tabla creada es ValorationPeriodTable
+    for table in target.tables.values():
+        if table.name == ValorationPeriodTable.__tablename__:  
+            # Comprobar si la tabla está vacía
+            result = connection.execute(select(ValorationPeriodTable.entity_id)).fetchone()
+            
+            if result is None:
+                # Insertar el periodo de valoración por defecto si la tabla está vacía
+                connection.execute(
+                    ValorationPeriodTable.__table__.insert().
+                    values(
+                        entity_id=uuid.uuid4(),
+                        open=False
+                    )
+                )
+            break
+ 
+@event.listens_for(ValorationPeriodTable, 'after_update', propagate=True)
+def update_less_than_three_valoration(mapper, connection, target):
+    history = get_history(target, 'open')
+    unchanged = history.unchanged[0] if history.unchanged else None
+    old_value = history.deleted[0] if history.deleted else None
+    new_value = history.added[0] if history.added else None
 
 
-    
-
-         
+    if not unchanged :
+        if old_value == True and new_value == False :
+    # Actualizar el promedio de valoraciones del profesor
+            connection.execute(
+                TeacherTable.__table__.update().
+                where(TeacherTable.average_valoration < 3).
+                values(less_than_three_valoration= TeacherTable.less_than_three_valoration + 1)
+                )
 
 
 

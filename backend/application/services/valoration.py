@@ -12,7 +12,7 @@ from backend.application.services.teacher import TeacherValorationService
 class ValorationCreateService :
     def create_valoration(self, session: Session, valoration: ValorationCreateModel) -> TeacherNoteTable :
         teacher_valoration_service = TeacherValorationService()
-        teacher_valoration_service.update_note_average(session=session, teacher_id=valoration.teacher_id, new_note=valoration.grade)
+        #teacher_valoration_service.update_note_average(session=session, teacher_id=valoration.teacher_id, new_note=valoration.grade)
         
         valoration_dict = valoration.model_dump()
         new_valoration = TeacherNoteTable(**valoration_dict)
