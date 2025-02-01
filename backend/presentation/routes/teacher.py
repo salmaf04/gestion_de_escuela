@@ -101,8 +101,6 @@ async def read_teacher(
   
     for  teacher, subject in zip(teachers, subjects) :
         teachers_mapped.append(mapper.to_api(teacher, list(subject)))
-
-    mapper.to_pdf("ola.pdf", teachers_mapped)
         
     return teachers_mapped
 
@@ -115,7 +113,7 @@ async def read_teacher(
 async def update_teacher(
     request: Request,
     id : str,
-    filters: TeacherChangeRequest = Depends(),
+    filters: TeacherChangeRequest,
     current_user : UserModel = Depends(get_current_user),
     session: Session = Depends(get_db)
 ) :

@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class ChangeRequest(BaseModel) :
+class AdministratorChangeRequest(BaseModel) :
     name : Optional[str] = None
     username : Optional[str] = None
     email : Optional[str] = None

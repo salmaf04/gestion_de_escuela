@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from backend.application.services.administrador import AdministratorCreateService, AdministratorPaginationService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.administrador import AdministratorMapper
-from backend.domain.filters.administrador import ChangeRequest
+from backend.domain.filters.administrador import AdministratorChangeRequest
 from backend.application.services.administrador import AdministradorUpdateService, AdministratorPaginationService, AdministratorDeletionService
 from backend.configuration import get_db
 
@@ -64,7 +64,7 @@ async def delete_administrator(
 )
 async def update_administrator(
     id : str,
-    filters: ChangeRequest = Depends(),
+    filters: AdministratorChangeRequest ,
     session: Session = Depends(get_db)
 ) :
     administrator_pagination_service = AdministratorPaginationService()

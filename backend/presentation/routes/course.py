@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from backend.application.services.course import CourseCreateService, CoursePaginationService, CourseDeletionService, CourseUpdateService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.course import CourseMapper
-from backend.domain.filters.course import CourseFilterSchema, ChangeRequest
+from backend.domain.filters.course import CourseFilterSchema, CourseChangeRequest
 from backend.configuration import get_db
 
 router = APIRouter()
@@ -81,7 +81,7 @@ async def read_course(
 )
 async def update_subject(
     id : str,
-    filters: ChangeRequest = Depends(),
+    filters: CourseChangeRequest,
     session: Session = Depends(get_db)
 ) :
     course_pagination_service = CoursePaginationService()

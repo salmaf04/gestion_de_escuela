@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select, update , and_
-from backend.domain.filters.course import  ChangeRequest, CourseFilterSchema, CourseFilterSet
+from backend.domain.filters.course import  CourseChangeRequest, CourseFilterSchema, CourseFilterSet
 from backend.domain.schemas.course import CourseCreateModel, CourseModel
 from backend.domain.models.tables import CourseTable
 
@@ -24,7 +24,7 @@ class CourseDeletionService:
         
 
 class CourseUpdateService :
-    def update_one(self, session : Session , changes : ChangeRequest , course : CourseModel ) -> CourseModel: 
+    def update_one(self, session : Session , changes : CourseChangeRequest , course : CourseModel ) -> CourseModel: 
         query = update(CourseTable).where(CourseTable.entity_id == course.id)
         
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))

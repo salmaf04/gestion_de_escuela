@@ -3,7 +3,7 @@ from backend.domain.schemas.secretary import SecretaryCreateModel, SecretaryMode
 from backend.domain.models.tables import SecretaryTable
 import uuid
 from sqlalchemy import update
-from backend.domain.filters.secretary import ChangeRequest
+from backend.domain.filters.secretary import SecretaryChangeRequest
 from ..utils.auth import get_password_hash, get_password
 
 class SecretaryCreateService :
@@ -24,7 +24,7 @@ class SecretaryDeletionService:
         
 
 class SecretaryUpdateService :
-    def update_one(self, session : Session , changes : ChangeRequest , secretary : SecretaryModel ) -> SecretaryModel: 
+    def update_one(self, session : Session , changes : SecretaryChangeRequest , secretary : SecretaryModel ) -> SecretaryModel: 
         query = update(SecretaryTable).where(SecretaryTable.entity_id == secretary.id)
         
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))

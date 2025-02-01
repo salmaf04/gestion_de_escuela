@@ -4,7 +4,7 @@ from backend.domain.models.tables import DeanTable
 from sqlalchemy import and_, update
 import uuid
 from sqlalchemy import select
-from backend.domain.filters.dean import DeanFilterSet , DeanFilterSchema, ChangeRequest
+from backend.domain.filters.dean import DeanFilterSet , DeanFilterSchema, DeanChangeRequest
 from ..utils.auth import get_password_hash, get_password
 
 
@@ -26,7 +26,7 @@ class DeanDeletionService:
         
         
 class DeanUpdateService :
-    def update_one(self, session : Session , changes : ChangeRequest , dean : DeanModel ) -> DeanModel: 
+    def update_one(self, session : Session , changes : DeanChangeRequest , dean : DeanModel ) -> DeanModel: 
         query = update(DeanTable).where(DeanTable.entity_id == dean.id)
         
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))

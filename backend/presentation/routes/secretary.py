@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from backend.application.services.secretary import SecretaryCreateService, SecretaryPaginationService, SecretaryDeletionService, SecretaryUpdateService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.secretary import SecretaryMapper
-from backend.domain.filters.secretary import ChangeRequest
+from backend.domain.filters.secretary import SecretaryChangeRequest
 from backend.configuration import get_db
 
 
@@ -64,7 +64,7 @@ async def delete_secretary(
 )
 async def update_secretary(
     id : str,
-    filters: ChangeRequest = Depends(),
+    filters: SecretaryChangeRequest,
     session: Session = Depends(get_db)
 ) :
     secretary_pagination_service = SecretaryPaginationService()

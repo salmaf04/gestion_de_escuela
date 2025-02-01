@@ -18,6 +18,7 @@ from .presentation.routes.sanction import router as sanction_router
 from .presentation.routes.mean_request import router as mean_request_router
 from .presentation.routes.classroom_request import router as classroom_request_router
 from .presentation.routes.valoration_period import router as valoration_period_router
+from .presentation.routes.export_pdf import router as export_pdf_router
 
 import os
 from dotenv import load_dotenv
@@ -47,6 +48,7 @@ app.include_router(sanction_router)
 app.include_router(mean_request_router)
 app.include_router(classroom_request_router)
 app.include_router(valoration_period_router)
+app.include_router(export_pdf_router)
 
 app.add_middleware(
     CORSMiddleware,

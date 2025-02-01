@@ -116,7 +116,7 @@ async def read_student(
 )
 async def update_student(
     id : str,
-    filters: StudentChangeRequest = Depends(),
+    filters: StudentChangeRequest,
     session: Session = Depends(get_db)
 ) :
     student_pagination_service = StudentPaginationService()

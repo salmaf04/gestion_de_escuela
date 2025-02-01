@@ -79,7 +79,7 @@ async def read_mean(
 )
 async def mean_update(
     id : str,
-    filters: MeanChangeRequest = Depends(),
+    filters: MeanChangeRequest,
     session: Session = Depends(get_db)
 ) :
     mean_pagination_service = MeanPaginationService()

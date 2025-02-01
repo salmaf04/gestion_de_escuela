@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.administrador import AdministratorCreateModel, AdministratorModel
-from backend.domain.filters.administrador import ChangeRequest
+from backend.domain.filters.administrador import AdministratorChangeRequest
 from backend.domain.models.tables import AdministratorTable
 from sqlalchemy.orm import Session
 from sqlalchemy import update
@@ -42,7 +42,7 @@ class AdministratorDeletionService:
 
 
 class AdministradorUpdateService :
-    def update_one(self, session : Session , changes : ChangeRequest , administrator : AdministratorModel ) -> AdministratorModel: 
+    def update_one(self, session : Session , changes : AdministratorChangeRequest , administrator : AdministratorModel ) -> AdministratorModel: 
         query = update(AdministratorTable).where(AdministratorTable.entity_id == administrator.id)
         
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))

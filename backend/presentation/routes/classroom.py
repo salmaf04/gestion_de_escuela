@@ -74,7 +74,7 @@ async def read_classroom(
 )
 async def update_classroom(
     id : str,
-    filters: ClassroomChangeRequest = Depends(),
+    filters: ClassroomChangeRequest,
     session: Session = Depends(get_db)
 ) :
     classroom_pagination_service = ClassroomPaginationService()
