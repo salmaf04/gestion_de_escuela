@@ -8,11 +8,12 @@ class StudentMapper :
         return StudentModel(
             id = student.entity_id,
             name= student.name,
+            lastname= student.lastname,
             age= student.age,
             email= student.email,
             extra_activities= student.extra_activities,  
             username= student.username,
-            hash_password= student.hash_password,
+            hash_password= student.hashed_password,
             course_id = student.course_id 
         )
         

@@ -1,10 +1,13 @@
 from pydantic import BaseModel
 import uuid
+from backend.domain.schemas.user import UserCreateModel
+
 
 class DeanModel(BaseModel):
     id : uuid.UUID
     name: str
-    fullname: str
+    lastname: str
+    lastname: str
     specialty: str
     contract_type: str  
     experience: int
@@ -12,12 +15,7 @@ class DeanModel(BaseModel):
     username: str
     
 
-class DeanCreateModel(BaseModel):
-    name: str
-    fullname: str
-    email: str
+class DeanCreateModel(UserCreateModel):
     specialty: str
     contract_type: str
     experience: int
-    username: str
-    password: str

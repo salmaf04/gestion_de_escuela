@@ -1,6 +1,6 @@
 ## authorizations.py
 from functools import wraps
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 # authentications
 from fastapi import Depends, FastAPI
 from fastapi.security import OAuth2PasswordBearer
@@ -40,7 +40,7 @@ app = FastAPI()
 # Dependency
 def get_db():
     db = SessionLocal()
-    try:
+    try: 
         yield db
     finally:
         db.close()
@@ -59,13 +59,20 @@ async def authenticate_user(username: str, password: str, session: Session):
     user_service = UserCreateService()  
     mapper = UserMapper()
     user = await user_service.get_user_by_username(username=username, session=session)
+
     if user is None :
-        return None
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuario Incorrecto"
+        )
     
     user = mapper.to_api(user)
 
     if  not verify_password(password, user.hashed_password):
-        return None
+         raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Contraseña Incorrecta"
+        )
 
     return user
 
@@ -82,13 +89,19 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 # Dependency to get current user based on token
 async def get_current_user(token: str = Depends(oauth2_scheme), session: Session = Depends(get_db)):
-    payload = jwt.decode(jwt=token, key=SECRET_KEY, algorithms=[ALGORITHM])
-    username: str = payload.get("sub")
-    user_service = UserCreateService()  
-    user = user_service.get_user_by_username(username=username, session=session)
-    if user is None:
-        return None
-    return user
+    try :
+        payload = jwt.decode(jwt=token, key=SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: str = payload.get("user_id")
+        user_service = UserCreateService()  
+        user = user_service.get_user_by_id(id=user_id, session=session)
+        if user is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="No existe ningun usuario con ese identificador"
+            )
+        return user
+    except Exception as e :
+        return {f"{e}"}
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -106,27 +119,27 @@ def authorize(role: list):
                 request = kwargs.get("request")
                 method = request.method
                 url = parse_url(request.url.path)
-            
+
+                if method == 'GET' and url == 'student' :
+                    if user_role == 'teacher' :
+                        kwargs['students_by_teacher'] = True
+                        kwargs['teacher_id'] = user_id1
+                    
+                if (method == 'PATCH' or method == 'POST') and url == 'note':
+                    kwargs['user_id']=user_id1
+
+                if method == 'PATCH' and url == 'user':
+                    if check_id and check_id != str(user_id1):
+                        raise HTTPException(status_code=403, detail="Usted solo tiene permitido modificar su propio perfil")
+                
             user =  await kwargs.get("current_user")
             user_id1 = user.id
             user_role = user.type
-            #check_id =  kwargs.get("id")
+            check_id =  kwargs.get("id", None)
             
-            #if check_id and check_id != str(user_id1) and method == 'PATCH' and url != 'note':
-                #raise HTTPException(status_code=403, detail=f"User is not authorized to access")
-
-            if method == 'GET' and url == 'student' :
-                if user_role == 'teacher' :
-                    kwargs['students_by_teacher'] = True
-                    kwargs['teacher_id'] = user_id1
-
             if user_role not in role:
                 role_str = ','.join(role)
                 raise HTTPException(status_code=403, detail=f"User is not authorized to access , only avaliable for {role_str}")
-            
-            if (method == 'PATCH' or method == 'POST') and url == 'note':
-                print("hola")
-                kwargs['user_id']=user_id1
             
             return await func(*args, **kwargs)
         return wrapper

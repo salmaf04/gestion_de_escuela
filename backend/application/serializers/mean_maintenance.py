@@ -1,5 +1,5 @@
-from backend.domain.schemas.mean_mainteniance import MeanMaintenanceModel
-from backend.domain.models.tables import MeanMaintenianceTable
+from backend.domain.schemas.mean_maintenance import MeanMaintenanceModel
+from backend.domain.models.tables import MeanMaintenanceTable
 from pydantic import BaseModel
 import uuid
 
@@ -23,20 +23,22 @@ class MeanMaintenanceDate(BaseModel):
 
 
 class MeanMaintenanceClassroom(BaseModel) :
-    classroom_id : uuid.UUID
+    number : int = 0
     other : int = 0
     teaching_material : int = 0
     technological_mean : int = 0
+    total_after_two_years : int = 0
     
 
 class MeanMaintenanceMapper :
 
-    def to_api(self, mean_maintenance: MeanMaintenianceTable) -> MeanMaintenianceTable :
+    def to_api(self, mean_maintenance: MeanMaintenanceTable) -> MeanMaintenanceTable :
         return MeanMaintenanceModel(
             id = mean_maintenance.entity_id,
             mean = mean_maintenance.mean.name,
             cost = mean_maintenance.cost,
-            date = mean_maintenance.date.strftime("%d-%m-%Y")
+            date = mean_maintenance.date.strftime("%d-%m-%Y"),
+            finished = mean_maintenance.finished
         )
     
 
@@ -55,7 +57,7 @@ class MeanMaintenanceMapper :
         return serialized_values
     
 
-    def to_classroom(self, data1) :
+    def to_classroom(self, data1, data2) :
         serialized_values = []
         classroom_ids = []
 
@@ -71,12 +73,16 @@ class MeanMaintenanceMapper :
                 classroom_ids.append(classroom[1])
 
                 new_classroom = MeanMaintenanceClassroom(
-                    classroom_id = classroom[1],
+                    number= classroom[1],
                     other = classroom[2] if classroom[0] == "other" else 0,
                     teaching_material = classroom[2] if classroom[0] == "teaching_material" else 0,
-                    technological_mean = classroom[2] if classroom[0] == "technological_mean" else 0
+                    technological_mean = classroom[2] if classroom[0] == "technological_mean" else 0,
+                    total_after_two_years = 0
                 )
                 serialized_values.append(new_classroom)
+
+            for mapped_classroom, total in zip(serialized_values, data2) :
+                mapped_classroom.total_after_two_years = total[1]
 
         return serialized_values
     

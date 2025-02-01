@@ -7,7 +7,7 @@ class DeanMapper :
         return DeanModel(
             id = dean.entity_id,
             name=dean.name,
-            fullname=dean.fullname,
+            lastname=dean.lastname,
             email=dean.email,
             specialty=dean.specialty,
             contract_type=dean.contract_type,
