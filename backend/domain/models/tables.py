@@ -208,6 +208,7 @@ class SubjectTable(BaseTable) :
 class ClassroomTable(BaseTable) : 
     __tablename__ = TableName.CLASSROOM.value
 
+    number = Column(Integer, unique=True)
     location = Column(String)
     capacity = Column(Integer)
 

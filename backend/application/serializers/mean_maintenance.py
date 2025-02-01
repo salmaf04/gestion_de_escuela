@@ -23,7 +23,7 @@ class MeanMaintenanceDate(BaseModel):
 
 
 class MeanMaintenanceClassroom(BaseModel) :
-    classroom_id : uuid.UUID
+    number : int = 0
     other : int = 0
     teaching_material : int = 0
     technological_mean : int = 0
@@ -73,7 +73,7 @@ class MeanMaintenanceMapper :
                 classroom_ids.append(classroom[1])
 
                 new_classroom = MeanMaintenanceClassroom(
-                    classroom_id = classroom[1],
+                    number= classroom[1],
                     other = classroom[2] if classroom[0] == "other" else 0,
                     teaching_material = classroom[2] if classroom[0] == "teaching_material" else 0,
                     technological_mean = classroom[2] if classroom[0] == "technological_mean" else 0,

@@ -89,18 +89,18 @@ class MeanMaintenancePaginationService :
     def maintenance_by_classroom(self, session: Session) :
 
         #Mantenimientos por aula y por tipo de medio
-        query = select(MeanTable.type, ClassroomTable.entity_id, func.count().label("count"))
+        query = select(MeanTable.type, ClassroomTable.number, func.count().label("count"))
         query = query.join(ClassroomTable, ClassroomTable.entity_id == MeanTable.classroom_id)
         query = query.join(MeanMaintenanceTable, MeanTable.entity_id == MeanMaintenanceTable.mean_id)
-        query = query.group_by(MeanTable.type, ClassroomTable.entity_id).order_by(ClassroomTable.entity_id, MeanTable.type)
+        query = query.group_by(MeanTable.type, ClassroomTable.number, ).order_by(ClassroomTable.number, MeanTable.type)
 
         # Total de mantenimientos despues de dos años
-        maintenance_after_two_years = select(ClassroomTable.entity_id, func.count().label("count"))
+        maintenance_after_two_years = select(ClassroomTable.number, func.count().label("count"))
         maintenance_after_two_years = maintenance_after_two_years.join(MeanTable, ClassroomTable.entity_id == MeanTable.classroom_id)
         maintenance_after_two_years = maintenance_after_two_years.join(MeanMaintenanceTable, MeanTable.entity_id == MeanMaintenanceTable.mean_id)
-        maintenance_after_two_years = maintenance_after_two_years.group_by(ClassroomTable.entity_id)
+        maintenance_after_two_years = maintenance_after_two_years.group_by(ClassroomTable.number)
         maintenance_after_two_years = maintenance_after_two_years.where(MeanMaintenanceTable.date >= datetime.now(timezone.utc) - timedelta(days=730))
-        maintenance_after_two_years = maintenance_after_two_years.order_by(ClassroomTable.entity_id)
+        maintenance_after_two_years = maintenance_after_two_years.order_by(ClassroomTable.number)
         
         by_classroom = session.execute(query).all()
         maintenance_total = session.execute(maintenance_after_two_years).all()

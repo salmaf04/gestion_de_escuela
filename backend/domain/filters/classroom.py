@@ -18,15 +18,18 @@ class AvaliableClassroomFilter(BaseFilter) :
         )
 
 class ClassroomFilterSet(FilterSet):
+    number = Filter(ClassroomTable.number)
     location = Filter(ClassroomTable.location)
     capacity = RangeFilter(ClassroomTable.capacity)
     avaliable = AvaliableClassroomFilter()
         
 class ClassroomFilterSchema(BaseModel):
+    number : int | None = None
     location : str | None = None
     capacity : tuple[int, int] | None = None
     avaliable : Optional[bool] = None
 
 class ClassroomChangeRequest(BaseModel) :
+    number : Optional[int] = None
     location : Optional[str] = None
     capacity : Optional[int] = None
