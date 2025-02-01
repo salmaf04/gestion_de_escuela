@@ -2,8 +2,8 @@ from sqlalchemy.orm import Session
 from backend.domain.schemas.secretary import SecretaryCreateModel, SecretaryModel
 from backend.domain.models.tables import SecretaryTable
 import uuid
-from sqlalchemy import update
-from backend.domain.filters.secretary import SecretaryChangeRequest
+from sqlalchemy import update, select
+from backend.domain.filters.secretary import SecretaryChangeRequest, SecretaryFilterSchema, SecretaryFilterSet
 from ..utils.auth import get_password_hash, get_password
 
 class SecretaryCreateService :
@@ -49,6 +49,12 @@ class SecretaryPaginationService :
         result = query.scalar()
 
         return result
+    
+    def get(self, session: Session, filter_params: SecretaryFilterSchema) -> list[SecretaryTable] :
+        query = select(SecretaryTable)
+        filter_set = SecretaryFilterSet(session, query=query)
+        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
+        return session.execute(query).scalars().all()
     
 
 
