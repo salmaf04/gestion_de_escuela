@@ -1,5 +1,4 @@
 import {createContext, useContext, useEffect, useMemo, useState} from "react";
-import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
 import { AppContext } from "../../App.tsx";
 import AddEstudianteForm from "./components/AddEstudianteForm.tsx";
@@ -8,9 +7,10 @@ import {IEditRow} from "../../types/IEditRow.ts";
 import {IEstudianteLocal} from "./models/IEstudianteLocal.ts";
 import {IEstudianteDB} from "./models/IEstudianteDB.ts";
 import {IEstudianteCreateDB} from "./models/IEstudianteCreateDB.ts";
+import ToolBar, {IToolbarContext} from "../../components/ToolBar.tsx";
 
 
-interface IEstudianteContext {
+interface IEstudianteContext extends IToolbarContext{
     searchText?: string;
     dataTable?: IEstudianteTableRow[];
     editting?: IEditRow<Partial<IEstudianteLocal>>;
@@ -118,7 +118,7 @@ export default function EstudiantesScreen() {
             onAddTableItem: onAddTableItem,
         }}>
             <div className={'w-full h-dvh flex flex-col'}>
-                <ToolBar />
+                <ToolBar context={EstudianteContext}/>
                 <Body />
                 {(showModal || editting) &&
                     <AddEstudianteForm />

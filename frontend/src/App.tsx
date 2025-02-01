@@ -57,6 +57,9 @@ interface AppContextInterface {
     personalId?: string,
     setPersonalId?: (personalId: string) => void
 
+    username?: string,
+    setUsername?: (username: string) => void
+
     message?: string,
     setMessage?: (message: string) => void
 }
@@ -78,6 +81,7 @@ function App() {
     const [role, setRole] = useState<RolesEnum>()
     const [personalId, setPersonalId] = useState<string>()
     const [message, setMessage] = useState<string | undefined>()
+    const [username, setUsername] = useState<string>()
 
     useEffect(() => {
         const t = sessionStorage.getItem('token')
@@ -85,6 +89,7 @@ function App() {
             setToken(t)
             setRole(JSON.parse(atob(t!.split(".")[1])).type)
             setPersonalId(JSON.parse(atob(t!.split(".")[1])).user_id)
+            setUsername(JSON.parse(atob(t!.split(".")[1])).sub)
         }
     }, []);
     const allowRoles = useCallback((roles: RolesEnum[]) => {
@@ -121,7 +126,9 @@ function App() {
             message,
             setMessage,
             ausencias: ausencias,
-            setAusencias: setAusencias
+            setAusencias: setAusencias,
+            username: username,
+            setUsername: setUsername
         }}>
             <BrowserRouter>
                 {error &&
