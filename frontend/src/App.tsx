@@ -13,7 +13,6 @@ import MediosScreen from "./pages/medios/MediosScreen.tsx";
 import MantenimientosScreen from "./pages/mantenimientos/MantenimientosScreen.tsx";
 import {AulaGetAdapter} from "./pages/aulas/adapters/AulaGetAdapter.ts";
 import {MedioGetAdapter} from "./pages/medios/adapters/MedioGetAdapter.ts";
-import UsuariosScreen from "./pages/usuarios/UsuariosScreen.tsx";
 import {AsignaturaGetAdapter} from "./pages/asignaturas/adapters/AsignaturaGetAdapter.ts";
 import {RolesEnum} from "./api/RolesEnum.ts";
 import {EstudianteGetAdapter} from "./pages/estudiantes/adapters/EstudianteGetAdapter.ts";
@@ -162,7 +161,7 @@ function App() {
                                     {allowRoles(Screens.Medios.allowedRoles) &&
                                         <Route path={'/medios'} element={<MediosScreen/>}/>
                                     }
-                                    {allowRoles(Screens.Cursos.allowedRoles) &&
+                                    {allowRoles(Screens.Mantenimientos.allowedRoles) &&
                                         <Route path={'/mantenimientos'} element={<MantenimientosScreen/>}/>
                                     }
                                     {allowRoles(Screens.Notas.allowedRoles) &&
@@ -174,13 +173,12 @@ function App() {
                                     {allowRoles(Screens.Mantenimientos.allowedRoles) &&
                                         <Route path={'/mantenimiento'} element={<MantenimientosScreen/>}/>
                                     }
-                                    {allowRoles(Screens.Mantenimientos.allowedRoles) &&
-                                        <Route path={'/funcionalidades'} element={<FuncionalidadesScreen/>}/>
-                                    }
                                     {allowRoles(Screens.Ausencias.allowedRoles) &&
                                         <Route path={'/ausencias'} element={<AusenciasScreen/>}/>
                                     }
                                     <Route path={'/info'} element={<InfoScreen/>}/>
+                                    <Route path={'/funcionalidades'} element={<FuncionalidadesScreen/>}/>
+
                                 </Routes>
                             </div>
                         </div>
