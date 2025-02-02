@@ -31,7 +31,7 @@ const Table: React.FC<ProfesoresTableProps> = ({ title, items, headers, showHead
                 <div className={'w-[98%]'}>
                     <h1 className={' font-semibold text-lg'}>{title} </h1>
                     <div
-                        className={`${isVisible ? 'w-[98%]' : 'w-[32%]'} h-[2px] bg-indigo-500 rounded-full transition-all duration-300`}/>
+                        className={`${isVisible ? 'w-[98%]' : 'w-[24%]'} h-[2px] bg-indigo-500 rounded-full transition-all duration-300`}/>
                 </div>
                 <button onClick={toggleVisibility} className="ml-2">
                     {isVisible ? <ChevronDownIcon className="h-5 w-5"/> : <ChevronRightIcon className="h-5 w-5"/>}
