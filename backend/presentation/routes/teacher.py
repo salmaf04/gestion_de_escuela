@@ -101,6 +101,8 @@ async def read_teacher(
   
     for  teacher, subject in zip(teachers, subjects) :
         teachers_mapped.append(mapper.to_api(teacher, list(subject)))
+
+    mapper.to_pdf("ola.pdf", teachers_mapped)
         
     return teachers_mapped
 

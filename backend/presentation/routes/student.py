@@ -20,9 +20,11 @@ router = APIRouter()
     response_model= StudentModel,
     status_code=status.HTTP_201_CREATED
 )
+@authorize(role=['secretary'])
 async def create_student(
     student_input: StudentCreateModel,
-    session: Session = Depends(get_db)
+    session: Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user)
 ) :
     student_service = StudentCreateService()
     student_pagination_service = StudentPaginationService()

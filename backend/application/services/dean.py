@@ -5,15 +5,15 @@ from sqlalchemy import and_, update
 import uuid
 from sqlalchemy import select
 from backend.domain.filters.dean import DeanFilterSet , DeanFilterSchema, ChangeRequest
-from ..utils.auth import get_password_hash
+from ..utils.auth import get_password_hash, get_password
 
 
 class DeanCreateService :
 
     def create_dean(self, session: Session, dean: DeanCreateModel) -> DeanTable :
         dean_dict = dean.model_dump(exclude={'password'})
-        hashed_password = get_password_hash(dean.password)
-        new_dean = DeanTable(**dean_dict, hash_password=hashed_password)
+        hashed_password = get_password_hash(get_password(dean))
+        new_dean = DeanTable(**dean_dict, hashed_password=hashed_password)
         session.add(new_dean)
         session.commit()
         return new_dean

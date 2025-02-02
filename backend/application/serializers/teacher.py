@@ -3,7 +3,12 @@ from backend.domain.models.tables import TeacherTable
 from pydantic import BaseModel
 from datetime import datetime
 import uuid
-from fpdf import FPDF
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.units import inch
+
+
 
 class TeacherBetterThanEight(BaseModel) :
     name : str
@@ -35,10 +40,11 @@ class TeacherTechnologicalClassroom(BaseModel) :
 class TeacherMapper :
 
     def to_api(self, teacher: TeacherTable , subjects: list[str] , valoration: float = None) -> TeacherModel :
+        print(teacher.name)
         return TeacherModel(
             id = teacher.entity_id,
             name=teacher.name,
-            fullname=teacher.fullname,
+            lastname=teacher.lastname,
             email=teacher.email,
             specialty=teacher.specialty,
             contract_type=teacher.contract_type,
@@ -48,22 +54,26 @@ class TeacherMapper :
             valoration= teacher.average_valoration,
             salary=teacher.salary
         )
-    
-
-    def to_pdf(self, resultados) -> TeacherModel :
-        pdf = FPDF()
-        pdf.add_page()
-        pdf.set_font("Arial", size=12)
-
-        # Agregar los datos al PDF
-        for resultado in resultados:
-            line = f"ID: {resultado.id}, Nombre: {resultado.name}, Especialidades: {resultado.specialty}, Email: {resultado.email}, Salario: {resultado.salary}"
-            pdf.cell(400, 20, txt=line, ln=True)
-
-        # Guardar el PDF
-        pdf.output("resultado.pdf")
 
 
+    def to_pdf(self, filename, data):
+        # Configurar el documento con márgenes
+        doc = SimpleDocTemplate(filename, pagesize=letter, leftMargin=inch, rightMargin=inch)
+        styles = getSampleStyleSheet()
+        elements = []
+
+        # Título del informe
+        elements.append(Paragraph("Informe de Consulta", styles['Title']))
+
+        # Recorrer los datos y agregarlos al PDF
+        for row in data:
+            # Convertir cada fila a una cadena JSON
+            text = row.json()
+            # Usar Paragraph para manejar el ajuste de texto automático                                         
+            elements.append(Paragraph(text, styles['BodyText']))
+
+        # Construir el PDF
+        doc.build(elements)
     
     def to_subject_list(self, subjects) :
         names = []
@@ -115,7 +125,7 @@ class TeacherMapper :
                 
                 new_teacher = TeacherSanctions(
                     name= teacher[1],
-                    valorations= [teacher[3]],
+                    valorations= [teacher[3]] if teacher[3] else [],
                     date= teacher[2],
                     means= True if teacher[0] in mean_data else False
                 )

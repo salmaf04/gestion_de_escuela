@@ -4,7 +4,7 @@ from backend.domain.filters.student import StudentFilterSet , StudentFilterSchem
 from backend.domain.schemas.student import StudentCreateModel, StudentModel
 from backend.domain.models.tables import StudentTable, StudentNoteTable, TeacherTable, CourseTable, SubjectTable, teacher_subject_table
 from backend.application.services.course import CoursePaginationService
-from ..utils.auth import get_password_hash
+from ..utils.auth import get_password_hash, get_password
 from ..utils.note_average import  calculate_student_average
 import uuid
 
@@ -14,8 +14,8 @@ class StudentCreateService :
 
     def create_student(self, session: Session, student:StudentCreateModel) -> StudentTable :
         student_dict = student.model_dump(exclude={'password'})
-        hashed_password = get_password_hash(student.password)
-        new_student = StudentTable(**student_dict, hash_password=hashed_password)
+        hashed_password = get_password_hash(get_password(student))
+        new_student = StudentTable(**student_dict, hashed_password=hashed_password)
         session.add(new_student)
         session.commit()
         return new_student

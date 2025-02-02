@@ -12,4 +12,5 @@ export class SalariosdeProfesoresGetAdapter {
         this.date = data.date;
         this.means = data.means;
     }
+[key: string]: string | number | boolean | number[];
 }

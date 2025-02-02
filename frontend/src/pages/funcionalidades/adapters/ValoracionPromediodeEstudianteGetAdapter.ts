@@ -12,4 +12,5 @@ export class ValoracionPromediodeEstudianteGetAdapter {
         this.teacher_name = data.teacher_name;
         this.teacher_valoration = data.teacher_valoration;
     }
+    [key: string]: string | number | null;
 }

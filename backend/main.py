@@ -12,11 +12,12 @@ from .presentation.routes.course import router as course_router
 from .presentation.routes.absence import router as absence_router
 from .presentation.routes.valoration import router as valoration_router
 from .presentation.routes.my_date import router as date_router
-from .presentation.routes.mean_mainteniance import router as mean_maintenance_router
+from .presentation.routes.mean_maintenance import router as mean_maintenance_router
 from .presentation.routes.dean import router as dean_router
 from .presentation.routes.sanction import router as sanction_router
 from .presentation.routes.mean_request import router as mean_request_router
 from .presentation.routes.classroom_request import router as classroom_request_router
+from .presentation.routes.valoration_period import router as valoration_period_router
 
 import os
 from dotenv import load_dotenv
@@ -45,7 +46,7 @@ app.include_router(dean_router)
 app.include_router(sanction_router)
 app.include_router(mean_request_router)
 app.include_router(classroom_request_router)
-
+app.include_router(valoration_period_router)
 
 app.add_middleware(
     CORSMiddleware,

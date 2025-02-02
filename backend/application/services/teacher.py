@@ -17,14 +17,13 @@ from sqlalchemy.orm import aliased
 from fastapi import HTTPException, status
 
 class TeacherCreateService :
-
     def create_teacher(self, session: Session, teacher: TeacherCreateModel) -> TeacherTable :
         subject_service = SubjectPaginationService()
         subjects = subject_service.get_subjects(session=session, filter_params=SubjectFilterSchema(name=teacher.list_of_subjects))
         self.check_subject(subjects, teacher.list_of_subjects)
         teacher_dict = teacher.model_dump(exclude={'password', 'list_of_subjects'})
         hashed_password = get_password_hash(get_password(teacher))
-        new_teacher = TeacherTable(**teacher_dict, hash_password=hashed_password)
+        new_teacher = TeacherTable(**teacher_dict, hashed_password=hashed_password)
         new_teacher.teacher_subject_association = subjects
         session.add(new_teacher)
         session.commit()
@@ -72,32 +71,6 @@ class TeacherUpdateService :
         teacher = teacher.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
         return teacher
             
-
-
-""" 
-class TeacherUpdateService :
-    
-   
-    def update_one(self, session : Session , changes : ChangeRequest , teacher : TeacherModel ) -> TeacherModel: 
-        print(changes.hash_password)
-        if changes.hash_password :
-            print(changes.hash_password)
-            hashed_password = get_password_hash(changes.hash_password)
-            changes.hash_password = hashed_password
-            print(changes.hash_password)
-            print(changes.model_dump(exclude_unset=True, exclude_none=True))
-        
-        #query = update(TeacherTable).values(changes.model_dump(exclude_unset=True, exclude_none=True)).where(TeacherTable.id == teacher.id)
-        query = update(TeacherTable).values(changes.model_dump(exclude_unset=True, exclude_none=True))
-        query = query.where(TeacherTable.id == UserTable.entity_id)
-        query = query.where(
-        session.execute(query)
-        session.refresh(teacher)
-        
-        teacher = teacher.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
-        return teacher
-"""
-        
 
 class TeacherPaginationService :
     def get_teacher_by_email(self, session: Session, email: str) -> TeacherTable :
@@ -156,19 +129,19 @@ class TeacherPaginationService :
         latest_sanction_subquery = (
         select(
             SanctionTable.teacher_id,
-            func.max(SanctionTable.date).label('latest_sanction_date')
+            func.min(SanctionTable.date).label('latest_sanction_date')
         )
         .group_by(SanctionTable.teacher_id)
         .subquery()
         )
         grade_rank = func.row_number().over(
         partition_by=TeacherTable.id,
-        order_by=asc(TeacherNoteTable.grade)
+        order_by=TeacherNoteTable.grade
         ).label('grade_rank')
         query = select(TeacherTable.id, TeacherTable.name, latest_sanction_subquery.c.latest_sanction_date, TeacherNoteTable.grade)
         query = query.add_columns(grade_rank)
         query = query.join(latest_sanction_subquery, TeacherTable.id == latest_sanction_subquery.c.teacher_id)
-        query = query.join(TeacherNoteTable, TeacherTable.id == TeacherNoteTable.teacher_id)
+        query = query.outerjoin(TeacherNoteTable, TeacherTable.id == TeacherNoteTable.teacher_id)
         query = query.where(TeacherTable.id.in_(select(SanctionTable.teacher_id)))
         query = query.order_by(
             TeacherTable.id,

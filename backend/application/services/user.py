@@ -3,7 +3,9 @@ from sqlalchemy import select, update
 from backend.domain.models.tables import UserTable
 from backend.domain.schemas.user import UserCreateModel, UserModel
 from ..utils.auth import get_password_hash
-from backend.domain.filters.user import ChangeRequest
+from backend.application.utils.auth import verify_password
+from backend.domain.filters.user import UserChangeRequest, UserPasswordChangeRequest
+from fastapi import HTTPException
 
 class UserCreateService:
     async def get_user_by_username(self, username: str, session: Session) -> UserModel :
@@ -45,17 +47,48 @@ class UserCreateService:
         return new_user
     
 class UserUpdateService:
-    async def update_user(self, user_input: UserModel,changes: ChangeRequest, session: Session): 
-        if changes.hash_password :
-            hashed_password = get_password_hash(changes.hash_password)
-            changes.hash_password = hashed_password
-
-        query = update(UserTable).values(changes.model_dump(exclude_unset=True, exclude_none=True))
+    async def update_user(
+        self, 
+        session: Session,
+        user_input: UserModel,
+        password_change_request: UserPasswordChangeRequest=None,
+        personal_info_change_request: UserChangeRequest=None,
+    ): 
+        if password_change_request :
+            user_input_new = await self.update_password(password_change_request=password_change_request, user_input=user_input, session=session)
+        if personal_info_change_request :
+            user_input_new = await self.update_personal_info(personal_info_change_request=personal_info_change_request, user_input=user_input, session=session)
+        
+        user_update = user_input_new.model_dump(exclude={'id'})
+        print(user_update)
+        query = update(UserTable)
         query = query.where(UserTable.entity_id == user_input.id)
+        query = query.values(user_update)
         session.execute(query)
         session.commit()
        
-        user_response = user_input.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
- 
-        return user_response
+        return user_input_new
+    
+    async def update_password(self, password_change_request: UserPasswordChangeRequest, user_input: UserModel, session: Session):
+        if password_change_request.current_password :
+           if not verify_password(password_change_request.current_password, user_input.hashed_password) :
+               raise HTTPException(status_code=400, detail="Invalid current password")
+           
+           new_hashed_password = get_password_hash(password_change_request.new_password)
+           user_input.hashed_password = new_hashed_password
+           return user_input
+        
+    async def update_personal_info(self, personal_info_change_request: UserChangeRequest, user_input: UserModel, session: Session):
+        if personal_info_change_request.username :
+            user_input.username = personal_info_change_request.username
+        
+        if personal_info_change_request.email :
+            user_input.email = personal_info_change_request.email
+
+        return user_input
+
+
+            
+    
+  
     

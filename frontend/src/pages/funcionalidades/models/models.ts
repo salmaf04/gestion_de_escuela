@@ -6,17 +6,14 @@ export type ProfesorEspGetDB = {
     "state": string,
 }
 
-export type FiltrodeMantenimientoGetDB = [
+export type FiltrodeMantenimientoGetDB =
     {
-        classroom_id: string,
+        number: string,
         other: number,
         teaching_material: number,
-        technological_mean: number
-    }[],
-    {
-        "total maintenances after two years": number
+        technological_mean: number,
+        total_after_two_years: number,
     }
-];
 
 export type CostoPromedioGetDB = {
     "average_cost": string,

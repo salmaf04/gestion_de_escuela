@@ -58,8 +58,6 @@ async def read_classroom(
     mapper = ClassroomMapper()
 
     classrooms = classroom_pagination_service.get_classroom(session=session, filter_params=filters)
-
-    print(len(classrooms))
    
     if not classrooms :
         raise HTTPException(

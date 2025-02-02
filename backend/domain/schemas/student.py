@@ -1,9 +1,11 @@
 from pydantic import BaseModel
 import uuid
+from backend.domain.schemas.user import UserCreateModel
 
 class StudentModel(BaseModel):
     id : uuid.UUID
     name: str
+    lastname: str
     age: int
     email: str
     extra_activities: bool
@@ -11,13 +13,9 @@ class StudentModel(BaseModel):
     hash_password: str
     course_id : uuid.UUID
     
-class StudentCreateModel(BaseModel):
-    name: str
+class StudentCreateModel(UserCreateModel):
     age: int
-    email: str
     extra_activities: bool
-    username: str
-    password: str
     course_id : uuid.UUID
 
 class StudentSubjectPerformance(BaseModel):
