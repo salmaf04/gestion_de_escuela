@@ -39,6 +39,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         data={
             "sub": user.username,
             "user_id" : str(user.id),
+            "roles": user.roles,
             "type": user.type
         }, 
         expires_delta=access_token_expires
@@ -138,7 +139,6 @@ async def read_user(
     filters: UserFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
-    print('hola')
     user_pagination_service = UserPaginationService()
     mapper = UserMapper()
 
@@ -152,7 +152,6 @@ async def read_user(
     for user in users :
         users_mapped.append(mapper.to_api(user))   
 
-    print(len(users_mapped))
 
     return users_mapped
 

@@ -114,14 +114,19 @@ def authorize(role: list):
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
-
+            user =  await kwargs.get("current_user")
+            user_id1 = user.id
+            user_roles = user.roles
+            check_id =  kwargs.get("id", None)
+        
             if kwargs.get("request") is not None:
                 request = kwargs.get("request")
                 method = request.method
                 url = parse_url(request.url.path)
+                throw_unauthorized = True
 
                 if method == 'GET' and url == 'student' :
-                    if user_role == 'teacher' :
+                    if 'teacher' in user_roles :
                         kwargs['students_by_teacher'] = True
                         kwargs['teacher_id'] = user_id1
                     
@@ -132,14 +137,14 @@ def authorize(role: list):
                     if check_id and check_id != str(user_id1):
                         raise HTTPException(status_code=403, detail="Usted solo tiene permitido modificar su propio perfil")
                 
-            user =  await kwargs.get("current_user")
-            user_id1 = user.id
-            user_role = user.type
-            check_id =  kwargs.get("id", None)
+            for role in user_roles :
+                if role in role :
+                    throw_unauthorized = False
             
-            if user_role not in role:
-                role_str = ','.join(role)
-                raise HTTPException(status_code=403, detail=f"User is not authorized to access , only avaliable for {role_str}")
+            if throw_unauthorized :
+                for role in user_roles :
+                    role_str = ','.join(role)
+                    raise HTTPException(status_code=403, detail=f"User is not authorized to access , only avaliable for {role_str}")
             
             return await func(*args, **kwargs)
         return wrapper

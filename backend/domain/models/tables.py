@@ -451,23 +451,23 @@ for table in [TeacherTable, UserTable, AdministratorTable, SecretaryTable, Stude
 def no_administrator(mapper, connection, target):
     result = connection.execute(select(AdministratorTable.entity_id)).fetchone()
     if result is None :
-        target.roles = [Roles.DEAN.value, Roles.ADMIN.value]
+        target.roles = [Roles.DEAN.value, Roles.TEACHER.value, Roles.ADMIN.value]
     else :
-        target.roles = [Roles.DEAN.value]
+        target.roles = [Roles.DEAN.value, Roles.TEACHER.value]
 
 @event.listens_for(AdministratorTable, 'after_delete')
 def check_administrator(mapper, connection, target):
     result = connection.execute(select(AdministratorTable.entity_id)).fetchone()
     decano = connection.execute(select(DeanTable)).fetchone()
     if result is None :
-        connection.execute(UserTable.__table__.update().values(roles=[Roles.DEAN.value, Roles.ADMIN.value]).where(UserTable.entity_id == decano.id))
+        connection.execute(UserTable.__table__.update().values(roles=[Roles.DEAN.value, Roles.TEACHER.value, Roles.ADMIN.value]).where(UserTable.entity_id == decano.id))
 
 @event.listens_for(AdministratorTable, 'before_insert')
 def check_administrator(mapper, connection, target):
     result = connection.execute(select(AdministratorTable.entity_id)).fetchone()
     decano = connection.execute(select(DeanTable)).fetchone()
     if result is None :
-        connection.execute(UserTable.__table__.update().values(roles=[Roles.DEAN.value]).where(UserTable.entity_id == decano.id))
+        connection.execute(UserTable.__table__.update().values(roles=[Roles.DEAN.value, Roles.TEACHER.value]).where(UserTable.entity_id == decano.id))
 
 
 
