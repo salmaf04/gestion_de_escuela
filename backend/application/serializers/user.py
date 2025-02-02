@@ -9,5 +9,6 @@ class UserMapper() :
             email=user.email,
             username=user.username,
             hashed_password=user.hashed_password,
-            type=user.type
+            type=user.type,
+            roles=user.roles
         )

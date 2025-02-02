@@ -4,7 +4,7 @@ from backend.domain.models.tables import UserTable
 from backend.domain.schemas.user import UserCreateModel, UserModel
 from ..utils.auth import get_password_hash
 from backend.application.utils.auth import verify_password
-from backend.domain.filters.user import UserChangeRequest, UserPasswordChangeRequest
+from backend.domain.filters.user import UserChangeRequest, UserPasswordChangeRequest, UserFilterSchema, UserFilterSet
 from fastapi import HTTPException
 
 class UserCreateService:
@@ -86,6 +86,14 @@ class UserUpdateService:
             user_input.email = personal_info_change_request.email
 
         return user_input
+    
+
+class UserPaginationService :
+    def get_user(self, session: Session, filter_params: UserFilterSchema) -> list[UserTable] :
+        query = select(UserTable)
+        filter_set = UserFilterSet(session, query=query)
+        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
+        return session.execute(query).scalars().all()
 
 
             
