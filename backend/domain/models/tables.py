@@ -461,6 +461,16 @@ def check_administrator(mapper, connection, target):
     decano = connection.execute(select(DeanTable)).fetchone()
     if result is None :
         connection.execute(UserTable.__table__.update().values(roles=[Roles.DEAN.value, Roles.ADMIN.value]).where(UserTable.entity_id == decano.id))
+
+@event.listens_for(AdministratorTable, 'before_insert')
+def check_administrator(mapper, connection, target):
+    result = connection.execute(select(AdministratorTable.entity_id)).fetchone()
+    decano = connection.execute(select(DeanTable)).fetchone()
+    if result is None :
+        connection.execute(UserTable.__table__.update().values(roles=[Roles.DEAN.value]).where(UserTable.entity_id == decano.id))
+
+
+
         
 
 
