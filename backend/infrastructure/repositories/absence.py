@@ -7,7 +7,7 @@ from backend.application.services.course import CoursePaginationService
 from backend.application.services.subject import SubjectPaginationService
 from backend.domain.filters.absence import AbsenceFilterSchema, AbsenceFilterSet
 from datetime import datetime
-from .. import IRepository
+from .base import IRepository
 import uuid
 
 class AbsenceRepository(IRepository[AbsenceCreateModel,AbsenceTable, None,AbsenceFilterSchema]):
@@ -51,7 +51,7 @@ class AbsenceRepository(IRepository[AbsenceCreateModel,AbsenceTable, None,Absenc
         return self.session.execute(final_query).all()
     
     def get_absence_by_student_by_teacher(self, teacher_id: uuid.UUID) -> list[AbsenceTable] :
-        students = self.get_students_by_teacher(session=self.session, teacher_id=teacher_id)
+        students = self.get_students_by_teacher(teacher_id=teacher_id)
 
         query = select(AbsenceTable.student_id, AbsenceTable.subject_id , func.count().label("absences_by_subject"))
         query = query.where( AbsenceTable.student_id.in_(students))

@@ -18,10 +18,10 @@ async def create_absence(
     absence_input: AbsenceCreateModel,
     session: Session = Depends(get_db)
 ) :
-    absence_service = AbsenceCreateService()
+    absence_service = AbsenceCreateService(session)
     mapper = AbsenceMapper()
 
-    response = absence_service.create_absence(session=session, absence=absence_input)
+    response = absence_service.create_absence(absence=absence_input)
 
     return mapper.to_api(response)
 
@@ -36,10 +36,10 @@ async def read_absence(
     filters: AbsenceFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
-    absence_pagination_service = AbsencePaginationService()
+    absence_pagination_service = AbsencePaginationService(session)
     mapper = AbsenceMapper()
 
-    absences = absence_pagination_service.get_absence(session=session, filter_params=filters)
+    absences = absence_pagination_service.get_absence(filter_params=filters)
 
     if not absences :
         raise HTTPException(
@@ -48,10 +48,10 @@ async def read_absence(
         )
     
     if by_student :
-        absences = absence_pagination_service.get_absence_by_student(session=session, student_id=by_student)
+        absences = absence_pagination_service.get_absence_by_student(student_id=by_student)
         return mapper.to_abscence_by_student(absences)
     elif by_student_by_teacher :
-        absences = absence_pagination_service.get_absence_by_student_by_teacher(session=session, teacher_id=by_student_by_teacher)
+        absences = absence_pagination_service.get_absence_by_student_by_teacher(teacher_id=by_student_by_teacher)
         return mapper.to_absence_by_student_by_teacher(absences)
     
     mapped_absences = []
