@@ -16,7 +16,7 @@ export class ProfesorCreateAdapter implements Partial<ProfesorGetAdapter>{
     constructor(profesorCreateDB: ProfesorCreateDB) {
 
         this.name = profesorCreateDB.name;
-        this.lastname = profesorCreateDB.fullname;
+        this.lastname = profesorCreateDB.lastname;
         this.email = profesorCreateDB.email;
         this.specialty = profesorCreateDB.specialty;
         this.contractType = profesorCreateDB.contract_type;

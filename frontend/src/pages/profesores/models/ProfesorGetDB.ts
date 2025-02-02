@@ -2,7 +2,7 @@ export type ProfesorDB = {
 
         id: string
         "name": string
-        "fullname": string
+        "lastname": string
         "specialty": string
         "contract_type": string
         "experience": number

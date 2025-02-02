@@ -19,7 +19,7 @@ export class ProfesorGetAdapter implements DBObject{
     constructor(profesorModel: ProfesorDB) {
         this.id = profesorModel.id;
         this.name = profesorModel.name;
-        this.lastname = profesorModel.fullname;
+        this.lastname = profesorModel.lastname;
         this.specialty = profesorModel.specialty;
         this.contractType = profesorModel.contract_type;
         this.experience = profesorModel.experience;
