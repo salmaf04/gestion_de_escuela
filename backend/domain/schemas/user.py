@@ -61,6 +61,7 @@ class UserModel(BaseModel) :
     username: str
     email: str
     hashed_password: str 
+    roles: list[str]
     type: str
 
 class UserLoginModel(BaseModel) :
