@@ -1,7 +1,9 @@
 import {DBObject} from "../../../types.ts";
 import {ProfesorDB} from "../models/ProfesorGetDB.ts";
+import {IUsuarioLocal} from "../../usuarios/models/IUsuarioLocal.ts";
+import {RolesEnum} from "../../../api/RolesEnum.ts";
 
-export class ProfesorGetAdapter implements DBObject{
+export class ProfesorGetAdapter implements DBObject, IUsuarioLocal{
     static Properties = ['Id', 'Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia','Salario', 'Correo' ,  'Usuario', 'Asignaturas', 'Valoracion']
     id: string
     name: string
@@ -14,6 +16,7 @@ export class ProfesorGetAdapter implements DBObject{
     username: string
     asignaturas: string[]
     valoracion: string
+    type: RolesEnum
 
 
     constructor(profesorModel: ProfesorDB) {
@@ -28,6 +31,7 @@ export class ProfesorGetAdapter implements DBObject{
         this.salary = profesorModel.salary
         this.asignaturas = profesorModel.list_of_subjects;
         this.valoracion = profesorModel.valoration;
+        this.type = RolesEnum.TEACHER
     }
 
 }

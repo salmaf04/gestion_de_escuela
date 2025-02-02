@@ -1,0 +1,38 @@
+### GET request to example server
+GET http://localhost:8000/teacher?id=92dffe04-33f2-49c5-ae88-f6ffdd9f3036
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqdWFuYSIsInR5cGUiOiJzZWNyZXRhcnkiLCJleHAiOjE3Mzc1MjQ3NjN9.M3FEt9vzvX35z_3AkVhacf2k3gNsBaqfZw8J0B6VDlA
+
+###
+
+PATCH http://localhost:8000/teacher/92dffe04-33f2-49c5-ae88-f6ffdd9f3036
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqdWFuYSIsInR5cGUiOiJzZWNyZXRhcnkiLCJleHAiOjE3Mzc1MjQ3NjN9.M3FEt9vzvX35z_3AkVhacf2k3gNsBaqfZw8J0B6VDlA
+Content-Type: application/json
+
+{
+  "contract_type": "dadsa",
+  "email": "sadds",
+  "experience": 211,
+  "fullname": "dsadsa",
+  "list_of_subjects": [],
+  "name": "asdasd",
+  "salary": 2,
+  "specialty": "asdas",
+  "username": "asdsad"
+}
+
+###
+GET http://localhost:8000/subject/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqdWFuYSIsInR5cGUiOiJzZWNyZXRhcnkiLCJleHAiOjE3Mzc1MjQ3NjN9.M3FEt9vzvX35z_3AkVhacf2k3gNsBaqfZw8J0B6VDlA
+
+###
+
+###
+PATCH http://localhost:8000/subject/e958fcd4-51ee-4e96-aee0-7e3248c49176
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqdWFuYSIsInR5cGUiOiJzZWNyZXRhcnkiLCJleHAiOjE3Mzc1MjQ3NjN9.M3FEt9vzvX35z_3AkVhacf2k3gNsBaqfZw8J0B6VDlA
+Content-Type: application/json
+
+{
+ "name": "EDA1"
+}
+
+###

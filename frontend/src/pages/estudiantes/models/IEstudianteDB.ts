@@ -6,4 +6,5 @@ export interface IEstudianteDB {
     extra_activities: boolean,
     username: string,
     course_id: string,
+    lastname: string
 }

@@ -26,6 +26,8 @@ import FuncionalidadesScreen from "./pages/funcionalidades/FuncionalidadesScreen
 import {IAusenciaLocal} from "./pages/ausencias/models/IAusenciaLocal.ts";
 import AusenciasScreen from "./pages/ausencias/AusenciasScreen.tsx";
 import InfoScreen from "./pages/info/InfoScreen.tsx";
+import UsuariosScreen from "./pages/usuarios/UsuariosScreen.tsx";
+import {IUsuarioLocal} from "./pages/usuarios/models/IUsuarioLocal.ts";
 
 
 interface AppContextInterface {
@@ -50,6 +52,8 @@ interface AppContextInterface {
     setMantenimientos?: (mantenimiento: IMantenimientoLocal[]) => void,
     ausencias?: IAusenciaLocal[],
     setAusencias?: (ausencia: IAusenciaLocal[]) => void,
+    usuarios?: IUsuarioLocal[],
+    setUsuarios?: (usuarios: IUsuarioLocal[]) => void,
 
     setRole?: (role: RolesEnum) => void,
     role?: RolesEnum,
@@ -177,11 +181,11 @@ function App() {
                                     {allowRoles(Screens.Cursos.allowedRoles) &&
                                         <Route path={'/curso'} element={<CursosScreen/>}/>
                                     }
-                                    {allowRoles(Screens.Mantenimientos.allowedRoles) &&
-                                        <Route path={'/mantenimiento'} element={<MantenimientosScreen/>}/>
-                                    }
                                     {allowRoles(Screens.Ausencias.allowedRoles) &&
                                         <Route path={'/ausencias'} element={<AusenciasScreen/>}/>
+                                    }
+                                    {allowRoles(Screens.Usuarios.allowedRoles) &&
+                                        <Route path={'/ausencias'} element={<UsuariosScreen/>}/>
                                     }
                                     <Route path={'/info'} element={<InfoScreen/>}/>
                                     <Route path={'/funcionalidades'} element={<FuncionalidadesScreen/>}/>

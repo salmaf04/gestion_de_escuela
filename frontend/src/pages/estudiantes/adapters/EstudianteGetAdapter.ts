@@ -1,10 +1,10 @@
 import { IEstudianteDB } from "../models/IEstudianteDB.ts";
-import {IEstudianteLocal} from "../models/IEstudianteLocal.ts";
 import {ICursoGetDB} from "../../cursos/models/ICursoGetDB.ts";
 
-export class EstudianteGetAdapter implements IEstudianteLocal{
-    static Properties = ['Id', 'Nombre', 'Edad', 'Correo', 'ActividadesExtra', 'Usuario', "Curso"]
+export class EstudianteGetAdapter{
+    static Properties = ['Id', 'Nombre', 'Apellidos', 'Edad', 'Correo', 'ActividadesExtra', 'Usuario', "Curso"]
     id: string;
+    lastname: string
     name: string;
     age: number;
     email: string;
@@ -20,6 +20,8 @@ export class EstudianteGetAdapter implements IEstudianteLocal{
         this.username = estudianteGetDB.username;
         this.extra_activities = estudianteGetDB.extra_activities;
         this.course = curso;
+        this.lastname = estudianteGetDB.lastname
     }
+
 
 }
