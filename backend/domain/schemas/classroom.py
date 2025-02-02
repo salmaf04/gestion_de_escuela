@@ -3,6 +3,7 @@ import uuid
 from backend.domain.schemas.mean import MeanClassroomModel
 
 class ClassroomCreateModel(BaseModel):
+    number : int
     location : str
     capacity : int
 

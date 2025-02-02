@@ -5,7 +5,6 @@ from backend.application.services.classroom import ClassroomPaginationService
 from backend.application.services.classroom_request import ClassroomRequestCreateService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.classroom_request import ClassroomRequestMapper
-from backend.domain.filters.administrador import ChangeRequest
 from backend.configuration import get_db
 
 

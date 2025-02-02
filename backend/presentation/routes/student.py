@@ -20,9 +20,11 @@ router = APIRouter()
     response_model= StudentModel,
     status_code=status.HTTP_201_CREATED
 )
+@authorize(role=['secretary'])
 async def create_student(
     student_input: StudentCreateModel,
-    session: Session = Depends(get_db)
+    session: Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user)
 ) :
     student_service = StudentCreateService()
     student_pagination_service = StudentPaginationService()
@@ -66,7 +68,7 @@ async def delete_student(
     response_model=dict[int, StudentModel] | StudentAcademicPerformance | list[StudentModel],
     status_code=status.HTTP_200_OK
 )
-@authorize(role=['secretary','teacher'])
+@authorize(role=['secretary','teacher', 'student'])
 async def read_student(
     request: Request,
     id : str = None,
@@ -94,10 +96,7 @@ async def read_student(
     students = student_pagination_service.get_students(session=session, filter_params=filters)
 
     if not students :
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="There is no student with that email"
-        )
+        return []
 
     students_mapped = {}    
      
@@ -114,7 +113,7 @@ async def read_student(
 )
 async def update_student(
     id : str,
-    filters: StudentChangeRequest = Depends(),
+    filters: StudentChangeRequest,
     session: Session = Depends(get_db)
 ) :
     student_pagination_service = StudentPaginationService()

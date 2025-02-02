@@ -1,5 +1,5 @@
 ## main.py
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status, Body, Header
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta
 
@@ -9,10 +9,11 @@ from backend.application.services.user import UserCreateService, UserUpdateServi
 from sqlalchemy.orm import Session
 from backend.domain.schemas.user import UserCreateModel, UserModel
 from backend.configuration import get_db
-from backend.domain.filters.user import ChangeRequest
+from backend.domain.filters.user import UserChangeRequest, UserPasswordChangeRequest
 from backend.domain.schemas.roles import Roles
 from typing import Annotated
 from fastapi import Query
+from fastapi.requests import Request
 
 roles = Roles.get_roles_list()
 
@@ -45,6 +46,15 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     
     return {"access_token": access_token, "token_type": "bearer"}
 
+@router.post(
+    "/logout",
+    status_code=status.HTTP_200_OK,
+    response_model=dict
+)
+def user_logout(Authorization: str = Header(None)):
+    oauth2_scheme.revoke_token(Authorization)
+    return {"message": "Token revoked"} 
+
 
 # Define a route for registering a new user
 @router.post(
@@ -71,14 +81,39 @@ async def register_user(user: UserCreateModel, session: Session = Depends(get_db
 )
 @authorize(roles)
 async def update_user(
+    request: Request,
     id: str ,
     current_user: UserModel = Depends(get_current_user),
-    changes :ChangeRequest =  Depends(),
-    session: Session = Depends(get_db)    
+    session: Session = Depends(get_db),
+    current_password: Annotated[
+        str,
+        Body(description="Current password)")  
+    ] = None,
+    new_password: Annotated[
+        str,
+        Body(description="Password to update)")  
+    ] = None,
+    username: Annotated[
+        str,
+        Body(description="Username to update)")  
+    ] = None,
+    email: Annotated[
+        str,
+        Body(description="Email to update)")  
+    ] = None,
 ):
     update_user_service = UserUpdateService()
     create_user = UserCreateService()
     mapper = UserMapper()
+    
+    password_change_request = UserPasswordChangeRequest(
+        current_password=current_password,
+        new_password=new_password
+    )
+    personal_info_change_request = UserChangeRequest(
+        username=username,
+        email=email
+    )
     
     user = await create_user.get_user_by_id(id=id, session=session)
     user = mapper.to_api(user)
@@ -89,7 +124,7 @@ async def update_user(
             detail="User not found"
         )
     
-    updated_user = await update_user_service.update_user(user_input=user, changes=changes, session=session)
+    updated_user = await update_user_service.update_user(user_input=user,password_change_request=password_change_request, personal_info_change_request=personal_info_change_request, session=session)
 
     return updated_user
     

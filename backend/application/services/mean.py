@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.mean import MeanCreateModel, MeanModel
-from backend.domain.models.tables import MeanTable , TechnologicalMeanTable , TeachingMaterialTable, OthersTable
+from backend.domain.models.tables import MeanTable , TechnologicalMeanTable , TeachingMaterialTable, OthersTable, MeanMaintenanceTable, teacher_request_mean_table
 from sqlalchemy import and_
 import uuid
-from sqlalchemy import select, update
+from sqlalchemy import select, update, and_
 from backend.domain.filters.mean import MeanFilterSet , MeanFilterSchema, MeanChangeRequest
 from backend.application.services.classroom import ClassroomPaginationService
 from fastapi import HTTPException, status
@@ -68,6 +68,20 @@ class MeanPaginationService :
         query = select(MeanTable)
         filter_set = MeanFilterSet(session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
+        return session.execute(query).scalars().all()
+    
+    
+    def get_avaliable_means(self, session: Session) -> list[MeanTable] :
+        print('hola')
+        query = select(MeanTable)
+        query = query.where(and_(
+            MeanTable.to_be_replaced == False,
+            MeanTable.entity_id.notin_(
+                select(teacher_request_mean_table.c.mean_id)),
+            MeanTable.entity_id.notin_(
+                select(MeanMaintenanceTable.mean_id).where(MeanMaintenanceTable.finished == False)
+            ))
+        )
         return session.execute(query).scalars().all()
     
 

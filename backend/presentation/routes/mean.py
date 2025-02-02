@@ -52,28 +52,23 @@ async def delete_mean(
 
 @router.get(
     "/mean",
-    response_model=dict[int, MeanModel],
+    response_model=list[MeanModel] | MeanModel,
     status_code=status.HTTP_200_OK
 )
 async def read_mean(
+    avaliable_means: bool = False,
     filters: MeanFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
     mean_pagination_service = MeanPaginationService()
     mapper = MeanMapper()
 
-    means = mean_pagination_service.get_means(session=session, filter_params=filters)
+    if avaliable_means :
+        means = mean_pagination_service.get_avaliable_means(session=session)
+    else :
+        means = mean_pagination_service.get_means(session=session, filter_params=filters)
 
-    if not means :
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="There is no means with that fields"
-        )
-
-    means_mapped = {}    
-     
-    for i, means in enumerate(means) :
-        means_mapped[i] = mapper.to_api(means)
+    means_mapped = [mapper.to_api(mean) for mean in means] if means else []
         
     return means_mapped
     
@@ -84,7 +79,7 @@ async def read_mean(
 )
 async def mean_update(
     id : str,
-    filters: MeanChangeRequest = Depends(),
+    filters: MeanChangeRequest,
     session: Session = Depends(get_db)
 ) :
     mean_pagination_service = MeanPaginationService()
