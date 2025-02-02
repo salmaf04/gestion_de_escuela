@@ -1,6 +1,6 @@
 from typing import List
 from typing import Optional
-from enum import Enum
+from enum import Enum as PyEnum
 from sqlalchemy import ForeignKey, Table
 from sqlalchemy import String
 from sqlalchemy import Integer
@@ -8,7 +8,7 @@ from sqlalchemy import Column
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Double
-from sqlalchemy import Tuple
+from sqlalchemy import Tuple, ARRAY, Enum
 from sqlalchemy import event, select, func, inspect
 from sqlalchemy.schema import DDL
 from sqlalchemy.orm import DeclarativeBase
@@ -21,7 +21,7 @@ from sqlalchemy.orm.attributes import get_history
 
 import uuid
 
-class TableName(str, Enum):
+class TableName(str, PyEnum):
     USER = "user"
     TEACHER = "teacher" 
     DEAN = "dean"
@@ -46,15 +46,23 @@ class TableName(str, Enum):
     TEACHER_CLASSROOM = 'teacher_request_classroom'
     SANCTION = "sanction_table"
     VALORATION_PERIOD = "valoration_period"
+
+class Roles(str, PyEnum):
+    ADMIN = "administrator"
+    SECRETARY = "secretary"
+    TEACHER = "teacher"
+    DEAN = "dean"
+    STUDENT = "student"
+
     
 
-class MeanState(str, Enum):
+class MeanState(str, PyEnum):
     EXCELENT = "excelent" 
     GOOD = "good"
     REGULAR = "regular"
     BAD = "bad"    
 
-class MeanType(str, Enum) :
+class MeanType(str, PyEnum) :
     TECHNOLOGICAL = "technological"
     TEACHING_MATERIAL = "teaching_material" 
     OTHERS = "others"
@@ -95,6 +103,7 @@ class UserTable(BaseTable) :
     username = Column(String, unique=True)
     email = Column(String, unique =True)
     hashed_password = Column(String)
+    roles: Mapped[List[Roles]] = mapped_column(ARRAY(Enum(Roles)), default=[], nullable=True)
     type = Column(String)
     __mapper_args__ = {
         "polymorphic_identity": "user",
@@ -421,6 +430,41 @@ def update_less_than_three_valoration(mapper, connection, target):
                 where(TeacherTable.average_valoration < 3).
                 values(less_than_three_valoration= TeacherTable.less_than_three_valoration + 1)
                 )
+            
+def insert_user_roles(mapper, connection, target):
+    print('hola')
+    print(target.type)
+    if target.type == "administrator" :
+        target.roles = [Roles.ADMIN.value]
+    elif target.type == "secretary" :
+        target.roles = [Roles.SECRETARY.value]
+    elif target.type == "teacher" :
+        target.roles = [Roles.TEACHER.value]
+    elif target.type == "student" :
+        target.roles = [Roles.STUDENT.value]
+
+for table in [TeacherTable, UserTable, AdministratorTable, SecretaryTable, StudentTable] :
+    event.listen(table, 'before_insert', insert_user_roles)
+
+
+@event.listens_for(DeanTable, 'before_insert')
+def no_administrator(mapper, connection, target):
+    result = connection.execute(select(AdministratorTable.entity_id)).fetchone()
+    if result is None :
+        target.roles = [Roles.DEAN.value, Roles.ADMIN.value]
+    else :
+        target.roles = [Roles.DEAN.value]
+
+@event.listens_for(AdministratorTable, 'after_delete')
+def check_administrator(mapper, connection, target):
+    result = connection.execute(select(AdministratorTable.entity_id)).fetchone()
+    decano = connection.execute(select(DeanTable)).fetchone()
+    if result is None :
+        connection.execute(UserTable.__table__.update().values(roles=[Roles.DEAN.value, Roles.ADMIN.value]).where(UserTable.entity_id == decano.id))
+        
+
+
+
 
 
 

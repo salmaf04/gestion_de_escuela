@@ -5,11 +5,11 @@ from datetime import timedelta
 
 from backend.application.serializers.user import UserMapper
 from ..utils.auth import authorize , get_current_user, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
-from backend.application.services.user import UserCreateService, UserUpdateService
+from backend.application.services.user import UserCreateService, UserUpdateService, UserPaginationService
 from sqlalchemy.orm import Session
 from backend.domain.schemas.user import UserCreateModel, UserModel
 from backend.configuration import get_db
-from backend.domain.filters.user import UserChangeRequest, UserPasswordChangeRequest
+from backend.domain.filters.user import UserChangeRequest, UserPasswordChangeRequest, UserFilterSchema
 from backend.domain.schemas.roles import Roles
 from typing import Annotated
 from fastapi import Query
@@ -129,16 +129,49 @@ async def update_user(
     return updated_user
     
 
-@router.get("/check-all")
-@authorize(role=['superadmin'])
-async def route1(current_user: UserModel = Depends(get_current_user)):
-    return {"message": "This endpoint is accessible to admin and superadmin only"}
+@router.get(
+    "/user",
+    response_model=list[UserModel],
+    status_code=status.HTTP_200_OK
+)
+async def read_user(
+    filters: UserFilterSchema = Depends(),
+    session: Session = Depends(get_db)
+) :
+    user_pagination_service = UserPaginationService()
+    mapper = UserMapper()
+
+    users = user_pagination_service.get_user(session=session, filter_params=filters)
+
+    if not users :
+        return []
+    
+    users_mapped = []
+
+    for user in users :
+        users_mapped.append(mapper.to_api(user))   
 
 
-@router.get("/check-superadmin")
-@authorize(role=['superadmin'])
-async def route2(current_user: UserModel = Depends(get_current_user)):
-    return {"message": "This endpoint is accessible to superadmin only"}
+@router.get(
+    "/user/{id}",
+    response_model=UserModel,
+    status_code=status.HTTP_200_OK
+)
+async def read_user(
+    id : str,
+    session: Session = Depends(get_db)
+) :
+    user_pagination_service = UserPaginationService()
+    mapper = UserMapper()
+
+    filter_by_id = UserFilterSchema(id=id)
+
+    user = user_pagination_service.get_user(session=session, filter_params=filter_by_id)
+
+    if not user :
+        return []
+    
+    return mapper.to_api(user[0])  
 
         
 
