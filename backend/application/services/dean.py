@@ -4,16 +4,16 @@ from backend.domain.models.tables import DeanTable
 from sqlalchemy import and_, update
 import uuid
 from sqlalchemy import select
-from backend.domain.filters.dean import DeanFilterSet , DeanFilterSchema, ChangeRequest
-from ..utils.auth import get_password_hash
+from backend.domain.filters.dean import DeanFilterSet , DeanFilterSchema, DeanChangeRequest
+from ..utils.auth import get_password_hash, get_password
 
 
 class DeanCreateService :
 
     def create_dean(self, session: Session, dean: DeanCreateModel) -> DeanTable :
         dean_dict = dean.model_dump(exclude={'password'})
-        hashed_password = get_password_hash(dean.password)
-        new_dean = DeanTable(**dean_dict, hash_password=hashed_password)
+        hashed_password = get_password_hash(get_password(dean))
+        new_dean = DeanTable(**dean_dict, hashed_password=hashed_password)
         session.add(new_dean)
         session.commit()
         return new_dean
@@ -26,7 +26,7 @@ class DeanDeletionService:
         
         
 class DeanUpdateService :
-    def update_one(self, session : Session , changes : ChangeRequest , dean : DeanModel ) -> DeanModel: 
+    def update_one(self, session : Session , changes : DeanChangeRequest , dean : DeanModel ) -> DeanModel: 
         query = update(DeanTable).where(DeanTable.entity_id == dean.id)
         
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))

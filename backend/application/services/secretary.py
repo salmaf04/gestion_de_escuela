@@ -2,16 +2,16 @@ from sqlalchemy.orm import Session
 from backend.domain.schemas.secretary import SecretaryCreateModel, SecretaryModel
 from backend.domain.models.tables import SecretaryTable
 import uuid
-from sqlalchemy import update
-from backend.domain.filters.secretary import ChangeRequest
-from ..utils.auth import get_password_hash
+from sqlalchemy import update, select
+from backend.domain.filters.secretary import SecretaryChangeRequest, SecretaryFilterSchema, SecretaryFilterSet
+from ..utils.auth import get_password_hash, get_password
 
 class SecretaryCreateService :
 
     def create_secretary(self, session: Session, secretary:SecretaryCreateModel) -> SecretaryTable :
         secretary_dict = secretary.model_dump(exclude={'password'})
-        hashed_password = get_password_hash(secretary.password)
-        new_secretary = SecretaryTable(**secretary_dict, hash_password=hashed_password)
+        hashed_password = get_password_hash(get_password(secretary))
+        new_secretary = SecretaryTable(**secretary_dict, hashed_password=hashed_password)
         session.add(new_secretary)
         session.commit()
         return new_secretary
@@ -24,7 +24,7 @@ class SecretaryDeletionService:
         
 
 class SecretaryUpdateService :
-    def update_one(self, session : Session , changes : ChangeRequest , secretary : SecretaryModel ) -> SecretaryModel: 
+    def update_one(self, session : Session , changes : SecretaryChangeRequest , secretary : SecretaryModel ) -> SecretaryModel: 
         query = update(SecretaryTable).where(SecretaryTable.entity_id == secretary.id)
         
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
@@ -49,6 +49,12 @@ class SecretaryPaginationService :
         result = query.scalar()
 
         return result
+    
+    def get(self, session: Session, filter_params: SecretaryFilterSchema) -> list[SecretaryTable] :
+        query = select(SecretaryTable)
+        filter_set = SecretaryFilterSet(session, query=query)
+        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
+        return session.execute(query).scalars().all()
     
 
 

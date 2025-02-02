@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from backend.application.services.secretary import SecretaryCreateService, SecretaryPaginationService, SecretaryDeletionService, SecretaryUpdateService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.secretary import SecretaryMapper
-from backend.domain.filters.secretary import ChangeRequest
+from backend.domain.filters.secretary import SecretaryChangeRequest, SecretaryFilterSchema
 from backend.configuration import get_db
 
 
@@ -64,7 +64,7 @@ async def delete_secretary(
 )
 async def update_secretary(
     id : str,
-    filters: ChangeRequest = Depends(),
+    filters: SecretaryChangeRequest,
     session: Session = Depends(get_db)
 ) :
     secretary_pagination_service = SecretaryPaginationService()
@@ -79,11 +79,31 @@ async def update_secretary(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="There is no secretary with that id"
         )
-    print(filters.specialty)
-
+    
     secretary_updated = secretary_update_service.update_one(session=session, changes=filters, secretary=secretary_model)
 
     return secretary_updated
 
     
+@router.get(
+    "/secretary",
+    response_model=list[SecretaryModel] | SecretaryModel,
+    status_code=status.HTTP_200_OK
+)
+async def read_secretary(
+    filters: SecretaryFilterSchema = Depends(),
+    session: Session = Depends(get_db)
+) :
+    secretary_pagination_service = SecretaryPaginationService()
 
+    secretary = secretary_pagination_service.get(session=session, filter_params=filters)
+
+    if not secretary :
+        return []
+    
+    secretary_mapped = []
+
+    for secretary in secretary :
+        secretary_mapped.append(SecretaryMapper().to_api(secretary))
+        
+    return secretary_mapped

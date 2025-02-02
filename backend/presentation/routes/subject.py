@@ -81,7 +81,7 @@ async def read_subject(
 )
 async def update_subject(
     id : str,
-    filter_params: SubjectChangeRequest = Depends(),
+    filter_params: SubjectChangeRequest,
     session: Session = Depends(get_db)
 ) :
     subject_pagination_service = SubjectPaginationService()

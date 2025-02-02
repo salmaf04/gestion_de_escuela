@@ -1,18 +1,18 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.administrador import AdministratorCreateModel, AdministratorModel
-from backend.domain.filters.administrador import ChangeRequest
+from backend.domain.filters.administrador import AdministratorChangeRequest, AdministratorFilterSchema, AdministratorFilterSet
 from backend.domain.models.tables import AdministratorTable
 from sqlalchemy.orm import Session
-from sqlalchemy import update
+from sqlalchemy import update, select
 import uuid
-from ..utils.auth import get_password_hash
+from ..utils.auth import get_password_hash, get_password
 
 class AdministratorCreateService :
 
     def create_administrator(self, session: Session, administrator:AdministratorCreateModel) -> AdministratorTable :
         administrator_dict = administrator.model_dump(exclude={'password'})
-        hashed_password = get_password_hash(administrator.password)
-        new_administrator = AdministratorTable(**administrator_dict, hash_password=hashed_password)
+        hashed_password = get_password_hash(get_password(administrator))
+        new_administrator = AdministratorTable(**administrator_dict, hashed_password=hashed_password)
         session.add(new_administrator)
         session.commit()
         return new_administrator
@@ -33,6 +33,12 @@ class AdministratorPaginationService :
         result = query.scalar()
 
         return result
+    
+    def get(self, session: Session, filter_params: AdministratorFilterSchema) -> list[AdministratorTable] :
+        query = select(AdministratorTable)
+        filter_set = AdministratorFilterSet(session, query=query)
+        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
+        return session.execute(query).scalars().all()
 
     
 class AdministratorDeletionService:
@@ -42,7 +48,7 @@ class AdministratorDeletionService:
 
 
 class AdministradorUpdateService :
-    def update_one(self, session : Session , changes : ChangeRequest , administrator : AdministratorModel ) -> AdministratorModel: 
+    def update_one(self, session : Session , changes : AdministratorChangeRequest , administrator : AdministratorModel ) -> AdministratorModel: 
         query = update(AdministratorTable).where(AdministratorTable.entity_id == administrator.id)
         
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))

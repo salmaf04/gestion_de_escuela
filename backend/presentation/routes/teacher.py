@@ -113,7 +113,7 @@ async def read_teacher(
 async def update_teacher(
     request: Request,
     id : str,
-    filters: TeacherChangeRequest = Depends(),
+    filters: TeacherChangeRequest,
     current_user : UserModel = Depends(get_current_user),
     session: Session = Depends(get_db)
 ) :

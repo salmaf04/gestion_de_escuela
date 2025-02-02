@@ -7,8 +7,9 @@ class SecretaryMapper :
         return SecretaryModel(
             id = secretary.entity_id,
             name= secretary.name,
+            lastname= secretary.lastname,
             username= secretary.username,
             email= secretary.email,
-            hash_password= secretary.hash_password,
+            hash_password= secretary.hashed_password,
         )
 

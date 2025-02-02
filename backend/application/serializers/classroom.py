@@ -25,6 +25,7 @@ class ClassroomMapper :
                 
                 new_classroom = ClassroomModel(
                     id = classroom[0].entity_id,
+                    number= classroom[0].number,
                     location = classroom[0].location,
                     capacity = classroom[0].capacity,
                     means = [
@@ -44,6 +45,7 @@ class ClassroomMapper :
     def to_api_default(self, classroom: ClassroomTable) -> ClassroomModelPost :
         return  ClassroomModelPost(
             id = classroom.entity_id,
+            number = classroom.number,
             location = classroom.location,
             capacity = classroom.capacity
         )

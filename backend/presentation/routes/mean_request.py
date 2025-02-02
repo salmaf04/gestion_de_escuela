@@ -5,7 +5,6 @@ from backend.application.services.mean import MeanPaginationService
 from backend.application.services.mean_request import MeanRequestCreateService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.mean_request import MeanRequestMapper
-from backend.domain.filters.administrador import ChangeRequest
 from backend.configuration import get_db
 
 
@@ -37,6 +36,7 @@ async def create_mean_request(
     mean_id = create_service.create_mean_request(session=session,mean_id=mean.mean_id,teacher_id=teacher_id)
     return mapper.to_api(teacher_id, mean_id)
     
+
 
     
 

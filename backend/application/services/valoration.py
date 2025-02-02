@@ -1,18 +1,18 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.valoration import ValorationCreateModel
-from backend.domain.models.tables import TeacherNoteTable
+from backend.domain.models.tables import TeacherNoteTable, TeacherTable
 from backend.application.services.student import StudentPaginationService
 from backend.application.services.subject import SubjectPaginationService
 from backend.application.services.teacher import TeacherPaginationService
 from backend.application.services.course import CoursePaginationService
 from backend.domain.filters.valoration import ValorationFilterSchema, ValorationFilterSet
-from sqlalchemy import select, func
+from sqlalchemy import select, func, update
 from backend.application.services.teacher import TeacherValorationService
 
 class ValorationCreateService :
     def create_valoration(self, session: Session, valoration: ValorationCreateModel) -> TeacherNoteTable :
         teacher_valoration_service = TeacherValorationService()
-        teacher_valoration_service.update_note_average(session=session, teacher_id=valoration.teacher_id, new_note=valoration.grade)
+        #teacher_valoration_service.update_note_average(session=session, teacher_id=valoration.teacher_id, new_note=valoration.grade)
         
         valoration_dict = valoration.model_dump()
         new_valoration = TeacherNoteTable(**valoration_dict)
@@ -50,3 +50,10 @@ class ValorationPaginationService :
         query = query.where(TeacherNoteTable.teacher_id == teacher_id)
         return session.execute(query).all()
     
+
+class ValorationCheckService :
+    def update_valoration(self, session: Session) :
+        query = update(TeacherNoteTable).values(less_than_three_valoration=TeacherNoteTable.less_than_three_valoration + 1)
+        query = query.where(TeacherTable.average_valoration < 3)
+        session.execute(query)
+        session.commit()

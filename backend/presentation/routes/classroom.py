@@ -58,8 +58,6 @@ async def read_classroom(
     mapper = ClassroomMapper()
 
     classrooms = classroom_pagination_service.get_classroom(session=session, filter_params=filters)
-
-    print(len(classrooms))
    
     if not classrooms :
         raise HTTPException(
@@ -76,7 +74,7 @@ async def read_classroom(
 )
 async def update_classroom(
     id : str,
-    filters: ClassroomChangeRequest = Depends(),
+    filters: ClassroomChangeRequest,
     session: Session = Depends(get_db)
 ) :
     classroom_pagination_service = ClassroomPaginationService()

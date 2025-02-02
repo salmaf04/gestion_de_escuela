@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from backend.application.services.dean import DeanCreateService, DeanPaginationService, DeanDeletionService, DeanUpdateService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.dean import DeanMapper
-from backend.domain.filters.dean import DeanFilterSchema, ChangeRequest
+from backend.domain.filters.dean import DeanFilterSchema, DeanChangeRequest
 from backend.configuration import get_db
 
 
@@ -91,7 +91,7 @@ async def read_dean(
 )
 async def update_dean(
     id : str,
-    filters: ChangeRequest = Depends(),
+    filters: DeanChangeRequest,
     session: Session = Depends(get_db)
 ) :
     dean_pagination_service = DeanPaginationService()
