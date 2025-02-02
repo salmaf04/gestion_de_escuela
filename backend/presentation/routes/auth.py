@@ -131,13 +131,14 @@ async def update_user(
 
 @router.get(
     "/user",
-    response_model=list[UserModel],
+    response_model=list[UserModel] | list,
     status_code=status.HTTP_200_OK
 )
 async def read_user(
     filters: UserFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
+    print('hola')
     user_pagination_service = UserPaginationService()
     mapper = UserMapper()
 
@@ -150,6 +151,10 @@ async def read_user(
 
     for user in users :
         users_mapped.append(mapper.to_api(user))   
+
+    print(len(users_mapped))
+
+    return users_mapped
 
 
 @router.get(
