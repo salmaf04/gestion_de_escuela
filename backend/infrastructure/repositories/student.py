@@ -3,8 +3,8 @@ from sqlalchemy import select, update, func
 from backend.domain.filters.student import StudentFilterSet , StudentFilterSchema, StudentChangeRequest
 from backend.domain.schemas.student import StudentCreateModel, StudentModel
 from backend.domain.models.tables import StudentTable, StudentNoteTable, TeacherTable, CourseTable, SubjectTable, teacher_subject_table
-from ..utils.auth import get_password_hash, get_password
-from .. import IRepository
+from backend.application.utils.auth import get_password_hash, get_password
+from .base import IRepository
 
 
 class StudentRepository(IRepository[StudentCreateModel,StudentModel, StudentChangeRequest,StudentFilterSchema]):
@@ -36,10 +36,9 @@ class StudentRepository(IRepository[StudentCreateModel,StudentModel, StudentChan
         query = self.session.query(StudentTable).filter(StudentTable.entity_id == id)
 
         result = query.scalar()
-
         return result
     
-    def get_students(self, filter_params: StudentFilterSchema) -> list[StudentTable] :
+    def get(self, filter_params: StudentFilterSchema) -> list[StudentTable] :
         query = select(StudentTable)
         filter_set = StudentFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
