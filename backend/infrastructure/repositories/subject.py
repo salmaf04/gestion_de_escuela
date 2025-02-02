@@ -5,7 +5,7 @@ from backend.domain.models.tables import SubjectTable
 import uuid
 from backend.application.services.classroom import ClassroomPaginationService
 from backend.application.services.course import CoursePaginationService
-from .. import IRepository
+from .base import IRepository
 
 class SubjectRepository(IRepository[SubjectCreateModel,SubjectTable, SubjectChangeRequest,SubjectFilterSchema]):
     def __init__(self, session):

@@ -1,30 +1,25 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.note import NoteCreateModel
-from backend.domain.models.tables import StudentNoteTable, StudentTable, TeacherTable
+from backend.domain.models.tables import StudentNoteTable, StudentTable, TeacherTable, SubjectTable
 from backend.application.services.student import StudentPaginationService
 from backend.application.services.subject import SubjectPaginationService
 from backend.application.services.teacher import TeacherPaginationService
-from backend.application.services.note import NotePaginationService
 from backend.domain.filters.note import NoteFilterSet , NoteFilterSchema, NoteChangeRequest
 from sqlalchemy import select, func, update
 from backend.application.services.student import UpdateNoteAverageService
-from .. import IRepository
+from .base import IRepository
 
 class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeRequest,NoteFilterSchema]):
     def __init__(self, session):
         super().__init__(session)
 
-    def create(self, note: NoteCreateModel, modified_by : str) -> StudentNoteTable :
+    def create(self, note: NoteCreateModel, modified_by : str, student: StudentTable, subject: SubjectTable, teacher: TeacherTable) -> StudentNoteTable :
         update_note_average_service = UpdateNoteAverageService()
         update_note_average_service.update_note_average(session=self.session, student_id=note.student_id, new_note=note.note_value)
 
         note_dict = note.model_dump()
         new_note = StudentNoteTable(**note_dict, last_modified_by = modified_by)
         
-        student = StudentPaginationService().get_student_by_id(session=self.session, id=note.student_id)
-        subject = SubjectPaginationService().get_subject_by_id(session=self.session, id=note.subject_id)
-        teacher = TeacherPaginationService().get_teacher_by_id(session=self.session, id=note.teacher_id)
-
         new_note.student = student
         new_note.subject = subject  
         new_note.teacher = teacher
@@ -42,12 +37,11 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         self.session.commit()
 
     def update(self, changes : NoteChangeRequest , entity : StudentNoteTable, modified_by : str) -> StudentNoteTable :
-        pagination_service = NotePaginationService()
-        update_statement = update(StudentNoteTable).where(StudentNoteTable.entity_id == entity.entity_id).values(changes.model_dump(exclude_unset=True, exclude_none=True), last_modified_by = modified_by)
+        update_statement = update(StudentNoteTable).where(StudentNoteTable.entity_id == entity.entity_id).values(**changes.model_dump(exclude_unset=True, exclude_none=True), last_modified_by=modified_by)
         self.session.execute(update_statement)
         self.session.commit()
 
-        return pagination_service.get_note_by_id(session=self.session, id=entity.entity_id)
+        return self.get_by_id(id=entity.entity_id)
 
     def get_by_id(self, id: str ) -> StudentNoteTable :
         query = self.session.query(StudentNoteTable).filter(StudentNoteTable.entity_id == id)
@@ -62,7 +56,7 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
         return self.session.execute(query).scalars().all()
 
-    def grade_less_than_fifty(self, session: Session) :
+    def grade_less_than_fifty(self) :
         query = select(StudentNoteTable.student_id, StudentNoteTable.subject_id, (func.sum(StudentNoteTable.note_value)/func.count()).label('average_note'))
         query = query.group_by(StudentNoteTable.student_id, StudentNoteTable.subject_id)
         query = query.having((func.sum(StudentNoteTable.note_value)/func.count()) < 50)
@@ -87,7 +81,7 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         )
 
         # Ejecutar la consulta
-        results = session.execute(combined_query).fetchall()
+        results = self.session.execute(combined_query).fetchall()
         return results
        
     
