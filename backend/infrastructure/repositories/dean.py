@@ -5,8 +5,8 @@ from sqlalchemy import and_, update
 import uuid
 from sqlalchemy import select
 from backend.domain.filters.dean import DeanFilterSet , DeanFilterSchema, DeanChangeRequest
-from ..utils.auth import get_password_hash, get_password
-from .. import IRepository
+from backend.application.utils.auth import get_password_hash, get_password
+from .base import IRepository
 
 class DeanRepository(IRepository[DeanCreateModel, DeanModel, DeanChangeRequest, DeanFilterSchema]):
     def __init__(self, session):

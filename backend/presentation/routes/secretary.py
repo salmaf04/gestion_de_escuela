@@ -7,7 +7,6 @@ from backend.application.serializers.secretary import SecretaryMapper
 from backend.domain.filters.secretary import SecretaryChangeRequest, SecretaryFilterSchema
 from backend.configuration import get_db
 
-
 router = APIRouter()
 
 
@@ -20,11 +19,11 @@ async def create_secretary(
     secretary_input: SecretaryCreateModel,
     session: Session = Depends(get_db)
 ) :
-    secretary_service = SecretaryCreateService()
-    secretary_pagination_service = SecretaryPaginationService()
+    secretary_service = SecretaryCreateService(session)
+    secretary_pagination_service = SecretaryPaginationService(session)
     mapper = SecretaryMapper()
 
-    secretary = secretary_pagination_service.get_secretary_by_email(session=session, email=secretary_input.email)
+    secretary = secretary_pagination_service.get_secretary_by_email(email=secretary_input.email)
 
     if secretary :
         raise HTTPException(
@@ -32,7 +31,7 @@ async def create_secretary(
             detail="There is already an secretary with that email"
         )
 
-    response = secretary_service.create_secretary(session=session, secretary=secretary_input)
+    response = secretary_service.create_secretary(secretary=secretary_input)
 
     return mapper.to_api(response)
 
@@ -44,10 +43,10 @@ async def delete_secretary(
     id: str,
     session: Session = Depends(get_db)
 ) :
-    secretary_pagination_service = SecretaryPaginationService()
-    secretary_deletion_service = SecretaryDeletionService()
+    secretary_pagination_service = SecretaryPaginationService(session)
+    secretary_deletion_service = SecretaryDeletionService(session)
 
-    secretary =secretary_pagination_service.get_secretary_by_id(session=session, id=id)
+    secretary =secretary_pagination_service.get_secretary_by_id(id=id)
 
     if not secretary :
         raise HTTPException(
@@ -55,7 +54,7 @@ async def delete_secretary(
             detail="There is no secretary with that email"
         )
 
-    secretary_deletion_service.delete_secretary(session=session, secretary=secretary)
+    secretary_deletion_service.delete_secretary(secretary=secretary)
     
 @router.patch(
     "/secretary/{id}",
@@ -67,11 +66,11 @@ async def update_secretary(
     filters: SecretaryChangeRequest,
     session: Session = Depends(get_db)
 ) :
-    secretary_pagination_service = SecretaryPaginationService()
-    secretary_update_service = SecretaryUpdateService()
+    secretary_pagination_service = SecretaryPaginationService(session)
+    secretary_update_service = SecretaryUpdateService(session)
     mapper = SecretaryMapper()
 
-    secretary = secretary_pagination_service.get_secretary_by_id(session=session, id = id)
+    secretary = secretary_pagination_service.get_secretary_by_id(id = id)
     secretary_model = mapper.to_api(secretary)
 
     if not secretary :
@@ -80,7 +79,7 @@ async def update_secretary(
             detail="There is no secretary with that id"
         )
     
-    secretary_updated = secretary_update_service.update_one(session=session, changes=filters, secretary=secretary_model)
+    secretary_updated = secretary_update_service.update_one(changes=filters, secretary=secretary_model)
 
     return secretary_updated
 
@@ -94,9 +93,9 @@ async def read_secretary(
     filters: SecretaryFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
-    secretary_pagination_service = SecretaryPaginationService()
+    secretary_pagination_service = SecretaryPaginationService(session)
 
-    secretary = secretary_pagination_service.get(session=session, filter_params=filters)
+    secretary = secretary_pagination_service.get(filter_params=filters)
 
     if not secretary :
         return []

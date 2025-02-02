@@ -4,8 +4,8 @@ from backend.domain.models.tables import SecretaryTable
 import uuid
 from sqlalchemy import update, select
 from backend.domain.filters.secretary import SecretaryChangeRequest, SecretaryFilterSchema, SecretaryFilterSet
-from ..utils.auth import get_password_hash, get_password
-from .. import IRepository
+from backend.application.utils.auth import get_password_hash, get_password
+from .base import IRepository
 
 class SecretaryRepository(IRepository[SecretaryCreateModel,SecretaryModel, SecretaryChangeRequest,SecretaryFilterSchema]):
     def __init__(self, session):

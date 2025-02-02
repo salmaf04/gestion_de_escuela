@@ -5,8 +5,8 @@ from backend.domain.models.tables import AdministratorTable
 from sqlalchemy.orm import Session
 from sqlalchemy import update, select
 import uuid
-from ..utils.auth import get_password_hash, get_password
-from .. import IRepository
+from backend.application.utils.auth import get_password_hash, get_password
+from .base import IRepository
 
 class AdministratorRepository(IRepository[AdministratorCreateModel,AdministratorModel, AdministratorChangeRequest,AdministratorFilterSchema]):
     def __init__(self, session):
