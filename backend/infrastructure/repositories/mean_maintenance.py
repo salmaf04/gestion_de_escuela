@@ -10,7 +10,7 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from sqlalchemy import func
 from sqlalchemy import extract, and_
-from .. import IRepository
+from .base import IRepository
 
 class MeanMaintenanceRepository(IRepository[MeanMaintenanceCreateModel,MeanMaintenanceTable, MeanMaintenanceChangeRequest,MeanMaintenanceFilterSchema]):
     def __init__(self, session):
@@ -22,7 +22,7 @@ class MeanMaintenanceRepository(IRepository[MeanMaintenanceCreateModel,MeanMaint
         mean_maintenance_dict = entity.model_dump(exclude={"date"})
         new_mean_maintenance = MeanMaintenanceTable(**mean_maintenance_dict, date=date_converted)
         mean = MeanPaginationService().get_mean_by_id(session=self.session, id=entity.mean_id)    
-        check_replacement = self.check_replacement(session=self.session, date=date_converted, mean_id=entity.mean_id)
+        check_replacement = self.check_replacement(date=date_converted, mean_id=entity.mean_id)
 
         if check_replacement :
             mean.to_be_replaced = True
@@ -39,8 +39,8 @@ class MeanMaintenanceRepository(IRepository[MeanMaintenanceCreateModel,MeanMaint
         self.session.delete(entity)
         self.session.commit()
 
-    def update(self, changes : MeanMaintenanceChangeRequest , entity : MeanMaintenanceTable) -> MeanMaintenanceTable :
-        query = update(MeanMaintenanceTable).where(MeanMaintenanceTable.entity_id == entity.entity_id)
+    def update(self, changes : MeanMaintenanceChangeRequest , entity : MeanMaintenanceModel) -> MeanMaintenanceTable :
+        query = update(MeanMaintenanceTable).where(MeanMaintenanceTable.entity_id == entity.id)
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
         self.session.execute(query)
         self.session.commit()
