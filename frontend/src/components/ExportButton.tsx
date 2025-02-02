@@ -1,43 +1,41 @@
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import {MedioGetAdapter} from "../pages/medios/adapters/MedioGetAdapter.ts";
-import {AsignaturaGetAdapter} from "../pages/asignaturas/adapters/AsignaturaGetAdapter.ts";
+import {DBObject} from "../types.ts";
+import {jsPDFDocument} from "jspdf-autotable";
+
+
 
 interface ExportButtonProps {
-    data : Adapter;
+    data?: DBObject[]  ;
+    headers: string[];
+    title : string[]
 }
 
-type Adapter = MedioGetAdapter[] | AsignaturaGetAdapter[] | undefined
 
-function exportDataToPDF(data : Adapter){
+function exportDataToPDF(  data : DBObject[] | undefined ,headers : string[] , title : string ){
     const doc = new jsPDF();
-    const tableColumn = Object.keys(data[0]).filter(key => key !== 'id');
-    const tableRows = [];
+    const tableColumn = headers;
+    const tableRows : unknown = [];
 
-    data.forEach(item => {
-        const itemData = tableColumn.map(key => {
-            const value = item[key];
-            if( key === 'id' ) return "";
-            if (typeof value === 'object' && value !== null) {
-                return Object.values(value).join(', ');
-            }
-            return value;
-        });
-        tableRows.push(itemData);
-    });
 
-    (doc as any).autoTable(tableColumn, tableRows, { startY: 20 });
-    doc.text("Exported Data", 14, 15);
-    doc.save('exported_data.pdf');
+    if(data)
+    data.forEach(row =>
+    { const itemData  = Object.values(row).slice(1).map(key =>
+    { return key; }); tableRows.push(itemData); });
+
+    (doc as jsPDFDocument).autoTable(tableColumn, tableRows, { startY: 20 });
+    doc.text(title, 14, 15);
+    doc.save(`${title}_report_pdf`);
 }
 
 
 
-export default function ExportButton({data} : ExportButtonProps) {
+
+export default function ExportButton({data, headers , title }  : ExportButtonProps ) {
 
 
     const handleExport = () => {
-        exportDataToPDF(data);
+        exportDataToPDF(data , headers);
     };
 
     return (
