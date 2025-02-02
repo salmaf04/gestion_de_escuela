@@ -23,7 +23,7 @@ export default function ToolBar() {
                     setSearchText!(text)
                 }}/>
 
-                <ExportButton headers = {headers} data={dataTable}></ExportButton>
+                <ExportButton title={'Asignaturas'} headers = {headers} data={dataTable}></ExportButton>
                 <AddButton onClick={() => setShowModal!(true)}/>
             </div>
     )

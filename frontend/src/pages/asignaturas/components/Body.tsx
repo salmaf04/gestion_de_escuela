@@ -5,7 +5,6 @@ import {AsignaturaContext} from "../AsignaturasScreen.tsx";
 
 export default function Body(){
     const {dataTable, setEditting, onDeleteTableItem, isLoading} = useContext(AsignaturaContext)
-    console.log(dataTable)
     return(
 
             <Table

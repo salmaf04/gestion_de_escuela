@@ -8,7 +8,7 @@ import {jsPDFDocument} from "jspdf-autotable";
 interface ExportButtonProps {
     data?: DBObject[]  ;
     headers: string[];
-    title : string[]
+    title : string
 }
 
 
@@ -35,7 +35,7 @@ export default function ExportButton({data, headers , title }  : ExportButtonPro
 
 
     const handleExport = () => {
-        exportDataToPDF(data , headers);
+        exportDataToPDF(data , headers ,title);
     };
 
     return (
