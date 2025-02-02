@@ -1,13 +1,13 @@
 from sqlalchemy import update, select
 from backend.domain.models.tables import UserTable
 from backend.domain.schemas.user import UserCreateModel, UserModel
-from ..utils.auth import get_password_hash
+from backend.application.utils.auth import get_password_hash
 from backend.application.utils.auth import verify_password
-from backend.domain.filters.user import UserChangeRequest, UserPasswordChangeRequest
+from backend.domain.filters.user import UserChangeRequest, UserPasswordChangeRequest, UserFilterSchema, UserFilterSet
 from fastapi import HTTPException
-from .. import IRepository
+from .base import IRepository
 
-class UserRepository(IRepository[UserCreateModel,UserTable, UserChangeRequest,None]):
+class UserRepository(IRepository[UserCreateModel,UserTable, UserChangeRequest,UserFilterSchema]):
     def __init__(self, session):
         super().__init__(session)
 
@@ -35,20 +35,26 @@ class UserRepository(IRepository[UserCreateModel,UserTable, UserChangeRequest,No
 
         return result
     
-    def get(self, filter_params: None) -> list[UserTable] :
-        pass
+    def get(self, filter_params: UserFilterSchema) -> list[UserTable] :
+        query = select(UserTable)
+        filter_set = UserFilterSet(self.session, query=query)
+        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
+        return self.session.execute(query).scalars().all()
+        
     
     async def update(
         self, 
         entity: UserModel,
         password_change_request: UserPasswordChangeRequest=None,
         personal_info_change_request: UserChangeRequest=None,    
-    ): 
-        if password_change_request :
-            user_input_new = await self.update_password(password_change_request=password_change_request, user_input=entity, session=self.session)
-        if personal_info_change_request :
-            user_input_new = await self.update_personal_info(personal_info_change_request=personal_info_change_request, user_input=entity, session=self.session)
+    ):  
+        print("hola")
         
+        if password_change_request :
+            user_input_new = await self.update_password(password_change_request=password_change_request, user_input=entity)
+        if personal_info_change_request :
+            user_input_new = await self.update_personal_info(personal_info_change_request=personal_info_change_request, user_input=entity)
+    
         user_update = user_input_new.model_dump(exclude={'id'})
         query = update(UserTable)
         query = query.where(UserTable.entity_id == entity.id)

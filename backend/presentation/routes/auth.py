@@ -64,7 +64,7 @@ def user_logout(Authorization: str = Header(None)):
     status_code=status.HTTP_201_CREATED
 )
 async def register_user(user: UserCreateModel, session: Session = Depends(get_db)):
-    user_service = UserCreateService()
+    user_service = UserCreateService(session)
 
     if await user_service.user_exists(user.username, session):
         raise HTTPException(
@@ -72,7 +72,7 @@ async def register_user(user: UserCreateModel, session: Session = Depends(get_db
             detail="User already exists"
         )
 
-    created_user = await user_service.create_user(user=user, session=session)
+    created_user = await user_service.create_user(user=user)
     return created_user
 
 @router.patch(
@@ -103,8 +103,8 @@ async def update_user(
         Body(description="Email to update)")  
     ] = None,
 ):
-    update_user_service = UserUpdateService()
-    create_user = UserCreateService()
+    update_user_service = UserUpdateService(session)
+    create_user = UserCreateService(session)
     mapper = UserMapper()
     
     password_change_request = UserPasswordChangeRequest(
@@ -116,7 +116,7 @@ async def update_user(
         email=email
     )
     
-    user = await create_user.get_user_by_id(id=id, session=session)
+    user = await create_user.get_user_by_id(id=id)
     user = mapper.to_api(user)
 
     if user is None:
@@ -125,8 +125,7 @@ async def update_user(
             detail="User not found"
         )
     
-    updated_user = await update_user_service.update_user(user_input=user,password_change_request=password_change_request, personal_info_change_request=personal_info_change_request, session=session)
-
+    updated_user = await update_user_service.update_user(user_input=user,password_change_request=password_change_request, personal_info_change_request=personal_info_change_request)
     return updated_user
     
 
@@ -139,10 +138,10 @@ async def read_user(
     filters: UserFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
-    user_pagination_service = UserPaginationService()
+    user_pagination_service = UserPaginationService(session)
     mapper = UserMapper()
 
-    users = user_pagination_service.get_user(session=session, filter_params=filters)
+    users = user_pagination_service.get_user(filter_params=filters)
 
     if not users :
         return []
@@ -152,7 +151,7 @@ async def read_user(
     for user in users :
         users_mapped.append(mapper.to_api(user))   
 
-
+    print(len(users_mapped))
     return users_mapped
 
 
@@ -165,12 +164,12 @@ async def read_user(
     id : str,
     session: Session = Depends(get_db)
 ) :
-    user_pagination_service = UserPaginationService()
+    user_pagination_service = UserPaginationService(session)
     mapper = UserMapper()
 
     filter_by_id = UserFilterSchema(id=id)
 
-    user = user_pagination_service.get_user(session=session, filter_params=filter_by_id)
+    user = user_pagination_service.get_user(filter_params=filter_by_id)
 
     if not user :
         return []
