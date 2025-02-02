@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from backend.domain.schemas.valoration_period import ValorationPeriodChangeRequest
 from backend.domain.models.tables import ValorationPeriodTable
 from sqlalchemy import update, insert
-from .. import IRepository
+from .base import IRepository
 
 class ValorationPeriodRepository(IRepository[ValorationPeriodChangeRequest,ValorationPeriodTable, None,None]):
     def __init__(self, session):

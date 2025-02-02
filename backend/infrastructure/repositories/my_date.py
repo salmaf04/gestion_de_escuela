@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from backend.domain.schemas.my_date import DateCreateModel
 from backend.domain.models.tables import MyDateTable
 import uuid
-from .. import IRepository
+from .base import IRepository
 
 class DateRepository(IRepository[DateCreateModel,MyDateTable, None,None]):
     def __init__(self, session):    

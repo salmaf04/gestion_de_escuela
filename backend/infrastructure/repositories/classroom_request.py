@@ -1,22 +1,27 @@
 from sqlalchemy.orm import Session
 from backend.application.services.teacher import TeacherPaginationService
 from backend.application.services.classroom import ClassroomPaginationService
-from .. import IRepository
+from .base import IRepository
+from backend.domain.models.tables import TeacherTable, ClassroomTable
 
 class ClassroomRequestRepository(IRepository[None,None, None,None]):
     def __init__(self, session):
         super().__init__(session)
 
-    def create(self, entity: None, classroom_id : str, teacher_id: str):
-        teacher_pagination = TeacherPaginationService()
-        classroom_pagination = ClassroomPaginationService()
-
-        teacher = teacher_pagination.get_teacher_by_id(session=self.session, id=teacher_id)
-        classroom = classroom_pagination.get_classroom_by_id(session=self.session, id=classroom_id)
-
+    def create(self, teacher : TeacherTable, classroom : ClassroomTable) :
         teacher.classroom_request.append(classroom)
-      
         self.session.commit()
-        
-        return classroom_id
+        return classroom.entity_id
+    
+    def get(self, filter_params: None) -> list[None] :
+        pass
+
+    def update(self, changes : None , entity : None) -> None:
+        pass
+
+    def get_by_id(self, id: str ) -> None :
+        pass
+
+    def delete(self, entity: None) -> None :
+        pass
 

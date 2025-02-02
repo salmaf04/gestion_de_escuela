@@ -20,12 +20,12 @@ async def create_mean_request(
     classroom : ClassroomRequestCreateModel,
     session: Session = Depends(get_db)
 ) :
-    pagination_service = ClassroomPaginationService()
-    create_service = ClassroomRequestCreateService()
+    pagination_service = ClassroomPaginationService(session)
+    create_service = ClassroomRequestCreateService(session)
     mapper = ClassroomRequestMapper()
 
 
-    pagination_service.get_classroom_by_id(session=session,id=classroom.classroom_id)
+    pagination_service.get_classroom_by_id(id=classroom.classroom_id)
 
     if not pagination_service :
         raise HTTPException(
@@ -33,7 +33,7 @@ async def create_mean_request(
             detail='There is no classroom with that id'
         )
     
-    classroom_id = create_service.create_classroom_request(session=session,classroom_id=classroom.classroom_id,teacher_id=teacher_id)
+    classroom_id = create_service.create_classroom_request(classroom_id=classroom.classroom_id,teacher_id=teacher_id)
     return mapper.to_api(teacher_id, classroom_id)
     
 

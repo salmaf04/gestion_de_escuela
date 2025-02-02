@@ -1,19 +1,18 @@
 from sqlalchemy.orm import Session
 from backend.application.services.teacher import TeacherPaginationService
 from backend.application.services.classroom import ClassroomPaginationService
-
+from backend.domain.models.tables import TeacherTable, ClassroomTable
+from backend.infrastructure.repositories.classroom_request import ClassroomRequestRepository
 
 
 class ClassroomRequestCreateService :
-    def create_classroom_request(self, session: Session, classroom_id: str, teacher_id: str) :
-        teacher_pagination = TeacherPaginationService()
-        classroom_pagination = ClassroomPaginationService()
+    def __init__(self, session):
+        self.session = session
+        self.repo_instance = ClassroomRequestRepository(session)
+        self.teacher_pagination_service = TeacherPaginationService(session)
+        self.classroom_pagination_service = ClassroomPaginationService(session)
 
-        teacher = teacher_pagination.get_teacher_by_id(session=session, id=teacher_id)
-        classroom = classroom_pagination.get_classroom_by_id(session=session, id=classroom_id)
-
-        teacher.classroom_request.append(classroom)
-      
-        session.commit()
-        
-        return classroom_id
+    def create_classroom_request(self, teacher_id : str, classroom_id : str) :
+        teacher = self.teacher_pagination_service.get_teacher_by_id(id=teacher_id)
+        classroom = self.classroom_pagination_service.get_classroom_by_id(id=classroom_id)
+        return self.repo_instance.create(teacher, classroom)

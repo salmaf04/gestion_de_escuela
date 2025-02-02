@@ -20,12 +20,12 @@ async def create_mean_request(
     mean : MeanRequestCreateModel,
     session: Session = Depends(get_db)
 ) :
-    pagination_service = MeanPaginationService()
-    create_service = MeanRequestCreateService()
+    pagination_service = MeanPaginationService(session)
+    create_service = MeanRequestCreateService(session)
     mapper = MeanRequestMapper()
 
 
-    pagination_service.get_mean_by_id(session=session,id=mean.mean_id)
+    pagination_service.get_mean_by_id(id=mean.mean_id)
 
     if not pagination_service :
         raise HTTPException(
@@ -33,7 +33,7 @@ async def create_mean_request(
             detail='There is no mean with that id'
         )
     
-    mean_id = create_service.create_mean_request(session=session,mean_id=mean.mean_id,teacher_id=teacher_id)
+    mean_id = create_service.create_mean_request(mean_id=mean.mean_id,teacher_id=teacher_id)
     return mapper.to_api(teacher_id, mean_id)
     
 

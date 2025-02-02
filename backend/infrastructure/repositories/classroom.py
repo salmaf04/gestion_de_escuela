@@ -5,7 +5,7 @@ from backend.domain.filters.classroom import ClassroomFilterSchema, ClassroomFil
 from sqlalchemy import select, update
 import uuid
 
-from .. import IRepository
+from .base import IRepository
 
 class ClassroomRepository(IRepository[ClassroomCreateModel,ClassroomModel, ClassroomChangeRequest,ClassroomFilterSchema]):
     def __init__(self, session):   
