@@ -29,7 +29,7 @@ const Table: React.FC<ProfesoresTableProps> = ({ title, items, headers, showHead
         <>
             <div className="m-2 flex flex-row px-6 py-4 mb-4">
                 <div className={'w-[98%]'}>
-                    <h1 className={' font-semibold text-2xl'}>{title} </h1>
+                    <h1 className={' font-semibold text-lg'}>{title} </h1>
                     <div
                         className={`${isVisible ? 'w-[98%]' : 'w-[32%]'} h-[2px] bg-indigo-500 rounded-full transition-all duration-300`}/>
                 </div>
