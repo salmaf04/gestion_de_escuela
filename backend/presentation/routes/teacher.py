@@ -52,10 +52,10 @@ async def delete_teacher(
     id: str,
     session: Session = Depends(get_db)
 ) :
-    teacher_pagination_service = TeacherPaginationService()
-    teacher_deletion_service = TeacherDeletionService()
+    teacher_pagination_service = TeacherPaginationService(session)
+    teacher_deletion_service = TeacherDeletionService(session)
 
-    teacher =teacher_pagination_service.get_teacher_by_id(session=session, id=id)
+    teacher =teacher_pagination_service.get_teacher_by_id(id=id)
 
     if not teacher :
         raise HTTPException(
@@ -63,7 +63,7 @@ async def delete_teacher(
             detail="There is no teacher with that email"
         )
 
-    teacher_deletion_service.delete_teacher(session=session, teacher=teacher)
+    teacher_deletion_service.delete_teacher(teacher=teacher)
     
 @router.get(
     "/teacher",

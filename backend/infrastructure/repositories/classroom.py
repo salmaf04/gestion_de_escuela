@@ -36,12 +36,13 @@ class ClassroomRepository(IRepository[ClassroomCreateModel,ClassroomModel, Class
         return self.session.execute(query).scalars().first()
     
     def get(self, filter_params: ClassroomFilterSchema) -> list[ClassroomTable] :
-        query = select(ClassroomTable)
+        query = select(ClassroomTable, MeanTable)
         query = query.outerjoin(MeanTable, ClassroomTable.entity_id == MeanTable.classroom_id)
         filter_set = ClassroomFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
         query = query.group_by(ClassroomTable, MeanTable)
         query = query.order_by(ClassroomTable.entity_id)
+        print(len(self.session.execute(query).all()))
         return self.session.execute(query).all()
     
     

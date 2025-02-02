@@ -19,10 +19,10 @@ async def create_subject(
     subject_input: SubjectCreateModel,
     session: Session = Depends(get_db)
 ) :
-    subject_service = SubjectCreateService()
+    subject_service = SubjectCreateService(session)
     mapper = SubjectMapper()
 
-    response = subject_service.create_subject(session=session, subject=subject_input)
+    response = subject_service.create_subject(subject=subject_input)
 
     return mapper.to_api(response)
 
@@ -34,10 +34,10 @@ async def delete_subject(
     id: str,
     session: Session = Depends(get_db)
 ) :
-    subject_pagination_service = SubjectPaginationService()
-    subject_deletion_service = SubjectDeletionService()
+    subject_pagination_service = SubjectPaginationService(session)
+    subject_deletion_service = SubjectDeletionService(session)
 
-    subject =subject_pagination_service.get_subject_by_id(session=session, id=id)
+    subject =subject_pagination_service.get_subject_by_id(id=id)
 
     if not subject :
         raise HTTPException(
@@ -45,7 +45,7 @@ async def delete_subject(
             detail="There is no subject with that id"
         )
 
-    subject_deletion_service.delete_subject(session=session, subject=subject)
+    subject_deletion_service.delete_subject(subject=subject)
 
 @router.get(
     "/subject",
@@ -56,10 +56,10 @@ async def read_subject(
     filters: SubjectFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
-    subject_pagination_service = SubjectPaginationService()
+    subject_pagination_service = SubjectPaginationService(session)
     mapper = SubjectMapper()
 
-    subjects = subject_pagination_service.get_subjects(session=session, filter_params=filters)
+    subjects = subject_pagination_service.get_subjects(filter_params=filters)
 
     if not subjects :
         raise HTTPException(
@@ -84,11 +84,11 @@ async def update_subject(
     filter_params: SubjectChangeRequest,
     session: Session = Depends(get_db)
 ) :
-    subject_pagination_service = SubjectPaginationService()
-    subject_update_service = SubjectUpdateService()
+    subject_pagination_service = SubjectPaginationService(session)
+    subject_update_service = SubjectUpdateService(session)
     mapper = SubjectMapper()
 
-    subject = subject_pagination_service.get_subject_by_id(session=session, id = id)
+    subject = subject_pagination_service.get_subject_by_id(id = id)
     subject_model = mapper.to_api(subject)
 
     if not subject :
@@ -96,9 +96,7 @@ async def update_subject(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="There is no subject with that id"
         )
-    
-    print(filter_params)
    
-    subject_updated = subject_update_service.update_one(session=session, changes=filter_params, subject=subject_model)
+    subject_updated = subject_update_service.update_one(changes=filter_params, subject=subject_model)
 
     return subject_updated

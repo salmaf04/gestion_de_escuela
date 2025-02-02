@@ -114,7 +114,7 @@ class UserTable(BaseTable) :
 class TeacherTable(UserTable):
     __tablename__ = TableName.TEACHER.value
     
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id", ondelete='CASCADE'), primary_key=True)
     
     specialty = Column(String)
     contract_type = Column(String)
@@ -123,7 +123,7 @@ class TeacherTable(UserTable):
     salary = Column(Double)
     less_than_three_valoration = Column(Integer, default=0)     
 
-    sanctions: Mapped[List["SanctionTable"]] = relationship(back_populates="teacher")
+    sanctions: Mapped[List["SanctionTable"]] = relationship(back_populates="teacher", cascade="all, delete-orphan")
 
     mean_request = relationship(
         "MeanTable",
@@ -136,11 +136,12 @@ class TeacherTable(UserTable):
         "ClassroomTable",
         secondary=teacher_request_classroom_table,
         back_populates="teachers",
+        cascade="all, delete"
     )
 
-    student_note_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="teacher")
-    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="teacher")
-    teacher_subject_association = relationship("SubjectTable", secondary=teacher_subject_table, back_populates="teacher_subject_association")
+    student_note_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="teacher", cascade="all, delete-orphan")
+    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="teacher", cascade="all, delete-orphan")
+    teacher_subject_association = relationship("SubjectTable", secondary=teacher_subject_table, back_populates="teacher_subject_association", cascade="all, delete")
 
 
     __mapper_args__ = {
@@ -151,7 +152,7 @@ class TeacherTable(UserTable):
 class DeanTable(TeacherTable):
     __tablename__ = TableName.DEAN.value
     
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.TEACHER.value}.id"), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.TEACHER.value}.id", ondelete='CASCADE'), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "dean",
@@ -160,7 +161,7 @@ class DeanTable(TeacherTable):
 class SecretaryTable(UserTable) :
     __tablename__ = TableName.SECRETARY.value
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id", ondelete='CASCADE'), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "secretary",
@@ -170,7 +171,7 @@ class SecretaryTable(UserTable) :
 class AdministratorTable(UserTable) :
     __tablename__ = TableName.ADMINISTRATOR.value
     
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id", ondelete='CASCADE'), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "administrator",
@@ -180,16 +181,16 @@ class AdministratorTable(UserTable) :
 class StudentTable(UserTable) :
     __tablename__ = TableName.STUDENT.value
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id", ondelete='CASCADE'), primary_key=True)
     age = Column(Integer)
     extra_activities = Column(Boolean, nullable=True)
     average_note = Column(Double)
     course_id : Mapped[uuid.UUID] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id", ondelete='CASCADE'))
    
     course: Mapped['CourseTable'] = relationship(back_populates="students")
-    student_note_association: Mapped[List["StudentNoteTable"]] = relationship('StudentNoteTable', back_populates="student", cascade="all, delete")
-    student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="student", cascade="all, delete")
-    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="student",cascade="all, delete")
+    student_note_association: Mapped[List["StudentNoteTable"]] = relationship('StudentNoteTable', back_populates="student", cascade="all, delete-orphan")
+    student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="student", cascade="all, delete-orphan")
+    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="student")
 
     __mapper_args__ = {
         "polymorphic_identity": "student",
@@ -203,15 +204,15 @@ class SubjectTable(BaseTable) :
     hourly_load  = Column(Integer)
     study_program = Column(Integer)
 
-    classroom_id : Mapped[int] = mapped_column(ForeignKey(f"{TableName.CLASSROOM.value}.entity_id"))
+    classroom_id : Mapped[int] = mapped_column(ForeignKey(f"{TableName.CLASSROOM.value}.entity_id", ondelete='SET NULL'), nullable=True)
     course_id : Mapped[uuid.UUID] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id"))
   
-    classroom: Mapped["ClassroomTable"] = relationship(back_populates="subjects", cascade="all, delete")
-    course: Mapped['CourseTable'] = relationship(back_populates="subjects", cascade="all, delete")
+    classroom: Mapped["ClassroomTable"] = relationship(back_populates="subjects")
+    course: Mapped['CourseTable'] = relationship(back_populates="subjects")
 
-    student_teacher_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="subject", cascade="all, delete")
-    student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="subject", cascade="all, delete")
-    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="subject", cascade="all, delete")
+    student_teacher_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="subject", cascade="all, delete-orphan")
+    student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="subject", cascade="all, delete-orphan")
+    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="subject", cascade="all, delete-orphan")
     teacher_subject_association = relationship("TeacherTable", secondary=teacher_subject_table, back_populates="teacher_subject_association", cascade="all, delete")
     
 class ClassroomTable(BaseTable) : 
@@ -256,7 +257,7 @@ class MeanTable(BaseTable) :
     name = Column(String) 
     state: Mapped[MeanState] = mapped_column(String)
     location = Column(String)
-    classroom_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.CLASSROOM.value}.entity_id"))
+    classroom_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.CLASSROOM.value}.entity_id", ondelete='SET NULL'), nullable=True)
     to_be_replaced = Column(Boolean, default=False)
     type: Mapped[MeanType] = mapped_column(String)
 
@@ -337,7 +338,7 @@ class TeacherNoteTable(BaseTable) :
     __tablename__ = TableName.TEACHER_NOTE.value
 
     teacher_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.TEACHER.value}.id"), primary_key=True)
-    student_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.STUDENT.value}.id"), primary_key=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.STUDENT.value}.id", ondelete='SET NULL'), nullable=True)
     subject_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.SUBJECT.value}.entity_id"), primary_key=True)
     course_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id"))
     
@@ -363,7 +364,6 @@ class AbsenceTable(BaseTable) :
 #Tablas de relación
 class MeanMaintenanceTable(BaseTable) :
     __tablename__ = TableName.MEAN_MAINTENANCE_TABLE.value
-
 
     mean_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.MEAN.value}.entity_id"), primary_key= True)
     finished = Column(Boolean, default=False)

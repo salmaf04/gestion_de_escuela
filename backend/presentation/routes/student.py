@@ -50,10 +50,10 @@ async def delete_student(
     id: str,
     session: Session = Depends(get_db)
 ) :
-    student_pagination_service = StudentPaginationService()
-    student_deletion_service = StudentDeletionService()
+    student_pagination_service = StudentPaginationService(session)
+    student_deletion_service = StudentDeletionService(session)
 
-    student =student_pagination_service.get_student_by_id(session=session, id=id)
+    student =student_pagination_service.get_student_by_id(id=id)
 
     if not student :
         raise HTTPException(
@@ -61,7 +61,7 @@ async def delete_student(
             detail="There is no student with that email"
         )
 
-    student_deletion_service.delete_student(session=session, student=student)
+    student_deletion_service.delete_student(student=student)
 
 @router.get(
     "/student",
