@@ -38,7 +38,7 @@ function exportDataToPDF(options: string[], data?: dataExport) {
         });
     }
 
-    doc.save('report.pdf');
+    doc.save('data_report.pdf');
 }
 
 

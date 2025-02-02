@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
 interface FunctionalitiesFormProps {
     options: string[];
@@ -6,7 +6,7 @@ interface FunctionalitiesFormProps {
     onCancel: () => void;
 }
 
-const FunctionalitiesForm: React.FC<FunctionalitiesFormProps> = ({ options, onAccept, onCancel }) => {
+const FunctionalitiesForm: React.FC<FunctionalitiesFormProps> = ({options, onAccept, onCancel}) => {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
     const handleOptionChange = (option: string) => {
@@ -31,8 +31,8 @@ const FunctionalitiesForm: React.FC<FunctionalitiesFormProps> = ({ options, onAc
 
     return (
         <div className="absolute top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-4 rounded-lg shadow-lg">
-                <h2 className="text-lg font-semibold mb-4">Selecciona las tablas</h2>
+            <div className="bg-white p-8  rounded-lg shadow-lg">
+                <h2 className="text-2xl text-indigo-600 text-center font-bold group mb-4">Selecciona las Tablas </h2>
                 <div className="mb-4">
 
                     {options.map(option => (
@@ -49,7 +49,7 @@ const FunctionalitiesForm: React.FC<FunctionalitiesFormProps> = ({ options, onAc
                         </div>
                     ))}
                 </div>
-                <div className="flex items-center mb-2">
+                <div className="flex text-sm font-light text-indigo-600 text-center  group   items-center mb-4">
                     <input
                         type="checkbox"
                         id="Marcar todas"
@@ -58,16 +58,18 @@ const FunctionalitiesForm: React.FC<FunctionalitiesFormProps> = ({ options, onAc
                         onChange={() => handleOptionChange('All')}
                         className="mr-2"
                     />
-                    <label className={'font-bold'} htmlFor="Marcar todas">Marcar todas</label>
+                    <label className={'  font-bold'} htmlFor="Marcar todas">Marcar todas</label>
                 </div>
-                <div className="flex justify-end gap-2">
-                    <button onClick={handleAccept} className="bg-blue-500 text-white py-1 px-3 rounded-lg">Accept
+                <div className="flex justify-center  gap-2">
+                    <button onClick={handleAccept} className=" bg-indigo-500 hover:bg-indigo-600 transition-colors w-full flex justify-center py-2 text-indigo-50 rounded-lg">Exportar
                     </button>
-                    <button onClick={onCancel} className="bg-gray-500 text-white py-1 px-3 rounded-lg">Cancel</button>
+                    <button onClick={onCancel} className="hover:bg-gray-400 transition-colors w-full py-2 bg-gray-300 rounded-lg text-gray-900">Cancelar</button>
                 </div>
             </div>
         </div>
     );
 };
+
+
 
 export default FunctionalitiesForm;
