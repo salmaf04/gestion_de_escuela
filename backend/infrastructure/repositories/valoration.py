@@ -1,29 +1,30 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.valoration import ValorationCreateModel
-from backend.domain.models.tables import TeacherNoteTable, TeacherTable
+from backend.domain.models.tables import TeacherNoteTable, TeacherTable, StudentTable, SubjectTable, CourseTable
 from backend.application.services.student import StudentPaginationService
 from backend.application.services.subject import SubjectPaginationService
 from backend.application.services.teacher import TeacherPaginationService
 from backend.application.services.course import CoursePaginationService
 from backend.domain.filters.valoration import ValorationFilterSchema, ValorationFilterSet
 from sqlalchemy import select, func, update
-from backend.application.services.teacher import TeacherValorationService
-from .. import IRepository
+from .base import IRepository
 
 class ValorationRepository(IRepository[ValorationCreateModel,TeacherNoteTable, None,ValorationFilterSchema]):
     def __init__(self, session):
         super().__init__(session)
 
-    def create(self, entity: ValorationCreateModel) -> TeacherNoteTable :
-        teacher_valoration_service = TeacherValorationService()
-        valoration_dict = entity.model_dump()
+    def create(
+        self,
+        valoration: ValorationCreateModel,
+        student : StudentTable,
+        subject : SubjectTable,
+        teacher : TeacherTable,
+        course : CourseTable                       
+    ) -> TeacherNoteTable : 
+        
+        valoration_dict = valoration.model_dump()
         new_valoration = TeacherNoteTable(**valoration_dict)
         
-        student = StudentPaginationService().get_student_by_id(session=self.session, id=entity.student_id)
-        subject = SubjectPaginationService().get_subject_by_id(session=self.session, id=entity.subject_id)
-        teacher = TeacherPaginationService().get_teacher_by_id(session=self.session, id=entity.teacher_id)
-        course = CoursePaginationService().get_course_by_id(session=self.session, id=entity.course_id)
-
         new_valoration.student = student
         new_valoration.subject = subject  
         new_valoration.teacher = teacher

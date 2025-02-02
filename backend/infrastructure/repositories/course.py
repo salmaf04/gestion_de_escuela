@@ -1,4 +1,4 @@
-from backend.infrastructure.base import IRepository
+from .base import IRepository
 
 from sqlalchemy.orm import Session
 from sqlalchemy import select, update , and_

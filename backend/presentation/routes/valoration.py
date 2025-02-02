@@ -17,10 +17,10 @@ async def create_valoration(
     valoration_input:ValorationCreateModel,
     session: Session = Depends(get_db)
 ) :
-    valoration_service = ValorationCreateService()
+    valoration_service = ValorationCreateService(session)
     mapper = ValorationMapper()
 
-    response = valoration_service.create_valoration(session=session, valoration=valoration_input)
+    response = valoration_service.create_valoration(valoration=valoration_input)
 
     return mapper.to_api(response)
 
@@ -34,15 +34,15 @@ async def read_valoration(
     filters: ValorationFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
-    valoration_pagination_service = ValorationPaginationService()
+    valoration_pagination_service = ValorationPaginationService(session)
     mapper = ValorationMapper()
 
     if by_teacher_id :
-        valorations = valoration_pagination_service.get_valoration_by_teacher_id(session=session, teacher_id=by_teacher_id)
+        valorations = valoration_pagination_service.get_valoration_by_teacher_id(teacher_id=by_teacher_id)
         valorations_mapped = mapper.to_valoration_by_subject(valorations)
         return valorations_mapped
 
-    valorations = valoration_pagination_service.get_valoration(session=session, filter_params=filters)
+    valorations = valoration_pagination_service.get_valoration(filter_params=filters)
 
     if not valorations :
         raise HTTPException(
