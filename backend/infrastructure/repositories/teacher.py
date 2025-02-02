@@ -7,14 +7,14 @@ import uuid
 from sqlalchemy import select
 from backend.domain.filters.teacher import TeacherFilterSet , TeacherFilterSchema, TeacherChangeRequest
 from backend.domain.filters.subject import SubjectFilterSchema
-from ..utils.auth import get_password_hash, get_password
+from backend.application.utils.auth import get_password_hash, get_password
 from backend.application.services.subject import SubjectPaginationService
 from sqlalchemy import func
 from backend.application.utils.valoration_average import get_teacher_valoration_average, calculate_teacher_average
 from backend.domain.models.tables import ClassroomTable, TechnologicalMeanTable, SubjectTable, teacher_subject_table
 from sqlalchemy.orm import aliased
 from fastapi import HTTPException, status
-from .. import IRepository
+from .base import IRepository
 
 
 class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChangeRequest,TeacherFilterSchema]):
@@ -40,7 +40,7 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         self.session.commit()
 
     def update(self, changes : TeacherChangeRequest , entity : TeacherModel ) -> TeacherModel: 
-        query = update(TeacherTable).where(TeacherTable.entity_id == teacher.id)
+        query = update(TeacherTable).where(TeacherTable.entity_id == entity.id)
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
         self.session.execute(query)
         self.session.commit()
@@ -73,8 +73,7 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         subjects_in_table_names.sort()
         subjects_in_request.sort()
         wrong_subjects = []
-        print(subjects_in_table_names)
-        print(subjects_in_request)
+        
 
         for subject_in_table, subject_in_request in zip(subjects_in_table_names, subjects_in_request):
             if subject_in_table != subject_in_request:
@@ -143,7 +142,7 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         )
         subquery = query.subquery()
         final_query = select(subquery).where(subquery.c.grade_rank <= 3)
-        return self.session.execute(final_query).all(), self.get_teachers_by_technological_classroom(self.session)
+        return self.session.execute(final_query).all(), self.get_teachers_by_technological_classroom()
         
     def create_teacher_subject(self,teacher_id: str, subject_id: str) :
         teacher_subject = teacher_subject_table.insert().values(teacher_id=teacher_id, subject_id=subject_id)
