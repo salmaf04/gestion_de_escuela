@@ -10,22 +10,31 @@ const FunctionalitiesForm: React.FC<FunctionalitiesFormProps> = ({ options, onAc
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
     const handleOptionChange = (option: string) => {
-        setSelectedOptions(prevSelectedOptions =>
-            prevSelectedOptions.includes(option)
-                ? prevSelectedOptions.filter(opt => opt !== option)
-                : [...prevSelectedOptions, option]
-        );
+        if (option === 'All') {
+            if (selectedOptions.includes('All')) {
+                setSelectedOptions([]);
+            } else {
+                setSelectedOptions(['All', ...options]);
+            }
+        } else {
+            setSelectedOptions(prevSelectedOptions =>
+                prevSelectedOptions.includes(option)
+                    ? prevSelectedOptions.filter(opt => opt !== option && opt !== 'All')
+                    : [...prevSelectedOptions, option]
+            );
+        }
     };
 
     const handleAccept = () => {
-        onAccept(selectedOptions);
+        onAccept(selectedOptions.includes('All') ? options : selectedOptions);
     };
 
     return (
         <div className="absolute top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-4 rounded-lg shadow-lg">
-                <h2 className="text-lg font-semibold mb-4">Select Options</h2>
+                <h2 className="text-lg font-semibold mb-4">Selecciona las tablas</h2>
                 <div className="mb-4">
+
                     {options.map(option => (
                         <div key={option} className="flex items-center mb-2">
                             <input
@@ -40,8 +49,20 @@ const FunctionalitiesForm: React.FC<FunctionalitiesFormProps> = ({ options, onAc
                         </div>
                     ))}
                 </div>
+                <div className="flex items-center mb-2">
+                    <input
+                        type="checkbox"
+                        id="Marcar todas"
+                        value="Marcar todas"
+                        checked={selectedOptions.includes('All')}
+                        onChange={() => handleOptionChange('All')}
+                        className="mr-2"
+                    />
+                    <label className={'font-bold'} htmlFor="Marcar todas">Marcar todas</label>
+                </div>
                 <div className="flex justify-end gap-2">
-                    <button onClick={handleAccept} className="bg-blue-500 text-white py-1 px-3 rounded-lg">Accept</button>
+                    <button onClick={handleAccept} className="bg-blue-500 text-white py-1 px-3 rounded-lg">Accept
+                    </button>
                     <button onClick={onCancel} className="bg-gray-500 text-white py-1 px-3 rounded-lg">Cancel</button>
                 </div>
             </div>

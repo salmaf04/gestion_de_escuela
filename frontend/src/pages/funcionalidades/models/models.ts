@@ -40,3 +40,4 @@ export type SalariosdeProfesoresGetDB = {
     date: string;
     means: boolean;
 }
+

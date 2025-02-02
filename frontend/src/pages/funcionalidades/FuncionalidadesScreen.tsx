@@ -55,9 +55,8 @@ function FuncionalidadesScreen() {
     ];
 
     return (
-        <>
-            <ExportFuncionalidadesButton options={['Opcion 1', 'Opcion 2']} />
-            <div>
+        <div className={' flex flex-col m2 px-6'}>
+           <div>
                 {data.map((section, index) => (
                     <Table
                         key={index}
@@ -68,7 +67,9 @@ function FuncionalidadesScreen() {
                     />
                 ))}
             </div>
-        </>
+            <ExportFuncionalidadesButton  data={data}  options={data.map(option => option.title)} />
+
+        </div>
     );
 }
 

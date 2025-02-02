@@ -27,7 +27,7 @@ const Table: React.FC<ProfesoresTableProps> = ({ title, items, headers, showHead
 
     return (
         <>
-            <div className="m-2 flex flex-row px-6 py-4 mb-4">
+            <div className=" flex flex-row  py-4 mb-4">
                 <div className={'w-[98%]'}>
                     <h1 className={' font-semibold text-lg'}>{title} </h1>
                     <div
