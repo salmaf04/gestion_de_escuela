@@ -7,7 +7,7 @@ from sqlalchemy import select, update, and_
 from backend.domain.filters.mean import MeanFilterSet , MeanFilterSchema, MeanChangeRequest
 from backend.application.services.classroom import ClassroomPaginationService
 from fastapi import HTTPException, status
-from .. import IRepository
+from .base import IRepository
 
 class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,MeanFilterSchema]):
     def __init__(self, session):
@@ -25,7 +25,7 @@ class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,Me
 
         mean_dict = entity.model_dump()
         mean_type = table_to_insert.get(entity.type, None)
-
+    
         if mean_type is None :
             mean_valid_types = ', '.join(table_to_insert.keys())
 
@@ -47,7 +47,7 @@ class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,Me
         
     
     def update(self, changes : MeanChangeRequest , entity : MeanModel ) -> MeanModel:
-        query = update(MeanTable).where(MeanTable.entity_id == mean.id)
+        query = update(MeanTable).where(MeanTable.entity_id == entity.id)
         
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
         self.session.execute(query)

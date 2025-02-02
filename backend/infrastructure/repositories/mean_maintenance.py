@@ -16,12 +16,12 @@ class MeanMaintenanceRepository(IRepository[MeanMaintenanceCreateModel,MeanMaint
     def __init__(self, session):
         super().__init__(session)
 
-    def create(self, entity: MeanMaintenanceCreateModel) -> MeanMaintenanceTable :
+    def create(self, entity: MeanMaintenanceCreateModel, mean: MeanTable) -> MeanMaintenanceTable :
         date_converted = datetime.strptime(entity.date, "%d-%m-%Y")
     
         mean_maintenance_dict = entity.model_dump(exclude={"date"})
         new_mean_maintenance = MeanMaintenanceTable(**mean_maintenance_dict, date=date_converted)
-        mean = MeanPaginationService().get_mean_by_id(session=self.session, id=entity.mean_id)    
+        mean = mean  
         check_replacement = self.check_replacement(date=date_converted, mean_id=entity.mean_id)
 
         if check_replacement :

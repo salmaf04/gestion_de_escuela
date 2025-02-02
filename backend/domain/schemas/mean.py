@@ -57,7 +57,8 @@ class MeanCreateModel(BaseModel):
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail=f"Debe insertar un estado valido : {valid_states_str} "
             )
-        
+        return state
+    
     @field_validator('type')
     def valid_type(cls, type: str) :
         lower_state = type.lower()
@@ -68,6 +69,7 @@ class MeanCreateModel(BaseModel):
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail=f"Debe insertar un tipo valido : {valid_type_str} "
             )
+        return type
 
 class MeanClassroomModel (BaseModel):
     id: uuid.UUID

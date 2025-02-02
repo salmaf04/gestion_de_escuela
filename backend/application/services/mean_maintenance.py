@@ -12,16 +12,16 @@ from sqlalchemy import func
 from sqlalchemy import extract, and_
 from backend.infrastructure.repositories.mean_maintenance import MeanMaintenanceRepository
 
-
-
 class MeanMaintenanceCreateService :
     def __init__ (self, session):
         self.repo_instance = MeanMaintenanceRepository(session)
+        self.mean_pagination_service = MeanPaginationService(session)
 
     def create_mean_maintenance(self, mean_maintenance:MeanMaintenanceCreateModel) -> MeanMaintenanceTable :
-        return self.repo_instance.create(mean_maintenance)
+        
+        mean = self.mean_pagination_service.get_mean_by_id(id=mean_maintenance.mean_id)
+        return self.repo_instance.create(mean_maintenance, mean)
        
-    
 class MeanMaintenancePaginationService :
     def __init__ (self, session):
         self.repo_instance = MeanMaintenanceRepository(session)
