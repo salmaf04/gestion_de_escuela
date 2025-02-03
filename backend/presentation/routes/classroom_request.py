@@ -7,6 +7,25 @@ from fastapi.exceptions import HTTPException
 from backend.application.serializers.classroom_request import ClassroomRequestMapper
 from backend.configuration import get_db
 
+"""
+This module defines API endpoints for managing classroom requests using FastAPI.
+
+Endpoints:
+- POST /classroom_request/{teacher_id}: Create a new classroom request for a specific teacher.
+- DELETE /classroom_request/{teacher_id}: Delete an existing classroom request for a specific teacher.
+
+Dependencies:
+- FastAPI's APIRouter for routing.
+- SQLAlchemy's Session for database interactions.
+- Custom services and models for handling classroom requests.
+
+Functions:
+- create_mean_request: Handles the creation of a classroom request. Validates the existence of the classroom and creates a request if valid.
+- delete_mean_request: Handles the deletion of a classroom request. Validates the existence of the request and deletes it if valid.
+
+Raises:
+- HTTPException: Raised when a classroom or request is not found, with appropriate HTTP status codes.
+"""
 
 router = APIRouter()
 

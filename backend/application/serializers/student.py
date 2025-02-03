@@ -1,6 +1,29 @@
 from backend.domain.schemas.student import StudentModel, StudentAcademicPerformance, StudentSubjectPerformance
 from backend.domain.models.tables import StudentTable
 
+"""
+This module defines a mapper for converting student data into API representations.
+
+Classes:
+    StudentMapper: A utility class for mapping StudentTable objects to various student-related API models.
+
+Class Details:
+
+StudentMapper:
+    - This class provides methods to convert StudentTable objects and related data into various API models used in the application layer.
+    
+    Methods:
+        - to_api(student: StudentTable) -> StudentModel: 
+            Converts the given StudentTable object into a StudentModel object, mapping fields such as ID, name, lastname, age, email, extra activities, username, hashed password, and course ID.
+        - to_academic_performance(data): 
+            Converts raw academic performance data into a StudentAcademicPerformance object, which includes a list of StudentSubjectPerformance objects representing subject-specific performance.
+        - to_student_by_teacher(data): 
+            Converts raw data into a list of StudentModel objects, representing students associated with a specific teacher.
+
+Dependencies:
+    - StudentModel, StudentAcademicPerformance, and StudentSubjectPerformance for API data representation.
+    - StudentTable for database representation.
+"""
 
 class StudentMapper :
 

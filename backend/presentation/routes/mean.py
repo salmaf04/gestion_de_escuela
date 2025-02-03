@@ -7,6 +7,39 @@ from sqlalchemy.orm import Session
 from backend.domain.filters.mean import MeanFilterSchema, MeanChangeRequest
 from backend.configuration import get_db
 
+"""
+This module defines API endpoints for managing means using FastAPI.
+
+Endpoints:
+- POST /mean: Create a new mean.
+- DELETE /mean/{id}: Delete an existing mean by its ID.
+- GET /mean: Retrieve a list of means based on provided filters or available means.
+- PATCH /mean/{id}: Update an existing mean by its ID.
+
+Dependencies:
+- FastAPI's APIRouter for routing.
+- SQLAlchemy's Session for database interactions.
+- Custom services and models for handling mean operations.
+
+Functions:
+- create_mean: Handles the creation of a new mean. Utilizes the MeanCreateService to add a mean to the database.
+- delete_mean: Handles the deletion of a mean. Validates the existence of the mean and deletes it if valid.
+- read_mean: Retrieves a list of means based on filter criteria or available means. Utilizes the MeanPaginationService to fetch data.
+- mean_update: Updates an existing mean. Validates the existence of the mean and applies changes if valid.
+
+Parameters:
+- model_input (MeanCreateModel): The data for creating a new mean.
+- id (str): The ID of the mean to delete or update.
+- filters (MeanFilterSchema): The filter criteria for retrieving means.
+- avaliable_means (bool): Indicates if the user wants to retrieve only available means.
+- filters (MeanChangeRequest): The changes to apply to the mean.
+
+Returns:
+- JSON responses with the created, retrieved, or updated mean records.
+
+Raises:
+- HTTPException: Raised when a mean is not found, with appropriate HTTP status codes.
+"""
 
 router = APIRouter()
 
@@ -20,7 +53,6 @@ async def create_mean(
     model_input: MeanCreateModel,
     session: Session = Depends(get_db)
 ) :
-    print(model_input)
     mean_service = MeanCreateService(session)
     mapper = MeanMapper()
 

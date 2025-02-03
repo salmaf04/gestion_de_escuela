@@ -18,35 +18,61 @@ from .base import IRepository
 
 
 class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChangeRequest,TeacherFilterSchema]):
+    """
+    Repository for managing teachers in the database.
+    Extends IRepository with specific implementations for teacher operations.
+    """
     def __init__(self, session):
+        """Initialize repository with database session."""
         super().__init__(session)
 
+<<<<<<< Updated upstream
     def create(self, entity: TeacherCreateModel, subjects: SubjectTable) -> TeacherTable :
+=======
+    def create(self, entity: TeacherCreateModel, subjects: SubjectTable) -> TeacherTable:
+        """
+        Create a new teacher record with subject associations and hashed password.
+        Args:
+            entity: TeacherCreateModel containing teacher details
+            subjects: List of SubjectTable instances to associate with teacher
+        Returns:
+            Created TeacherTable instance
+        """
         self.check_subject(subjects, entity.list_of_subjects)
+>>>>>>> Stashed changes
         teacher_dict = entity.model_dump(exclude={'password', 'list_of_subjects'})
         hashed_password = get_password_hash(get_password(entity))
         new_teacher = TeacherTable(**teacher_dict, hashed_password=hashed_password)
-        new_teacher.teacher_subject_association = subjects
+        new_teacher.teacher_subject_association = subjects if subjects else []
         self.session.add(new_teacher)
         self.session.commit()
-        for subject in subjects :
+<<<<<<< Updated upstream
+        if subjects :
+            for subject in subjects :
+                subject.teacher_subject_association.append(new_teacher)
+=======
+        for subject in subjects:
             subject.teacher_subject_association.append(new_teacher)
+>>>>>>> Stashed changes
         return new_teacher
 
-    def delete(self, entity: TeacherModel) -> None :
+    def delete(self, entity: TeacherModel) -> None:
+        """Delete a teacher from the database."""
         self.session.delete(entity)
         self.session.commit()
 
-    def update(self, changes : TeacherChangeRequest , entity : TeacherModel ) -> TeacherModel: 
+    def update(self, changes: TeacherChangeRequest, entity: TeacherModel) -> TeacherModel:
+        """Update a teacher's information."""
         query = update(TeacherTable).where(TeacherTable.entity_id == entity.id)
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
         self.session.execute(query)
         self.session.commit()
-            
+        
         teacher = entity.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
         return teacher
-    
-    def get_by_id(self, id: str ) -> TeacherTable :
+
+    def get_by_id(self, id: str) -> TeacherTable:
+        """Retrieve a teacher by their ID."""
         query = self.session.query(TeacherTable).filter(TeacherTable.entity_id == id)
         result = query.scalar()
         return result
@@ -59,20 +85,25 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         mapper = TeacherMapper()
         subjects = []
  
-        if teachers :
-            for teacher in teachers :
+        if teachers:
+            for teacher in teachers:
                 subjects.append(mapper.to_subject_list(teacher.teacher_subject_association))
-
         return teachers, subjects
+<<<<<<< Updated upstream
             
-    
-    def check_subject(self,subjects_in_table, subjects_in_request):
+    def get_teacher_by_email(self, email: str) -> TeacherTable :
+=======
+
+    def check_subject(self, subjects_in_table, subjects_in_request):
+        """
+        Validate that requested subjects exist in the database.
+        Raises HTTPException if invalid subjects are found.
+        """
         subjects_in_table_names = [subject.name for subject in subjects_in_table]
         subjects_in_table_names.sort()
         subjects_in_request.sort()
         wrong_subjects = []
         
-
         for subject_in_table, subject_in_request in zip(subjects_in_table_names, subjects_in_request):
             if subject_in_table != subject_in_request:
                 wrong_subjects.append(subject_in_request)
@@ -89,24 +120,27 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
                     detail=f"Está intentando crear un nuevo profesor con asignaturas no válidas: {wrong_subjects_str}"
                 )
 
-    def get_teacher_by_email(self, email: str) -> TeacherTable :
+    def get_teacher_by_email(self, email: str) -> TeacherTable:
+        """Retrieve a teacher by their email address."""
+>>>>>>> Stashed changes
         query = self.session.query(TeacherTable).filter(TeacherTable.email == email)
         result = query.first()
         return result
-    
-    def get_teachers_average_better_than_8(self) :
+
+    def get_teachers_average_better_than_8(self) -> tuple[list, list]:
+        """Get teachers with average valoration better than 8 and their subjects."""
         subjects = []
         query = select(TeacherTable.name, TeacherTable.id, TeacherTable.average_valoration).where(TeacherTable.average_valoration > 8)
         results = self.session.execute(query).all()
         mapper = TeacherMapper()
 
-        for teacher in results :
+        for teacher in results:
             teacher = self.get_by_id(id=teacher.id)
             subjects.append(mapper.to_subject_list(teacher.teacher_subject_association))
-
         return results, subjects
-    
-    def get_teachers_by_technological_classroom(self) :
+
+    def get_teachers_by_technological_classroom(self):
+        """Get teachers associated with technological classrooms."""
         query = select(TeacherTable, SubjectTable, ClassroomTable, TechnologicalMeanTable.name, TechnologicalMeanTable.state)   
         query = query.join(teacher_subject_table, TeacherTable.id == teacher_subject_table.c.teacher_id)
         query = query.join(SubjectTable, teacher_subject_table.c.subject_id == SubjectTable.entity_id)
@@ -115,19 +149,20 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         query = query.distinct(TechnologicalMeanTable.id,ClassroomTable.entity_id, TeacherTable.id)
         query = query.order_by(asc(TeacherTable.id))
         return self.session.execute(query).all()
-    
-    def get_teachers_by_sanctions(self) :
+
+    def get_teachers_by_sanctions(self):
+        """Get teachers with sanctions and their top 3 grades."""
         latest_sanction_subquery = (
-        select(
-            SanctionTable.teacher_id,
-            func.min(SanctionTable.date).label('latest_sanction_date')
-        )
-        .group_by(SanctionTable.teacher_id)
-        .subquery()
+            select(
+                SanctionTable.teacher_id,
+                func.min(SanctionTable.date).label('latest_sanction_date')
+            )
+            .group_by(SanctionTable.teacher_id)
+            .subquery()
         )
         grade_rank = func.row_number().over(
-        partition_by=TeacherTable.id,
-        order_by=TeacherNoteTable.grade
+            partition_by=TeacherTable.id,
+            order_by=TeacherNoteTable.grade
         ).label('grade_rank')
         query = select(TeacherTable.id, TeacherTable.name, latest_sanction_subquery.c.latest_sanction_date, TeacherNoteTable.grade)
         query = query.add_columns(grade_rank)
@@ -141,19 +176,22 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         subquery = query.subquery()
         final_query = select(subquery).where(subquery.c.grade_rank <= 3)
         return self.session.execute(final_query).all(), self.get_teachers_by_technological_classroom()
-        
-    def create_teacher_subject(self,teacher_id: str, subject_id: str) :
+
+    def create_teacher_subject(self, teacher_id: str, subject_id: str):
+        """Create a new teacher-subject association."""
         teacher_subject = teacher_subject_table.insert().values(teacher_id=teacher_id, subject_id=subject_id)
         self.session.execute(teacher_subject)
         self.session.commit()
-    
-    def get_teacher_subjects(self, id: str ) -> list[str] :
+
+    def get_teacher_subjects(self, id: str) -> list[str]:
+        """Get list of subjects for a specific teacher."""
         query = select(TeacherTable).where(TeacherTable.entity_id == id)
         teacher = self.session.execute(query).scalars().first()
         subjects = teacher.teacher_subject_association
         return TeacherMapper().to_subject_list(subjects)
-        
-    def get_teachers_by_students(self, student_id: str) :
+
+    def get_teachers_by_students(self, student_id: str):
+        """Get teachers associated with a specific student through courses."""
         query = select(TeacherTable, SubjectTable, CourseTable, StudentTable)
         query = query.join(teacher_subject_table, TeacherTable.id == teacher_subject_table.c.teacher_id)
         query = query.join(SubjectTable, teacher_subject_table.c.subject_id == SubjectTable.entity_id)

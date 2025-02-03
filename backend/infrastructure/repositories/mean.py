@@ -9,11 +9,31 @@ from backend.application.services.classroom import ClassroomPaginationService
 from fastapi import HTTPException, status
 from .base import IRepository
 
+"""
+Repository class for handling mean/resource-related database operations.
+Implements the base repository interface for managing different types of means (technological, teaching materials, others).
+"""
+
 class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,MeanFilterSchema]):
+    """
+    Repository for managing means/resources in the database.
+    Extends IRepository with specific implementations for mean operations.
+    """
     def __init__(self, session):
+        """Initialize repository with database session."""
         super().__init__(session)
 
-    def create(self, entity: MeanCreateModel) -> MeanTable :
+    def create(self, entity: MeanCreateModel) -> MeanTable:
+        """
+        Create a new mean/resource in the database.
+        Handles different types of means (technological, teaching material, other).
+        Args:
+            entity: MeanCreateModel containing mean details including type and classroom
+        Returns:
+            Created MeanTable instance
+        Raises:
+            HTTPException: If an invalid mean type is provided
+        """
         table_to_insert = {
             "technological_mean": TechnologicalMeanTable,
             "teaching_material": TeachingMaterialTable,
@@ -26,9 +46,8 @@ class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,Me
         mean_dict = entity.model_dump()
         mean_type = table_to_insert.get(entity.type, None)
     
-        if mean_type is None :
+        if mean_type is None:
             mean_valid_types = ', '.join(table_to_insert.keys())
-
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Inserte un tipo de medio válido : {mean_valid_types}"
@@ -41,14 +60,25 @@ class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,Me
         self.session.commit()
         return new_mean
 
-    def delete(self, entity: MeanModel) -> None :
+    def delete(self, entity: MeanModel) -> None:
+        """
+        Delete a mean/resource from the database.
+        Args:
+            entity: MeanModel to be deleted
+        """
         self.session.delete(entity)
         self.session.commit()
         
-    
-    def update(self, changes : MeanChangeRequest , entity : MeanModel ) -> MeanModel:
+    def update(self, changes: MeanChangeRequest, entity: MeanModel) -> MeanModel:
+        """
+        Update a mean's information.
+        Args:
+            changes: MeanChangeRequest containing fields to update
+            entity: Current MeanModel to be updated
+        Returns:
+            Updated MeanModel instance
+        """
         query = update(MeanTable).where(MeanTable.entity_id == entity.id)
-        
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
         self.session.execute(query)
         self.session.commit()
@@ -56,20 +86,40 @@ class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,Me
         mean = entity.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
         return mean
         
-    def get_by_id(self, id: str ) -> MeanTable :
+    def get_by_id(self, id: str) -> MeanTable:
+        """
+        Retrieve a mean by its ID.
+        Args:
+            id: String identifier of the mean
+        Returns:
+            Matching MeanTable instance or None
+        """
         query = self.session.query(MeanTable).filter(MeanTable.entity_id == id)
-
         result = query.scalar()
-
         return result
     
-    def get(self, filter_params: MeanFilterSchema) -> list[MeanTable] :
+    def get(self, filter_params: MeanFilterSchema) -> list[MeanTable]:
+        """
+        Retrieve means based on filter parameters.
+        Args:
+            filter_params: Filter criteria for means
+        Returns:
+            List of matching MeanTable instances
+        """
         query = select(MeanTable)
         filter_set = MeanFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
         return self.session.execute(query).scalars().all()
     
-    def get_avaliable_means(self) -> list[MeanTable] :
+    def get_avaliable_means(self) -> list[MeanTable]:
+        """
+        Get all available means that are:
+        - Not marked for replacement
+        - Not currently requested by teachers
+        - Not under maintenance
+        Returns:
+            List of available MeanTable instances
+        """
         query = select(MeanTable)
         query = query.where(and_(
             MeanTable.to_be_replaced == False,
@@ -80,6 +130,3 @@ class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,Me
             ))
         )
         return self.session.execute(query).scalars().all()
-    
-
-  

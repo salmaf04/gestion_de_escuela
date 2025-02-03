@@ -10,6 +10,43 @@ from backend.presentation.utils.auth import authorize, get_current_user
 from backend.domain.schemas.user import UserModel
 from fastapi import Request
 
+"""
+This module defines API endpoints for managing students using FastAPI.
+
+Endpoints:
+- POST /student: Create a new student. Requires authorization for the role 'secretary'.
+- DELETE /student/{id}: Delete an existing student by their ID.
+- GET /student: Retrieve a list of students based on provided filters, including options for academic performance and students by teacher. Requires authorization for roles 'secretary', 'teacher', or 'student'.
+- PATCH /student/{id}: Update an existing student by their ID.
+
+Dependencies:
+- FastAPI's APIRouter for routing.
+- SQLAlchemy's Session for database interactions.
+- Custom services and models for handling student operations.
+- Authorization utilities for role-based access control.
+
+Functions:
+- create_student: Handles the creation of a new student. Validates that no student with the same email exists.
+- delete_student: Handles the deletion of a student. Validates the existence of the student and deletes them if valid.
+- read_student: Retrieves students based on filter criteria, including options for academic performance and students by teacher.
+- update_student: Updates an existing student. Validates the existence of the student and applies changes if valid.
+
+Parameters:
+- student_input (StudentCreateModel): The data for creating a new student.
+- id (str): The ID of the student to delete or update.
+- teacher_id (str): The ID of the teacher to filter students by.
+- academic_performance (bool): Indicates if the user wants to retrieve academic performance information.
+- students_by_teacher (bool): Indicates if the user wants to retrieve students by teacher.
+- filters (StudentFilterSchema): The filter criteria for retrieving students.
+- session (Session): The database session dependency.
+- current_user (UserModel): The current authenticated user.
+
+Returns:
+- JSON responses with the created, retrieved, or updated student records.
+
+Raises:
+- HTTPException: Raised when a student is not found or when attempting to create a duplicate, with appropriate HTTP status codes.
+"""
 
 router = APIRouter()
 

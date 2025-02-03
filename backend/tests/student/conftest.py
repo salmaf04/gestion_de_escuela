@@ -71,6 +71,3 @@ def client(db_session):
     with TestClient(app) as c:
         yield c
 
-
-
-

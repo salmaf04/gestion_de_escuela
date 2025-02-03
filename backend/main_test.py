@@ -17,6 +17,13 @@ from .presentation.routes.dean import router as dean_router
 from .presentation.routes.sanction import router as sanction_router
 from .presentation.routes.mean_request import router as mean_request_router
 from .presentation.routes.classroom_request import router as classroom_request_router
+from .presentation.routes.valoration_period import router as valoration_period_router
+from .presentation.routes.export_pdf import router as export_pdf_router
+from backend.domain.models.events import update_teacher_average, update_student_average
+from backend.domain.models.events import insert_user_roles, no_administrator, check_administrator_after_delete, check_administrator_after_insert
+from backend.domain.models.events import check_replacement
+from backend.domain.models.events import insert_default_valoration_period
+from backend.domain.models.events import update_less_than_three_valoration
 
 import os
 from dotenv import load_dotenv
@@ -45,15 +52,19 @@ app.include_router(dean_router)
 app.include_router(sanction_router)
 app.include_router(mean_request_router)
 app.include_router(classroom_request_router)
-
+app.include_router(valoration_period_router)
+app.include_router(export_pdf_router)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],  
     allow_headers=["*"],  
 )
+
+
+load_dotenv()
 
 database_url = "postgresql+psycopg2://local:local@localhost:5432/testing_school"
 
