@@ -78,5 +78,11 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         # Ejecutar la consulta
         results = self.session.execute(combined_query).fetchall()
         return results
+    
+    def get_note_by_student(self, student_id: str) -> list[StudentNoteTable] :
+        query = select(StudentNoteTable)
+        query = query.where(StudentNoteTable.student_id == student_id)
+        query = query.order_by(StudentNoteTable.subject_id)
+        return self.session.execute(query).scalars().all()
        
     

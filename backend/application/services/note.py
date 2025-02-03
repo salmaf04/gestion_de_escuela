@@ -35,6 +35,9 @@ class NotePaginationService :
     
     def grade_less_than_fifty(self) :
         return self.repo_instance.grade_less_than_fifty()
+    
+    def get_note_by_student(self, student_id: str) -> list[StudentNoteTable] :
+        return self.repo_instance.get_note_by_student(student_id=student_id)
         
 class NoteUpdateService() :
     def __init__(self, session):

@@ -45,19 +45,25 @@ async def create_note(
     response_model=list[NoteModel] | list[NoteLessThanFifty] | list,
     status_code=status.HTTP_200_OK
 )
+@authorize(role=['secretary','teacher', 'student'])
 async def read_note(
+    request: Request,
+    by_student : str = None,
     filters: NoteFilterSchema = Depends(),
     less_than_fifty: bool = False,
-    session: Session = Depends(get_db)
+    session: Session = Depends(get_db),
+    current_user : UserModel = Depends(get_current_user)
 ) :
     note_pagination_service = NotePaginationService(session)
     mapper = NoteMapper()
 
-    notes = note_pagination_service.get_note(filter_params=filters)
-
     if less_than_fifty :
         notes = note_pagination_service.grade_less_than_fifty()
         return mapper.to_less_than_fifty(notes)
+    elif by_student :
+        notes = note_pagination_service.get_note_by_student(student_id=by_student)
+    else :
+        notes = note_pagination_service.get_note(filter_params=filters)
 
     if not notes :
         return []
