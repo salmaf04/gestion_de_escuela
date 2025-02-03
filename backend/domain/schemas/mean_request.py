@@ -9,3 +9,6 @@ class MeanRequestCreateModel(BaseModel) :
 class MeanRequestModel(BaseModel) :
     teacher_id : uuid.UUID
     mean_id : uuid.UUID
+
+class MeanDeletionModel(BaseModel) :
+     mean_id : uuid.UUID

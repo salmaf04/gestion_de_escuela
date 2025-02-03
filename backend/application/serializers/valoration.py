@@ -8,7 +8,7 @@ class ValorationMapper :
         return ValorationModel(
             id = valoration.entity_id,
             teacher_id = valoration.teacher_id,
-            student_id = valoration.student_id,
+            student_id = valoration.student_id if valoration.student_id else None,
             subject_id = valoration.subject_id,
             course_id = valoration.course_id,
             grade = valoration.grade

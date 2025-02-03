@@ -28,11 +28,11 @@ async def create_teacher(
     current_user : UserModel = Depends(get_current_user),
     session: Session = Depends(get_db)
 ) :
-    teacher_service = TeacherCreateService()
-    teacher_pagination_service = TeacherPaginationService()
+    teacher_service = TeacherCreateService(session)
+    teacher_pagination_service = TeacherPaginationService(session)
     mapper = TeacherMapper()
 
-    teacher = teacher_pagination_service.get_teacher_by_email(session=session, email=teacher_input.email)
+    teacher = teacher_pagination_service.get_teacher_by_email(email=teacher_input.email)
 
     if teacher :
         raise HTTPException(
@@ -40,7 +40,7 @@ async def create_teacher(
             detail="There is already an teacher with that email"
         )
 
-    response = teacher_service.create_teacher(session=session, teacher=teacher_input)
+    response = teacher_service.create_teacher(teacher=teacher_input)
 
     return mapper.to_api(response, subjects=teacher_input.list_of_subjects)
 
@@ -52,10 +52,10 @@ async def delete_teacher(
     id: str,
     session: Session = Depends(get_db)
 ) :
-    teacher_pagination_service = TeacherPaginationService()
-    teacher_deletion_service = TeacherDeletionService()
+    teacher_pagination_service = TeacherPaginationService(session)
+    teacher_deletion_service = TeacherDeletionService(session)
 
-    teacher =teacher_pagination_service.get_teacher_by_id(session=session, id=id)
+    teacher =teacher_pagination_service.get_teacher_by_id(id=id)
 
     if not teacher :
         raise HTTPException(
@@ -63,36 +63,43 @@ async def delete_teacher(
             detail="There is no teacher with that email"
         )
 
-    teacher_deletion_service.delete_teacher(session=session, teacher=teacher)
+    teacher_deletion_service.delete_teacher(teacher=teacher)
     
 @router.get(
     "/teacher",
     response_model=list | dict,
     status_code=status.HTTP_200_OK
 )
+@authorize(role=["secretary","teacher", "student"])
 async def read_teacher(
+    request: Request,
+    teachers_by_students = False,
+    student_id : str = None,
     sanctions = False,
     technology_classroom = False,
     better_than_eight = False,
-    user : UserModel = Depends(get_current_user),
+    current_user : UserModel = Depends(get_current_user),
     filters: TeacherFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
-    teacher_pagination_service = TeacherPaginationService() 
+    teacher_pagination_service = TeacherPaginationService(session) 
     mapper = TeacherMapper()
 
     if better_than_eight :
-        results = teacher_pagination_service.get_teachers_average_better_than_8(session=session)
+        results = teacher_pagination_service.get_teachers_average_better_than_8()
         return mapper.to_teachers_with_average(results)
+    elif teachers_by_students :
+        results = teacher_pagination_service.get_teachers_by_students(student_id=student_id)
+        return mapper.to_teachers_by_students(results)
     elif technology_classroom :
-        results = teacher_pagination_service.get_teachers_by_technological_classroom(session=session)
+        results = teacher_pagination_service.get_teachers_by_technological_classroom()
         return mapper.to_teachers_technological_classroom(results)
     elif sanctions :
-        results, mean_data = teacher_pagination_service.get_teachers_by_sanctions(session=session)
+        results, mean_data = teacher_pagination_service.get_teachers_by_sanctions()
         return mapper.to_teachers_sanctions(results, mean_data)
 
 
-    teachers, subjects = teacher_pagination_service.get_teachers(session=session, filter_params=filters)   
+    teachers, subjects = teacher_pagination_service.get_teachers(filter_params=filters)   
 
     if not teachers :
         return []
@@ -117,13 +124,13 @@ async def update_teacher(
     current_user : UserModel = Depends(get_current_user),
     session: Session = Depends(get_db)
 ) :
-    teacher_pagination_service = TeacherPaginationService()
-    teacher_update_service = TeacherUpdateService()
-    teacher_subject_service = TeacherSubjectService()
+    teacher_pagination_service = TeacherPaginationService(session)
+    teacher_update_service = TeacherUpdateService(session)
+    teacher_subject_service = TeacherSubjectService(session)
     mapper = TeacherMapper()
 
-    teacher = teacher_pagination_service.get_teacher_by_id(session=session, id = id)
-    subjects = teacher_subject_service.get_teacher_subjects(session=session, id=id)
+    teacher = teacher_pagination_service.get_teacher_by_id(id=id)
+    subjects = teacher_subject_service.get_teacher_subjects(id=id)
     teacher_model = mapper.to_api(teacher, subjects)
 
     if not teacher :
@@ -132,6 +139,6 @@ async def update_teacher(
             detail="There is no teacher with that id"
         )
     
-    teacher_updated = teacher_update_service.update_one(session=session, changes=filters, teacher=teacher_model)
+    teacher_updated = teacher_update_service.update(changes=filters, teacher=teacher_model)
 
     return teacher_updated

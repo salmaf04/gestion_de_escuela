@@ -4,46 +4,33 @@ from sqlalchemy.orm import Session
 from backend.domain.filters.classroom import ClassroomFilterSchema, ClassroomFilterSet, ClassroomChangeRequest
 from sqlalchemy import select, update
 import uuid
+from backend.infrastructure.repositories.classroom import ClassroomRepository
 
 class ClassroomCreateService :
-    def create_classroom(self, session: Session, classroom: ClassroomCreateModel) -> ClassroomTable :
-        new_classroom = ClassroomTable(**classroom.dict())
-        session.add(new_classroom)
-        session.commit()
-        return new_classroom
-    
+    def __init__(self, session):
+        self.repo_instance = ClassroomRepository(session)
+
+    def create_classroom(self, classroom: ClassroomCreateModel) -> ClassroomTable :
+        return self.repo_instance.create(classroom)
 class ClassroomDeletionService:
-    def delete_classroom(self, session: Session, classroom: ClassroomTable) -> None :
-        session.delete(classroom)
-        session.commit()
-        
+    def __init__ (self, session):
+        self.repo_instance = ClassroomRepository(session)
+
+    def delete_classroom(self, classroom: ClassroomModel) -> None :
+        return self.repo_instance.delete(classroom)
         
 class ClassroomUpdateService :
-    def update_one(self, session : Session , changes : ClassroomChangeRequest , classroom : ClassroomModel ) -> ClassroomModel: 
-        query = update(ClassroomTable).where(ClassroomTable.entity_id == classroom.id)
-        
-        query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
-        session.execute(query)
-        session.commit()
-        
-        classroom = classroom.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
-        return classroom
-           
+    def __init__ (self, session):
+        self.repo_instance = ClassroomRepository(session)
 
+    def update_one(self, changes : ClassroomChangeRequest , classroom : ClassroomModel ) -> ClassroomModel: 
+        return self.repo_instance.update(changes, classroom)
 class ClassroomPaginationService :
+    def __init__ (self, session):
+        self.repo_instance = ClassroomRepository(session)
+
+    def get_classroom_by_id(self, id:uuid.UUID ) -> ClassroomTable :
+        return self.repo_instance.get_by_id(id)
     
-    def get_classroom_by_id(self, session: Session, id:uuid.UUID ) -> ClassroomTable :
-        query = session.query(ClassroomTable)
-        query = query.filter(ClassroomTable.entity_id == id)
-    
-        result = session.execute(query).scalars().first()
-        return result
-    
-    def get_classroom(self, session: Session, filter_params: ClassroomFilterSchema)  :
-        query = select(ClassroomTable, MeanTable)
-        query = query.outerjoin(MeanTable, ClassroomTable.entity_id == MeanTable.classroom_id)
-        filter_set = ClassroomFilterSet(session, query=query)
-        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
-        query = query.group_by(ClassroomTable, MeanTable)
-        query = query.order_by(ClassroomTable.entity_id)
-        return session.execute(query).all()
+    def get_classroom(self, filter_params: ClassroomFilterSchema)  :
+        return self.repo_instance.get(filter_params)

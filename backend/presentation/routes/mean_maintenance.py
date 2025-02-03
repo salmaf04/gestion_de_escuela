@@ -25,10 +25,10 @@ async def create_mean_maintenance(
     mean_maintenance_input: MeanMaintenanceCreateModel,
     session: Session = Depends(get_db)
 ) :
-    mean_maintenance_service = MeanMaintenanceCreateService()
+    mean_maintenance_service = MeanMaintenanceCreateService(session)
     mapper = MeanMaintenanceMapper()
 
-    response = mean_maintenance_service.create_mean_maintenance(session=session, mean_maintenance=mean_maintenance_input)
+    response = mean_maintenance_service.create_mean_maintenance(mean_maintenance=mean_maintenance_input)
 
     return mapper.to_api(response)
 
@@ -49,17 +49,17 @@ async def read_mean_maintenance(
         ),
     ] = False  
 ) :
-    mean_maintenance_pagination_service = MeanMaintenancePaginationService()
+    mean_maintenance_pagination_service = MeanMaintenancePaginationService(session)
     mapper = MeanMaintenanceMapper()
 
     if mainteniance_by_classroom_filter :
-        classroom, total = mean_maintenance_pagination_service.maintenance_by_classroom(session=session)
+        classroom, total = mean_maintenance_pagination_service.maintenance_by_classroom()
         return mapper.to_classroom(classroom, total)
     elif date_filter :
-        mean_maintenances = mean_maintenance_pagination_service.maintenace_average(session=session)
+        mean_maintenances = mean_maintenance_pagination_service.maintenace_average()
         return mapper.to_date(mean_maintenances)
     else :
-        mean_maintenances = mean_maintenance_pagination_service.get_mean_maintenance(session=session, filter_params=filters)
+        mean_maintenances = mean_maintenance_pagination_service.get_mean_maintenance(filter_params=filters)
 
         if not mean_maintenances :
             raise HTTPException(
@@ -88,11 +88,11 @@ async def update_teacher(
     current_user : UserModel = Depends(get_current_user),
     session: Session = Depends(get_db)
 ) :
-    mean_maintenance_pagination_service = MeanMaintenancePaginationService()
-    mean_update_service = MeanMaintenanceUpdateService()
+    mean_maintenance_pagination_service = MeanMaintenancePaginationService(session)
+    mean_update_service = MeanMaintenanceUpdateService(session)
     mapper = MeanMaintenanceMapper()
 
-    mean = mean_maintenance_pagination_service.get_mean_maintenance_by_id(session=session, id = id)
+    mean = mean_maintenance_pagination_service.get_mean_maintenance_by_id(id = id)
     
     if not mean :
         raise HTTPException(
@@ -102,6 +102,6 @@ async def update_teacher(
     
     mean_model = mapper.to_api(mean)
     
-    mean_updated = mean_update_service.update_one(session=session, changes=filters, mean_maintenance=mean_model)
+    mean_updated = mean_update_service.update_one(changes=filters, mean_maintenance=mean_model)
 
     return mean_updated

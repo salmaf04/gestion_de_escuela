@@ -58,6 +58,8 @@ class UserCreateModel(BaseModel):
 
 class UserModel(BaseModel) :
     id: uuid.UUID
+    name : str
+    lastname : str
     username: str
     email: str
     hashed_password: str 

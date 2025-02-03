@@ -20,10 +20,11 @@ async def create_mean(
     model_input: MeanCreateModel,
     session: Session = Depends(get_db)
 ) :
-    mean_service = MeanCreateService()
+    print(model_input)
+    mean_service = MeanCreateService(session)
     mapper = MeanMapper()
 
-    response = mean_service.mean_create(session=session, mean=model_input)
+    response = mean_service.mean_create(mean=model_input)
 
     return mapper.to_api(response)
 
@@ -36,10 +37,10 @@ async def delete_mean(
     id: str,
     session: Session = Depends(get_db)
 ) :
-    mean_pagination_service = MeanPaginationService()
-    mean_deletion_service = MeanDeletionService()
+    mean_pagination_service = MeanPaginationService(session)
+    mean_deletion_service = MeanDeletionService(session)
 
-    mean =mean_pagination_service.get_mean_by_id(session=session, id=id)
+    mean =mean_pagination_service.get_mean_by_id(id=id)
 
     if not mean :
         raise HTTPException(
@@ -47,7 +48,7 @@ async def delete_mean(
             detail="There is no mean with that id"
         )
 
-    mean_deletion_service.delete_mean(session=session, mean=mean)
+    mean_deletion_service.delete_mean(mean=mean)
 
 
 @router.get(
@@ -60,13 +61,13 @@ async def read_mean(
     filters: MeanFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
-    mean_pagination_service = MeanPaginationService()
+    mean_pagination_service = MeanPaginationService(session)
     mapper = MeanMapper()
 
     if avaliable_means :
-        means = mean_pagination_service.get_avaliable_means(session=session)
+        means = mean_pagination_service.get_avaliable_means()
     else :
-        means = mean_pagination_service.get_means(session=session, filter_params=filters)
+        means = mean_pagination_service.get_means(filter_params=filters)
 
     means_mapped = [mapper.to_api(mean) for mean in means] if means else []
         
@@ -82,11 +83,11 @@ async def mean_update(
     filters: MeanChangeRequest,
     session: Session = Depends(get_db)
 ) :
-    mean_pagination_service = MeanPaginationService()
-    mean_update_service = MeanUpdateService()
+    mean_pagination_service = MeanPaginationService(session)
+    mean_update_service = MeanUpdateService(session)
     mapper = MeanMapper()
 
-    mean = mean_pagination_service.get_mean_by_id(session=session, id = id)
+    mean = mean_pagination_service.get_mean_by_id(id = id)
     mean_model = mapper.to_api(mean)
 
     if not mean :
@@ -95,7 +96,7 @@ async def mean_update(
             detail="There is no mean with that id"
         )
 
-    mean_updated = mean_update_service.update_one(session=session, changes=filters, mean=mean_model)
+    mean_updated = mean_update_service.update_one(changes=filters, mean=mean_model)
 
     return mean_updated
 

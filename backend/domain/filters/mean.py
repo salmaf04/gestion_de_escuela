@@ -20,3 +20,4 @@ class MeanFilterSchema(BaseModel):
 class MeanChangeRequest(BaseModel) :
     state : Optional[str] = None
     location : Optional[str] = None
+    classroom_id : Optional[str] = None
