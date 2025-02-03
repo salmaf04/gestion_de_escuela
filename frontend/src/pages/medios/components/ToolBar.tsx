@@ -5,13 +5,14 @@ import {MedioContext} from "../MediosScreen.tsx";
 import ExportButton from "../../../components/ExportButton.tsx";
 import UserIcon from "../../../assets/user.svg";
 import {AppContext} from "../../../App.tsx";
+import {MedioGetAdapter} from "../adapters/MedioGetAdapter.ts";
 
 export default function ToolBar() {
     const {
         searchText,
         setSearchText,
         setShowModal,
-        medios
+        dataTable
     } = useContext(MedioContext)
     const {setToken, username} = useContext(AppContext)
     return (
@@ -38,11 +39,11 @@ export default function ToolBar() {
 
                 </div>
             </div>
-            {/*<ToggleButton/>*/}
+
             <SearchInput focus={true} searchText={searchText!} setSearchText={(text: string) => {
                 setSearchText!(text)
             }}/>
-            <ExportButton data={medios}></ExportButton>
+            <ExportButton title={'Medios'} headers = {MedioGetAdapter.Properties.slice(1)} data={dataTable}></ExportButton>
             <AddButton onClick={() => setShowModal!(true)}/>
         </div>
     )

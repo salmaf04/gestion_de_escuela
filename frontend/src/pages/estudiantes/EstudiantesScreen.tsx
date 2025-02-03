@@ -118,6 +118,7 @@ export default function EstudiantesScreen() {
             onDeleteTableItem: onDeleteTableItem,
             onEditTableItem: onEditTableItem,
             onAddTableItem: onAddTableItem,
+
         }}>
             <div className={'w-full h-dvh flex flex-col'}>
                 <ToolBar context={EstudianteContext}/>

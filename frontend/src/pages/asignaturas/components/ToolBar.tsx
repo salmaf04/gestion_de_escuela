@@ -15,7 +15,7 @@ export default function ToolBar() {
 
 
 
-    const headers = AsignaturaGetAdapter.Properties.slice(1)
+
     return (
             <div className={'self-end w-2/3 my-4 h-1/6 flex items-center justify-between px-5'}>
                 {/*<ToggleButton/>*/}
@@ -23,7 +23,7 @@ export default function ToolBar() {
                     setSearchText!(text)
                 }}/>
 
-                <ExportButton title={'Asignaturas'} headers = {headers} data={dataTable}></ExportButton>
+                <ExportButton title={'Asignaturas'} headers = {AsignaturaGetAdapter.Properties.slice(1)} data={dataTable}></ExportButton>
                 <AddButton onClick={() => setShowModal!(true)}/>
             </div>
     )

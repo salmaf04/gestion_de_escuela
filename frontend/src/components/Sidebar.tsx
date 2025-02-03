@@ -14,7 +14,7 @@ function Sidebar() {
                 Object.values(Screens).filter((item) => allowRoles!(item.allowedRoles)).map((screen: ScreenType) => {
                     return (
                         <div key={screen.title} onClick={() => navigate(screen.path)}
-                             className={`transition-all cursor-pointer font-semibold px-3 size-full space-y-1 justify-center rounded-xl flex flex-col items-center ${location.pathname === screen.path ? 'bg-indigo-100' : ''}`}>
+                             className={`transition-all cursor-pointer font-semibold px-1 size-full space-y-1 justify-center rounded-xl flex flex-col items-center ${location.pathname === screen.path ? 'bg-indigo-100' : ''}`}>
                             <img src={screen.icon} alt={screen.title} className={'size-7'}/>
                             <p className={'text-xs text-indigo-950'}>{screen.title}</p>
                         </div>)
