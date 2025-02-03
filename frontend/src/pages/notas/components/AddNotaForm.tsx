@@ -63,10 +63,9 @@ export default function AddNotaForm() {
             name: item?.name
         }
     }) ?? []
-
-    useEffect(() => {
-
-    }, []);
+    if (fields.length ===0){
+        append({})
+    }
     const asignaturasSelect: ISelect[] = asignaturas?.map((item)=>{
         return {
             id: item.id,
@@ -103,6 +102,7 @@ export default function AddNotaForm() {
                                                 label={'Profesor: '}
                                                 data={profesoresSelect}
                                                 control={control}
+                                                defaultValue={editting && profesores?.find((item) => item.name === editting?.teacherName)?.id}
                                             />
                                         </div>
                                         <div className={'w-full'}>
@@ -114,6 +114,8 @@ export default function AddNotaForm() {
                                                 label={'Estudiante'}
                                                 data={estudiantesSelect}
                                                 control={control}
+                                                defaultValue={editting && estudiantes?.find((item) => item.name === editting?.studentName)?.id}
+
                                             />
                                         </div>
                                         <div className={'w-full'}>
@@ -125,6 +127,7 @@ export default function AddNotaForm() {
                                                 labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
                                                 data={asignaturasSelect}
                                                 control={control}
+                                                defaultValue={editting && asignaturas?.find((item) => item.name === editting?.subjectName)?.id}
                                             />
                                         </div>
 

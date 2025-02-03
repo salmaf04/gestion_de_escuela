@@ -22,7 +22,6 @@ export default function AddEstudianteForm() {
             onEditTableItem!(data);
         else
             onAddTableItem!(data);
-        console.log(data)
         setShowModal!(false)
     };
 
@@ -45,6 +44,18 @@ export default function AddEstudianteForm() {
                             <input
                                 type="text"
                                 {...register("name", {
+                                    required: "true"
+                                })}
+                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
+                                defaultValue={editting?.body.name}
+                            />
+                        </div>
+                        <div className="group mb-4">
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Apellidos</label>
+                            <input
+                                type="text"
+                                {...register("lastname", {
                                     required: "true"
                                 })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
@@ -94,16 +105,7 @@ export default function AddEstudianteForm() {
                                 defaultValue={editting?.body.username}
                             />
                         </div>
-                        <div className="group mb-4">
-                            <label
-                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Contraseña</label>
-                            <input
-                                type="password" {...register("password", {
-                                required: true
-                            })}
-                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                            />
-                        </div>
+
                         <div className={'w-full'}>
                             <Select
                                 {...register(`course_id`, {
