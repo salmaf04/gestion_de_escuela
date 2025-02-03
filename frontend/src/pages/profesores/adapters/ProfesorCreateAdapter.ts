@@ -2,7 +2,7 @@ import {ProfesorCreateDB} from "../models/ProfesorCreateDB.ts";
 import {ProfesorGetAdapter} from "./ProfesorGetAdapter.ts";
 
 export class ProfesorCreateAdapter implements Partial<ProfesorGetAdapter>{
-    static Properties = ['Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia', 'Salario' ,  'Correo', 'Usuario', 'Asignaturas']
+    static Properties = ['Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia', 'Correo' ,  'Usuario',  'Salario'  , 'Asignaturas']
     name: string
     lastname: string
     email: string

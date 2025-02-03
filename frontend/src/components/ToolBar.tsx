@@ -4,6 +4,8 @@ import SearchInput from "./SearchInput.tsx";
 import AddButton from "./AddButton.tsx";
 import {AppContext} from "../App.tsx";
 import UserIcon from "../assets/user.svg";
+import ExportButton from "./ExportButton.tsx";
+import {EstudianteGetAdapter} from "../pages/estudiantes/adapters/EstudianteGetAdapter.ts";
 
 export interface IToolbarContext {
     searchText?: string;
@@ -15,7 +17,9 @@ export default function ToolBar({context} : {context: React.Context<IToolbarCont
     const {
         searchText,
         setSearchText,
-        setShowModal
+        setShowModal,
+        dataTable,
+
     } = useContext(context);
     const {username, setToken} = useContext(AppContext)
     return (
@@ -46,6 +50,7 @@ export default function ToolBar({context} : {context: React.Context<IToolbarCont
             <SearchInput focus={true} searchText={searchText!} setSearchText={(text: string) => {
                 setSearchText!(text);
             }}/>
+            <ExportButton title={'Estudiantes'} headers = {EstudianteGetAdapter.Properties.slice(1)} data={dataTable}></ExportButton>
             <AddButton onClick={() => setShowModal!(true)}/>
         </div>
     );

@@ -17,9 +17,7 @@ interface ProfesoresTableProps {
 const Table: React.FC<ProfesoresTableProps> = ({ title, items, headers, showHeaders }: ProfesoresTableProps) => {
     const [isVisible, setIsVisible] = useState(false);
 
-    if (items.length === 0) {
-        return <div>No data available</div>;
-    }
+
 
     const toggleVisibility = () => {
         setIsVisible(!isVisible);
