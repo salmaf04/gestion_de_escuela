@@ -211,7 +211,7 @@ function App() {
                                     {allowRoles(Screens.Ausencias.allowedRoles) &&
                                         <Route path={'/ausencias'} element={<AusenciasScreen/>}/>
                                     }
-                                    {allowRoles(Screens.Usuarios.allowedRoles) &&
+                                    {allowRoles(Screens.Aulas.allowedRoles) &&
                                         <Route path={'/usuarios'} element={<UsuariosScreen/>}/>
                                     }
                                     <Route path={'/info'} element={<InfoScreen/>}/>

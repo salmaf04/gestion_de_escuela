@@ -65,7 +65,7 @@ export default function EstudiantesScreen() {
             ...estudianteEdit,
             course_id: estudianteEdit.course?.id
         }
-        updateEstudiante(editting!.id, toEdit);
+        updateEstudiante(editting!.id, estudianteEdit);
         setEditting!(undefined);
     };
 

@@ -72,10 +72,10 @@ export default function NotasScreen() {
         return notas?.map((item) => {
             return {
                 id: item.id,
-                studentName: item.student.name,
-                teacherName: item.teacher.name,
-                subjectName: item.subject.name,
-                note_value: item.note_value
+                studentName: item?.student?.name,
+                teacherName: item.teacher?.name,
+                subjectName: item.subject?.name,
+                note_value: item?.note_value
             }
         }) ?? []
     }, [notas]);

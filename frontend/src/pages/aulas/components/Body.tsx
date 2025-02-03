@@ -4,10 +4,13 @@ import {AulasContext} from "../AulasScreen.tsx";
 import {AulaGetAdapter} from "../adapters/AulaGetAdapter.ts";
 import SolicitarIcon from "../../../assets/solicitar.svg";
 import {useApiAulas} from "../hooks/useApiAulas.ts";
+import {AppContext} from "../../../App.tsx";
+import {RolesEnum} from "../../../api/RolesEnum.ts";
 
 export default function Body(){
     const {dataTable,  setEditting, onDeleteTableItem, isLoading} = useContext(AulasContext)
     const {solicitarAula} = useApiAulas()
+    const {allowRoles} = useContext(AppContext)
 
     return(
             <Table
@@ -21,7 +24,7 @@ export default function Body(){
                        const item = dataTable!.find((item) => item.id === index)
                        setEditting!({id: item!.id, body: item!})
                    }}
-                actions={[
+                actions={allowRoles!([RolesEnum.TEACHER]) ? [
                     {
                         action: (row) => {
                             solicitarAula({classroom_id: row.id})
@@ -32,7 +35,7 @@ export default function Body(){
                         icon: <img src={SolicitarIcon} alt={'Solicitar'}/>,
                         isVisible: ()=>true
                     }
-                ]}
+                ]: []}
             />
     )
 }

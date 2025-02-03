@@ -115,6 +115,7 @@ export default function AddEstudianteForm() {
                                 labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
                                 data={cursosSelect}
                                 control={control}
+                                defaultValue={editting && cursos!.find((item) => item.year === editting?.body.course_year)?.id}
                             />
                         </div>
                     </div>
