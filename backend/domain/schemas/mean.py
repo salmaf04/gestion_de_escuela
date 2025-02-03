@@ -38,6 +38,7 @@ class MeanModel (BaseModel):
     state: str
     location: str
     classroom_id: uuid.UUID | None
+    to_be_replaced: bool | None = None
     type: str
     
 class MeanCreateModel(BaseModel):

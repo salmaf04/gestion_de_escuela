@@ -393,6 +393,20 @@ def update_teacher_average(mapper, connection, target):
         ))
     )
 
+def update_student_average(mapper, connection, target):
+    # Actualizar el promedio de valoraciones del estudiante
+    connection.execute(
+        StudentTable.__table__.update().
+        where(StudentTable.id == target.student_id).
+        values(average_note=(
+            select((func.sum(StudentNoteTable.note_value)/func.count())).
+            where(StudentNoteTable.student_id == target.student_id)
+        ))
+    )
+
+event.listen(StudentNoteTable, 'after_insert', update_student_average)
+event.listen(StudentNoteTable, 'after_update', update_student_average)
+
 @event.listens_for(BaseTable.metadata, 'after_create')
 def insert_default_valoration_period(target, connection, **kw):
     # Verificar si la tabla creada es ValorationPeriodTable

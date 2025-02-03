@@ -14,9 +14,6 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         super().__init__(session)
 
     def create(self, note: NoteCreateModel, modified_by : str, student: StudentTable, subject: SubjectTable, teacher: TeacherTable) -> StudentNoteTable :
-        update_note_average_service = UpdateNoteAverageService()
-        update_note_average_service.update_note_average(session=self.session, student_id=note.student_id, new_note=note.note_value)
-
         note_dict = note.model_dump()
         new_note = StudentNoteTable(**note_dict, last_modified_by = modified_by)
         
