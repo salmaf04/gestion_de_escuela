@@ -113,7 +113,7 @@ class UserTable(BaseTable) :
 class TeacherTable(UserTable):
     __tablename__ = TableName.TEACHER.value
     
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id", ondelete='CASCADE'), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
     
     specialty = Column(String)
     contract_type = Column(String)
@@ -150,7 +150,7 @@ class TeacherTable(UserTable):
 class DeanTable(TeacherTable):
     __tablename__ = TableName.DEAN.value
     
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.TEACHER.value}.id", ondelete='CASCADE'), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.TEACHER.value}.id"), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "dean",
@@ -159,7 +159,7 @@ class DeanTable(TeacherTable):
 class SecretaryTable(UserTable) :
     __tablename__ = TableName.SECRETARY.value
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id", ondelete='CASCADE'), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "secretary",
@@ -169,7 +169,7 @@ class SecretaryTable(UserTable) :
 class AdministratorTable(UserTable) :
     __tablename__ = TableName.ADMINISTRATOR.value
     
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id", ondelete='CASCADE'), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "administrator",

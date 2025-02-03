@@ -3,7 +3,7 @@ from backend.domain.schemas.dean import DeanCreateModel, DeanModel
 from backend.domain.models.tables import DeanTable
 from sqlalchemy import and_, update
 import uuid
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from backend.domain.filters.dean import DeanFilterSet , DeanFilterSchema, DeanChangeRequest
 from backend.application.utils.auth import get_password_hash, get_password
 from .base import IRepository
@@ -21,7 +21,8 @@ class DeanRepository(IRepository[DeanCreateModel, DeanModel, DeanChangeRequest, 
         return new_dean
     
     def delete(self, entity: DeanModel) -> None :
-        self.session.delete(entity)
+        delete_statement = delete(DeanTable).where(DeanTable.entity_id == entity.id)
+        self.session.execute(delete_statement)
         self.session.commit()
 
     def update(self, changes : DeanChangeRequest , entity : DeanModel) -> DeanModel:
