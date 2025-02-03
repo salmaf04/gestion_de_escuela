@@ -37,7 +37,7 @@ export default function AddAsignaturaForm() {
     const aulasSelect: ISelect[] = aulas?.map((item: AulaGetAdapter)=>{
         return {
             id: item.id,
-            name: item.location
+            name: item.number
         }
     }) ?? []
     return (
