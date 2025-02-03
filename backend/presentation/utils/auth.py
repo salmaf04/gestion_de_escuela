@@ -157,6 +157,8 @@ def authorize(role: list):
                 if method == 'GET' and url == 'note':
                     if 'student' in user_roles :
                         kwargs['by_student'] = user_id1
+                    elif 'teacher' in user_roles :
+                        kwargs['by_teacher'] = user_id1
                 
                 if (method == 'PATCH' or method == 'POST') and url == 'note':
                     kwargs['user_id']=user_id1

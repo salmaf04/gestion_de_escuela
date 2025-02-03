@@ -91,6 +91,8 @@ class NotePaginationService :
     def get_note_by_student(self, student_id: str) -> list[StudentNoteTable] :
         return self.repo_instance.get_note_by_student(student_id=student_id)
         
+    def get_note_by_student_by_teacher(self, teacher_id: str) -> list[StudentNoteTable] :        
+        return self.repo_instance.get_note_by_student_by_teacher(teacher_id=teacher_id)
 class NoteUpdateService() :
     def __init__(self, session):
         self.repo_instance = NoteRepository(session)

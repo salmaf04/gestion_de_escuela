@@ -127,5 +127,11 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         query = query.where(StudentNoteTable.student_id == student_id)
         query = query.order_by(StudentNoteTable.subject_id)
         return self.session.execute(query).scalars().all()
+    
+    def get_note_by_student_by_teacher(self,teacher_id: str):
+        query = select(StudentNoteTable)
+        query = query.where(StudentNoteTable.teacher_id == teacher_id)
+        query = query.order_by(StudentNoteTable.subject_id)
+        return self.session.execute(query).scalars().all()
        
     

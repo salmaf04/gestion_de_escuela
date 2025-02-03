@@ -20,6 +20,7 @@ Dependencies:
     - SecretaryModel for API data representation.
     - SecretaryTable for database representation.
 """
+
 class SecretaryMapper :
 
     def to_api(self, secretary: SecretaryTable) -> SecretaryModel :
