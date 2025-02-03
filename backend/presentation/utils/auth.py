@@ -19,6 +19,39 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Session
 from backend.application.serializers.user import UserMapper
 from backend.configuration import get_db
+
+"""
+This module provides authorization and authentication functionalities for a FastAPI application.
+
+Functions:
+    authenticate_user: Authenticates a user by verifying their username and password.
+    create_access_token: Creates a JWT access token with an optional expiration time.
+    get_current_user: Retrieves the current user based on the provided JWT token.
+    verify_password: Verifies a plain password against a hashed password.
+    authorize: A decorator to enforce role-based access control on API endpoints.
+    parse_url: Parses a URL to extract the endpoint path.
+
+Constants:
+    SECRET_KEY: The secret key used for encoding and decoding JWT tokens.
+    ALGORITHM: The algorithm used for encoding JWT tokens.
+    ACCESS_TOKEN_EXPIRE_MINUTES: The default expiration time for access tokens in minutes.
+
+Dependencies:
+    - FastAPI for building the web application and handling HTTP exceptions.
+    - JWT for encoding and decoding JSON Web Tokens.
+    - Passlib for password hashing and verification.
+    - SQLAlchemy for database interactions.
+    - UserCreateService and UserMapper for user-related operations.
+    - OAuth2PasswordBearer for token-based authentication.
+
+Usage:
+    - Use `authenticate_user` to verify user credentials during login.
+    - Use `create_access_token` to generate a JWT token for authenticated users.
+    - Use `get_current_user` as a dependency to retrieve the current user in protected routes.
+    - Use `authorize` as a decorator to restrict access to certain roles.
+    - Use `parse_url` to extract the endpoint path from a URL.
+"""
+
 # Define OAuth2 scheme for token authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
