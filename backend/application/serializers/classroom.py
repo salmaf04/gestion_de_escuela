@@ -2,6 +2,29 @@ from backend.domain.schemas.classroom import ClassroomModel, ClassroomModelPost
 from backend.domain.schemas.mean import MeanClassroomModel
 from backend.domain.models.tables import ClassroomTable
 
+"""
+This module defines a mapper for converting classroom data into API representations.
+
+Classes:
+    ClassroomMapper: A utility class for mapping classroom data to ClassroomModel and ClassroomModelPost objects.
+
+Class Details:
+
+ClassroomMapper:
+    - This class provides methods to convert classroom data, including associated means, into API models used in the application layer.
+    
+    Methods:
+        - to_api(data) -> list[ClassroomModel]: 
+            Converts a list of classroom data into a list of ClassroomModel objects. It handles the association of means with classrooms and ensures that each classroom is represented only once, with all its associated means.
+        - to_api_default(classroom: ClassroomTable) -> ClassroomModelPost: 
+            Converts a ClassroomTable object into a ClassroomModelPost object, mapping the basic fields without associated means.
+
+Dependencies:
+    - ClassroomModel, ClassroomModelPost, and MeanClassroomModel for data representation.
+    - ClassroomTable for database representation.
+"""
+
+
 class ClassroomMapper :
 
 
