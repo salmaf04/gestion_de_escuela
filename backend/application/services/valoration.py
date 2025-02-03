@@ -9,6 +9,44 @@ from backend.domain.filters.valoration import ValorationFilterSchema, Valoration
 from sqlalchemy import select, func, update
 from backend.infrastructure.repositories.valoration import ValorationRepository
 
+"""
+This module defines services for creating and retrieving valoration records.
+
+Classes:
+    ValorationCreateService: A service for creating new valoration records.
+    ValorationPaginationService: A service for retrieving valoration records based on various criteria.
+
+Classes Details:
+
+1. ValorationCreateService:
+    - This service is responsible for creating new valoration records.
+    - It utilizes the ValorationRepository to interact with the database.
+    - It also uses TeacherPaginationService, StudentPaginationService, SubjectPaginationService, and CoursePaginationService to retrieve related details.
+    
+    Methods:
+        - __init__(session): Initializes the service with a database session and sets up necessary service instances.
+        - create_valoration(valoration: ValorationCreateModel) -> TeacherNoteTable: 
+            Creates a new valoration record using the provided ValorationCreateModel and returns the created TeacherNoteTable object.
+
+2. ValorationPaginationService:
+    - This service is responsible for retrieving valoration records based on different criteria.
+    - It uses the ValorationRepository to fetch data from the database.
+    
+    Methods:
+        - __init__(session): Initializes the service with a database session.
+        - get_valoration(filter_params: ValorationFilterSchema) -> list[TeacherNoteTable]: 
+            Retrieves a list of valorations based on the provided filter parameters.
+        - get_valoration_by_teacher_id(teacher_id: str): 
+            Retrieves valorations associated with a specific teacher identified by the teacher_id.
+
+Dependencies:
+    - SQLAlchemy ORM for database interactions.
+    - ValorationRepository for database operations related to valorations.
+    - ValorationCreateModel, TeacherNoteTable, and other domain models for data representation.
+    - ValorationFilterSchema and ValorationFilterSet for filtering valoration records.
+    - TeacherPaginationService, StudentPaginationService, SubjectPaginationService, and CoursePaginationService for retrieving related information.
+"""
+
 class ValorationCreateService :
     def __init__(self, session):
         self.repo_instance = ValorationRepository(session)

@@ -16,6 +16,86 @@ from backend.domain.models.tables import ClassroomTable, TechnologicalMeanTable,
 from sqlalchemy.orm import aliased
 from fastapi import HTTPException, status
 from backend.infrastructure.repositories.teacher import TeacherRepository
+
+"""
+This module defines services for creating, retrieving, updating, and deleting teacher records, as well as managing teacher-subject associations.
+
+Classes:
+    TeacherCreateService: A service for creating new teacher records.
+    TeacherDeletionService: A service for deleting teacher records.
+    TeacherUpdateService: A service for updating teacher records.
+    TeacherPaginationService: A service for retrieving teacher records based on various criteria.
+    TeacherSubjectService: A service for managing teacher-subject associations.
+
+Classes Details:
+
+1. TeacherCreateService:
+    - This service is responsible for creating new teacher records.
+    - It utilizes the TeacherRepository to interact with the database.
+    - It also uses SubjectPaginationService to retrieve subject details associated with the teacher.
+    
+    Methods:
+        - __init__(session): Initializes the service with a database session and sets up necessary service instances.
+        - create_teacher(teacher: TeacherCreateModel) -> TeacherTable: 
+            Creates a new teacher record using the provided TeacherCreateModel and returns the created TeacherTable object.
+
+2. TeacherDeletionService:
+    - This service is responsible for deleting teacher records.
+    - It uses the TeacherRepository to perform deletion operations.
+    
+    Methods:
+        - __init__(session): Initializes the service with a database session.
+        - delete_teacher(teacher: TeacherModel) -> None: 
+            Deletes the specified teacher record.
+
+3. TeacherUpdateService:
+    - This service is responsible for updating teacher records.
+    - It uses the TeacherRepository to perform update operations.
+    
+    Methods:
+        - __init__(session): Initializes the service with a database session.
+        - update(changes: TeacherChangeRequest, teacher: TeacherModel) -> TeacherModel: 
+            Updates the specified teacher record with the provided changes and returns the updated TeacherModel.
+
+4. TeacherPaginationService:
+    - This service is responsible for retrieving teacher records based on different criteria.
+    - It uses the TeacherRepository to fetch data from the database.
+    
+    Methods:
+        - __init__(session): Initializes the service with a database session.
+        - get_teacher_by_email(email: str) -> TeacherTable: 
+            Retrieves a teacher record by the specified email.
+        - get_teacher_by_id(id: uuid.UUID) -> TeacherTable: 
+            Retrieves a teacher record by the specified ID.
+        - get_teachers(filter_params: TeacherFilterSchema) -> list[TeacherTable]: 
+            Retrieves a list of teachers based on the provided filter parameters.
+        - get_teachers_average_better_than_8(): 
+            Retrieves teachers with an average rating better than 8.
+        - get_teachers_by_technological_classroom(): 
+            Retrieves teachers associated with technological classrooms.
+        - get_teachers_by_sanctions(): 
+            Retrieves teachers with sanctions.
+        - get_teachers_by_students(student_id: str): 
+            Retrieves teachers associated with a specific student.
+
+5. TeacherSubjectService:
+    - This service is responsible for managing teacher-subject associations.
+    
+    Methods:
+        - create_teacher_subject(session: Session, teacher_id: str, subject_id: str): 
+            Creates an association between a teacher and a subject.
+        - get_teacher_subjects(id: uuid.UUID) -> list[str]: 
+            Retrieves the subjects associated with a specific teacher.
+
+Dependencies:
+    - SQLAlchemy ORM for database interactions.
+    - TeacherRepository for database operations related to teachers.
+    - TeacherCreateModel, TeacherModel, TeacherTable, and other domain models for data representation.
+    - TeacherFilterSchema and TeacherFilterSet for filtering teacher records.
+    - UUID for handling unique identifiers.
+    - Utility functions for password hashing and valoration average calculation.
+    - FastAPI for handling HTTP exceptions.
+"""
 class TeacherCreateService :
     def __init__ (self, session):
         self.repo_istance = TeacherRepository(session)

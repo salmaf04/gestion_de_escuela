@@ -3,6 +3,50 @@ from backend.application.services.teacher import TeacherPaginationService
 from backend.application.services.mean import MeanPaginationService
 from backend.infrastructure.repositories.mean_request import MeanRequestRepository
 
+"""
+This module defines services for creating, retrieving, and deleting mean requests.
+
+Classes:
+    MeanRequestCreateService: A service for creating new mean requests.
+    MeanRequestPaginationService: A service for retrieving mean requests based on specific criteria.
+    MeanRequestDeletionService: A service for deleting mean requests.
+
+Classes Details:
+
+1. MeanRequestCreateService:
+    - This service is responsible for creating new mean requests.
+    - It utilizes the MeanRequestRepository to interact with the database.
+    - It also uses TeacherPaginationService and MeanPaginationService to retrieve teacher and mean details.
+    
+    Methods:
+        - __init__(session): Initializes the service with a database session and sets up necessary service instances.
+        - create_mean_request(mean_id: str, teacher_id: str): 
+            Creates a new mean request using the specified mean and teacher IDs.
+
+2. MeanRequestPaginationService:
+    - This service is responsible for retrieving mean requests based on specific criteria.
+    - It uses the MeanRequestRepository to fetch data from the database.
+    
+    Methods:
+        - __init__(session): Initializes the service with a database session.
+        - get_by_id(teacher_id: str, mean_id: str): 
+            Retrieves a mean request by the specified teacher and mean IDs.
+
+3. MeanRequestDeletionService:
+    - This service is responsible for deleting mean requests.
+    - It uses the MeanRequestRepository to perform deletion operations.
+    
+    Methods:
+        - __init__(session): Initializes the service with a database session.
+        - delete(mean_request): 
+            Deletes the specified mean request.
+
+Dependencies:
+    - SQLAlchemy ORM for database interactions.
+    - MeanRequestRepository for database operations related to mean requests.
+    - TeacherPaginationService and MeanPaginationService for retrieving teacher and mean information.
+"""
+
 class MeanRequestCreateService :
     def __init__(self, session):
         self.repo_instance = MeanRequestRepository(session)
