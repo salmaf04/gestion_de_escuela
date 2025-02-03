@@ -7,6 +7,30 @@ from backend.application.serializers.course import CourseMapper
 from backend.domain.filters.course import CourseFilterSchema, CourseChangeRequest
 from backend.configuration import get_db
 
+"""
+This module defines API endpoints for managing courses using FastAPI.
+
+Endpoints:
+- POST /course: Create a new course.
+- DELETE /course/{id}: Delete an existing course by its ID.
+- GET /course: Retrieve a list of courses based on provided filters.
+- PATCH /course/{id}: Update an existing course by its ID.
+
+Dependencies:
+- FastAPI's APIRouter for routing.
+- SQLAlchemy's Session for database interactions.
+- Custom services and models for handling course operations.
+
+Functions:
+- create_course: Handles the creation of a new course. Utilizes the CourseCreateService to add a course to the database.
+- delete_course: Handles the deletion of a course. Validates the existence of the course and deletes it if valid.
+- read_course: Retrieves a list of courses based on filter criteria. Utilizes the CoursePaginationService to fetch data.
+- update_subject: Updates an existing course. Validates the existence of the course and applies changes if valid.
+
+Raises:
+- HTTPException: Raised when a course is not found, with appropriate HTTP status codes.
+"""
+
 router = APIRouter()
 
 

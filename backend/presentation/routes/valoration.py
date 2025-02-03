@@ -6,6 +6,35 @@ from backend.application.serializers.valoration import ValorationMapper
 from backend.configuration import get_db
 from backend.domain.filters.valoration import ValorationFilterSchema
 
+"""
+This module defines API endpoints for managing valorations using FastAPI.
+
+Endpoints:
+- POST /valoration: Create a new valoration. Ensures that a student cannot rate the same teacher more than once.
+- GET /valoration: Retrieve a list of valorations based on provided filters, including options for valorations by teacher ID.
+
+Dependencies:
+- FastAPI's APIRouter for routing.
+- SQLAlchemy's Session for database interactions.
+- Custom services and models for handling valoration operations.
+
+Functions:
+- create_valoration: Handles the creation of a new valoration. Validates that a student has not already rated the same teacher.
+- read_valoration: Retrieves valorations based on filter criteria, including options for valorations by teacher ID.
+
+Parameters:
+- valoration_input (ValorationCreateModel): The data for creating a new valoration.
+- by_teacher_id (str): The ID of the teacher to filter valorations by.
+- filters (ValorationFilterSchema): The filter criteria for retrieving valorations.
+- session (Session): The database session dependency.
+
+Returns:
+- JSON responses with the created or retrieved valoration records.
+
+Raises:
+- HTTPException: Raised when a valoration is not found or when attempting to create a duplicate, with appropriate HTTP status codes.
+"""
+
 router = APIRouter()
 
 @router.post(

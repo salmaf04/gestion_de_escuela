@@ -16,6 +16,41 @@ import uuid
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Request
 
+"""
+This module defines API endpoints for managing notes using FastAPI.
+
+Endpoints:
+- POST /note: Create a new note. Requires authorization for roles 'secretary' or 'teacher'.
+- GET /note: Retrieve a list of notes based on filters, including options for notes by student or notes with grades less than fifty. Requires authorization for roles 'secretary', 'teacher', or 'student'.
+- PATCH /note/{id}: Update an existing note by its ID. Requires authorization for roles 'secretary' or 'teacher'.
+
+Dependencies:
+- FastAPI's APIRouter for routing.
+- SQLAlchemy's Session for database interactions.
+- Custom services and models for handling note operations.
+- OAuth2PasswordBearer for token-based authentication.
+
+Functions:
+- create_note: Handles the creation of a new note. Utilizes the NoteCreateService to add a note to the database.
+- read_note: Retrieves notes based on filter criteria, including options for notes by student or notes with grades less than fifty.
+- update_note: Updates an existing note. Validates the existence of the note and applies changes if valid.
+
+Parameters:
+- note_input (NoteCreateModel): The data for creating a new note.
+- by_student (str): The ID of the student to filter notes by.
+- less_than_fifty (bool): Indicates if the user wants to retrieve notes with grades less than fifty.
+- id (str): The ID of the note to update.
+- new_note (NoteChangeRequest): The changes to apply to the note.
+- session (Session): The database session dependency.
+- current_user (UserModel): The current authenticated user.
+
+Returns:
+- JSON responses with the created, retrieved, or updated note records.
+
+Raises:
+- HTTPException: Raised when a note is not found, with appropriate HTTP status codes.
+"""
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 router = APIRouter()

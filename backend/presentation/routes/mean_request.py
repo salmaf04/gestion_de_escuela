@@ -7,6 +7,33 @@ from fastapi.exceptions import HTTPException
 from backend.application.serializers.mean_request import MeanRequestMapper
 from backend.configuration import get_db
 
+"""
+This module defines API endpoints for managing mean requests using FastAPI.
+
+Endpoints:
+- POST /mean_request/{teacher_id}: Create a new mean request for a specific teacher.
+- DELETE /mean_request/{teacher_id}: Delete an existing mean request for a specific teacher.
+
+Dependencies:
+- FastAPI's APIRouter for routing.
+- SQLAlchemy's Session for database interactions.
+- Custom services and models for handling mean request operations.
+
+Functions:
+- create_mean_request: Handles the creation of a mean request. Validates the existence of the mean and creates a request if valid.
+- delete_mean_request: Handles the deletion of a mean request. Validates the existence of the request and deletes it if valid.
+
+Parameters:
+- teacher_id (str): The ID of the teacher for whom the mean request is being created or deleted.
+- mean (MeanRequestCreateModel or MeanDeletionModel): The data for creating or deleting a mean request.
+- session (Session): The database session dependency.
+
+Returns:
+- JSON response with the created mean request or confirmation of deletion.
+
+Raises:
+- HTTPException: Raised when a mean or request is not found, with appropriate HTTP status codes.
+"""
 
 router = APIRouter()
 
