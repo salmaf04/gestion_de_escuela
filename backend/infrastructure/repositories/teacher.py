@@ -22,11 +22,10 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         super().__init__(session)
 
     def create(self, entity: TeacherCreateModel, subjects: SubjectTable) -> TeacherTable :
-        self.check_subject(subjects, entity.list_of_subjects)
         teacher_dict = entity.model_dump(exclude={'password', 'list_of_subjects'})
         hashed_password = get_password_hash(get_password(entity))
         new_teacher = TeacherTable(**teacher_dict, hashed_password=hashed_password)
-        new_teacher.teacher_subject_association = subjects
+        new_teacher.teacher_subject_association = subjects if subjects else []
         self.session.add(new_teacher)
         self.session.commit()
         for subject in subjects :
@@ -65,30 +64,6 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
 
         return teachers, subjects
             
-    
-    def check_subject(self,subjects_in_table, subjects_in_request):
-        subjects_in_table_names = [subject.name for subject in subjects_in_table]
-        subjects_in_table_names.sort()
-        subjects_in_request.sort()
-        wrong_subjects = []
-        
-
-        for subject_in_table, subject_in_request in zip(subjects_in_table_names, subjects_in_request):
-            if subject_in_table != subject_in_request:
-                wrong_subjects.append(subject_in_request)
-            
-        if wrong_subjects:
-            wrong_subjects_str = ', '.join(wrong_subjects)
-            if len(wrong_subjects) == 1:
-                raise HTTPException(
-                    status_code=status.HTTP_403_FORBIDDEN,
-                    detail=f"Está intentando crear un nuevo profesor con una asignatura no válida: {wrong_subjects_str}"
-                )
-            raise HTTPException(
-                    status_code=status.HTTP_403_FORBIDDEN,
-                    detail=f"Está intentando crear un nuevo profesor con asignaturas no válidas: {wrong_subjects_str}"
-                )
-
     def get_teacher_by_email(self, email: str) -> TeacherTable :
         query = self.session.query(TeacherTable).filter(TeacherTable.email == email)
         result = query.first()

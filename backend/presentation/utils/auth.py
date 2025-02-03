@@ -18,33 +18,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Session
 from backend.application.serializers.user import UserMapper
-
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-database_url = os.getenv("DATABASE_URL")
-
-
-engine = create_engine(
-    database_url
-)
-
-tables.BaseTable.metadata.create_all(engine)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-app = FastAPI()
-
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try: 
-        yield db
-    finally:
-        db.close()
-
+from backend.configuration import get_db
 # Define OAuth2 scheme for token authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

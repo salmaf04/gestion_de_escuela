@@ -27,7 +27,7 @@ async def create_valoration(
     if valoration_check :
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Lo sentimos, no puedes tener más de un valoración por profesor"
+            detail="Lo sentimos, no puedes valorar más de una vez al mismo profesor"
         )
 
     response = valoration_service.create_valoration(valoration=valoration_input)

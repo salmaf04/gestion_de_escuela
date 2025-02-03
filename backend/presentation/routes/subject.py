@@ -27,7 +27,7 @@ async def create_subject(
     subject_service = SubjectCreateService(session)
     mapper = SubjectMapper()
 
-    subject_filter_by_name = SubjectFilterSchema(name=subject_input.name)
+    subject_filter_by_name = SubjectFilterSchema(name=[subject_input.name])
     
     subject_check = subject_pagination_service.get_subjects(filter_params=subject_filter_by_name)
 

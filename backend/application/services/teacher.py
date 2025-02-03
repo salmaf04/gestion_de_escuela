@@ -22,7 +22,7 @@ class TeacherCreateService :
         self.subject_pagination = SubjectPaginationService(session)
     
     def create_teacher(self, teacher: TeacherCreateModel) -> TeacherTable :
-        subjects = self.subject_pagination.get_subjects(filter_params=SubjectFilterSchema(name=teacher.list_of_subjects))
+        subjects = self.subject_pagination.get_subjects(filter_params=SubjectFilterSchema(name=teacher.list_of_subjects)) if teacher.list_of_subjects else None
         return self.repo_istance.create(teacher, subjects=subjects)
 class TeacherDeletionService:
     def __init__ (self, session):

@@ -12,25 +12,20 @@ from backend.main_test import app, get_db
 # Database URL
 database_url = "postgresql+psycopg2://local:local@localhost:5432/testing_school"
 
+engine = create_engine(
+    database_url
+)
 
-@pytest.fixture(name="session")
-def session_fixture():
-    engine = create_engine(
-        database_url
-    )
-    tables.BaseTable.metadata.create_all(engine)
-    with Session(engine) as session:
-        yield session
-
+tables.BaseTable.metadata.create_all(engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 @pytest.fixture(name="client")  
-def client_fixture(session: Session):  
-    def get_session_override():  
-        return session
+def client_fixture():  
+    def get_db():
+        db = SessionLocal()
+        try:
+            yield db
+        finally:
+            db.close()
 
-    app.dependency_overrides[get_db] = get_session_override  
-
-    client = TestClient(app)  
-    yield client  
-    app.dependency_overrides.clear()  
 

@@ -5,13 +5,13 @@ from typing import Optional
 
 
 class SubjectFilterSet(FilterSet):
-    name = Filter(SubjectTable.name)
+    name = InFilter(SubjectTable.name)
     hourly_load = RangeFilter(SubjectTable.hourly_load)
     study_program = RangeFilter(SubjectTable.study_program)
     course_id = Filter(SubjectTable.course_id)
 
 class SubjectFilterSchema(BaseModel):
-    name : str | None = None
+    name : list[str] | None = None
     hourly_load : tuple[int, int] | None = None
     study_program : tuple[int, int] | None = None
     course_id : str | None = None
