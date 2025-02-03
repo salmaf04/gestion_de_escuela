@@ -1,6 +1,6 @@
 import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import Body from "./components/Body.tsx";
-import { AppContext } from "../../App.tsx";
+import {AppContext} from "../../App.tsx";
 import AddEstudianteForm from "./components/AddEstudianteForm.tsx";
 import {useApiEstudiante} from "./hooks/useApiEstudiante.ts";
 import {IEditRow} from "../../types/IEditRow.ts";
@@ -8,6 +8,7 @@ import {IEstudianteLocal} from "./models/IEstudianteLocal.ts";
 import {IEstudianteDB} from "./models/IEstudianteDB.ts";
 import {IEstudianteCreateDB} from "./models/IEstudianteCreateDB.ts";
 import ToolBar, {IToolbarContext} from "../../components/ToolBar.tsx";
+import {RolesEnum} from "../../api/RolesEnum.ts";
 
 
 interface IEstudianteContext extends IToolbarContext{
@@ -43,7 +44,7 @@ export default function EstudiantesScreen() {
     const [searchText, setSearchText] = useState('');
     const [editting, setEditting] = useState<IEditRow<Partial<IEstudianteLocal>> | undefined>();
     const [showModal, setShowModal] = useState(false);
-    const {estudiantes} = useContext(AppContext)
+    const {estudiantes, allowRoles} = useContext(AppContext)
     const {
         getEstudiantes,
         deleteEstudiante,
@@ -121,7 +122,7 @@ export default function EstudiantesScreen() {
 
         }}>
             <div className={'w-full h-dvh flex flex-col'}>
-                <ToolBar context={EstudianteContext}/>
+                <ToolBar context={EstudianteContext} allowAddButton={allowRoles!([RolesEnum.SECRETARY])} />
                 <Body />
                 {(showModal || editting) &&
                     <AddEstudianteForm />

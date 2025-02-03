@@ -11,9 +11,10 @@ export interface IToolbarContext {
     searchText?: string;
     setSearchText?: (text: string) => void;
     setShowModal?: (show: boolean) => void;
+    dataTable?: Array<any>
 }
 
-export default function ToolBar({context} : {context: React.Context<IToolbarContext> }) {
+export default function ToolBar({context, allowAddButton = true} : {context: React.Context<IToolbarContext>, allowAddButton: boolean }) {
     const {
         searchText,
         setSearchText,
@@ -21,7 +22,7 @@ export default function ToolBar({context} : {context: React.Context<IToolbarCont
         dataTable,
 
     } = useContext(context);
-    const {username, setToken} = useContext(AppContext)
+    const {username, setToken, roles} = useContext(AppContext)
     return (
         <div className={'w-full my-4 h-1/6 flex items-center justify-between px-5'}>
             <div className={'flex space-x-4'}>
@@ -41,7 +42,7 @@ export default function ToolBar({context} : {context: React.Context<IToolbarCont
                         Bienvenido/a
                     </h1>
                     <p className={'text-slate-800 text-sm italic'}>
-                        {username}
+                        {`${username}: ${roles}`}
                     </p>
 
                 </div>
@@ -51,7 +52,7 @@ export default function ToolBar({context} : {context: React.Context<IToolbarCont
                 setSearchText!(text);
             }}/>
             <ExportButton title={'Estudiantes'} headers = {EstudianteGetAdapter.Properties.slice(1)} data={dataTable}></ExportButton>
-            <AddButton onClick={() => setShowModal!(true)}/>
+            {allowAddButton && <AddButton onClick={() => setShowModal!(true)}/>}
         </div>
     );
 }

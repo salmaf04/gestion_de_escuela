@@ -14,7 +14,7 @@ export default function Body(){
     const {solicitarMedio} = useApiMedio()
     const {setError, medios, allowRoles, typeRole} = useContext(AppContext)
     const actions = []
-    if (allowRoles!([RolesEnum.TEACHER])){
+     if (allowRoles!([RolesEnum.TEACHER])){
         actions.push({
             action: (row: DBObject) => {
                 solicitarMedio!({mean_id: row.id})
@@ -26,18 +26,7 @@ export default function Body(){
             isVisible: ()=>true
         })
     }
-    if (typeRole === 'dean'){
-        actions.push({
-            action: (row: DBObject) => {
-                solicitarMedio!({mean_id: row.id})
-            },
-            lineColor: 'bg-green-500',
-            hoverColor: 'bg-green-100',
-            title: "Solicitar",
-            icon: <img src={SolicitarIcon} alt={'Solicitar'}/>,
-            isVisible: ()=>true
-        })
-    }
+
     return(
             <Table
                 className={'h-5/6 accentgree'}
