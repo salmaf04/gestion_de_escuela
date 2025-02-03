@@ -22,6 +22,10 @@ from datetime import datetime, timedelta, timezone
 import uuid
 
 class TableName(str, PyEnum):
+    """
+    Enumeration defining all table names in the database.
+    Each value represents a specific table name in the system.
+    """
     USER = "user"
     TEACHER = "teacher" 
     DEAN = "dean"
@@ -48,6 +52,10 @@ class TableName(str, PyEnum):
     VALORATION_PERIOD = "valoration_period"
 
 class Roles(str, PyEnum):
+    """
+    Enumeration defining available user roles in the system.
+    Each role represents a different level of access and permissions.
+    """
     ADMIN = "administrator"
     SECRETARY = "secretary"
     TEACHER = "teacher"
@@ -57,18 +65,30 @@ class Roles(str, PyEnum):
     
 
 class MeanState(str, PyEnum):
+    """
+    Enumeration defining possible states for resources/means.
+    Indicates the current condition of the resource.
+    """
     EXCELENT = "excelent" 
     GOOD = "good"
     REGULAR = "regular"
     BAD = "bad"    
 
-class MeanType(str, PyEnum) :
+class MeanType(str, PyEnum):
+    """
+    Enumeration defining types of available resources/means.
+    Classifies different types of resources that can exist.
+    """
     TECHNOLOGICAL = "technological"
     TEACHING_MATERIAL = "teaching_material" 
     OTHERS = "others"
 
 
 class BaseTable(DeclarativeBase):
+    """
+    Base class for all system tables.
+    Defines a universal unique ID (UUID) as primary key for all tables.
+    """
     entity_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
 
@@ -95,6 +115,18 @@ teacher_request_mean_table = Table(
     Column("mean_id", ForeignKey("mean.entity_id", ondelete='CASCADE'), primary_key=True),
 )
 class UserTable(BaseTable) :
+    """
+    Base table for all system users.
+    Implements polymorphic inheritance for different user types.
+    Attributes:
+        - name: user's first name
+        - lastname: user's last name
+        - username: unique username
+        - email: unique email address
+        - hashed_password: encrypted password
+        - roles: list of assigned roles
+        - type: user type for polymorphism
+    """
     __tablename__ = TableName.USER.value
     
     name = Column(String)
@@ -111,6 +143,24 @@ class UserTable(BaseTable) :
 
 
 class TeacherTable(UserTable):
+    """
+    Table for storing teacher information.
+    Inherits from UserTable and adds teacher-specific attributes.
+    Attributes:
+        - specialty: teacher's area of expertise
+        - contract_type: type of employment contract
+        - experience: years of experience
+        - average_valoration: average rating from evaluations
+        - salary: teacher's salary
+        - less_than_three_valoration: count of ratings below 3
+    Relationships:
+        - sanctions: list of teacher sanctions
+        - mean_request: requested resources
+        - classroom_request: requested classrooms
+        - student_note_association: grades given to students
+        - teacher_note_association: ratings received
+        - teacher_subject_association: subjects taught
+    """
     __tablename__ = TableName.TEACHER.value
     
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
@@ -148,6 +198,10 @@ class TeacherTable(UserTable):
 
       
 class DeanTable(TeacherTable):
+    """
+    Table for storing dean information.
+    Inherits from TeacherTable as deans are also teachers with additional responsibilities.
+    """
     __tablename__ = TableName.DEAN.value
     
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.TEACHER.value}.id"), primary_key=True)
@@ -157,6 +211,10 @@ class DeanTable(TeacherTable):
     }
 
 class SecretaryTable(UserTable) :
+    """
+    Table for storing secretary information.
+    Inherits from UserTable for basic user functionality.
+    """
     __tablename__ = TableName.SECRETARY.value
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
@@ -167,6 +225,10 @@ class SecretaryTable(UserTable) :
 
 
 class AdministratorTable(UserTable) :
+    """
+    Table for storing administrator information.
+    Inherits from UserTable for basic user functionality.
+    """
     __tablename__ = TableName.ADMINISTRATOR.value
     
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
@@ -177,6 +239,20 @@ class AdministratorTable(UserTable) :
 
 
 class StudentTable(UserTable) :
+    """
+    Table for storing student information.
+    Inherits from UserTable and adds student-specific attributes.
+    Attributes:
+        - age: student's age
+        - extra_activities: participation in extra activities
+        - average_note: average grade
+        - course_id: associated course
+    Relationships:
+        - course: enrolled course
+        - student_note_association: received grades
+        - student_absence_association: recorded absences
+        - teacher_note_association: teacher evaluations
+    """
     __tablename__ = TableName.STUDENT.value
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
@@ -196,6 +272,17 @@ class StudentTable(UserTable) :
 
 
 class SubjectTable(BaseTable) :
+    """
+    Table for storing subject information.
+    Attributes:
+        - name: subject name
+        - hourly_load: hours per week
+        - study_program: program year/level
+    Relationships:
+        - classroom: assigned classroom
+        - course: associated course
+        - various associations with students and teachers
+    """
     __tablename__ = TableName.SUBJECT.value
 
     name = Column(String)
@@ -214,6 +301,17 @@ class SubjectTable(BaseTable) :
     teacher_subject_association = relationship("TeacherTable", secondary=teacher_subject_table, back_populates="teacher_subject_association")
     
 class ClassroomTable(BaseTable) : 
+    """
+    Table for storing classroom information.
+    Attributes:
+        - number: unique classroom number
+        - location: physical location
+        - capacity: maximum student capacity
+    Relationships:
+        - teachers: teachers requesting the classroom
+        - means: resources in the classroom
+        - subjects: subjects taught in the classroom
+    """
     __tablename__ = TableName.CLASSROOM.value
 
     number = Column(Integer, unique=True)
@@ -381,19 +479,146 @@ class SanctionTable(BaseTable):
     date = Column(DateTime, nullable=False)
 
 
+@event.listens_for(TeacherNoteTable, 'after_insert')
+def update_teacher_average(mapper, connection, target):
+    """
+    Updates teacher's average rating after a new evaluation is inserted.
+    Calculates the average of all grades for the teacher.
+    """
+    connection.execute(
+        TeacherTable.__table__.update().
+        where(TeacherTable.id == target.teacher_id).
+        values(average_valoration=(
+            select((func.sum(TeacherNoteTable.grade)/func.count())).
+            where(TeacherNoteTable.teacher_id == target.teacher_id)
+        ))
+    )
+
+def update_student_average(mapper, connection, target):
+    """
+    Updates student's average grade after a new grade is added or modified.
+    Calculates the average of all grades for the student.
+    """
+    connection.execute(
+        StudentTable.__table__.update().
+        where(StudentTable.id == target.student_id).
+        values(average_note=(
+            select((func.sum(StudentNoteTable.note_value)/func.count())).
+            where(StudentNoteTable.student_id == target.student_id)
+        ))
+    )
+
+event.listen(StudentNoteTable, 'after_insert', update_student_average)
+event.listen(StudentNoteTable, 'after_update', update_student_average)
+
+@event.listens_for(BaseTable.metadata, 'after_create')
+def insert_default_valoration_period(target, connection, **kw):
+    """
+    Creates a default evaluation period when the database is initialized.
+    Checks if ValorationPeriodTable exists and is empty before inserting.
+    """
+    for table in target.tables.values():
+        if table.name == ValorationPeriodTable.__tablename__:  
+            result = connection.execute(select(ValorationPeriodTable.entity_id)).fetchone()
+            
+            if result is None:
+                connection.execute(
+                    ValorationPeriodTable.__table__.insert().
+                    values(
+                        entity_id=uuid.uuid4(),
+                        open=False
+                    )
+                )
+            break
+ 
+@event.listens_for(ValorationPeriodTable, 'after_update', propagate=True)
+def update_less_than_three_valoration(mapper, connection, target):
+    history = get_history(target, 'open')
+    unchanged = history.unchanged[0] if history.unchanged else None
+    old_value = history.deleted[0] if history.deleted else None
+    new_value = history.added[0] if history.added else None
 
 
-   
+    if not unchanged :
+        if old_value == True and new_value == False :
+    # Actualizar el promedio de valoraciones del profesor
+            connection.execute(
+                TeacherTable.__table__.update().
+                where(TeacherTable.average_valoration < 3).
+                values(less_than_three_valoration= TeacherTable.less_than_three_valoration + 1)
+                )
+            
+def insert_user_roles(mapper, connection, target):
+    """
+    Assigns appropriate roles to users based on their type during insertion.
+    Maps user types to corresponding role enums.
+    """
+    if target.type == "administrator" :
+        target.roles = [Roles.ADMIN.value]
+    elif target.type == "secretary" :
+        target.roles = [Roles.SECRETARY.value]
+    elif target.type == "teacher" :
+        target.roles = [Roles.TEACHER.value]
+    elif target.type == "student" :
+        target.roles = [Roles.STUDENT.value]
 
+for table in [TeacherTable, UserTable, AdministratorTable, SecretaryTable, StudentTable] :
+    event.listen(table, 'before_insert', insert_user_roles)
+
+
+@event.listens_for(DeanTable, 'before_insert')
+def no_administrator(mapper, connection, target):
+    """
+    Manages dean roles and admin privileges during dean insertion.
+    Assigns admin role to dean if no administrator exists.
+    """
+    result = connection.execute(select(AdministratorTable.entity_id)).fetchone()
+    if result is None :
+        target.roles = [Roles.DEAN.value, Roles.TEACHER.value, Roles.ADMIN.value]
+    else :
+        target.roles = [Roles.DEAN.value, Roles.TEACHER.value]
+
+@event.listens_for(AdministratorTable, 'after_delete')
+def check_administrator(mapper, connection, target):
+    """
+    Manages admin privileges after administrator deletion.
+    Transfers admin role to dean if no administrator remains.
+    """
+    result = connection.execute(select(AdministratorTable.entity_id)).fetchone()
+    decano = connection.execute(select(DeanTable)).fetchone()
+    if result is None :
+        connection.execute(UserTable.__table__.update().values(roles=[Roles.DEAN.value, Roles.TEACHER.value, Roles.ADMIN.value]).where(UserTable.entity_id == decano.id))
+
+@event.listens_for(AdministratorTable, 'before_insert')
+def check_administrator(mapper, connection, target):
+    """
+    Manages admin privileges before administrator insertion.
+    Adjusts dean roles when new administrator is added.
+    """
+    result = connection.execute(select(AdministratorTable.entity_id)).fetchone()
+    decano = connection.execute(select(DeanTable)).fetchone()
+    if result is None :
+        connection.execute(UserTable.__table__.update().values(roles=[Roles.DEAN.value, Roles.TEACHER.value]).where(UserTable.entity_id == decano.id))
+
+
+@event.listens_for(MeanMaintenanceTable, 'before_insert')
+def check_replacement(mapper, connection, target):
+    """
+    Checks if a resource needs replacement based on maintenance history.
+    Flags resource for replacement if it has had 2+ maintenance records in the past year.
+    """
+    date = datetime.now(timezone.utc) - timedelta(days=365)
+    result = connection.execute(
+        select(
+            func.count(MeanMaintenanceTable.entity_id).label("count")
+        ).where(
+            and_(
+                MeanMaintenanceTable.date >= date,
+                MeanMaintenanceTable.mean_id == target.mean_id
+            )
+        )
+    ).scalars().first()
+
+    if result >= 2 : 
+        connection.execute(update(MeanTable).where(MeanTable.entity_id == target.mean_id).values(to_be_replaced=True))
     
-
-
-
-
-
-
-    
-
-
-
-
