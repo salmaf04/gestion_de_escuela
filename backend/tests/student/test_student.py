@@ -8,8 +8,8 @@ from .conftest import SecretaryFactory
 from backend.presentation.utils.auth import create_access_token
 from sqlalchemy import ARRAY
 from backend.domain.models.tables import Roles
-class TestTeacher:
-    url = "/teacher"
+class TestStudent:
+    url = "/student"
     
     @pytest.mark.run_this_test
     @pytest.mark.asyncio
@@ -18,20 +18,18 @@ class TestTeacher:
         [
             (
                 {
-                    "name" :"Marcos",
-                    "lastname":"Gonzales",
-                    "username":"marquitos",
-                    "specialty" : "python",
-                    "contract_type":"undefined",
-                    "experience" :20,
-                    "email":"marquitos@gmail.com",
-                    "list_of_subjects" :[],
-                    "salary" : 8000,
+                    "name" : "Rita",
+                    "lastname" : "Suarez",
+                    "age" : "20",
+                    "email" : "rita@gmail.com",
+                    "extra_activities":"true",
+                    "username" : "rita",
+                    "course_id" : "d44359a8-9881-4cdf-9336-d233e6ebcdfc"
                 }
             ),
         ]
     )
-    async def test_create_teacher(
+    async def test_create_student(
         self, 
         client,
         input: dict
@@ -57,21 +55,25 @@ class TestTeacher:
         assert response_json['name'] == input['name']
         assert response_json['lastname'] == input['lastname']
         assert response_json['username'] == input['username']
-        assert response_json['specialty'] == input['specialty']
-        assert response_json['contract_type'] == input['contract_type']
-        assert response_json['experience'] == input['experience']
-        assert response_json['salary'] == input['salary']
 
         response = client.get(
             self.url,
             params= {
-                "name" : "Marcos",
+                "name" : "Rita",
             },
             headers={"Authorization": f"Bearer {access_token}"}
         )
-
-        assert response.status_code == 200
-        assert response.json()[0]['name'] == "Marcos"
+        
+        response_json = response.json()
+        
+        student = response_json.get("0")
+        assert student.get('name') == "Rita"
+        assert student.get('lastname') == "Suarez"
+        assert student.get('age') == 20
+        assert student.get('email') == "rita@gmail.com"
+        assert student.get('extra_activities') == True
+        assert student.get('username') == "rita"
+    
 
        
 
