@@ -23,8 +23,19 @@ async def create_subject(
     subject_input: SubjectCreateModel,
     session: Session = Depends(get_db)
 ) :
+    subject_pagination_service = SubjectPaginationService(session)
     subject_service = SubjectCreateService(session)
     mapper = SubjectMapper()
+
+    subject_filter_by_name = SubjectFilterSchema(name=subject_input.name)
+    
+    subject_check = subject_pagination_service.get_subjects(filter_params=subject_filter_by_name)
+
+    if subject_check :
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Ya existe una asignatura con ese nombre"
+        )
 
     response = subject_service.create_subject(subject=subject_input)
 

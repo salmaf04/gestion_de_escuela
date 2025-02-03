@@ -18,7 +18,17 @@ async def create_valoration(
     session: Session = Depends(get_db)
 ) :
     valoration_service = ValorationCreateService(session)
+    valoration_pagination_service = ValorationPaginationService(session)
     mapper = ValorationMapper()
+
+    valoration_filter_by_student_id = ValorationFilterSchema(student_id=valoration_input.student_id)
+    valoration_check = valoration_pagination_service.get_valoration(filter_params=valoration_filter_by_student_id)
+    
+    if valoration_check :
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Lo sentimos, no puedes tener más de un valoración por profesor"
+        )
 
     response = valoration_service.create_valoration(valoration=valoration_input)
 
