@@ -20,9 +20,9 @@ export const useApiEstudiante = () => {
         if (estudiantesAppContext) {
             setIsLoading(false)
         }
+        await getCursos()
         const res = await apiRequest.getApi(endpoint)
         if (res.ok) {
-            await getCursos()
             const data: IEstudianteDB[] = await res.json()
             const estudianteArray: IEstudianteLocal[] = Object.values(data)
                 .map((estudiante: IEstudianteDB) => new EstudianteGetAdapter(estudiante, cursos!.find((item)=> item.id === estudiante.course_id)!))

@@ -16,7 +16,7 @@ export function getProfesorFromResponse(profesorResponse: ProfesorGetResponse) {
 export function getProfesorCreateDbFromAdapter(profesorAdapter: ProfesorCreateAdapter): ProfesorCreateDB {
     return {
         name: profesorAdapter.name,
-        fullname: profesorAdapter.lastname,
+        lastname: profesorAdapter.lastname,
         email: profesorAdapter.email,
         specialty: profesorAdapter.specialty,
         contract_type: profesorAdapter.contractType,

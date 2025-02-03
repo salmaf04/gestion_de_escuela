@@ -25,7 +25,7 @@ export const useApiMantenimiento = () => {
             const data: IMantenimientoDB[] = await res.json()
 
             const mantenimientoArray: IMantenimientoLocal[] = Object.values(data)
-                .map((mantenimiento: IMantenimientoDB) => new MantenimientoGetAdapter(mantenimiento, medios!.find((item) => item.id === mantenimiento.mean_id)!))
+                .map((mantenimiento: IMantenimientoDB) => new MantenimientoGetAdapter(mantenimiento, medios!.find((item) => item.name === mantenimiento.mean)!))
             setMantenimientosAppContext!(mantenimientoArray)
         } else {
             setError!(new Error(res.statusText))

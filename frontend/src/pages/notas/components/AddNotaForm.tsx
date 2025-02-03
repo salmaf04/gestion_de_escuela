@@ -9,7 +9,7 @@ import MySpinner from "../../../components/MySpinner.tsx";
 import { useFieldArray, useForm} from "react-hook-form";
 import {ISelect} from "../../../types/ISelect.ts";
 import {useApiProfesor} from "../../profesores/hooks/useApiProfesor.ts";
-import {INotaDB} from "../models/INotaDB.ts";
+import {INotaCreateDB} from "../models/INotaCreateDB.ts";
 
 export default function AddNotaForm() {
     const { onAddTableItem, setShowModal, editting, onEditTableItem, setEditting } = useContext(NotasContext);
@@ -32,7 +32,7 @@ export default function AddNotaForm() {
     const onSubmit = (data) => {
 
         if (editting){
-            const dataParse: Partial<INotaDB> = {
+            const dataParse: Partial<INotaCreateDB> = {
                 teacher_id: data[`profesor${0}`],
                 student_id: data[`estudiante${0}`],
                 subject_id: data[`asignatura${0}`],
@@ -41,8 +41,7 @@ export default function AddNotaForm() {
             onEditTableItem!(dataParse)
         }
         else{
-            console.log(data)
-            const dataParse: Partial<INotaDB>[] = []
+            const dataParse: Partial<INotaCreateDB>[] = []
             for (let i = 0; i < fields.length; i++) {
                 dataParse.push({
                     teacher_id: data[`profesor${i}`],

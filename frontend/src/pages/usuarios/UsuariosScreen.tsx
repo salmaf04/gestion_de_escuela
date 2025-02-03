@@ -3,9 +3,9 @@ import Body from "./components/Body.tsx";
 import {useApiUsuarios} from "./hooks/useApiUsuarios.ts";
 import {DBObject} from "../../types.ts";
 import {AppContext} from "../../App.tsx";
-import {IUsuarioDB} from "./models/IUsuarioDB.ts";
 import ToolBar from "../../components/ToolBar.tsx";
 import AddUsuarioForm from "./components/AddUsuarioForm.tsx";
+import {IUsuarioLocal} from "./models/IUsuarioLocal.ts";
 
 interface IUsuariosContext {
     searchText?: string;
@@ -18,20 +18,18 @@ interface IUsuariosContext {
     setEditting?: (UsuarioDB?: IUsuarioTableRow) => void;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
-    onEditTableItem?: (usuarioEdit: Partial<IUsuarioDB>) => void;
-    onAddTableItem?: (usuarioEdit: Partial<IUsuarioDB>[]) => void;
+    onEditTableItem?: (usuarioEdit: Partial<IUsuarioLocal>) => void;
+    onAddTableItem?: (usuarioEdit: Partial<IUsuarioLocal>[]) => void;
 }
 
 export const UsuariosContext = createContext<IUsuariosContext>({});
 
 interface IUsuarioTableRow extends DBObject {
     id: string,
-    teacherName?: string;
-    studentName?: string;
-    subjectName?: string;
-    note_value: number;
+    username: string,
+    name: string,
+    lastname: string,
 }
-
 
 export default function UsuariosScreen() {
     const [searchText, setSearchText] = useState('');
@@ -41,8 +39,6 @@ export default function UsuariosScreen() {
     const {usuarios} = useContext(AppContext)
     const {
         deleteUsuario,
-        createUsuario,
-        updateUsuario,
         getUsuarios,
     } = useApiUsuarios();
 
@@ -54,15 +50,13 @@ export default function UsuariosScreen() {
         deleteUsuario(deletedUsuarioId);
     };
 
-    const onEditTableItem = (usuariosEdit: Partial<IUsuarioDB>) => {
-        updateUsuario(editting!.id, usuariosEdit)
+    const onEditTableItem = (usuariosEdit: Partial<IUsuarioLocal>) => {
         setEditting(undefined)
     };
 
-    const onAddTableItem = (usuarios: Partial<IUsuarioDB>[]) => {
+    const onAddTableItem = (usuarios: Partial<IUsuarioLocal>[]) => {
         setIsCreating(true);
         usuarios.forEach((item) => {
-            createUsuario(item);
         })
         setIsCreating(false);
     };
@@ -71,10 +65,9 @@ export default function UsuariosScreen() {
         return usuarios?.map((item) => {
             return {
                 id: item.id,
-                studentName: item.student.name,
-                teacherName: item.teacher.name,
-                subjectName: item.subject.name,
-                note_value: item.note_value
+                username: item.username,
+                name: item.name,
+                lastname: item.lastname,
             }
         }) ?? []
     }, [usuarios]);

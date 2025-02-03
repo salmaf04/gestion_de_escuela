@@ -1,24 +1,17 @@
-import {IUsuarioDB} from "../models/IUsuarioDB.ts";
 import {IUsuarioLocal} from "../models/IUsuarioLocal.ts";
-import {EstudianteGetAdapter} from "../../estudiantes/adapters/EstudianteGetAdapter.ts";
-import {AsignaturaGetAdapter} from "../../asignaturas/adapters/AsignaturaGetAdapter.ts";
-import {ProfesorGetAdapter} from "../../profesores/adapters/ProfesorGetAdapter.ts";
 
 export class UsuarioAdapter implements IUsuarioLocal{
-    static Properties = ['ID', 'Profesor', 'Estudiante', 'Asignatura', 'Nota']
+    static Properties = ['ID', 'Nombre', 'Apellidos', 'Usuario', 'Roles']
     id: string
-    note_value: number;
-    student: EstudianteGetAdapter;
-    subject: AsignaturaGetAdapter;
-    teacher: ProfesorGetAdapter;
-    dbObject: IUsuarioDB
+    name: string
+    username: string
+    lastname: string
 
-    constructor(nota: IUsuarioDB, student: EstudianteGetAdapter, subject: AsignaturaGetAdapter, teacher: ProfesorGetAdapter){
-        this.id = nota.id
-        this.dbObject = nota
-        this.note_value = nota.note_value
-        this.student = student
-        this.subject = subject
-        this.teacher = teacher
+
+    constructor(user: IUsuarioLocal){
+        this.id = user.id
+        this.username = user.username
+        this.name = user.name
+        this.lastname = user.lastname
     }
 }

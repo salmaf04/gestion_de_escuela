@@ -32,7 +32,8 @@ interface IMantenimientoTableRow extends DBObject {
     id: string
     mean_name: string,
     date: string,
-    cost: number
+    cost: number,
+    finished: boolean
 }
 
 export const MantenimientoContext = createContext<IMantenimientoContext>({});
@@ -78,9 +79,10 @@ export default function MantenimientosScreen() {
         return mantenimientos?.map((item) => {
             return {
                 id: item.id,
-                mean_name: item.mean!.name,
+                mean_name: item.mean?.name,
                 date: item.date,
-                cost: item.cost
+                cost: item.cost,
+                finished: item.finished
             }
         }) ?? []
     }, [mantenimientos]);

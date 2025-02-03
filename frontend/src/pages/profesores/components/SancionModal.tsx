@@ -5,7 +5,7 @@ import {useApiProfesor} from "../hooks/useApiProfesor.ts";
 import {ISelect} from "../../../types/ISelect.ts";
 import {useApiAsignatura} from "../../asignaturas/hooks/useApiAsignatura.ts";
 import {AppContext} from "../../../App.tsx";
-import {IValorationCreate} from "../models/IValorationCreate.ts";
+import {ISancionCreate} from "../models/ISancionCreate.ts";
 import Select from "../../../components/Select.tsx";
 import {DBObject} from "../../../types.ts";
 
@@ -14,34 +14,15 @@ interface Props{
     setShowModal?: (text: boolean) => void;
 }
 export default function SancionModal({profesor, setShowModal}: Props) {
-    const {register, handleSubmit, control} = useForm<IValorationCreate>()
-    const {isLoading, valorarProfesor} = useApiProfesor()
-    const {getAsignaturas} = useApiAsignatura()
-    const {asignaturas, cursos, personalId} = useContext(AppContext)
+    const {register, handleSubmit, control} = useForm<ISancionCreate>()
+    const {isLoading, sancionarProfesor} = useApiProfesor()
     const editting = false
-    useEffect(() => {
-        getAsignaturas()
-    }, []);
-    const asignaturasSelect: ISelect[] = asignaturas?.map((item)=>{
-        return {
-            id: item.id,
-            name: item?.name
-        }
-    }) ?? []
-    const cursosSelect: ISelect[] = cursos?.map((item)=>{
-        return {
-            id: item.id,
-            name: item?.year.toString()
-        }
-    }) ?? []
 
-    const onSubmit: SubmitHandler<Partial<IValorationCreate>> = (data) => {
-        valorarProfesor({
-            subject_id: data.subject_id!,
-            course_id: data.course_id!,
-            grade: data.grade!,
-            student_id: personalId!,
-            teacher_id: profesor?.id ?? "",
+    const onSubmit: SubmitHandler<Partial<ISancionCreate>> = (data) => {
+        sancionarProfesor({
+            amount: data.amount!,
+            teacher_id: profesor!.id,
+            date: new Date().toISOString()
         })
         setShowModal!(false)
     }
@@ -52,35 +33,12 @@ export default function SancionModal({profesor, setShowModal}: Props) {
                 <h2 className="text-2xl text-indigo-600 text-center font-bold group mb-6">{`${editting ? 'Editar Registro' : 'Añadir Registro'}`}</h2>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className={'grid grid-cols-2 gap-y-5 gap-x-10'}>
-
-                        <div className={'w-full mb-4'}>
-                            <Select
-                                {...register(`subject_id`, {
-                                    required: true,
-                                })}
-                                label={'Asignatura'}
-                                labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
-                                data={asignaturasSelect}
-                                control={control}
-                            />
-                        </div>
-                        <div className={'w-full mb-4'}>
-                            <Select
-                                {...register(`course_id`, {
-                                    required: true,
-                                })}
-                                label={'Curso'}
-                                labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
-                                data={cursosSelect}
-                                control={control}
-                            />
-                        </div>
                         <div className="group ">
                             <label
                                 className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Valoracion</label>
                             <input
                                 type="number"
-                                {...register("grade", {
+                                {...register("amount", {
                                     required: "true"
                                 })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}

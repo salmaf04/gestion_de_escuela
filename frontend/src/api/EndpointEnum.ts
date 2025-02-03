@@ -15,5 +15,7 @@ export enum EndpointEnum {
     SALARIOS_PROFESORES = 'teacher/?sanctions=true',
     AUSENCIAS = "absence",
     ADMIN = "administrator",
-    SECRETARY = "secretary"
+    SECRETARY = "secretary",
+    VALORATION = 'valoration',
+    SANCION = 'sanction'
 }

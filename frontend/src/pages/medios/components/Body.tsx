@@ -6,11 +6,38 @@ import SolicitarIcon from "../../../assets/solicitar.svg";
 import {useApiMedio} from "../hooks/useApiMedios.ts";
 import AlertIcon from "../../../assets/alert.svg";
 import {AppContext} from "../../../App.tsx";
+import {RolesEnum} from "../../../api/RolesEnum.ts";
+import {DBObject} from "../../../types.ts";
 
 export default function Body(){
     const {dataTable, setEditting, onDeleteTableItem, isLoading} = useContext(MedioContext)
     const {solicitarMedio} = useApiMedio()
-    const {setError, medios} = useContext(AppContext)
+    const {setError, medios, allowRoles, typeRole} = useContext(AppContext)
+    const actions = []
+    if (allowRoles!([RolesEnum.TEACHER])){
+        actions.push({
+            action: (row: DBObject) => {
+                solicitarMedio!({mean_id: row.id})
+            },
+            lineColor: 'bg-green-500',
+            hoverColor: 'bg-green-100',
+            title: "Solicitar",
+            icon: <img src={SolicitarIcon} alt={'Solicitar'}/>,
+            isVisible: ()=>true
+        })
+    }
+    if (typeRole === 'dean'){
+        actions.push({
+            action: (row: DBObject) => {
+                solicitarMedio!({mean_id: row.id})
+            },
+            lineColor: 'bg-green-500',
+            hoverColor: 'bg-green-100',
+            title: "Solicitar",
+            icon: <img src={SolicitarIcon} alt={'Solicitar'}/>,
+            isVisible: ()=>true
+        })
+    }
     return(
             <Table
                 className={'h-5/6 accentgree'}
@@ -24,26 +51,7 @@ export default function Body(){
                        console.log(item)
                        setEditting!(item!)
                    }}
-                actions={[
-                    {
-                        action: (row) => {
-                            solicitarMedio!({mean_id: row.id})
-                        },
-                        color: 'green',
-                        title: "Solicitar",
-                        icon: <img src={SolicitarIcon} alt={'Solicitar'}/>,
-                        isVisible: ()=>true
-                    },
-                    {
-                        action: () => {
-                            setError!(new Error("Este profesor lleva mas de 3 años recibiendo malas valoraciones"))
-                        },
-                        color: 'bg-amber-500',
-                        title: "Alerta",
-                        icon: <img src={AlertIcon} alt={'Alerta'}/>,
-                        isVisible: (row) => medios!.find!((medio) => medio.id === row)!.to_be_replaced
-                    }
-                ]}
+                actions={actions}
             />
     )
 }

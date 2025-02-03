@@ -9,7 +9,7 @@ import {RolesEnum} from "../api/RolesEnum.ts";
 import NotaIcon from '../assets/nota.svg'
 
 export const Screens = {
-    Inicio: new ScreenType('Inicio', HomeIcon, '/inicio', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN,RolesEnum.ADMIN, RolesEnum.STUDENT]),
+    //Inicio: new ScreenType('Inicio', HomeIcon, '/inicio', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN,RolesEnum.ADMIN, RolesEnum.STUDENT]),
     Estudiantes: new ScreenType('Estudiantes', EstudianteIcon, '/estudiantes', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN]),
     Profesores: new ScreenType('Profesores', ProfesorIcon, '/profesores', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
     Aulas: new ScreenType('Aulas', AulaIcon, '/aulas', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
@@ -21,4 +21,6 @@ export const Screens = {
     Ausencias: new ScreenType('Ausencias', NotaIcon, '/ausencias', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
     Info: new ScreenType('Sobre mí', NotaIcon, '/info', [RolesEnum.TEACHER, RolesEnum.STUDENT,RolesEnum.SECRETARY, RolesEnum.ADMIN, RolesEnum.DEAN]),
     Funcionalidades: new ScreenType('Funcionalidades', NotaIcon, '/funcionalidades', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
-    }
+    Usuarios: new ScreenType('Usuarios', NotaIcon, '/usuarios', [RolesEnum.SECRETARY]),
+
+}

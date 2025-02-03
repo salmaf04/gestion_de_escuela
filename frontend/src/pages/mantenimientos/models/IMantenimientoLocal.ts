@@ -4,5 +4,6 @@ export interface IMantenimientoLocal {
     id: string,
     mean: MedioGetAdapter,
     date: string,
-    cost: number
+    cost: number,
+    finished: boolean
 }

@@ -17,6 +17,13 @@ export default function AddMantenimientoForm() {
     useEffect(() => {
         setIsLoading(isEditting! || isCreatting!)
     }, [isEditting, isCreatting]);
+    const reverseDate = (date?: string) => {
+        if (date){
+            const [day, month, year] = date.split('-');
+            return `${year}-${month}-${day}`;
+        }
+        return ""
+    }
 
     const onSubmit: SubmitHandler<IMantenimientoDB> = (data) => {
         if (data.date) {
@@ -51,6 +58,7 @@ export default function AddMantenimientoForm() {
                                 labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
                                 data={mediosSelect}
                                 control={control}
+                                defaultValue={editting && medios!.find((item) => item.name === editting?.mean_name)!.id}
                             />
                         </div>
                         <div className="group mb-4">
@@ -62,7 +70,7 @@ export default function AddMantenimientoForm() {
                                     required: "true"
                                 })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.date}
+                                defaultValue={reverseDate(editting?.date)}
 
                             />
                         </div>
@@ -76,6 +84,18 @@ export default function AddMantenimientoForm() {
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
 
                                 defaultValue={editting?.cost}
+                            />
+                        </div>
+                        <div className="group mb-4">
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Finalizado</label>
+                            <input
+                                type="checkbox" {...register("finished",{
+
+                            })}
+                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
+
+                                defaultChecked={editting?.finished ?? false}
                             />
                         </div>
                     </div>

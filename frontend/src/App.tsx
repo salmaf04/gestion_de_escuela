@@ -28,6 +28,8 @@ import {ISecretariaDB} from "./pages/info/models/ISecretariaDB.ts";
 import {IAdministradorDB} from "./pages/info/models/IAdministradorDB.ts";
 import {IAusenciaLocal} from "./pages/ausencias/models/IAusenciaLocal.ts";
 import AusenciasScreen from "./pages/ausencias/AusenciasScreen.tsx";
+import {IUsuarioLocal} from "./pages/usuarios/models/IUsuarioLocal.ts";
+import UsuariosScreen from "./pages/usuarios/UsuariosScreen.tsx";
 
 
 interface AppContextInterface {
@@ -56,12 +58,16 @@ interface AppContextInterface {
     setSecretarias?: (secretaria: ISecretariaDB[]) => void,
     administradores?: IAdministradorDB[],
     setAdministradores?: (administradores: IAdministradorDB[]) => void,
+    usuarios?: IUsuarioLocal[],
+    setUsuarios?: (usuarios: IUsuarioLocal[]) => void,
 
     setRoles?: (role: RolesEnum[]) => void,
     roles?: RolesEnum[],
     allowRoles?: (roles: RolesEnum[]) => boolean
     personalId?: string,
     setPersonalId?: (personalId: string) => void
+    typeRole?: string,
+    setTypeRole?: (typeRole: string) => void,
 
     username?: string,
     setUsername?: (username: string) => void
@@ -90,6 +96,8 @@ function App() {
     const [personalId, setPersonalId] = useState<string>()
     const [message, setMessage] = useState<string | undefined>()
     const [username, setUsername] = useState<string>()
+    const [usuarios, setUsuarios] = useState<IUsuarioLocal[]>()
+    const [typeRole, setTypeRole] = useState<string>()
 
     useEffect(() => {
         const t = sessionStorage.getItem('token')
@@ -98,6 +106,7 @@ function App() {
             setRoles(JSON.parse(atob(t!.split(".")[1])).roles)
             setPersonalId(JSON.parse(atob(t!.split(".")[1])).user_id)
             setUsername(JSON.parse(atob(t!.split(".")[1])).sub)
+            setTypeRole(JSON.parse(atob(t!.split(".")[1])).type)
         }
 
     }, []);
@@ -140,7 +149,11 @@ function App() {
             secretarias: secretarias,
             setSecretarias: setSecretarias,
             administradores: administradores,
-            setAdministradores: setAdministradores
+            setAdministradores: setAdministradores,
+            usuarios: usuarios,
+            setUsuarios: setUsuarios,
+            typeRole: typeRole,
+            setTypeRole: setTypeRole
         }}>
             <BrowserRouter>
                 {error &&
@@ -157,7 +170,16 @@ function App() {
                             </div>
                             <div className={'w-11/12'}>
                                 <Routes>
-                                    <Route path={'/'} element={<Navigate to={'/inicio'}/>}/>
+                                    {allowRoles(Screens.Estudiantes.allowedRoles) &&
+                                        <Route path={'/'} element={<Navigate to={'/info'}/>}/>
+                                    }
+                                    {allowRoles(Screens.Medios.allowedRoles) &&
+                                        <Route path={'/'} element={<Navigate to={'/medios'}/>}/>
+                                    }
+                                    {allowRoles(Screens.Notas.allowedRoles) &&
+                                        <Route path={'/'} element={<Navigate to={'/notas'}/>}/>
+                                    }
+
                                     <Route path={'/inicio'} element={<HomeScreen/>}/>
                                     {allowRoles(Screens.Estudiantes.allowedRoles) &&
                                         <Route path={'/estudiantes'} element={<EstudiantesScreen/>}/>
@@ -174,9 +196,6 @@ function App() {
                                     {allowRoles(Screens.Medios.allowedRoles) &&
                                         <Route path={'/medios'} element={<MediosScreen/>}/>
                                     }
-                                    {allowRoles(Screens.Mantenimientos.allowedRoles) &&
-                                        <Route path={'/mantenimientos'} element={<MantenimientosScreen/>}/>
-                                    }
                                     {allowRoles(Screens.Notas.allowedRoles) &&
                                         <Route path={'/nota'} element={<NotasScreen/>}/>
                                     }
@@ -184,13 +203,16 @@ function App() {
                                         <Route path={'/curso'} element={<CursosScreen/>}/>
                                     }
                                     {allowRoles(Screens.Mantenimientos.allowedRoles) &&
-                                        <Route path={'/mantenimiento'} element={<MantenimientosScreen/>}/>
+                                        <Route path={'/mantenimientos'} element={<MantenimientosScreen/>}/>
                                     }
-                                    {allowRoles(Screens.Mantenimientos.allowedRoles) &&
+                                    {allowRoles(Screens.Funcionalidades.allowedRoles) &&
                                         <Route path={'/funcionalidades'} element={<FuncionalidadesScreen/>}/>
                                     }
                                     {allowRoles(Screens.Ausencias.allowedRoles) &&
                                         <Route path={'/ausencias'} element={<AusenciasScreen/>}/>
+                                    }
+                                    {allowRoles(Screens.Usuarios.allowedRoles) &&
+                                        <Route path={'/usuarios'} element={<UsuariosScreen/>}/>
                                     }
                                     <Route path={'/info'} element={<InfoScreen/>}/>
                                     <Route path={'/funcionalidades'} element={<FuncionalidadesScreen/>}/>
