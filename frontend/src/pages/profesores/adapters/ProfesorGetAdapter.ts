@@ -14,6 +14,7 @@ export class ProfesorGetAdapter implements DBObject{
     username: string
     asignaturas: string[]
     valoracion: string
+    alert: number
 
 
     constructor(profesorModel: ProfesorDB) {
@@ -28,6 +29,7 @@ export class ProfesorGetAdapter implements DBObject{
         this.salary = profesorModel.salary
         this.asignaturas = profesorModel.list_of_subjects;
         this.valoracion = profesorModel.valoration;
+        this.alert = profesorModel.alert;
     }
 
 }

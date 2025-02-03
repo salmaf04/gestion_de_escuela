@@ -28,7 +28,8 @@ export default function Body(){
                         },
                         color: 'green',
                         title: "Solicitar",
-                        icon: <img src={SolicitarIcon} alt={'Solicitar'}/>
+                        icon: <img src={SolicitarIcon} alt={'Solicitar'}/>,
+                        isVisible: ()=>true
                     }
                 ]}
             />

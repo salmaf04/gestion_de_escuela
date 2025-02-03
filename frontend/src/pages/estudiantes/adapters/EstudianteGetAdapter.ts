@@ -3,9 +3,10 @@ import {IEstudianteLocal} from "../models/IEstudianteLocal.ts";
 import {ICursoGetDB} from "../../cursos/models/ICursoGetDB.ts";
 
 export class EstudianteGetAdapter implements IEstudianteLocal{
-    static Properties = ['Id', 'Nombre', 'Edad', 'Correo', 'ActividadesExtra', 'Usuario', "Curso"]
+    static Properties = ['Id', 'Nombre', 'Apellidos', 'Edad', 'Correo', 'ActividadesExtra', 'Usuario', "Curso"]
     id: string;
     name: string;
+    lastname: string;
     age: number;
     email: string;
     extra_activities: boolean;
@@ -15,6 +16,7 @@ export class EstudianteGetAdapter implements IEstudianteLocal{
     constructor(estudianteGetDB: IEstudianteDB, curso: ICursoGetDB) {
         this.id = estudianteGetDB.id;
         this.name = estudianteGetDB.name;
+        this.lastname = estudianteGetDB.lastname;
         this.age = estudianteGetDB.age;
         this.email = estudianteGetDB.email;
         this.username = estudianteGetDB.username;

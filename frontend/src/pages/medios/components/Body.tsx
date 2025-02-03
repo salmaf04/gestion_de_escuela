@@ -4,10 +4,13 @@ import {MedioGetAdapter} from "../adapters/MedioGetAdapter.ts";
 import {MedioContext} from "../MediosScreen.tsx";
 import SolicitarIcon from "../../../assets/solicitar.svg";
 import {useApiMedio} from "../hooks/useApiMedios.ts";
+import AlertIcon from "../../../assets/alert.svg";
+import {AppContext} from "../../../App.tsx";
 
 export default function Body(){
     const {dataTable, setEditting, onDeleteTableItem, isLoading} = useContext(MedioContext)
     const {solicitarMedio} = useApiMedio()
+    const {setError, medios} = useContext(AppContext)
     return(
             <Table
                 className={'h-5/6 accentgree'}
@@ -28,7 +31,17 @@ export default function Body(){
                         },
                         color: 'green',
                         title: "Solicitar",
-                        icon: <img src={SolicitarIcon} alt={'Solicitar'}/>
+                        icon: <img src={SolicitarIcon} alt={'Solicitar'}/>,
+                        isVisible: ()=>true
+                    },
+                    {
+                        action: () => {
+                            setError!(new Error("Este profesor lleva mas de 3 años recibiendo malas valoraciones"))
+                        },
+                        color: 'bg-amber-500',
+                        title: "Alerta",
+                        icon: <img src={AlertIcon} alt={'Alerta'}/>,
+                        isVisible: (row) => medios!.find!((medio) => medio.id === row)!.to_be_replaced
                     }
                 ]}
             />

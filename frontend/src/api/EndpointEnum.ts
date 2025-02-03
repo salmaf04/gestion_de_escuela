@@ -16,5 +16,7 @@ export enum EndpointEnum {
     VALORACION_PROMEDIO_PROFESOR = 'teacher/?better_than_eight=true ',
     AUSENCIAS = "absence",
     VALORACION_PROMEDIO_ESTUDIANTE = 'note/?less_than_fifty=true',
-    SALARIOS_PROFESORES = 'teacher/?sanctions=true'
+    SALARIOS_PROFESORES = 'teacher/?sanctions=true',
+    ADMIN = "administrator",
+    SECRETARY = "secretary"
 }

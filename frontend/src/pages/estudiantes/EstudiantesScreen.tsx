@@ -29,6 +29,7 @@ interface IEstudianteContext extends IToolbarContext{
 interface IEstudianteTableRow{
     id: string;
     name: string;
+    lastname: string
     age: number;
     email: string;
     extra_activities: boolean;
@@ -82,6 +83,7 @@ export default function EstudiantesScreen() {
             return {
                 id: item.id,
                 name: item.name,
+                lastname: item.lastname,
                 age: item.age,
                 email: item.email,
                 extra_activities: item.extra_activities,

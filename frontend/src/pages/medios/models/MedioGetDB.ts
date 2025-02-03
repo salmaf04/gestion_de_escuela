@@ -5,6 +5,7 @@ export type MedioGetDB = {
     location: string;
     classroom_id: string;
     type: string;
+    to_be_replaced: boolean
 };
 
 export type MedioGetResponse = {

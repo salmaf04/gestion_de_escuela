@@ -8,9 +8,6 @@ import {IEstudianteLocal} from "../models/IEstudianteLocal.ts";
 import {useApiCurso} from "../../cursos/hooks/useApiCurso.ts";
 import {IEstudianteCreateDB} from "../models/IEstudianteCreateDB.ts";
 import {getQueryParamsFromObject} from "../../../utils/utils.ts";
-import {ProfesorDB} from "../../profesores/models/ProfesorGetDB.ts";
-import {ProfesorGetAdapter} from "../../profesores/adapters/ProfesorGetAdapter.ts";
-
 const endpoint = EndpointEnum.ESTUDIANTES
 
 export const useApiEstudiante = () => {

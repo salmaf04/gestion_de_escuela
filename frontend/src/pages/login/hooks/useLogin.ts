@@ -6,7 +6,7 @@ import {AppContext} from "../../../App.tsx";
 export const useLogin = () => {
     const [isLoading, setIsLoading] = useState(false)
     const isMocked = false;
-    const {setError, setToken, token, setRole, role, setPersonalId, setUsername} = useContext(AppContext)
+    const {setError, setToken, token, setRoles, roles, setPersonalId, setUsername} = useContext(AppContext)
 
     const getToken = async (username: string, password: string) => {
         setIsLoading(true)
@@ -21,9 +21,10 @@ export const useLogin = () => {
                 const data: IGetTokenResponse = await res.json()
                 setToken!(data.access_token)
                 sessionStorage.setItem('token', data?.access_token)
-                setRole!(JSON.parse(atob(data?.access_token.split(".")[1])).type)
+                setRoles!(JSON.parse(atob(data?.access_token.split(".")[1])).roles)
                 setPersonalId!(JSON.parse(atob(data?.access_token.split(".")[1])).user_id)
                 setUsername!(JSON.parse(atob(data?.access_token.split(".")[1])).sub)
+                console.log(JSON.parse(atob(data?.access_token.split(".")[1])))
             } else {
                 setError!(new Error(res.statusText))
             }
@@ -36,6 +37,6 @@ export const useLogin = () => {
         isLoading,
         token,
         getToken,
-        role
+        roles
     }
 }

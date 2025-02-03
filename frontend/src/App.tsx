@@ -20,12 +20,14 @@ import NotasScreen from "./pages/notas/NotasScreen.tsx";
 import {INotaLocal} from "./pages/notas/models/INotaLocal.ts";
 import {ICursoGetLocal} from "./pages/cursos/models/ICursoGetLocal.ts";
 import CursosScreen from "./pages/cursos/CursosScreen.tsx";
-import {Screens} from "./utils/router.tsx";
+import {Screens} from "./utils/router.ts";
 import {IMantenimientoLocal} from "./pages/mantenimientos/models/IMantenimientoLocal.ts";
 import FuncionalidadesScreen from "./pages/funcionalidades/FuncionalidadesScreen.tsx";
 import {IAusenciaLocal} from "./pages/ausencias/models/IAusenciaLocal.ts";
 import AusenciasScreen from "./pages/ausencias/AusenciasScreen.tsx";
 import InfoScreen from "./pages/info/InfoScreen.tsx";
+import {ISecretariaDB} from "./pages/info/models/ISecretariaDB.ts";
+import {IAdministradorDB} from "./pages/info/models/IAdministradorDB.ts";
 
 
 interface AppContextInterface {
@@ -50,9 +52,13 @@ interface AppContextInterface {
     setMantenimientos?: (mantenimiento: IMantenimientoLocal[]) => void,
     ausencias?: IAusenciaLocal[],
     setAusencias?: (ausencia: IAusenciaLocal[]) => void,
+    secretarias?: ISecretariaDB[],
+    setSecretarias?: (secretaria: ISecretariaDB[]) => void,
+    administradores?: IAdministradorDB[],
+    setAdministradores?: (administradores: IAdministradorDB[]) => void,
 
-    setRole?: (role: RolesEnum) => void,
-    role?: RolesEnum,
+    setRoles?: (role: RolesEnum[]) => void,
+    roles?: RolesEnum[],
     allowRoles?: (roles: RolesEnum[]) => boolean
     personalId?: string,
     setPersonalId?: (personalId: string) => void
@@ -78,7 +84,9 @@ function App() {
     const [cursos, setCursos] = useState<ICursoGetLocal[]>()
     const [mantenimientos, setMantenimientos] = useState<IMantenimientoLocal[]>()
     const [ausencias, setAusencias] = useState<IAusenciaLocal[]>()
-    const [role, setRole] = useState<RolesEnum>()
+    const [secretarias, setSecretarias] = useState<ISecretariaDB[]>()
+    const [administradores, setAdministradores] = useState<IAdministradorDB[]>()
+    const [roles, setRoles] = useState<RolesEnum[]>()
     const [personalId, setPersonalId] = useState<string>()
     const [message, setMessage] = useState<string | undefined>()
     const [username, setUsername] = useState<string>()
@@ -87,15 +95,14 @@ function App() {
         const t = sessionStorage.getItem('token')
         if (t) {
             setToken(t)
-            setRole(JSON.parse(atob(t!.split(".")[1])).type)
+            setRoles(JSON.parse(atob(t!.split(".")[1])).roles)
             setPersonalId(JSON.parse(atob(t!.split(".")[1])).user_id)
             setUsername(JSON.parse(atob(t!.split(".")[1])).sub)
         }
     }, []);
-    const allowRoles = useCallback((roles: RolesEnum[]) => {
-
-            return roles?.some((item) => item === role)
-    }, [role])
+    const allowRoles = useCallback((rolesParam: RolesEnum[]) => {
+            return rolesParam.some(r => roles?.includes(r))
+    }, [roles])
 
     return (
         <AppContext.Provider value={{
@@ -110,8 +117,8 @@ function App() {
             setMedios: setMedios,
             asignaturas: asignaturas,
             setAsignaturas: setAsignaturas,
-            role: role,
-            setRole: setRole,
+            roles: roles,
+            setRoles: setRoles,
             allowRoles: allowRoles,
             estudiantes: estudiantes,
             setEstudiantes: setEstudiantes,
@@ -128,7 +135,11 @@ function App() {
             ausencias: ausencias,
             setAusencias: setAusencias,
             username: username,
-            setUsername: setUsername
+            setUsername: setUsername,
+            secretarias: secretarias,
+            setSecretarias: setSecretarias,
+            administradores: administradores,
+            setAdministradores: setAdministradores
         }}>
             <BrowserRouter>
                 {error &&
