@@ -83,8 +83,8 @@ teacher_subject_table = Table(
 teacher_request_classroom_table = Table(
     TableName.TEACHER_CLASSROOM.value,
     BaseTable.metadata,
-    Column("teacher_id", ForeignKey("teacher.id"), primary_key=True),
-    Column("classroom_id", ForeignKey("classroom.entity_id"), primary_key=True),
+    Column("teacher_id", ForeignKey("teacher.id", ondelete='CASCADE'), primary_key=True),
+    Column("classroom_id", ForeignKey("classroom.entity_id", ondelete='CASCADE'), primary_key=True),
 )
 
 

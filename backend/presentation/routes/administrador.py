@@ -24,12 +24,12 @@ async def create_administrator(
     administrator_pagination_service = AdministratorPaginationService(session)
     mapper = AdministratorMapper()
 
-    administrator = administrator_pagination_service.get_administrator_by_email(email=administrator_input.email)
+    administrator = administrator_pagination_service.get(AdministratorFilterSchema())
 
     if administrator :
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="There is already an administrator with that email"
+            detail="Ya existe un adminitrador"
         )
 
     response = administrator_service.create_administrator(administrator=administrator_input)

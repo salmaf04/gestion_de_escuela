@@ -9,3 +9,6 @@ class ClassroomRequestCreateModel(BaseModel) :
 class ClassroomRequestModel(BaseModel) :
     teacher_id : uuid.UUID
     classroom_id : uuid.UUID
+
+class ClassroomDeletionModel(BaseModel) :
+     classroom_id : uuid.UUID

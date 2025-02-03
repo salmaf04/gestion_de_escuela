@@ -16,3 +16,17 @@ class ClassroomRequestCreateService :
         teacher = self.teacher_pagination_service.get_teacher_by_id(id=teacher_id)
         classroom = self.classroom_pagination_service.get_classroom_by_id(id=classroom_id)
         return self.repo_instance.create(teacher, classroom)
+
+class ClassroomRequestPaginationService :
+    def __init__(self, session) :
+        self.repo_instance = ClassroomRequestRepository(session)
+
+    def get_by_id(self, teacher_id: str, classroom_id : str ) :
+        return self.repo_instance.get_by_id(teacher_id=teacher_id, classroom_id=classroom_id)
+
+class ClassroomRequestDeletionService :
+    def __init__(self, session) :
+        self.repo_instance = ClassroomRequestRepository(session)
+
+    def delete(self, classroom_request ) :
+        return self.repo_instance.delete(entity=None, classroom_request=classroom_request)

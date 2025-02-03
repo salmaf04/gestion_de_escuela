@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, status, Depends
-from backend.domain.schemas.classroom_request import ClassroomRequestCreateModel, ClassroomRequestModel
+from backend.domain.schemas.classroom_request import ClassroomRequestCreateModel, ClassroomRequestModel, ClassroomDeletionModel
 from sqlalchemy.orm import Session
 from backend.application.services.classroom import ClassroomPaginationService
-from backend.application.services.classroom_request import ClassroomRequestCreateService
+from backend.application.services.classroom_request import ClassroomRequestCreateService, ClassroomRequestDeletionService, ClassroomRequestPaginationService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.classroom_request import ClassroomRequestMapper
 from backend.configuration import get_db
@@ -37,4 +37,26 @@ async def create_mean_request(
     return mapper.to_api(teacher_id, classroom_id)
     
 
+@router.delete(
+    '/classroom_request/{teacher_id}',
+    status_code=status.HTTP_200_OK
+)
+async def delete_mean_request(
+    teacher_id: str,
+    classroom : ClassroomDeletionModel,
+    session : Session = Depends(get_db)
+) :
+    classroom_pagination = ClassroomRequestPaginationService(session)
+    classroom_deletion = ClassroomRequestDeletionService(session)
+
+    classroom_request = classroom_pagination.get_by_id(teacher_id=teacher_id,  classroom_id=classroom.classroom_id)
+
+    if not classroom_request :
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No existe solicitud de medio con esos datos"
+        )
     
+    classroom_deletion.delete(classroom_request=classroom_request)
+    
+        

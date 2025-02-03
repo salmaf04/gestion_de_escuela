@@ -59,6 +59,9 @@ class TeacherPaginationService :
     
     def get_teachers_by_sanctions(self) :
         return self.repo_istance.get_teachers_by_sanctions()
+    
+    def get_teachers_by_students(self, student_id: str) :
+        return self.repo_istance.get_teachers_by_students(student_id=student_id)
         
 class TeacherSubjectService :
     def create_teacher_subject(self, session: Session, teacher_id: str, subject_id: str) :

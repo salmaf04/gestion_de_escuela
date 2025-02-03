@@ -129,6 +129,23 @@ def authorize(role: list):
                     if 'teacher' in user_roles :
                         kwargs['students_by_teacher'] = True
                         kwargs['teacher_id'] = user_id1
+
+                if method == 'GET' and url == 'teacher':
+                    if 'student' in user_roles :
+                        kwargs['teachers_by_students'] = True
+                        kwargs['student_id'] = user_id1
+
+                if method == 'GET' and url == 'absence':
+                    if 'student' in user_roles :
+                        kwargs['by_student'] = user_id1
+                    elif 'teacher' in user_roles :
+                        kwargs['by_student_by_teacher'] = user_id1
+
+                if method == 'GET' and url == 'subject':
+                    if 'student' in user_roles :
+                        kwargs['subjects_by_students'] = user_id1
+                    elif 'teacher' in user_roles :
+                        kwargs['subjects_by_teacher'] = user_id1
                     
                 if (method == 'PATCH' or method == 'POST') and url == 'note':
                     kwargs['user_id']=user_id1

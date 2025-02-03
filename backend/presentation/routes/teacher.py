@@ -70,11 +70,15 @@ async def delete_teacher(
     response_model=list | dict,
     status_code=status.HTTP_200_OK
 )
+@authorize(role=["secretary","teacher", "student"])
 async def read_teacher(
+    request: Request,
+    teachers_by_students = False,
+    student_id : str = None,
     sanctions = False,
     technology_classroom = False,
     better_than_eight = False,
-    user : UserModel = Depends(get_current_user),
+    current_user : UserModel = Depends(get_current_user),
     filters: TeacherFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
@@ -84,6 +88,9 @@ async def read_teacher(
     if better_than_eight :
         results = teacher_pagination_service.get_teachers_average_better_than_8()
         return mapper.to_teachers_with_average(results)
+    elif teachers_by_students :
+        results = teacher_pagination_service.get_teachers_by_students(student_id=student_id)
+        return mapper.to_teachers_by_students(results)
     elif technology_classroom :
         results = teacher_pagination_service.get_teachers_by_technological_classroom()
         return mapper.to_teachers_technological_classroom(results)

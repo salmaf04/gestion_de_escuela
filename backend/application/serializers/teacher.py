@@ -108,6 +108,32 @@ class TeacherMapper :
 
         return serialized_values
     
+    def to_teachers_by_students(self, data) :
+        serialized_values = []
+        teacher_ids = []
+
+        for teacher in data :
+            if teacher[0].id in teacher_ids :
+                serialized_values[len(serialized_values)-1].list_of_subjects.append(teacher[1].name)
+            else :
+                teacher_ids.append(teacher[0].id)
+                new_teacher = TeacherModel(
+                    id = teacher[0].id,
+                    name= teacher[0].name,
+                    lastname= teacher[0].lastname,
+                    email= teacher[0].email,
+                    specialty= teacher[0].specialty,
+                    contract_type= teacher[0].contract_type,
+                    experience= teacher[0].experience,
+                    username= teacher[0].username,
+                    list_of_subjects=[teacher[1].name],
+                    valoration= teacher[0].average_valoration,
+                    salary=teacher[0].salary
+                )
+                serialized_values.append(new_teacher)
+
+        return serialized_values
+    
 
         
         

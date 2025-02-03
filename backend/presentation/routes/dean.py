@@ -24,12 +24,12 @@ async def create_dean(
     dean_pagination_service = DeanPaginationService(session)
     mapper = DeanMapper()
 
-    dean = dean_pagination_service.get_dean_by_email(email=dean_input.email)
+    dean = dean_pagination_service.get_dean(DeanFilterSchema())
 
     if dean :
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="There is already an dean with that email"
+            detail="Ya existe un decano"
         )
 
     response = dean_service.create_dean(dean=dean_input)

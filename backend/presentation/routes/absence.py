@@ -6,6 +6,10 @@ from fastapi.exceptions import HTTPException
 from backend.application.serializers.absence import AbsenceMapper
 from backend.configuration import get_db
 from backend.domain.filters.absence import AbsenceFilterSchema
+from backend.presentation.utils.auth import authorize
+from fastapi import Request
+from backend.domain.schemas.user import UserModel
+from backend.presentation.utils.auth import get_current_user
 
 router = APIRouter()
 
@@ -30,11 +34,14 @@ async def create_absence(
     response_model=list[AbsenceModel] | list | dict,
     status_code=status.HTTP_200_OK
 )
+@authorize(role=["secretary","teacher", "student"])
 async def read_absence(
+    request: Request,
     by_student : str = None,
     by_student_by_teacher : str = None,
     filters: AbsenceFilterSchema = Depends(),
-    session: Session = Depends(get_db)
+    session: Session = Depends(get_db),
+    current_user : UserModel = Depends(get_current_user)
 ) :
     absence_pagination_service = AbsencePaginationService(session)
     mapper = AbsenceMapper()

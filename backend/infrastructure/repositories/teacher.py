@@ -1,7 +1,7 @@
 from sqlalchemy import func, asc, distinct
 from backend.application.serializers.teacher import TeacherMapper
 from backend.domain.schemas.teacher import TeacherCreateModel, TeacherModel
-from backend.domain.models.tables import TeacherTable, teacher_subject_table, TeacherNoteTable, UserTable, SanctionTable
+from backend.domain.models.tables import TeacherTable, teacher_subject_table, TeacherNoteTable, UserTable, SanctionTable, StudentTable, SubjectTable, CourseTable
 from sqlalchemy import and_, update
 import uuid
 from sqlalchemy import select
@@ -153,4 +153,12 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         subjects = teacher.teacher_subject_association
         return TeacherMapper().to_subject_list(subjects)
         
-        
+    def get_teachers_by_students(self, student_id: str) :
+        query = select(TeacherTable, SubjectTable, CourseTable, StudentTable)
+        query = query.join(teacher_subject_table, TeacherTable.id == teacher_subject_table.c.teacher_id)
+        query = query.join(SubjectTable, teacher_subject_table.c.subject_id == SubjectTable.entity_id)
+        query = query.join(CourseTable, SubjectTable.course_id == CourseTable.entity_id)
+        query = query.join(StudentTable, CourseTable.entity_id == StudentTable.course_id)
+        query = query.where(StudentTable.id == student_id)
+        query = query.order_by(TeacherTable.id)
+        return self.session.execute(query).all()

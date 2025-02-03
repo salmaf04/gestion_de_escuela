@@ -6,6 +6,10 @@ from fastapi.exceptions import HTTPException
 from backend.application.serializers.subject import SubjectMapper
 from backend.domain.filters.subject import SubjectFilterSchema, SubjectChangeRequest
 from backend.configuration import get_db
+from backend.presentation.utils.auth import authorize
+from fastapi import Request
+from backend.domain.schemas.user import UserModel
+from backend.presentation.utils.auth import get_current_user
 
 router = APIRouter()
 
@@ -49,17 +53,29 @@ async def delete_subject(
 
 @router.get(
     "/subject",
-    response_model=dict[int, SubjectModel],
+    response_model=dict[int, SubjectModel] | list[SubjectModel] | SubjectModel,
     status_code=status.HTTP_200_OK
 )
+@authorize(role=["secretary","teacher", "student"])
 async def read_subject(
+    request: Request,
+    subjects_by_students : str = None,
+    subjects_by_teacher : str = None,
     filters: SubjectFilterSchema = Depends(),
-    session: Session = Depends(get_db)
+    session: Session = Depends(get_db),
+    current_user : UserModel = Depends(get_current_user)
 ) :
     subject_pagination_service = SubjectPaginationService(session)
     mapper = SubjectMapper()
 
     subjects = subject_pagination_service.get_subjects(filter_params=filters)
+
+    if subjects_by_students :
+        subjects = subject_pagination_service.get_subjects_by_students(student_id=subjects_by_students)
+        return mapper.to_subjects_by_students(subjects)
+    elif subjects_by_teacher :
+        subjects = subject_pagination_service.get_subjects_by_teacher(teacher_id=subjects_by_teacher)
+        return mapper.to_subjects_by_teacher(subjects)
 
     if not subjects :
         raise HTTPException(
