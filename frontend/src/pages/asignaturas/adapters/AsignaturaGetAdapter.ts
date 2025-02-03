@@ -2,7 +2,7 @@ import { AsignaturaGetDB } from "../models/AsignaturaGetDB.ts";
 import {ICursoGetLocal} from "../../cursos/models/ICursoGetLocal.ts";
 
 export class AsignaturaGetAdapter {
-    static Properties = ['ID' , 'Nombre', 'Carga Horaria', 'P de Estudio ' ,' Aula', 'Curso']
+    static Properties = ['ID' , 'Nombre', 'Carga Horaria', 'Programa de Estudio ' ,' Aula', 'Curso']
     id: string;
     name: string;
     hourly_load: number;
