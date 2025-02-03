@@ -10,6 +10,7 @@ class MeanMapper() :
             state = mean.state,
             location = mean.location,
             type= mean.type,
-            classroom_id= mean.classroom.entity_id
+            classroom_id= mean.classroom.entity_id if mean.classroom else None,
+            to_be_replaced= mean.to_be_replaced
         )
         

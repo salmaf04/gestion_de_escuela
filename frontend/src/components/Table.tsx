@@ -13,7 +13,9 @@ interface Props {
         title: string,
         icon: JSX.Element,
         action: (row: DBObject) => void,
-        color: string,
+        lineColor: string,
+        isVisible: (id: string) => boolean
+        hoverColor: string
     }[]
 }
 
@@ -45,7 +47,7 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow, 
                                         <div key={index} className={'w-full flex justify-center'}>
                                             <div className={'w-fit'}>
                                                 <div className={`font-bold w-full`}>{action.title}</div>
-                                                <div className={`h-[3px] w-full rounded-full bg-${action.color}-500`}/>
+                                                <div className={`h-[3px] w-full rounded-full ${action.lineColor}`}/>
                                             </div>
                                         </div>
                                     )
@@ -106,15 +108,18 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow, 
                                             actions?.map((action, index) => {
                                                 return (
                                                     <div key={index} className={'w-full flex justify-center'}>
-                                                        <div
-                                                            onClick={(e) => {
-                                                                action.action(row)
-                                                                e.stopPropagation()
-                                                            }}
-                                                            className={`size-9 flex items-center justify-center rounded-full hover:bg-${action.color}-200 cursor-pointer`}>
+                                                        {action.isVisible(row.id) &&
+                                                            <div
+                                                                onClick={(e) => {
+                                                                    action.action(row)
+                                                                    e.stopPropagation()
+                                                                }}
+                                                                className={`size-9 flex items-center justify-center rounded-full hover:bg-${action.hoverColor}-200 cursor-pointer`}>
 
-                                                            {action.icon}
-                                                        </div>
+                                                                {action.icon}
+                                                            </div>
+                                                        }
+
 
                                                     </div>
                                                 )

@@ -1,5 +1,5 @@
 import ScreenType from "../types.ts";
-import {Screens} from "../utils/router.tsx";
+import {Screens} from "../utils/router.ts";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useContext} from "react";
 import {AppContext} from "../App.tsx";

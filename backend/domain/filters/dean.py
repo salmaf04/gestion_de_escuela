@@ -17,7 +17,7 @@ class DeanFilterSchema(BaseModel):
     contract_type : str | None = None
     experince : tuple[int, int] | None = None
     
-class ChangeRequest(BaseModel) :
+class DeanChangeRequest(BaseModel) :
     name : Optional[str] = None
     full_name : Optional[str] = None
     email : Optional[str] = None

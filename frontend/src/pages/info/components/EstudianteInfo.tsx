@@ -11,6 +11,7 @@ export default function EstudianteInfo(){
     return(
         <>
             <span>Nombre: {estudiante?.name}</span>
+            <span>Nombre: {estudiante?.lastname}</span>
             <span>Edad: {estudiante?.age}</span>
             <span>Correo: {estudiante?.email}</span>
             <span>Usuario:{estudiante?.username}</span>

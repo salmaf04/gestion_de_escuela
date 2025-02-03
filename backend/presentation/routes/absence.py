@@ -6,6 +6,10 @@ from fastapi.exceptions import HTTPException
 from backend.application.serializers.absence import AbsenceMapper
 from backend.configuration import get_db
 from backend.domain.filters.absence import AbsenceFilterSchema
+from backend.presentation.utils.auth import authorize
+from fastapi import Request
+from backend.domain.schemas.user import UserModel
+from backend.presentation.utils.auth import get_current_user
 
 router = APIRouter()
 
@@ -18,10 +22,10 @@ async def create_absence(
     absence_input: AbsenceCreateModel,
     session: Session = Depends(get_db)
 ) :
-    absence_service = AbsenceCreateService()
+    absence_service = AbsenceCreateService(session)
     mapper = AbsenceMapper()
 
-    response = absence_service.create_absence(session=session, absence=absence_input)
+    response = absence_service.create_absence(absence=absence_input)
 
     return mapper.to_api(response)
 
@@ -30,16 +34,19 @@ async def create_absence(
     response_model=list[AbsenceModel] | list | dict,
     status_code=status.HTTP_200_OK
 )
+@authorize(role=["secretary","teacher", "student"])
 async def read_absence(
+    request: Request,
     by_student : str = None,
     by_student_by_teacher : str = None,
     filters: AbsenceFilterSchema = Depends(),
-    session: Session = Depends(get_db)
+    session: Session = Depends(get_db),
+    current_user : UserModel = Depends(get_current_user)
 ) :
-    absence_pagination_service = AbsencePaginationService()
+    absence_pagination_service = AbsencePaginationService(session)
     mapper = AbsenceMapper()
 
-    absences = absence_pagination_service.get_absence(session=session, filter_params=filters)
+    absences = absence_pagination_service.get_absence(filter_params=filters)
 
     if not absences :
         raise HTTPException(
@@ -48,10 +55,10 @@ async def read_absence(
         )
     
     if by_student :
-        absences = absence_pagination_service.get_absence_by_student(session=session, student_id=by_student)
+        absences = absence_pagination_service.get_absence_by_student(student_id=by_student)
         return mapper.to_abscence_by_student(absences)
     elif by_student_by_teacher :
-        absences = absence_pagination_service.get_absence_by_student_by_teacher(session=session, teacher_id=by_student_by_teacher)
+        absences = absence_pagination_service.get_absence_by_student_by_teacher(teacher_id=by_student_by_teacher)
         return mapper.to_absence_by_student_by_teacher(absences)
     
     mapped_absences = []

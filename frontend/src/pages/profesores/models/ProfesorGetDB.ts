@@ -2,7 +2,7 @@ export type ProfesorDB = {
 
         id: string
         "name": string
-        "fullname": string
+        "lastname": string
         "specialty": string
         "contract_type": string
         "experience": number
@@ -10,7 +10,8 @@ export type ProfesorDB = {
         "username": string
         "salary" : number,
         "list_of_subjects": string[]
-        "valoration": string
+        "valoration": string,
+        alert: number
     }
 
 export type ProfesorGetResponse = ProfesorDB[]

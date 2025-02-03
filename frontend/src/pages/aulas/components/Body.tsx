@@ -26,9 +26,11 @@ export default function Body(){
                         action: (row) => {
                             solicitarAula({classroom_id: row.id})
                         },
-                        color: 'green',
+                        lineColor: 'bg-green-500',
+                        hoverColor: 'bg-green-100',
                         title: "Solicitar",
-                        icon: <img src={SolicitarIcon} alt={'Solicitar'}/>
+                        icon: <img src={SolicitarIcon} alt={'Solicitar'}/>,
+                        isVisible: ()=>true
                     }
                 ]}
             />

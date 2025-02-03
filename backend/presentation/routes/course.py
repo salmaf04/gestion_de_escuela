@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from backend.application.services.course import CourseCreateService, CoursePaginationService, CourseDeletionService, CourseUpdateService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.course import CourseMapper
-from backend.domain.filters.course import CourseFilterSchema, ChangeRequest
+from backend.domain.filters.course import CourseFilterSchema, CourseChangeRequest
 from backend.configuration import get_db
 
 router = APIRouter()
@@ -19,10 +19,10 @@ async def create_course(
     course_input: CourseCreateModel,
     session: Session = Depends(get_db)
 ) :
-    course_service = CourseCreateService()
+    course_service = CourseCreateService(session)
     mapper = CourseMapper()
 
-    response = course_service.create_course(session=session, course=course_input)
+    response = course_service.create_course(course=course_input)
 
     return mapper.to_api(response)
 
@@ -34,10 +34,10 @@ async def delete_course(
     id: str,
     session: Session = Depends(get_db)
 ) :
-    course_pagination_service = CoursePaginationService()
-    course_deletion_service = CourseDeletionService()
+    course_pagination_service = CoursePaginationService(session)
+    course_deletion_service = CourseDeletionService(session)
 
-    course =course_pagination_service.get_course_by_id(session=session, id=id)
+    course =course_pagination_service.get_course_by_id(id=id)
 
     if not course :
         raise HTTPException(
@@ -45,7 +45,7 @@ async def delete_course(
             detail="There is no course with that id"
         )
 
-    course_deletion_service.delete_course(session=session, course=course)
+    course_deletion_service.delete_course(course=course)
 
 @router.get(
     "/course",
@@ -56,10 +56,10 @@ async def read_course(
     filters: CourseFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
-    course_pagination_service = CoursePaginationService()
+    course_pagination_service = CoursePaginationService(session)
     mapper = CourseMapper()
 
-    courses = course_pagination_service.get_course(session=session, filter_params=filters)
+    courses = course_pagination_service.get_course(filter_params=filters)
 
     if not courses :
         raise HTTPException(
@@ -81,14 +81,14 @@ async def read_course(
 )
 async def update_subject(
     id : str,
-    filters: ChangeRequest = Depends(),
+    filters: CourseChangeRequest,
     session: Session = Depends(get_db)
 ) :
-    course_pagination_service = CoursePaginationService()
-    course_update_service = CourseUpdateService()
+    course_pagination_service = CoursePaginationService(session)
+    course_update_service = CourseUpdateService(session)
     mapper = CourseMapper()
 
-    course = course_pagination_service.get_course_by_id(session=session, id = id)
+    course = course_pagination_service.get_course_by_id(id = id)
     course_model = mapper.to_api(course)
 
     if not course :
@@ -96,8 +96,7 @@ async def update_subject(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="There is no course with that id"
         )
-    print(filters.specialty)
-
-    course_updated = course_update_service.update_one(session=session, changes=filters, course=course_model)
+    
+    course_updated = course_update_service.update_one(changes=filters, course=course_model)
 
     return course_updated

@@ -7,16 +7,13 @@ export enum EndpointEnum {
     NOTAS = 'note',
     CURSOS = 'course',
     MANTENIMIENTOS = 'mean_maintenance',
-    CLASSROOM_REQUEST = 'classroom_request',
-    MEAN_REQUEST = 'mean_request',
-    VALORATION = 'valoration',
     ESP_PROFESOR = 'teacher/?technology_classroom=true',
     FILTRO_DE_MANTENIMENTO = 'mean_maintenance/?mainteniance_by_classroom_filter=true',
     COSTO_PROMEDIO = 'mean_maintenance/?date_filter=true',
     VALORACION_PROMEDIO_PROFESOR = 'teacher/?better_than_eight=true ',
-    AUSENCIAS = "absence",
     VALORACION_PROMEDIO_ESTUDIANTE = 'note/?less_than_fifty=true',
     SALARIOS_PROFESORES = 'teacher/?sanctions=true',
-    SECRETARIA = 'secretary',
-    ADMINISTRADOR = 'administrator'
+    AUSENCIAS = "absence",
+    ADMIN = "administrator",
+    SECRETARY = "secretary"
 }

@@ -1,6 +1,6 @@
 export type ProfesorCreateDB = {
     "name": string
-    "fullname": string
+    "lastname": string
     "email": string
     "specialty": string
     "contract_type": string

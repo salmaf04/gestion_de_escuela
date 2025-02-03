@@ -19,35 +19,30 @@ async def create_date(
     model_input: DateCreateModel,
     session: Session = Depends(get_db)
 ) :
-    date_service = DateCreateService()
+    date_service = DateCreateService(session)
     mapper = DateMapper()
 
-    response = date_service.create_date(session=session, date=model_input)
+    response = date_service.create_date(date=model_input)
 
     return mapper.to_api(response)
 
 @router.get(
-    "/my_date",
-    response_model=dict[int, DateModel],
+    "/my_date/{id}",
+    response_model=DateModel,
     status_code=status.HTTP_200_OK
 )
 async def read_date(
     session: Session = Depends(get_db)
 ) :
-    date_pagination_service = DatePaginationService()
+    date_pagination_service = DatePaginationService(session)
     mapper = DateMapper()
 
-    dates = date_pagination_service.get_dates(session=session)
+    date = date_pagination_service.get_date_by_id(id=id)
 
-    if not dates :
+    if not date :
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="There is no dates with that fields"
+            detail="There is no date with that id"
         )
-
-    dates_mapped = {}    
-     
-    for i, dates in enumerate(dates) :
-        dates_mapped[i] = mapper.to_api(dates)
         
-    return dates_mapped
+    return mapper.to_api(date)

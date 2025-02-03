@@ -26,19 +26,31 @@ export default function AddAulaForm() {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className={'grid grid-cols-2 gap-y-1 gap-x-10'}>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Ubicación</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Número de aula</label>
+                            <input
+                                type="number"
+                                {...register("number", {required: true})}
+                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
+                                defaultValue={editting?.body.number}
+                            />
+                        </div>
+                        <div className="group mb-4">
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Ubicación</label>
                             <input
                                 type="text"
-                                {...register("location", { required: true })}
+                                {...register("location", {required: true})}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
                                 defaultValue={editting?.body.location}
                             />
                         </div>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Capacidad</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Capacidad</label>
                             <input
                                 type="number"
-                                {...register("capacity", { required: true })}
+                                {...register("capacity", {required: true})}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
                                 defaultValue={editting?.body.capacity}
                             />
@@ -50,11 +62,11 @@ export default function AddAulaForm() {
                             setShowModal!(false);
                             setEditting!(undefined);
                         }}
-                            hidden={isLoading}
-                            className="hover:bg-gray-400 transition-colors w-full py-2 bg-gray-300 rounded-lg text-gray-900">Cancelar
+                                hidden={isLoading}
+                                className="hover:bg-gray-400 transition-colors w-full py-2 bg-gray-300 rounded-lg text-gray-900">Cancelar
                         </button>
                         <button type="submit"
-                            className={`${isLoading ? 'hover:bg-indigo-300 bg-indigo-300 cursor-default' : 'bg-indigo-500 hover:bg-indigo-600 '} transition-colors w-full flex justify-center py-2 text-indigo-50 rounded-lg`}>
+                                className={`${isLoading ? 'hover:bg-indigo-300 bg-indigo-300 cursor-default' : 'bg-indigo-500 hover:bg-indigo-600 '} transition-colors w-full flex justify-center py-2 text-indigo-50 rounded-lg`}>
                             {isLoading ? <MySpinner className={'h-6 w-6'} /> : null}
                             <p className={`${isLoading ? 'invisible' : 'visible'}`}>
                                 {editting ? 'Editar' : 'Guardar'}

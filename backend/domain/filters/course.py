@@ -10,5 +10,5 @@ class CourseFilterSet(FilterSet):
 class CourseFilterSchema(BaseModel):
     year : int | None = None
 
-class ChangeRequest(BaseModel) :
+class CourseChangeRequest(BaseModel) :
     year : Optional[int] = None

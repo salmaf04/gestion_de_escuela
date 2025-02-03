@@ -71,8 +71,8 @@ export default function AusenciasScreen() {
         return ausencias?.map((item) => {
             return {
                 id: item.id,
-                studentName: item.student.name,
-                subjectName: item.subject.name,
+                studentName: item.student?.name,
+                subjectName: item.subject?.name,
                 date: item.date
             }
         }) ?? []

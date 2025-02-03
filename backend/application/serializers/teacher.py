@@ -3,13 +3,6 @@ from backend.domain.models.tables import TeacherTable
 from pydantic import BaseModel
 from datetime import datetime
 import uuid
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Paragraph
-from reportlab.lib.units import inch
-
-
-
 class TeacherBetterThanEight(BaseModel) :
     name : str
     average_valoration : float
@@ -52,28 +45,10 @@ class TeacherMapper :
             username=teacher.username,
             list_of_subjects=subjects,
             valoration= teacher.average_valoration,
-            salary=teacher.salary
+            salary=teacher.salary,
+            alert=teacher.less_than_three_valoration 
         )
 
-
-    def to_pdf(self, filename, data):
-        # Configurar el documento con márgenes
-        doc = SimpleDocTemplate(filename, pagesize=letter, leftMargin=inch, rightMargin=inch)
-        styles = getSampleStyleSheet()
-        elements = []
-
-        # Título del informe
-        elements.append(Paragraph("Informe de Consulta", styles['Title']))
-
-        # Recorrer los datos y agregarlos al PDF
-        for row in data:
-            # Convertir cada fila a una cadena JSON
-            text = row.json()
-            # Usar Paragraph para manejar el ajuste de texto automático                                         
-            elements.append(Paragraph(text, styles['BodyText']))
-
-        # Construir el PDF
-        doc.build(elements)
     
     def to_subject_list(self, subjects) :
         names = []
@@ -131,6 +106,33 @@ class TeacherMapper :
                 )
                 serialized_values.append(new_teacher)
             
+
+        return serialized_values
+    
+    def to_teachers_by_students(self, data) :
+        serialized_values = []
+        teacher_ids = []
+
+        for teacher in data :
+            if teacher[0].id in teacher_ids :
+                serialized_values[len(serialized_values)-1].list_of_subjects.append(teacher[1].name)
+            else :
+                teacher_ids.append(teacher[0].id)
+                new_teacher = TeacherModel(
+                    id = teacher[0].id,
+                    name= teacher[0].name,
+                    lastname= teacher[0].lastname,
+                    email= teacher[0].email,
+                    specialty= teacher[0].specialty,
+                    contract_type= teacher[0].contract_type,
+                    experience= teacher[0].experience,
+                    username= teacher[0].username,
+                    list_of_subjects=[teacher[1].name],
+                    valoration= teacher[0].average_valoration,
+                    salary=teacher[0].salary,
+                    alert=teacher[0].less_than_three_valoration
+                )
+                serialized_values.append(new_teacher)
 
         return serialized_values
     

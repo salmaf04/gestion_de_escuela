@@ -9,6 +9,7 @@ export class MedioGetAdapter {
     location: string;
     classroom: AulaGetAdapter;
     type: string;
+    to_be_replaced: boolean
 
     constructor(medioGetDB: MedioGetDB, classroom: AulaGetAdapter) {
         this.id = medioGetDB.id;
@@ -17,5 +18,6 @@ export class MedioGetAdapter {
         this.location = medioGetDB.location;
         this.classroom = classroom;
         this.type = medioGetDB.type;
+        this.to_be_replaced = medioGetDB.to_be_replaced;
     }
 }

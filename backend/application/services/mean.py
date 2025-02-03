@@ -7,82 +7,40 @@ from sqlalchemy import select, update, and_
 from backend.domain.filters.mean import MeanFilterSet , MeanFilterSchema, MeanChangeRequest
 from backend.application.services.classroom import ClassroomPaginationService
 from fastapi import HTTPException, status
+from backend.infrastructure.repositories.mean import MeanRepository
 
 class MeanCreateService() :
+    def __init__ (self, session):
+        self.repo_instance = MeanRepository(session)
 
-    def mean_create(self, session: Session, mean: MeanCreateModel) -> MeanTable :
-        table_to_insert = {
-            "technological_mean": TechnologicalMeanTable,
-            "teaching_material": TeachingMaterialTable,
-            "other": OthersTable,
-        }
-        
-        classroom_pagination_service = ClassroomPaginationService()
-        classroom = classroom_pagination_service.get_classroom_by_id(session=session, id=mean.classroom_id)
-
-        mean_dict = mean.model_dump()
-        mean_type = table_to_insert.get(mean.type, None)
-
-        if mean_type is None :
-            mean_valid_types = ', '.join(table_to_insert.keys())
-
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Inserte un tipo de medio válido : {mean_valid_types}"
-            )
-
-        new_mean = mean_type(**mean_dict)
-        new_mean.classroom_id = classroom.entity_id
-        new_mean.classroom = classroom
-        session.add(new_mean)
-        session.commit()
-        return new_mean
+    def mean_create(self, mean: MeanCreateModel) -> MeanTable :
+        return self.repo_instance.create(mean)
     
 class MeanDeletionService:
-    def delete_mean(self, session: Session, mean: MeanModel) -> None :
-        session.delete(mean)
-        session.commit()
+    def __init__ (self, session):
+        self.repo_instance = MeanRepository(session)
         
+    def delete_mean(self, mean: MeanModel) -> None :
+        return self.repo_instance.delete(mean)
         
 class MeanUpdateService :
-    def update_one(self, session : Session , changes : MeanChangeRequest , mean : MeanModel ) -> MeanModel: 
-        query = update(MeanTable).where(MeanTable.entity_id == mean.id)
-        
-        query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
-        session.execute(query)
-        session.commit()
-        
-        mean = mean.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
-        return mean
-    
+    def __init__ (self, session):
+        self.repo_instance = MeanRepository(session)
 
+    def update_one(self, changes : MeanChangeRequest , mean : MeanModel ) -> MeanModel: 
+        return self.repo_instance.update(changes, mean)
+    
 class MeanPaginationService :
-    def get_mean_by_id(self, session: Session, id:uuid.UUID ) -> MeanTable :
-        query = session.query(MeanTable).filter(MeanTable.entity_id == id)
+    def __init__ (self, session):
+        self.repo_instance = MeanRepository(session)
 
-        result = query.scalar()
-
-        return result
+    def get_mean_by_id(self, id:uuid.UUID ) -> MeanTable :
+        return self.repo_instance.get_by_id(id)
     
-    def get_means(self, session: Session, filter_params: MeanFilterSchema) -> list[MeanTable] :
-        query = select(MeanTable)
-        filter_set = MeanFilterSet(session, query=query)
-        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
-        return session.execute(query).scalars().all()
-    
-    
-    def get_avaliable_means(self, session: Session) -> list[MeanTable] :
-        print('hola')
-        query = select(MeanTable)
-        query = query.where(and_(
-            MeanTable.to_be_replaced == False,
-            MeanTable.entity_id.notin_(
-                select(teacher_request_mean_table.c.mean_id)),
-            MeanTable.entity_id.notin_(
-                select(MeanMaintenanceTable.mean_id).where(MeanMaintenanceTable.finished == False)
-            ))
-        )
-        return session.execute(query).scalars().all()
-    
+    def get_means(self, filter_params: MeanFilterSchema) -> list[MeanTable] :
+        return self.repo_instance.get(filter_params)
+        
+    def get_avaliable_means(self) -> list[MeanTable] :
+        return self.repo_instance.get_avaliable_means()
 
   
