@@ -45,7 +45,8 @@ class TeacherMapper :
             username=teacher.username,
             list_of_subjects=subjects,
             valoration= teacher.average_valoration,
-            salary=teacher.salary
+            salary=teacher.salary,
+            alert=teacher.less_than_three_valoration 
         )
 
     
@@ -128,7 +129,8 @@ class TeacherMapper :
                     username= teacher[0].username,
                     list_of_subjects=[teacher[1].name],
                     valoration= teacher[0].average_valoration,
-                    salary=teacher[0].salary
+                    salary=teacher[0].salary,
+                    alert=teacher[0].less_than_three_valoration
                 )
                 serialized_values.append(new_teacher)
 
