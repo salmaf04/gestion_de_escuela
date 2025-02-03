@@ -75,9 +75,9 @@ export default function ProfesoresScreen() {
             specialty: p.specialty,
             contractType: p.contractType,
             experience: p.experience,
+            salary: p.salary,
             email: p.email,
             username: p.username,
-            salary: p.salary,
             asignaturas: p.asignaturas,
             valoracion: p.valoracion,
         }

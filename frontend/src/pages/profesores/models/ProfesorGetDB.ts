@@ -6,9 +6,9 @@ export type ProfesorDB = {
         "specialty": string
         "contract_type": string
         "experience": number
+        "salary" : number,
         "email": string
         "username": string
-        "salary" : number,
         "list_of_subjects": string[]
         "valoration": string,
         alert: number
