@@ -7,6 +7,29 @@ from backend.application.serializers.dean import DeanMapper
 from backend.domain.filters.dean import DeanFilterSchema, DeanChangeRequest
 from backend.configuration import get_db
 
+"""
+This module defines API endpoints for managing deans using FastAPI.
+
+Endpoints:
+- POST /dean: Create a new dean. Ensures that only one dean exists at a time.
+- DELETE /dean/{id}: Delete an existing dean by their ID.
+- GET /dean: Retrieve a list of deans based on provided filters.
+- PATCH /dean/{id}: Update an existing dean by their ID.
+
+Dependencies:
+- FastAPI's APIRouter for routing.
+- SQLAlchemy's Session for database interactions.
+- Custom services and models for handling dean operations.
+
+Functions:
+- create_dean: Handles the creation of a new dean. Ensures that only one dean can exist at a time.
+- delete_dean: Handles the deletion of a dean. Validates the existence of the dean and deletes them if valid.
+- read_dean: Retrieves a list of deans based on filter criteria. Utilizes the DeanPaginationService to fetch data.
+- update_dean: Updates an existing dean. Validates the existence of the dean and applies changes if valid.
+
+Raises:
+- HTTPException: Raised when a dean is not found or when attempting to create more than one dean, with appropriate HTTP status codes.
+"""
 
 router = APIRouter()
 

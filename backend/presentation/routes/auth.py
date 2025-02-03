@@ -1,4 +1,8 @@
-## main.py
+"""
+API routes for user authentication and management.
+Provides endpoints for login, logout, registration and user operations.
+"""
+
 from fastapi import APIRouter, HTTPException, Depends, status, Body, Header
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta
@@ -22,13 +26,28 @@ router = APIRouter()
 # Define OAuth2 scheme for token authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# Define endpoints for token generation and authentication
 @router.post(
     "/token",
     response_model=dict,
     status_code=status.HTTP_200_OK
 )
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_db)):
+async def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(), 
+    session: Session = Depends(get_db)
+):
+    """
+    Generate access token for user authentication.
+    
+    Args:
+        form_data: Username and password credentials
+        session: Database session
+    
+    Returns:
+        Dict containing access token and type
+        
+    Raises:
+        HTTPException: If credentials are invalid
+    """
     user = await authenticate_user(form_data.username, form_data.password, session)
 
     if not user:
@@ -38,7 +57,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token = create_access_token(
         data={
             "sub": user.username,
-            "user_id" : str(user.id),
+            "user_id": str(user.id),
             "roles": user.roles,
             "type": user.type
         }, 
@@ -53,17 +72,40 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     response_model=dict
 )
 def user_logout(Authorization: str = Header(None)):
+    """
+    Revoke user's access token.
+    
+    Args:
+        Authorization: Token to revoke
+        
+    Returns:
+        Success message
+    """
     oauth2_scheme.revoke_token(Authorization)
-    return {"message": "Token revoked"} 
+    return {"message": "Token revoked"}
 
-
-# Define a route for registering a new user
 @router.post(
     "/register",
     response_model=UserModel,
     status_code=status.HTTP_201_CREATED
 )
-async def register_user(user: UserCreateModel, session: Session = Depends(get_db)):
+async def register_user(
+    user: UserCreateModel, 
+    session: Session = Depends(get_db)
+):
+    """
+    Register a new user.
+    
+    Args:
+        user: User details for registration
+        session: Database session
+    
+    Returns:
+        Created UserModel instance
+        
+    Raises:
+        HTTPException: If username already exists
+    """
     user_service = UserCreateService(session)
 
     if await user_service.user_exists(user.username, session):
@@ -76,14 +118,14 @@ async def register_user(user: UserCreateModel, session: Session = Depends(get_db
     return created_user
 
 @router.patch(
-       "/user/{id}",
-       response_model=UserModel,
-       status_code=status.HTTP_200_OK
+    "/user/{id}",
+    response_model=UserModel,
+    status_code=status.HTTP_200_OK
 )
 @authorize(roles)
 async def update_user(
     request: Request,
-    id: str ,
+    id: str,
     current_user: UserModel = Depends(get_current_user),
     session: Session = Depends(get_db),
     current_password: Annotated[
@@ -103,6 +145,25 @@ async def update_user(
         Body(description="Email to update)")  
     ] = None,
 ):
+    """
+    Update user information.
+    
+    Args:
+        request: FastAPI request object
+        id: User ID to update
+        current_user: Currently authenticated user
+        session: Database session
+        current_password: Current password for verification
+        new_password: New password to set
+        username: New username
+        email: New email address
+    
+    Returns:
+        Updated UserModel instance
+        
+    Raises:
+        HTTPException: If user not found
+    """
     update_user_service = UserUpdateService(session)
     create_user = UserCreateService(session)
     mapper = UserMapper()
@@ -127,7 +188,6 @@ async def update_user(
     
     updated_user = await update_user_service.update_user(user_input=user,password_change_request=password_change_request, personal_info_change_request=personal_info_change_request)
     return updated_user
-    
 
 @router.get(
     "/user",
@@ -137,22 +197,28 @@ async def update_user(
 async def read_user(
     filters: UserFilterSchema = Depends(),
     session: Session = Depends(get_db)
-) :
+):
+    """
+    Retrieve users with optional filtering.
+    
+    Args:
+        filters: Filter parameters for users
+        session: Database session
+    
+    Returns:
+        List of UserModel instances or empty list if none found
+    """
     user_pagination_service = UserPaginationService(session)
     mapper = UserMapper()
-
     users = user_pagination_service.get_user(filter_params=filters)
 
-    if not users :
+    if not users:
         return []
     
     users_mapped = []
-
-    for user in users :
+    for user in users:
         users_mapped.append(mapper.to_api(user))   
-
     return users_mapped
-
 
 @router.get(
     "/user/{id}",
@@ -160,18 +226,25 @@ async def read_user(
     status_code=status.HTTP_200_OK
 )
 async def read_user(
-    id : str,
+    id: str,
     session: Session = Depends(get_db)
-) :
+):
+    """
+    Retrieve a specific user by ID.
+    
+    Args:
+        id: User ID to retrieve
+        session: Database session
+    
+    Returns:
+        UserModel instance or empty list if not found
+    """
     user_pagination_service = UserPaginationService(session)
-
     mapper = UserMapper()
-
     filter_by_id = UserFilterSchema(id=id)
-
     user = user_pagination_service.get_user(filter_params=filter_by_id)
 
-    if not user :
+    if not user:
         return []
     
     return mapper.to_api(user[0])  

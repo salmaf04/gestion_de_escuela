@@ -7,6 +7,39 @@ from backend.application.serializers.secretary import SecretaryMapper
 from backend.domain.filters.secretary import SecretaryChangeRequest, SecretaryFilterSchema
 from backend.configuration import get_db
 
+"""
+This module defines API endpoints for managing secretaries using FastAPI.
+
+Endpoints:
+- POST /secretary: Create a new secretary. Ensures no duplicate email addresses.
+- DELETE /secretary/{id}: Delete an existing secretary by their ID.
+- PATCH /secretary/{id}: Update an existing secretary by their ID.
+- GET /secretary: Retrieve a list of secretaries based on provided filters.
+
+Dependencies:
+- FastAPI's APIRouter for routing.
+- SQLAlchemy's Session for database interactions.
+- Custom services and models for handling secretary operations.
+
+Functions:
+- create_secretary: Handles the creation of a new secretary. Validates that no secretary with the same email exists.
+- delete_secretary: Handles the deletion of a secretary. Validates the existence of the secretary and deletes them if valid.
+- update_secretary: Updates an existing secretary. Validates the existence of the secretary and applies changes if valid.
+- read_secretary: Retrieves a list of secretaries based on filter criteria. Utilizes the SecretaryPaginationService to fetch data.
+
+Parameters:
+- secretary_input (SecretaryCreateModel): The data for creating a new secretary.
+- id (str): The ID of the secretary to delete or update.
+- filters (SecretaryFilterSchema): The filter criteria for retrieving secretaries.
+- session (Session): The database session dependency.
+
+Returns:
+- JSON responses with the created, retrieved, or updated secretary records.
+
+Raises:
+- HTTPException: Raised when a secretary is not found or when attempting to create a duplicate, with appropriate HTTP status codes.
+"""
+
 router = APIRouter()
 
 
