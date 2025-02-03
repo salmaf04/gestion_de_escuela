@@ -27,6 +27,7 @@ import InfoScreen from "./pages/info/InfoScreen.tsx";
 import {ISecretariaDB} from "./pages/info/models/ISecretariaDB.ts";
 import {IAdministradorDB} from "./pages/info/models/IAdministradorDB.ts";
 import {IAusenciaLocal} from "./pages/ausencias/models/IAusenciaLocal.ts";
+import AusenciasScreen from "./pages/ausencias/AusenciasScreen.tsx";
 
 
 interface AppContextInterface {
@@ -154,7 +155,7 @@ function App() {
                             <div className={'w-1/12'}>
                                 <Sidebar/>
                             </div>
-                            <div className={' p-6 w-11/12'}>
+                            <div className={'w-11/12'}>
                                 <Routes>
                                     <Route path={'/'} element={<Navigate to={'/inicio'}/>}/>
                                     <Route path={'/inicio'} element={<HomeScreen/>}/>
@@ -187,6 +188,9 @@ function App() {
                                     }
                                     {allowRoles(Screens.Mantenimientos.allowedRoles) &&
                                         <Route path={'/funcionalidades'} element={<FuncionalidadesScreen/>}/>
+                                    }
+                                    {allowRoles(Screens.Ausencias.allowedRoles) &&
+                                        <Route path={'/ausencias'} element={<AusenciasScreen/>}/>
                                     }
                                     <Route path={'/info'} element={<InfoScreen/>}/>
                                     <Route path={'/funcionalidades'} element={<FuncionalidadesScreen/>}/>

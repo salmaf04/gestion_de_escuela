@@ -36,7 +36,8 @@ export default function Body() {
                             setShowValoration(true)
                             setProfesor(row)
                         },
-                        color: 'bg-green-500',
+                        lineColor: 'bg-green-500',
+                        hoverColor: 'bg-green-100',
                         title: "Valorar",
                         icon: <img src={ValorarIcon} alt={'Valorar'}/>,
                         isVisible: () => true
@@ -45,7 +46,8 @@ export default function Body() {
                         action: () => {
                             setError!(new Error("Este profesor lleva mas de 3 años recibiendo malas valoraciones"))
                         },
-                        color: 'bg-amber-500',
+                        lineColor: 'bg-amber-500',
+                        hoverColor: 'bg-amber-100',
                         title: "Alerta",
                         icon: <img src={AlertIcon} alt={'Alerta'}/>,
                         isVisible: (row) => profesores!.find!((profesor) => profesor.id === row)!.alert > 5
