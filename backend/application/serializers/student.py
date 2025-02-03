@@ -72,11 +72,12 @@ class StudentMapper :
             student = StudentModel(
                 id = tuple[3].id,
                 name= tuple[3].name,
+                lastname=tuple[3].lastname,
                 age= tuple[3].age,
                 email= tuple[3].email,
                 extra_activities= tuple[3].extra_activities,  
                 username= tuple[3].username,
-                hash_password= tuple[3].hash_password,
+                hash_password= tuple[3].hashed_password,
                 course_id = tuple[3].course_id 
             )
             serialized_students.append(student)

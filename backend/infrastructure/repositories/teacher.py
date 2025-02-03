@@ -26,9 +26,6 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         """Initialize repository with database session."""
         super().__init__(session)
 
-<<<<<<< Updated upstream
-    def create(self, entity: TeacherCreateModel, subjects: SubjectTable) -> TeacherTable :
-=======
     def create(self, entity: TeacherCreateModel, subjects: SubjectTable) -> TeacherTable:
         """
         Create a new teacher record with subject associations and hashed password.
@@ -38,22 +35,15 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         Returns:
             Created TeacherTable instance
         """
-        self.check_subject(subjects, entity.list_of_subjects)
->>>>>>> Stashed changes
         teacher_dict = entity.model_dump(exclude={'password', 'list_of_subjects'})
         hashed_password = get_password_hash(get_password(entity))
         new_teacher = TeacherTable(**teacher_dict, hashed_password=hashed_password)
         new_teacher.teacher_subject_association = subjects if subjects else []
         self.session.add(new_teacher)
         self.session.commit()
-<<<<<<< Updated upstream
         if subjects :
             for subject in subjects :
                 subject.teacher_subject_association.append(new_teacher)
-=======
-        for subject in subjects:
-            subject.teacher_subject_association.append(new_teacher)
->>>>>>> Stashed changes
         return new_teacher
 
     def delete(self, entity: TeacherModel) -> None:
@@ -89,40 +79,8 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
             for teacher in teachers:
                 subjects.append(mapper.to_subject_list(teacher.teacher_subject_association))
         return teachers, subjects
-<<<<<<< Updated upstream
             
     def get_teacher_by_email(self, email: str) -> TeacherTable :
-=======
-
-    def check_subject(self, subjects_in_table, subjects_in_request):
-        """
-        Validate that requested subjects exist in the database.
-        Raises HTTPException if invalid subjects are found.
-        """
-        subjects_in_table_names = [subject.name for subject in subjects_in_table]
-        subjects_in_table_names.sort()
-        subjects_in_request.sort()
-        wrong_subjects = []
-        
-        for subject_in_table, subject_in_request in zip(subjects_in_table_names, subjects_in_request):
-            if subject_in_table != subject_in_request:
-                wrong_subjects.append(subject_in_request)
-            
-        if wrong_subjects:
-            wrong_subjects_str = ', '.join(wrong_subjects)
-            if len(wrong_subjects) == 1:
-                raise HTTPException(
-                    status_code=status.HTTP_403_FORBIDDEN,
-                    detail=f"Está intentando crear un nuevo profesor con una asignatura no válida: {wrong_subjects_str}"
-                )
-            raise HTTPException(
-                    status_code=status.HTTP_403_FORBIDDEN,
-                    detail=f"Está intentando crear un nuevo profesor con asignaturas no válidas: {wrong_subjects_str}"
-                )
-
-    def get_teacher_by_email(self, email: str) -> TeacherTable:
-        """Retrieve a teacher by their email address."""
->>>>>>> Stashed changes
         query = self.session.query(TeacherTable).filter(TeacherTable.email == email)
         result = query.first()
         return result
