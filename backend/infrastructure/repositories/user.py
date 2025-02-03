@@ -48,8 +48,6 @@ class UserRepository(IRepository[UserCreateModel,UserTable, UserChangeRequest,Us
         password_change_request: UserPasswordChangeRequest=None,
         personal_info_change_request: UserChangeRequest=None,    
     ):  
-        print("hola")
-        
         if password_change_request :
             user_input_new = await self.update_password(password_change_request=password_change_request, user_input=entity)
         if personal_info_change_request :

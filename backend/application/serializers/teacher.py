@@ -33,7 +33,6 @@ class TeacherTechnologicalClassroom(BaseModel) :
 class TeacherMapper :
 
     def to_api(self, teacher: TeacherTable , subjects: list[str] , valoration: float = None) -> TeacherModel :
-        print(teacher.name)
         return TeacherModel(
             id = teacher.entity_id,
             name=teacher.name,
@@ -90,8 +89,6 @@ class TeacherMapper :
         serialized_values = []
         ids = []
         
-        print(len(data))
-
         for teacher in data :
             if teacher[0] in ids :
                 serialized_values[len(serialized_values)-1].valorations.append(teacher[3])

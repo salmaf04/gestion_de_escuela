@@ -9,8 +9,6 @@ class ClassroomMapper :
         serialized_values = []
         ids = []
 
-        print(data)
-
         for classroom in data :
             if classroom[0].entity_id in ids :
                 serialized_values[len(serialized_values)-1].means.append(

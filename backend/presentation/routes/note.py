@@ -92,7 +92,7 @@ async def update_note(
     mapper = NoteMapper()
     update_service = NoteUpdateService(session)
     pagination_service = NotePaginationService(session)
-
+    
     note = pagination_service.get_note_by_id(id=id)
 
     if not note : 

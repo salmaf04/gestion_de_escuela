@@ -79,8 +79,7 @@ async def update_administrator(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="There is no administrator with that id"
         )
-    print(filters.specialty)
-
+    
     administrator_updated = administrator_update_service.update_one(changes=filters, administrator=administrator_model)
 
     return administrator_updated

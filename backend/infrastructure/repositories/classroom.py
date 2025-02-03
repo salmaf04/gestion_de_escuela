@@ -42,7 +42,6 @@ class ClassroomRepository(IRepository[ClassroomCreateModel,ClassroomModel, Class
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
         query = query.group_by(ClassroomTable, MeanTable)
         query = query.order_by(ClassroomTable.entity_id)
-        print(len(self.session.execute(query).all()))
         return self.session.execute(query).all()
     
     

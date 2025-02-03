@@ -1,7 +1,7 @@
 from typing import List
 from typing import Optional
 from enum import Enum as PyEnum
-from sqlalchemy import ForeignKey, Table
+from sqlalchemy import ForeignKey, Table, and_
 from sqlalchemy import String
 from sqlalchemy import Integer
 from sqlalchemy import Column
@@ -9,7 +9,7 @@ from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Double
 from sqlalchemy import Tuple, ARRAY, Enum
-from sqlalchemy import event, select, func, inspect
+from sqlalchemy import event, select, func, inspect, update
 from sqlalchemy.schema import DDL
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped
@@ -17,6 +17,7 @@ from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm.attributes import get_history
+from datetime import datetime, timedelta, timezone
 
 
 import uuid
@@ -444,8 +445,6 @@ def update_less_than_three_valoration(mapper, connection, target):
                 )
             
 def insert_user_roles(mapper, connection, target):
-    print('hola')
-    print(target.type)
     if target.type == "administrator" :
         target.roles = [Roles.ADMIN.value]
     elif target.type == "secretary" :
@@ -482,8 +481,27 @@ def check_administrator(mapper, connection, target):
         connection.execute(UserTable.__table__.update().values(roles=[Roles.DEAN.value, Roles.TEACHER.value]).where(UserTable.entity_id == decano.id))
 
 
+@event.listens_for(MeanMaintenanceTable, 'before_insert')
+def check_replacement(mapper, connection, target):
+    date = datetime.now(timezone.utc) - timedelta(days=365)
+    result = connection.execute(
+        select(
+            func.count(MeanMaintenanceTable.entity_id).label("count")
+        ).where(
+            and_(
+                MeanMaintenanceTable.date >= date,
+                MeanMaintenanceTable.mean_id == target.mean_id
+            )
+        )
+    ).scalars().first()
 
-        
+    if result >= 2 : 
+        connection.execute(update(MeanTable).where(MeanTable.entity_id == target.mean_id).values(to_be_replaced=True))
+    
+
+   
+
+    
 
 
 

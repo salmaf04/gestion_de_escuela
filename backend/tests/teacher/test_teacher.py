@@ -38,7 +38,6 @@ class TestTeacher:
             )
         
         response_json = response.json()
-        print(response_json)
         assert response.status_code == 201
         assert response_json['email'] == input['email']
 

@@ -34,10 +34,8 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         self.session.commit()
 
     def update(self, changes : NoteChangeRequest , entity : StudentNoteTable, modified_by : str) -> StudentNoteTable :
-        update_statement = update(StudentNoteTable).where(StudentNoteTable.entity_id == entity.entity_id).values(**changes.model_dump(exclude_unset=True, exclude_none=True), last_modified_by=modified_by)
-        self.session.execute(update_statement)
+        entity.note_value = changes.note_value
         self.session.commit()
-
         return self.get_by_id(id=entity.entity_id)
 
     def get_by_id(self, id: str ) -> StudentNoteTable :

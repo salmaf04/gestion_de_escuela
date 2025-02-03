@@ -20,7 +20,6 @@ async def create_mean(
     model_input: MeanCreateModel,
     session: Session = Depends(get_db)
 ) :
-    print(model_input)
     mean_service = MeanCreateService(session)
     mapper = MeanMapper()
 
