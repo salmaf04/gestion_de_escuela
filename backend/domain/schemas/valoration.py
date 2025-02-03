@@ -15,13 +15,19 @@ class ValorationCreateModel(BaseModel):
     def grade_must_be_valid(cls, grade):
         try :
             if grade < 0 or grade > 10:
+                print(grade)
                 raise ValidationException("Invalid grade")
         except ValueError as e:
             return HTTPException(status_code=400, detail=str(e))
         return grade
 
-class ValorationModel(ValorationCreateModel):
+class ValorationModel(BaseModel):
     id : uuid.UUID
+    teacher_id: uuid.UUID
+    student_id: uuid.UUID | None
+    subject_id: uuid.UUID
+    course_id: uuid.UUID
+    grade: int
 
 
 class TeacherSubjectValoration(BaseModel):

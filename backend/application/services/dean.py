@@ -5,55 +5,40 @@ from sqlalchemy import and_, update
 import uuid
 from sqlalchemy import select
 from backend.domain.filters.dean import DeanFilterSet , DeanFilterSchema, DeanChangeRequest
-from ..utils.auth import get_password_hash, get_password
+from backend.application.utils.auth import get_password_hash, get_password
+from backend.infrastructure.repositories.dean import DeanRepository
 
 
 class DeanCreateService :
+    def __init__(self, session):
+        self.repo_instance = DeanRepository(session)
 
-    def create_dean(self, session: Session, dean: DeanCreateModel) -> DeanTable :
-        dean_dict = dean.model_dump(exclude={'password'})
-        hashed_password = get_password_hash(get_password(dean))
-        new_dean = DeanTable(**dean_dict, hashed_password=hashed_password)
-        session.add(new_dean)
-        session.commit()
-        return new_dean
-    
+    def create_dean(self, dean: DeanCreateModel) -> DeanTable :
+        return self.repo_instance.create(dean)
     
 class DeanDeletionService:
-    def delete_dean(self, session: Session, dean: DeanModel) -> None :
-        session.delete(dean)
-        session.commit()
+    def __init__(self, session):
+        self.repo_instance = DeanRepository(session)
         
+    def delete_dean(self,dean: DeanModel) -> None :
+        return self.repo_instance.delete(dean)
         
 class DeanUpdateService :
-    def update_one(self, session : Session , changes : DeanChangeRequest , dean : DeanModel ) -> DeanModel: 
-        query = update(DeanTable).where(DeanTable.entity_id == dean.id)
-        
-        query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
-        session.execute(query)
-        session.commit()
-        
-        dean = dean.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
-        return dean
-        
+    def __init__(self, session):
+        self.repo_instance = DeanRepository(session)
 
+    def update_one(self, changes : DeanChangeRequest , dean : DeanModel ) -> DeanModel: 
+        return self.repo_instance.update(changes, dean)
+        
 class DeanPaginationService :
-    def get_dean_by_email(self, session: Session, email: str) -> DeanTable :
-        query = session.query(DeanTable).filter(DeanTable.email == email)
+    def __init__(self, session):    
+        self.repo_instance = DeanRepository(session)
 
-        result = query.first()
-
-        return result
+    def get_dean_by_email(self, email: str) -> DeanTable :
+        return self.repo_instance.get_by_email(email)
     
-    def get_dean_by_id(self, session: Session, id:uuid.UUID ) -> DeanTable :
-        query = session.query(DeanTable).filter(DeanTable.entity_id == id)
-
-        result = query.scalar()
-
-        return result
+    def get_dean_by_id(self, id:uuid.UUID ) -> DeanTable :
+        return self.repo_instance.get_by_id(id)
     
-    def get_dean(self, session: Session, filter_params: DeanFilterSchema) -> list[DeanTable] :
-        query = select(DeanTable)
-        filter_set = DeanFilterSet(session, query=query)
-        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
-        return session.scalars(query).all()
+    def get_dean(self, filter_params: DeanFilterSchema) -> list[DeanTable] :
+        return self.repo_instance.get(filter_params) 

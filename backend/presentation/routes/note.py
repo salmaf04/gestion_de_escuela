@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from backend.application.services.note import NoteCreateService, NotePaginationService, NoteUpdateService
 from backend.application.serializers.note import NoteMapper
 from backend.configuration import get_db
-from backend.domain.filters.note import NoteFilterSchema
+from backend.domain.filters.note import NoteFilterSchema, NoteChangeRequest
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 import json
@@ -33,10 +33,10 @@ async def create_note(
     user_id : str = None,
     current_user: UserModel = Depends(get_current_user),    
 ) :
-    note_service = NoteCreateService()
+    note_service = NoteCreateService(session)
     mapper = NoteMapper()
     
-    response = note_service.create_note(session=session, note=note_input, modified_by=user_id)
+    response = note_service.create_note(note=note_input, modified_by=user_id)
 
     return mapper.to_api(response)
 
@@ -50,13 +50,13 @@ async def read_note(
     less_than_fifty: bool = False,
     session: Session = Depends(get_db)
 ) :
-    note_pagination_service = NotePaginationService()
+    note_pagination_service = NotePaginationService(session)
     mapper = NoteMapper()
 
-    notes = note_pagination_service.get_note(session=session, filter_params=filters)
+    notes = note_pagination_service.get_note(filter_params=filters)
 
     if less_than_fifty :
-        notes = note_pagination_service.grade_less_than_fifty(session=session)
+        notes = note_pagination_service.grade_less_than_fifty()
         return mapper.to_less_than_fifty(notes)
 
     if not notes :
@@ -83,17 +83,17 @@ async def read_note(
 @authorize(role=['secretary','teacher'])
 async def update_note(
     id: str,
-    new_note: float,
+    new_note: NoteChangeRequest,
     request: Request,
     current_user: UserModel = Depends(get_current_user),
     user_id : str = None,
     session: Session = Depends(get_db),
 ) :
     mapper = NoteMapper()
-    update_service = NoteUpdateService()
-    pagination_service = NotePaginationService()
+    update_service = NoteUpdateService(session)
+    pagination_service = NotePaginationService(session)
 
-    note = pagination_service.get_note_by_id(session= session, id=id)
+    note = pagination_service.get_note_by_id(id=id)
 
     if not note : 
         raise HTTPException(
@@ -101,6 +101,6 @@ async def update_note(
             detail="There is no note with that id"
         )
     
-    updated_note = update_service.update_note(session=session, note_id=id, modified_by=user_id, new_note=new_note)
+    updated_note = update_service.update_note(note=note, modified_by=user_id, new_note=new_note)
 
     return mapper.to_api(updated_note)

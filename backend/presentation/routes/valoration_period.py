@@ -15,8 +15,8 @@ async def update_valoration_period(
     valoration_period_input: ValorationPeriodChangeRequest,
     session: Session = Depends(get_db)
 ):
-    valoration_period_service = ValorationPeriodUpdateService()
+    valoration_period_service = ValorationPeriodUpdateService(session)
 
-    valoration_period = valoration_period_service.update_one(session=session, changes=valoration_period_input)
+    valoration_period = valoration_period_service.update_one(changes=valoration_period_input)
 
     return valoration_period_input

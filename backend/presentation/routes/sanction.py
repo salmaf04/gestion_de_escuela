@@ -16,9 +16,9 @@ async def create_sanction(
     sanction_input: SanctionCreateModel,
     session: Session = Depends(get_db)
 ) :
-    sanction_service = SanctionCreateService()
+    sanction_service = SanctionCreateService(session)
     mapper = SanctionMapper()
-    sanction = sanction_service.create_sanction(session=session, sanction=sanction_input)
+    sanction = sanction_service.create_sanction(sanction=sanction_input)
     return mapper.to_api(sanction)
 
     

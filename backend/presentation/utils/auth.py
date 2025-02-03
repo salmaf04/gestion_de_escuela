@@ -56,9 +56,9 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 # Authenticate user
 async def authenticate_user(username: str, password: str, session: Session):
-    user_service = UserCreateService()  
+    user_service = UserCreateService(session)  
     mapper = UserMapper()
-    user = await user_service.get_user_by_username(username=username, session=session)
+    user = await user_service.get_user_by_username(username=username)
 
     if user is None :
         raise HTTPException(
@@ -92,8 +92,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme), session: Session
     try :
         payload = jwt.decode(jwt=token, key=SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("user_id")
-        user_service = UserCreateService()  
-        user = user_service.get_user_by_id(id=user_id, session=session)
+        user_service = UserCreateService(session)  
+        user = user_service.get_user_by_id(id=user_id)
         if user is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -129,6 +129,23 @@ def authorize(role: list):
                     if 'teacher' in user_roles :
                         kwargs['students_by_teacher'] = True
                         kwargs['teacher_id'] = user_id1
+
+                if method == 'GET' and url == 'teacher':
+                    if 'student' in user_roles :
+                        kwargs['teachers_by_students'] = True
+                        kwargs['student_id'] = user_id1
+
+                if method == 'GET' and url == 'absence':
+                    if 'student' in user_roles :
+                        kwargs['by_student'] = user_id1
+                    elif 'teacher' in user_roles :
+                        kwargs['by_student_by_teacher'] = user_id1
+
+                if method == 'GET' and url == 'subject':
+                    if 'student' in user_roles :
+                        kwargs['subjects_by_students'] = user_id1
+                    elif 'teacher' in user_roles :
+                        kwargs['subjects_by_teacher'] = user_id1
                     
                 if (method == 'PATCH' or method == 'POST') and url == 'note':
                     kwargs['user_id']=user_id1

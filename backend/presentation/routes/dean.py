@@ -20,19 +20,19 @@ async def create_dean(
     dean_input: DeanCreateModel,
     session: Session = Depends(get_db)
 ) :
-    dean_service = DeanCreateService()
-    dean_pagination_service = DeanPaginationService()
+    dean_service = DeanCreateService(session)
+    dean_pagination_service = DeanPaginationService(session)
     mapper = DeanMapper()
 
-    dean = dean_pagination_service.get_dean_by_email(session=session, email=dean_input.email)
+    dean = dean_pagination_service.get_dean(DeanFilterSchema())
 
     if dean :
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="There is already an dean with that email"
+            detail="Ya existe un decano"
         )
 
-    response = dean_service.create_dean(session=session, dean=dean_input)
+    response = dean_service.create_dean(dean=dean_input)
 
     return mapper.to_api(response)
 
@@ -44,10 +44,10 @@ async def delete_dean(
     id: str,
     session: Session = Depends(get_db)
 ) :
-    dean_pagination_service = DeanPaginationService()
-    dean_deletion_service = DeanDeletionService()
+    dean_pagination_service = DeanPaginationService(session)
+    dean_deletion_service = DeanDeletionService(session)
 
-    dean =dean_pagination_service.get_dean_by_id(session=session, id=id)
+    dean =dean_pagination_service.get_dean_by_id(id=id)
 
     if not dean :
         raise HTTPException(
@@ -55,7 +55,7 @@ async def delete_dean(
             detail="There is no dean with that email"
         )
 
-    dean_deletion_service.delete_dean(session=session, dean=dean)
+    dean_deletion_service.delete_dean(dean=dean)
     
 @router.get(
     "/dean",
@@ -66,10 +66,10 @@ async def read_dean(
     filters: DeanFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
-    dean_pagination_service = DeanPaginationService()
+    dean_pagination_service = DeanPaginationService(session)
     mapper = DeanMapper()
 
-    deans = dean_pagination_service.get_deans(session=session, filter_params=filters)
+    deans = dean_pagination_service.get_dean(filter_params=filters)
 
     if not deans :
         raise HTTPException(
@@ -94,11 +94,11 @@ async def update_dean(
     filters: DeanChangeRequest,
     session: Session = Depends(get_db)
 ) :
-    dean_pagination_service = DeanPaginationService()
-    dean_update_service = DeanUpdateService()
+    dean_pagination_service = DeanPaginationService(session)
+    dean_update_service = DeanUpdateService(session)
     mapper = DeanMapper()
 
-    dean = dean_pagination_service.get_dean_by_id(session=session, id = id)
+    dean = dean_pagination_service.get_dean_by_id(id = id)
     dean_model = mapper.to_api(dean)
 
     if not dean :
@@ -106,8 +106,7 @@ async def update_dean(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="There is no dean with that id"
         )
-    print(filters.specialty)
-
-    dean_updated = dean_update_service.update_one(session=session, changes=filters, dean=dean_model)
+    
+    dean_updated = dean_update_service.update_one(changes=filters, dean=dean_model)
 
     return dean_updated

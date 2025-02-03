@@ -20,19 +20,19 @@ async def create_administrator(
     administrator_input: AdministratorCreateModel,
     session: Session = Depends(get_db)
 ) :
-    administrator_service = AdministratorCreateService()
-    administrator_pagination_service = AdministratorPaginationService()
+    administrator_service = AdministratorCreateService(session)
+    administrator_pagination_service = AdministratorPaginationService(session)
     mapper = AdministratorMapper()
 
-    administrator = administrator_pagination_service.get_administrator_by_email(session=session, email=administrator_input.email)
+    administrator = administrator_pagination_service.get(AdministratorFilterSchema())
 
     if administrator :
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="There is already an administrator with that email"
+            detail="Ya existe un adminitrador"
         )
 
-    response = administrator_service.create_administrator(session=session, administrator=administrator_input)
+    response = administrator_service.create_administrator(administrator=administrator_input)
 
     return mapper.to_api(response)
 
@@ -44,10 +44,10 @@ async def delete_administrator(
     id: str,
     session: Session = Depends(get_db)
 ) :
-    administrator_pagination_service = AdministratorPaginationService()
-    administrator_deletion_service = AdministratorDeletionService()
+    administrator_pagination_service = AdministratorPaginationService(session)
+    administrator_deletion_service = AdministratorDeletionService(session)
 
-    administrator =administrator_pagination_service.get_administrator_by_id(session=session, id=id)
+    administrator =administrator_pagination_service.get_administrator_by_id(id=id)
 
     if not administrator :
         raise HTTPException(
@@ -55,7 +55,7 @@ async def delete_administrator(
             detail="There is no administrator with that email"
         )
 
-    administrator_deletion_service.delete_administrator(session=session, administrator=administrator)
+    administrator_deletion_service.delete_administrator(administrator=administrator)
 
 @router.patch(
     "/administrator/{id}",
@@ -67,11 +67,11 @@ async def update_administrator(
     filters: AdministratorChangeRequest ,
     session: Session = Depends(get_db)
 ) :
-    administrator_pagination_service = AdministratorPaginationService()
-    administrator_update_service = AdministradorUpdateService()
+    administrator_pagination_service = AdministratorPaginationService(session)
+    administrator_update_service = AdministradorUpdateService(session)
     mapper = AdministratorMapper()
 
-    administrator = administrator_pagination_service.get_administrator_by_id(session=session, id = id)
+    administrator = administrator_pagination_service.get_administrator_by_id(id = id)
     administrator_model = mapper.to_api(administrator)
 
     if not administrator :
@@ -81,7 +81,7 @@ async def update_administrator(
         )
     print(filters.specialty)
 
-    administrator_updated = administrator_update_service.update_one(session=session, changes=filters, administrator=administrator_model)
+    administrator_updated = administrator_update_service.update_one(changes=filters, administrator=administrator_model)
 
     return administrator_updated
 
@@ -94,9 +94,10 @@ async def read_administrator(
     filters: AdministratorFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
-    administrtor_pagination_service = AdministratorPaginationService()
 
-    administrator = administrtor_pagination_service.get(session=session, filter_params=filters)
+    administrtor_pagination_service = AdministratorPaginationService(session)
+
+    administrator = administrtor_pagination_service.get(filter_params=filters)
 
     if not administrator :
         return []

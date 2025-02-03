@@ -26,11 +26,11 @@ async def create_student(
     session: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user)
 ) :
-    student_service = StudentCreateService()
-    student_pagination_service = StudentPaginationService()
+    student_service = StudentCreateService(session)
+    student_pagination_service = StudentPaginationService(session)
     mapper = StudentMapper()
 
-    student = student_pagination_service.get_student_by_email(session=session, email=student_input.email)
+    student = student_pagination_service.get_student_by_email(email=student_input.email)
 
     if student :
         raise HTTPException(
@@ -38,7 +38,7 @@ async def create_student(
             detail="There is already an student with that email"
         )
 
-    response = student_service.create_student(session=session, student=student_input)
+    response = student_service.create_student(student=student_input)
 
     return mapper.to_api(response)
 
@@ -50,10 +50,10 @@ async def delete_student(
     id: str,
     session: Session = Depends(get_db)
 ) :
-    student_pagination_service = StudentPaginationService()
-    student_deletion_service = StudentDeletionService()
+    student_pagination_service = StudentPaginationService(session)
+    student_deletion_service = StudentDeletionService(session)
 
-    student =student_pagination_service.get_student_by_id(session=session, id=id)
+    student =student_pagination_service.get_student_by_id(id=id)
 
     if not student :
         raise HTTPException(
@@ -61,7 +61,7 @@ async def delete_student(
             detail="There is no student with that email"
         )
 
-    student_deletion_service.delete_student(session=session, student=student)
+    student_deletion_service.delete_student(student=student)
 
 @router.get(
     "/student",
@@ -74,26 +74,22 @@ async def read_student(
     id : str = None,
     teacher_id : str = None,
     academic_performance = False,
-    student_note_less_than_fifty = False,
     students_by_teacher = False,
     filters: StudentFilterSchema = Depends(),
     session: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user)
 ) :
-    student_pagination_service = StudentPaginationService()
+    student_pagination_service = StudentPaginationService(session)
     mapper = StudentMapper()
 
-    if student_note_less_than_fifty :
-        students = student_pagination_service.grade_less_than_fifty(session=session)
-        return mapper.to_less_than_fifty(students)
-    elif academic_performance :
-        students = student_pagination_service.get_academic_information(session=session, student_id=id)
+    if academic_performance :
+        students = student_pagination_service.get_academic_information(student_id=id)
         return mapper.to_academic_performance(students)
     elif students_by_teacher :
-        students = student_pagination_service.get_students_by_teacher(session=session, teacher_id=teacher_id)
+        students = student_pagination_service.get_students_by_teacher(teacher_id=teacher_id)
         return mapper.to_student_by_teacher(students)
 
-    students = student_pagination_service.get_students(session=session, filter_params=filters)
+    students = student_pagination_service.get_students(filter_params=filters)
 
     if not students :
         return []
@@ -116,19 +112,19 @@ async def update_student(
     filters: StudentChangeRequest,
     session: Session = Depends(get_db)
 ) :
-    student_pagination_service = StudentPaginationService()
-    student_update_service = StudentUpdateService()
+    student_pagination_service = StudentPaginationService(session)
+    student_update_service = StudentUpdateService(session)
     mapper = StudentMapper()
 
-    student = student_pagination_service.get_student_by_id(session=session, id = id)
-    student_model = mapper.to_api(student)
-
+    student = student_pagination_service.get_student_by_id(id=id)
+    
     if not student :
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="There is no student with that id"
         )
     
-    student_updated = student_update_service.update_one(session=session, changes=filters, student=student_model)
+    student_model = mapper.to_api(student)
+    student_updated = student_update_service.update_one(changes=filters, student=student_model)
 
     return student_updated

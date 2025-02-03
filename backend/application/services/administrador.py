@@ -5,58 +5,43 @@ from backend.domain.models.tables import AdministratorTable
 from sqlalchemy.orm import Session
 from sqlalchemy import update, select
 import uuid
-from ..utils.auth import get_password_hash, get_password
+from backend.application.utils.auth import get_password_hash, get_password
+from backend.infrastructure.repositories.administrator import AdministratorRepository
 
-class AdministratorCreateService :
 
-    def create_administrator(self, session: Session, administrator:AdministratorCreateModel) -> AdministratorTable :
-        administrator_dict = administrator.model_dump(exclude={'password'})
-        hashed_password = get_password_hash(get_password(administrator))
-        new_administrator = AdministratorTable(**administrator_dict, hashed_password=hashed_password)
-        session.add(new_administrator)
-        session.commit()
-        return new_administrator
+class AdministratorCreateService() :
+    def __init__(self, session):
+        self.repo_instance = AdministratorRepository(session)
 
-    
+    def create_administrator(self, administrator:AdministratorCreateModel) -> AdministratorTable :
+        return self.repo_instance.create(administrator)
 
 class AdministratorPaginationService :
-    def get_administrator_by_email(self, session: Session, email: str) -> AdministratorTable :
-        query = session.query(AdministratorTable).filter(AdministratorTable.email == email)
+    def __init__(self, session):
+        self.repo_instance = AdministratorRepository(session)
 
-        result = query.first()
-
-        return result
+    def get_administrator_by_email(self,email: str) -> AdministratorTable :
+        return self.repo_instance.get_by_email(email)
     
-    def get_administrator_by_id(self, session: Session, id:uuid.UUID ) -> AdministratorTable :
-        query = session.query(AdministratorTable).filter(AdministratorTable.entity_id == id)
-
-        result = query.scalar()
-
-        return result
+    def get_administrator_by_id(self, id:uuid.UUID ) -> AdministratorTable :
+        return self.repo_instance.get_by_id(id)
     
-    def get(self, session: Session, filter_params: AdministratorFilterSchema) -> list[AdministratorTable] :
-        query = select(AdministratorTable)
-        filter_set = AdministratorFilterSet(session, query=query)
-        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
-        return session.execute(query).scalars().all()
+    def get(self, filter_params: AdministratorFilterSchema) -> list[AdministratorTable] :
+        return self.repo_instance.get(filter_params)
 
-    
 class AdministratorDeletionService:
-    def delete_administrator(self, session: Session, administrator: AdministratorModel) -> None :
-        session.delete(administrator)
-        session.commit()
+    def __init__(self, session):
+        self.repo_instance = AdministratorRepository(session)
 
+    def delete_administrator(self, administrator: AdministratorModel) -> None :
+        return self.repo_instance.delete(administrator)
 
 class AdministradorUpdateService :
-    def update_one(self, session : Session , changes : AdministratorChangeRequest , administrator : AdministratorModel ) -> AdministratorModel: 
-        query = update(AdministratorTable).where(AdministratorTable.entity_id == administrator.id)
-        
-        query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
-        session.execute(query)
-        session.commit()
-        
-        administrator = administrator.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
-        return administrator
+    def __init__ (self, session):
+        self.repo_instance = AdministratorRepository(session)
+
+    def update_one(self, changes : AdministratorChangeRequest , administrator : AdministratorModel ) -> AdministratorModel: 
+        return self.repo_instance.update(changes, administrator)
 
 
 
