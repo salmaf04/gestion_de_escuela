@@ -28,8 +28,9 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         new_teacher.teacher_subject_association = subjects if subjects else []
         self.session.add(new_teacher)
         self.session.commit()
-        for subject in subjects :
-            subject.teacher_subject_association.append(new_teacher)
+        if subjects :
+            for subject in subjects :
+                subject.teacher_subject_association.append(new_teacher)
         return new_teacher
 
     def delete(self, entity: TeacherModel) -> None :

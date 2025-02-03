@@ -4,6 +4,10 @@ import uuid
 from backend.main_test import app
 import requests
 from fastapi.testclient import TestClient
+from .conftest import SecretaryFactory
+from backend.presentation.utils.auth import create_access_token
+from sqlalchemy import ARRAY
+from backend.domain.models.tables import Roles
 class TestTeacher:
     url = "/teacher"
     client = TestClient(app)
@@ -31,13 +35,26 @@ class TestTeacher:
     async def test_create_teacher(
         self, 
         client,
-        input: dict,
+        input: dict
     ):
+        secretary = SecretaryFactory.create()
+        
+        access_token = create_access_token(
+        data={
+            "sub": "luisafer",
+            "user_id" : "e06236c5-6639-4b48-8942-1acc6319e392",
+            "roles": "[secretary]",
+            "type": 'secretary'
+        }
+        )
+
         response = self.client.post(
                 self.url,
                 json=input,
-                headers={"Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsdWlzYSIsInVzZXJfaWQiOiJlYzA0NDVmOC1mZDI1LTRiMjYtYjA1ZS1iNzcwNjdmZmJlZTkiLCJyb2xlcyI6WyJzZWNyZXRhcnkiXSwidHlwZSI6InNlY3JldGFyeSIsImV4cCI6MTczODU3NzM5Nn0.3euffT0m8VmQd93di9gx9RPwMOEXEhWOvlt9EP4UuHE"}
+                headers={"Authorization": f"Bearer {access_token}"}
             )
+        
+    
         
         print(response.json())
         response_json = response.json()

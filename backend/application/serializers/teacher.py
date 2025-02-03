@@ -89,6 +89,11 @@ class TeacherMapper :
         serialized_values = []
         ids = []
         
+        teacher_ids = []
+        
+        for teacher_id in mean_data :
+            teacher_ids.append(teacher_id[0].id)
+        
         for teacher in data :
             if teacher[0] in ids :
                 serialized_values[len(serialized_values)-1].valorations.append(teacher[3])
@@ -99,10 +104,11 @@ class TeacherMapper :
                     name= teacher[1],
                     valorations= [teacher[3]] if teacher[3] else [],
                     date= teacher[2],
-                    means= True if teacher[0] in mean_data else False
+                    means= True if teacher[0] in teacher_ids else False
                 )
                 serialized_values.append(new_teacher)
             
+        print(ids)
 
         return serialized_values
     
