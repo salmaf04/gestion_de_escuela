@@ -75,26 +75,25 @@ class BaseTable(DeclarativeBase):
 teacher_subject_table = Table(
     TableName.TEACHER_SUBJECT.value,
     BaseTable.metadata,
-    Column("teacher_id", ForeignKey("teacher.id"), primary_key=True),
-    Column("subject_id", ForeignKey("subject.entity_id"), primary_key=True),
+    Column("teacher_id", ForeignKey("teacher.id" , ondelete='CASCADE'), primary_key=True),
+    Column("subject_id", ForeignKey("subject.entity_id", ondelete='CASCADE'), primary_key=True),
 )
 
 
 teacher_request_classroom_table = Table(
     TableName.TEACHER_CLASSROOM.value,
     BaseTable.metadata,
-    Column("teacher_id", ForeignKey("teacher.id"), primary_key=True),
-    Column("classroom_id", ForeignKey("classroom.entity_id"), primary_key=True),
+    Column("teacher_id", ForeignKey("teacher.id", ondelete='CASCADE'), primary_key=True),
+    Column("classroom_id", ForeignKey("classroom.entity_id", ondelete='CASCADE'), primary_key=True),
 )
 
 
 teacher_request_mean_table = Table(
     TableName.TEACHER_MEAN.value,
     BaseTable.metadata,
-    Column("teacher_id", ForeignKey("teacher.id"), primary_key=True),
-    Column("mean_id", ForeignKey("mean.entity_id"), primary_key=True),
+    Column("teacher_id", ForeignKey("teacher.id", ondelete='CASCADE'), primary_key=True),
+    Column("mean_id", ForeignKey("mean.entity_id", ondelete='CASCADE'), primary_key=True),
 )
-
 class UserTable(BaseTable) :
     __tablename__ = TableName.USER.value
     
@@ -123,23 +122,23 @@ class TeacherTable(UserTable):
     salary = Column(Double)
     less_than_three_valoration = Column(Integer, default=0)     
 
-    sanctions: Mapped[List["SanctionTable"]] = relationship(back_populates="teacher")
+    sanctions: Mapped[List["SanctionTable"]] = relationship(back_populates="teacher", cascade="all, delete-orphan")
 
     mean_request = relationship(
         "MeanTable",
         secondary=teacher_request_mean_table,
-        back_populates="teachers",
-        cascade="all, delete"
+        back_populates="teachers"
     )
 
     classroom_request = relationship(
         "ClassroomTable",
         secondary=teacher_request_classroom_table,
         back_populates="teachers",
+        cascade="all, delete"
     )
 
-    student_note_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="teacher")
-    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="teacher")
+    student_note_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="teacher", cascade="all, delete-orphan")
+    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="teacher", cascade="all, delete-orphan")
     teacher_subject_association = relationship("SubjectTable", secondary=teacher_subject_table, back_populates="teacher_subject_association")
 
 
@@ -187,9 +186,9 @@ class StudentTable(UserTable) :
     course_id : Mapped[uuid.UUID] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id", ondelete='CASCADE'))
    
     course: Mapped['CourseTable'] = relationship(back_populates="students")
-    student_note_association: Mapped[List["StudentNoteTable"]] = relationship('StudentNoteTable', back_populates="student", cascade="all, delete")
-    student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="student", cascade="all, delete")
-    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="student",cascade="all, delete")
+    student_note_association: Mapped[List["StudentNoteTable"]] = relationship('StudentNoteTable', back_populates="student", cascade="all, delete-orphan")
+    student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="student", cascade="all, delete-orphan")
+    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="student")
 
     __mapper_args__ = {
         "polymorphic_identity": "student",
@@ -203,16 +202,16 @@ class SubjectTable(BaseTable) :
     hourly_load  = Column(Integer)
     study_program = Column(Integer)
 
-    classroom_id : Mapped[int] = mapped_column(ForeignKey(f"{TableName.CLASSROOM.value}.entity_id"))
+    classroom_id : Mapped[int] = mapped_column(ForeignKey(f"{TableName.CLASSROOM.value}.entity_id", ondelete='SET NULL'), nullable=True)
     course_id : Mapped[uuid.UUID] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id"))
   
-    classroom: Mapped["ClassroomTable"] = relationship(back_populates="subjects", cascade="all, delete")
-    course: Mapped['CourseTable'] = relationship(back_populates="subjects", cascade="all, delete")
+    classroom: Mapped["ClassroomTable"] = relationship(back_populates="subjects")
+    course: Mapped['CourseTable'] = relationship(back_populates="subjects")
 
-    student_teacher_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="subject", cascade="all, delete")
-    student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="subject", cascade="all, delete")
-    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="subject", cascade="all, delete")
-    teacher_subject_association = relationship("TeacherTable", secondary=teacher_subject_table, back_populates="teacher_subject_association", cascade="all, delete")
+    student_teacher_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="subject", cascade="all, delete-orphan")
+    student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="subject", cascade="all, delete-orphan")
+    teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="subject", cascade="all, delete-orphan")
+    teacher_subject_association = relationship("TeacherTable", secondary=teacher_subject_table, back_populates="teacher_subject_association")
     
 class ClassroomTable(BaseTable) : 
     __tablename__ = TableName.CLASSROOM.value
@@ -256,18 +255,18 @@ class MeanTable(BaseTable) :
     name = Column(String) 
     state: Mapped[MeanState] = mapped_column(String)
     location = Column(String)
-    classroom_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.CLASSROOM.value}.entity_id"))
+    classroom_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.CLASSROOM.value}.entity_id", ondelete='SET NULL'), nullable=True)
     to_be_replaced = Column(Boolean, default=False)
     type: Mapped[MeanType] = mapped_column(String)
 
-    mean_maintenance_association: Mapped[List["MeanMaintenanceTable"]] = relationship(back_populates="mean")
+    mean_maintenance_association: Mapped[List["MeanMaintenanceTable"]] = relationship(back_populates="mean", cascade="all, delete-orphan")
 
     classroom: Mapped["ClassroomTable"] = relationship(back_populates="means")
 
     teachers = relationship(
         "TeacherTable",
         secondary=teacher_request_mean_table,
-        back_populates="mean_request",
+        back_populates="mean_request"
     )
 
 
@@ -337,7 +336,7 @@ class TeacherNoteTable(BaseTable) :
     __tablename__ = TableName.TEACHER_NOTE.value
 
     teacher_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.TEACHER.value}.id"), primary_key=True)
-    student_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.STUDENT.value}.id"), primary_key=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.STUDENT.value}.id", ondelete='SET NULL'), nullable=True)
     subject_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.SUBJECT.value}.entity_id"), primary_key=True)
     course_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.COURSE.value}.entity_id"))
     
@@ -363,7 +362,6 @@ class AbsenceTable(BaseTable) :
 #Tablas de relación
 class MeanMaintenanceTable(BaseTable) :
     __tablename__ = TableName.MEAN_MAINTENANCE_TABLE.value
-
 
     mean_id: Mapped[int] = mapped_column(ForeignKey(f"{TableName.MEAN.value}.entity_id"), primary_key= True)
     finished = Column(Boolean, default=False)
@@ -394,6 +392,20 @@ def update_teacher_average(mapper, connection, target):
             where(TeacherNoteTable.teacher_id == target.teacher_id)
         ))
     )
+
+def update_student_average(mapper, connection, target):
+    # Actualizar el promedio de valoraciones del estudiante
+    connection.execute(
+        StudentTable.__table__.update().
+        where(StudentTable.id == target.student_id).
+        values(average_note=(
+            select((func.sum(StudentNoteTable.note_value)/func.count())).
+            where(StudentNoteTable.student_id == target.student_id)
+        ))
+    )
+
+event.listen(StudentNoteTable, 'after_insert', update_student_average)
+event.listen(StudentNoteTable, 'after_update', update_student_average)
 
 @event.listens_for(BaseTable.metadata, 'after_create')
 def insert_default_valoration_period(target, connection, **kw):

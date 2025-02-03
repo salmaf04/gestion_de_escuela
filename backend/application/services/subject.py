@@ -6,53 +6,45 @@ from backend.domain.models.tables import SubjectTable
 import uuid
 from backend.application.services.classroom import ClassroomPaginationService
 from backend.application.services.course import CoursePaginationService
-
+from backend.infrastructure.repositories.subject import SubjectRepository
 class SubjectCreateService :
+    def __init__(self, session):
+        self.repo_instance = SubjectRepository(session)
+        self.classroom_pagination_service = ClassroomPaginationService(session)
+        self.course_pagination_service = CoursePaginationService(session)
 
-    def create_subject(self, session: Session, subject:SubjectCreateModel) -> SubjectTable :
-        course_pagination_service = CoursePaginationService()
-        classroom_service = ClassroomPaginationService()
-        classroom = classroom_service.get_classroom_by_id(session=session, id=subject.classroom_id)
-         
-        subject_dict = subject.model_dump()
-        new_subject = SubjectTable(**subject_dict)
-        new_subject.classroom = classroom
-        classroom.subjects.append(new_subject)
-        session.add(new_subject)
-        session.commit()
-        return new_subject
-
-
+    def create_subject(self, subject:SubjectCreateModel) -> SubjectTable :
+        classroom = self.classroom_pagination_service.get_classroom_by_id(id=subject.classroom_id)
+        course = self.course_pagination_service.get_course_by_id(id=subject.course_id)
+        return self.repo_instance.create(subject, classroom, course)
+    
 class SubjectDeletionService:
-    def delete_subject(self, session: Session, subject: SubjectModel) -> None :
-        session.delete(subject)
-        session.commit()
-        
+    def __init__(self, session):
+        self.repo_instance = SubjectRepository(session)
 
-class SubjectUpdateService :
-    def update_one(self, session : Session , changes : SubjectChangeRequest , subject : SubjectModel ) -> SubjectModel: 
-        query = update(SubjectTable).where(SubjectTable.entity_id == subject.id)
- 
-        query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
-        session.execute(query)
-        session.commit()
+    def delete_subject(self, subject: SubjectModel) -> None :
+        return self.repo_instance.delete(subject)
         
-        subject = subject.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
-        return subject
-           
+class SubjectUpdateService :
+    def __init__(self, session):
+        self.repo_instance = SubjectRepository(session)
+
+    def update_one(self, changes : SubjectChangeRequest , subject : SubjectModel ) -> SubjectModel: 
+        return self.repo_instance.update(changes, subject)
 
 class SubjectPaginationService :
+    def __init__(self, session):
+        self.repo_instance = SubjectRepository(session)
     
-    def get_subject_by_id(self, session: Session, id:uuid.UUID ) -> SubjectTable :
-        query = session.query(SubjectTable).filter(SubjectTable.entity_id == id)
-
-        result = query.scalar()
-
-        return result
+    def get_subject_by_id(self, id:uuid.UUID ) -> SubjectTable :
+        return self.repo_instance.get_by_id(id)
     
-    def get_subjects(self, session: Session, filter_params: SubjectFilterSchema) -> list[SubjectTable] :
-        query = select(SubjectTable)
-        filter_set = SubjectFilterSet(session, query=query)
-        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
-        return session.execute(query).scalars().all()
+    def get_subjects(self, filter_params: SubjectFilterSchema) -> list[SubjectTable] :
+        return self.repo_instance.get(filter_params)
+    
+    def get_subjects_by_students(self, student_id: str) :
+        return self.repo_instance.get_subjects_by_students(student_id=student_id)
+    
+    def get_subjects_by_teacher(self, teacher_id: str) :
+        return self.repo_instance.get_subjects_by_teacher(teacher_id=teacher_id)
     

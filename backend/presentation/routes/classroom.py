@@ -17,10 +17,10 @@ async def create_classroom(
     classroom_input: ClassroomCreateModel ,
     session: Session = Depends(get_db)
 ) :
-    classroom_service = ClassroomCreateService()
+    classroom_service = ClassroomCreateService(session)
     mapper = ClassroomMapper()
 
-    response = classroom_service.create_classroom(session=session, classroom=classroom_input)
+    response = classroom_service.create_classroom(classroom=classroom_input)
 
     return mapper.to_api_default(response)
 
@@ -32,10 +32,10 @@ async def delete_classroom(
     id: str,
     session: Session = Depends(get_db)
 ) :
-    classroom_pagination_service = ClassroomPaginationService()
-    classroom_deletion_service = ClassroomDeletionService()
+    classroom_pagination_service = ClassroomPaginationService(session)
+    classroom_deletion_service = ClassroomDeletionService(session)
 
-    classroom =classroom_pagination_service.get_classroom_by_id(session=session, id=id)
+    classroom =classroom_pagination_service.get_classroom_by_id(id=id)
 
     if not classroom :
         raise HTTPException(
@@ -43,7 +43,7 @@ async def delete_classroom(
             detail="There is no classroom with that id"
         )
 
-    classroom_deletion_service.delete_classroom(session=session, classroom=classroom)
+    classroom_deletion_service.delete_classroom(classroom=classroom)
 
 @router.get(
     "/classroom",
@@ -54,10 +54,10 @@ async def read_classroom(
     filters: ClassroomFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
-    classroom_pagination_service = ClassroomPaginationService()
+    classroom_pagination_service = ClassroomPaginationService(session)
     mapper = ClassroomMapper()
 
-    classrooms = classroom_pagination_service.get_classroom(session=session, filter_params=filters)
+    classrooms = classroom_pagination_service.get_classroom(filter_params=filters)
    
     if not classrooms :
         raise HTTPException(
@@ -77,11 +77,11 @@ async def update_classroom(
     filters: ClassroomChangeRequest,
     session: Session = Depends(get_db)
 ) :
-    classroom_pagination_service = ClassroomPaginationService()
-    classroom_update_service = ClassroomUpdateService()
+    classroom_pagination_service = ClassroomPaginationService(session)
+    classroom_update_service = ClassroomUpdateService(session)
     mapper = ClassroomMapper()
 
-    classroom = classroom_pagination_service.get_classroom_by_id(session=session, id = id)
+    classroom = classroom_pagination_service.get_classroom_by_id(id = id)
     classroom_model = mapper.to_api_default(classroom)
 
     if not classroom :
@@ -90,6 +90,6 @@ async def update_classroom(
             detail="There is no classroom with that id"
         )
  
-    classroom_updated = classroom_update_service.update_one(session=session, changes=filters, classroom=classroom_model)
+    classroom_updated = classroom_update_service.update_one(changes=filters, classroom=classroom_model)
 
     return classroom_updated

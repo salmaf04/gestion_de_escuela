@@ -12,11 +12,11 @@ class TeacherModel(BaseModel):
     experience: int
     email: str
     username: str
-    salary: float
+    salary: float | None = None
     list_of_subjects: list[str]
     valoration : Optional[float | str ] = None
+    alert : int | None = 0
     
-
 class TeacherCreateModel(UserCreateModel):
     specialty: str
     contract_type: str
