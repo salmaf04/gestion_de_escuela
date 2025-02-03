@@ -41,10 +41,8 @@ export const useApiFuncionalidades = () => {
     const getFiltrodeMantenimiento = async () => {
         const res = await apiRequest.getApi(filtrodeMantenimentoEndpoint);
         if (res.ok) {
-            const data: FiltrodeMantenimientoGetDB = await res.json();
-            const [classrooms, summary] = data;
-            const totalMaintenances = summary["total maintenances after two years"];
-            const costoPromedioArray = classrooms.map(classroom => new FiltrodeMantenimientoGetAdapter(classroom, totalMaintenances));
+            const data: FiltrodeMantenimientoGetDB[] = await res.json();
+            const costoPromedioArray = data.map( item   => new FiltrodeMantenimientoGetAdapter(item));
             setfiltrodeMantenimento(costoPromedioArray);
         } else {
             setError!(new Error(res.statusText));

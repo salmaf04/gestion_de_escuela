@@ -23,11 +23,10 @@ import CursosScreen from "./pages/cursos/CursosScreen.tsx";
 import {Screens} from "./utils/router.ts";
 import {IMantenimientoLocal} from "./pages/mantenimientos/models/IMantenimientoLocal.ts";
 import FuncionalidadesScreen from "./pages/funcionalidades/FuncionalidadesScreen.tsx";
-import {IAusenciaLocal} from "./pages/ausencias/models/IAusenciaLocal.ts";
-import AusenciasScreen from "./pages/ausencias/AusenciasScreen.tsx";
 import InfoScreen from "./pages/info/InfoScreen.tsx";
 import {ISecretariaDB} from "./pages/info/models/ISecretariaDB.ts";
 import {IAdministradorDB} from "./pages/info/models/IAdministradorDB.ts";
+import {IAusenciaLocal} from "./pages/ausencias/models/IAusenciaLocal.ts";
 
 
 interface AppContextInterface {
@@ -99,6 +98,7 @@ function App() {
             setPersonalId(JSON.parse(atob(t!.split(".")[1])).user_id)
             setUsername(JSON.parse(atob(t!.split(".")[1])).sub)
         }
+
     }, []);
     const allowRoles = useCallback((rolesParam: RolesEnum[]) => {
             return rolesParam.some(r => roles?.includes(r))
@@ -148,12 +148,6 @@ function App() {
                         setError(undefined)
                     }}/>
                 }
-                {message &&
-                    <Notification title={'Mensaje:'} message={message}
-                                  className={'bg-indigo-100 opacity-90 text-sm rounded-md py-1'} onClick={() => {
-                        setMessage(undefined)
-                    }}/>
-                }
                 {token ?
                     (
                         <div className={'h-dvh bg-indigo-50 flex w-full'}>
@@ -191,8 +185,8 @@ function App() {
                                     {allowRoles(Screens.Mantenimientos.allowedRoles) &&
                                         <Route path={'/mantenimiento'} element={<MantenimientosScreen/>}/>
                                     }
-                                    {allowRoles(Screens.Ausencias.allowedRoles) &&
-                                        <Route path={'/ausencias'} element={<AusenciasScreen/>}/>
+                                    {allowRoles(Screens.Mantenimientos.allowedRoles) &&
+                                        <Route path={'/funcionalidades'} element={<FuncionalidadesScreen/>}/>
                                     }
                                     <Route path={'/info'} element={<InfoScreen/>}/>
                                     <Route path={'/funcionalidades'} element={<FuncionalidadesScreen/>}/>

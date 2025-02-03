@@ -11,4 +11,5 @@ export class ValoracionPromediodeProfesorGetAdapter {
         this.average_valoration = data.average_valoration;
         this.subjects = data.subjects;
     }
+    [key : string] : string | number | string[];
 }
