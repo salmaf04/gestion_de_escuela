@@ -149,7 +149,7 @@ export default function AddProfesorForm() {
                                     <div className="group relative" key={index}>
                                         <SelectProfesor
                                             {...register(`asignaturas.${index}`, {
-                                                value: arraySelect[index].name
+                                                value: arraySelect[index]?.name
                                             })}
                                             label={`Asignatura ${index+1}`}
                                             labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
