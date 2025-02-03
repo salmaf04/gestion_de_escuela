@@ -9,7 +9,7 @@ class SubjectMapper :
             name= subject.name,
             hourly_load= subject.hourly_load,
             study_program= subject.study_program,
-            classroom_id= subject.classroom_id,
+            classroom_id= subject.classroom_id if subject.classroom_id else None,
             course_id = subject.course_id
         )
         

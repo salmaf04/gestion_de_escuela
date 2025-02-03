@@ -19,9 +19,11 @@ from backend.infrastructure.repositories.teacher import TeacherRepository
 class TeacherCreateService :
     def __init__ (self, session):
         self.repo_istance = TeacherRepository(session)
+        self.subject_pagination = SubjectPaginationService(session)
     
     def create_teacher(self, teacher: TeacherCreateModel) -> TeacherTable :
-        return self.repo_istance.create(teacher)
+        subjects = self.subject_pagination.get_subjects(filter_params=SubjectFilterSchema(name=teacher.list_of_subjects))
+        return self.repo_istance.create(teacher, subjects=subjects)
 class TeacherDeletionService:
     def __init__ (self, session):
         self.repo_istance = TeacherRepository(session)

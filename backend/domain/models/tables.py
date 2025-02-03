@@ -75,8 +75,8 @@ class BaseTable(DeclarativeBase):
 teacher_subject_table = Table(
     TableName.TEACHER_SUBJECT.value,
     BaseTable.metadata,
-    Column("teacher_id", ForeignKey("teacher.id"), primary_key=True),
-    Column("subject_id", ForeignKey("subject.entity_id"), primary_key=True),
+    Column("teacher_id", ForeignKey("teacher.id" , ondelete='CASCADE'), primary_key=True),
+    Column("subject_id", ForeignKey("subject.entity_id", ondelete='CASCADE'), primary_key=True),
 )
 
 
@@ -91,10 +91,9 @@ teacher_request_classroom_table = Table(
 teacher_request_mean_table = Table(
     TableName.TEACHER_MEAN.value,
     BaseTable.metadata,
-    Column("teacher_id", ForeignKey("teacher.id"), primary_key=True),
-    Column("mean_id", ForeignKey("mean.entity_id"), primary_key=True),
+    Column("teacher_id", ForeignKey("teacher.id", ondelete='CASCADE'), primary_key=True),
+    Column("mean_id", ForeignKey("mean.entity_id", ondelete='CASCADE'), primary_key=True),
 )
-
 class UserTable(BaseTable) :
     __tablename__ = TableName.USER.value
     
@@ -128,8 +127,7 @@ class TeacherTable(UserTable):
     mean_request = relationship(
         "MeanTable",
         secondary=teacher_request_mean_table,
-        back_populates="teachers",
-        cascade="all, delete"
+        back_populates="teachers"
     )
 
     classroom_request = relationship(
@@ -141,7 +139,7 @@ class TeacherTable(UserTable):
 
     student_note_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="teacher", cascade="all, delete-orphan")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="teacher", cascade="all, delete-orphan")
-    teacher_subject_association = relationship("SubjectTable", secondary=teacher_subject_table, back_populates="teacher_subject_association", cascade="all, delete")
+    teacher_subject_association = relationship("SubjectTable", secondary=teacher_subject_table, back_populates="teacher_subject_association")
 
 
     __mapper_args__ = {
@@ -181,7 +179,7 @@ class AdministratorTable(UserTable) :
 class StudentTable(UserTable) :
     __tablename__ = TableName.STUDENT.value
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id", ondelete='CASCADE'), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey(f"{TableName.USER.value}.entity_id"), primary_key=True)
     age = Column(Integer)
     extra_activities = Column(Boolean, nullable=True)
     average_note = Column(Double)
@@ -213,7 +211,7 @@ class SubjectTable(BaseTable) :
     student_teacher_association: Mapped[List["StudentNoteTable"]] = relationship(back_populates="subject", cascade="all, delete-orphan")
     student_absence_association: Mapped[List["AbsenceTable"]] = relationship(back_populates="subject", cascade="all, delete-orphan")
     teacher_note_association: Mapped[List["TeacherNoteTable"]] = relationship(back_populates="subject", cascade="all, delete-orphan")
-    teacher_subject_association = relationship("TeacherTable", secondary=teacher_subject_table, back_populates="teacher_subject_association", cascade="all, delete")
+    teacher_subject_association = relationship("TeacherTable", secondary=teacher_subject_table, back_populates="teacher_subject_association")
     
 class ClassroomTable(BaseTable) : 
     __tablename__ = TableName.CLASSROOM.value
@@ -261,14 +259,14 @@ class MeanTable(BaseTable) :
     to_be_replaced = Column(Boolean, default=False)
     type: Mapped[MeanType] = mapped_column(String)
 
-    mean_maintenance_association: Mapped[List["MeanMaintenanceTable"]] = relationship(back_populates="mean")
+    mean_maintenance_association: Mapped[List["MeanMaintenanceTable"]] = relationship(back_populates="mean", cascade="all, delete-orphan")
 
     classroom: Mapped["ClassroomTable"] = relationship(back_populates="means")
 
     teachers = relationship(
         "TeacherTable",
         secondary=teacher_request_mean_table,
-        back_populates="mean_request",
+        back_populates="mean_request"
     )
 
 

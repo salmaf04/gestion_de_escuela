@@ -26,7 +26,7 @@ async def create_valoration(
 
 @router.get(
     "/valoration",
-    response_model=dict[int, ValorationModel] | TeacherValoration,
+    response_model=dict[int, ValorationModel] | TeacherValoration | list,
     status_code=status.HTTP_200_OK
 )
 async def read_valoration(
@@ -45,10 +45,7 @@ async def read_valoration(
     valorations = valoration_pagination_service.get_valoration(filter_params=filters)
 
     if not valorations :
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="There is no valoration with that fields"
-        )
+        return []
 
     valorations_mapped = {}    
      

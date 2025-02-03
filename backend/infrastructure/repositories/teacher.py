@@ -21,9 +21,7 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
     def __init__(self, session):
         super().__init__(session)
 
-    def create(self, entity: TeacherCreateModel) -> TeacherTable :
-        subject_service = SubjectPaginationService()
-        subjects = subject_service.get_subjects(session=self.session, filter_params=SubjectFilterSchema(name=entity.list_of_subjects))
+    def create(self, entity: TeacherCreateModel, subjects: SubjectTable) -> TeacherTable :
         self.check_subject(subjects, entity.list_of_subjects)
         teacher_dict = entity.model_dump(exclude={'password', 'list_of_subjects'})
         hashed_password = get_password_hash(get_password(entity))

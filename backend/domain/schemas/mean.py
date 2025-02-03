@@ -37,7 +37,7 @@ class MeanModel (BaseModel):
     name: str
     state: str
     location: str
-    classroom_id: uuid.UUID
+    classroom_id: uuid.UUID | None
     type: str
     
 class MeanCreateModel(BaseModel):

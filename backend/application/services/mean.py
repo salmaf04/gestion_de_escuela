@@ -20,8 +20,8 @@ class MeanDeletionService:
     def __init__ (self, session):
         self.repo_instance = MeanRepository(session)
         
-    def delete_mean(self, ean: MeanModel) -> None :
-        return self.repo_instance.delete(ean)
+    def delete_mean(self, mean: MeanModel) -> None :
+        return self.repo_instance.delete(mean)
         
 class MeanUpdateService :
     def __init__ (self, session):

@@ -21,8 +21,13 @@ class ValorationCreateModel(BaseModel):
             return HTTPException(status_code=400, detail=str(e))
         return grade
 
-class ValorationModel(ValorationCreateModel):
+class ValorationModel(BaseModel):
     id : uuid.UUID
+    teacher_id: uuid.UUID
+    student_id: uuid.UUID | None
+    subject_id: uuid.UUID
+    course_id: uuid.UUID
+    grade: int
 
 
 class TeacherSubjectValoration(BaseModel):
