@@ -151,7 +151,6 @@ async def read_user(
     for user in users :
         users_mapped.append(mapper.to_api(user))   
 
-    print(len(users_mapped))
     return users_mapped
 
 
@@ -165,6 +164,7 @@ async def read_user(
     session: Session = Depends(get_db)
 ) :
     user_pagination_service = UserPaginationService(session)
+
     mapper = UserMapper()
 
     filter_by_id = UserFilterSchema(id=id)

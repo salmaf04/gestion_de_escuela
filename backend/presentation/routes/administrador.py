@@ -94,6 +94,7 @@ async def read_administrator(
     filters: AdministratorFilterSchema = Depends(),
     session: Session = Depends(get_db)
 ) :
+
     administrtor_pagination_service = AdministratorPaginationService(session)
 
     administrator = administrtor_pagination_service.get(filter_params=filters)

@@ -5,6 +5,7 @@ import uuid
 from sqlalchemy import update, select
 from backend.domain.filters.secretary import SecretaryChangeRequest, SecretaryFilterSchema, SecretaryFilterSet
 from backend.infrastructure.repositories.secretary import SecretaryRepository
+
 class SecretaryCreateService :
     def __init__(self, session):
         self.repo_instance = SecretaryRepository(session)
@@ -40,7 +41,6 @@ class SecretaryPaginationService :
     
     def get(self, filter_params: SecretaryFilterSchema) -> list[SecretaryTable] :
         return self.repo_instance.get(filter_params)
-
 
 
     
