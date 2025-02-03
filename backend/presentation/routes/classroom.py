@@ -6,6 +6,30 @@ from backend.application.serializers.classroom import ClassroomMapper
 from backend.application.services.classroom import ClassroomCreateService, ClassroomPaginationService, ClassroomDeletionService, ClassroomUpdateService
 from backend.domain.filters.classroom import ClassroomFilterSchema, ClassroomChangeRequest
 
+"""
+This module defines API endpoints for managing classrooms using FastAPI.
+
+Endpoints:
+- POST /classroom: Create a new classroom.
+- DELETE /classroom/{id}: Delete an existing classroom by its ID.
+- GET /classroom: Retrieve a list of classrooms based on provided filters.
+- PATCH /classroom/{id}: Update an existing classroom by its ID.
+
+Dependencies:
+- FastAPI's APIRouter for routing.
+- SQLAlchemy's Session for database interactions.
+- Custom services and models for handling classroom operations.
+
+Functions:
+- create_classroom: Handles the creation of a new classroom. Utilizes the ClassroomCreateService to add a classroom to the database.
+- delete_classroom: Handles the deletion of a classroom. Validates the existence of the classroom and deletes it if valid.
+- read_classroom: Retrieves a list of classrooms based on filter criteria. Utilizes the ClassroomPaginationService to fetch data.
+- update_classroom: Updates an existing classroom. Validates the existence of the classroom and applies changes if valid.
+
+Raises:
+- HTTPException: Raised when a classroom is not found, with appropriate HTTP status codes.
+"""
+
 router = APIRouter()
 
 @router.post(

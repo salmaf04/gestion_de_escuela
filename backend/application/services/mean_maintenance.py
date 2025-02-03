@@ -12,6 +12,61 @@ from sqlalchemy import func
 from sqlalchemy import extract, and_
 from backend.infrastructure.repositories.mean_maintenance import MeanMaintenanceRepository
 
+"""
+This module defines services for creating, retrieving, and updating mean maintenance records.
+
+Classes:
+    MeanMaintenanceCreateService: A service for creating new mean maintenance records.
+    MeanMaintenancePaginationService: A service for retrieving mean maintenance records based on various criteria.
+    MeanMaintenanceUpdateService: A service for updating mean maintenance records.
+
+Classes Details:
+
+1. MeanMaintenanceCreateService:
+    - This service is responsible for creating new mean maintenance records.
+    - It utilizes the MeanMaintenanceRepository to interact with the database.
+    - It also uses MeanPaginationService to retrieve mean details.
+    
+    Methods:
+        - __init__(session): Initializes the service with a database session and sets up necessary service instances.
+        - create_mean_maintenance(mean_maintenance: MeanMaintenanceCreateModel) -> MeanMaintenanceTable: 
+            Creates a new mean maintenance record using the provided MeanMaintenanceCreateModel and returns the created MeanMaintenanceTable object.
+
+2. MeanMaintenancePaginationService:
+    - This service is responsible for retrieving mean maintenance records based on different criteria.
+    - It uses the MeanMaintenanceRepository to fetch data from the database.
+    
+    Methods:
+        - __init__(session): Initializes the service with a database session.
+        - get_mean_maintenance(filter_params: MeanMaintenanceFilterSchema) -> list[MeanMaintenanceTable]: 
+            Retrieves a list of mean maintenance records based on the provided filter parameters.
+        - get_mean_maintenance_by_id(id: str) -> MeanMaintenanceTable: 
+            Retrieves a mean maintenance record by the specified ID.
+        - get_mainenance_by_classroom(): 
+            Retrieves maintenance records grouped by classroom.
+        - maintenace_average(): 
+            Calculates and retrieves the average maintenance statistics.
+        - maintenance_by_classroom(): 
+            Retrieves maintenance records organized by classroom.
+
+3. MeanMaintenanceUpdateService:
+    - This service is responsible for updating mean maintenance records.
+    - It uses the MeanMaintenanceRepository to perform update operations.
+    
+    Methods:
+        - __init__(session): Initializes the service with a database session.
+        - update_one(changes: MeanMaintenanceChangeRequest, mean_maintenance: MeanMaintenanceModel) -> MeanMaintenanceModel: 
+            Updates the specified mean maintenance record with the provided changes and returns the updated MeanMaintenanceModel.
+
+Dependencies:
+    - SQLAlchemy ORM for database interactions.
+    - MeanMaintenanceRepository for database operations related to mean maintenance.
+    - MeanMaintenanceCreateModel, MeanMaintenanceModel, MeanMaintenanceTable, and other domain models for data representation.
+    - MeanMaintenanceFilterSchema and MeanMaintenanceFilterSet for filtering mean maintenance records.
+    - MeanPaginationService for retrieving mean information.
+    - UUID and datetime for handling unique identifiers and date-time operations.
+"""
+
 class MeanMaintenanceCreateService :
     def __init__ (self, session):
         self.repo_instance = MeanMaintenanceRepository(session)

@@ -1,8 +1,8 @@
 """hola13
 
-Revision ID: 187e34cefc09
-Revises: 4b0f8a7f12f9
-Create Date: 2025-02-02 14:48:33.058876
+Revision ID: ce7c5a26665c
+Revises: 
+Create Date: 2025-02-03 02:02:19.914518
 
 """
 from typing import Sequence, Union
@@ -13,8 +13,8 @@ import uuid
 from sqlalchemy.dialects.postgresql import UUID
 
 # revision identifiers, used by Alembic.
-revision: str = '187e34cefc09'
-down_revision: Union[str, None] = '4b0f8a7f12f9'
+revision: str = 'ce7c5a26665c'
+down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -22,9 +22,6 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade():
     # Step 1: Drop the existing primary key constraint
     op.drop_constraint('teacher_note_pkey', 'teacher_note', type_='primary')
-
-    # Step 2: Add a new column 'id' as the primary key
-    op.add_column('teacher_note', sa.Column('id', UUID(as_uuid=True), primary_key=True, default=uuid.uuid4))
 
     # Step 3: Recreate the primary key constraint without 'student_id'
     op.create_primary_key('teacher_note_pkey', 'teacher_note', ['entity_id', 'teacher_id', 'subject_id'])

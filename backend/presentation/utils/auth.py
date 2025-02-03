@@ -18,32 +18,39 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Session
 from backend.application.serializers.user import UserMapper
+from backend.configuration import get_db
 
-import os
-from dotenv import load_dotenv
+"""
+This module provides authorization and authentication functionalities for a FastAPI application.
 
-load_dotenv()
+Functions:
+    authenticate_user: Authenticates a user by verifying their username and password.
+    create_access_token: Creates a JWT access token with an optional expiration time.
+    get_current_user: Retrieves the current user based on the provided JWT token.
+    verify_password: Verifies a plain password against a hashed password.
+    authorize: A decorator to enforce role-based access control on API endpoints.
+    parse_url: Parses a URL to extract the endpoint path.
 
-database_url = os.getenv("DATABASE_URL")
+Constants:
+    SECRET_KEY: The secret key used for encoding and decoding JWT tokens.
+    ALGORITHM: The algorithm used for encoding JWT tokens.
+    ACCESS_TOKEN_EXPIRE_MINUTES: The default expiration time for access tokens in minutes.
 
+Dependencies:
+    - FastAPI for building the web application and handling HTTP exceptions.
+    - JWT for encoding and decoding JSON Web Tokens.
+    - Passlib for password hashing and verification.
+    - SQLAlchemy for database interactions.
+    - UserCreateService and UserMapper for user-related operations.
+    - OAuth2PasswordBearer for token-based authentication.
 
-engine = create_engine(
-    database_url
-)
-
-tables.BaseTable.metadata.create_all(engine)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-app = FastAPI()
-
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try: 
-        yield db
-    finally:
-        db.close()
+Usage:
+    - Use `authenticate_user` to verify user credentials during login.
+    - Use `create_access_token` to generate a JWT token for authenticated users.
+    - Use `get_current_user` as a dependency to retrieve the current user in protected routes.
+    - Use `authorize` as a decorator to restrict access to certain roles.
+    - Use `parse_url` to extract the endpoint path from a URL.
+"""
 
 # Define OAuth2 scheme for token authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -146,7 +153,11 @@ def authorize(role: list):
                         kwargs['subjects_by_students'] = user_id1
                     elif 'teacher' in user_roles :
                         kwargs['subjects_by_teacher'] = user_id1
-                    
+
+                if method == 'GET' and url == 'note':
+                    if 'student' in user_roles :
+                        kwargs['by_student'] = user_id1
+                
                 if (method == 'PATCH' or method == 'POST') and url == 'note':
                     kwargs['user_id']=user_id1
 

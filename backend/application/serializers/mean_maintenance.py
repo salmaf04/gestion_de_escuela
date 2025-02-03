@@ -3,6 +3,68 @@ from backend.domain.models.tables import MeanMaintenanceTable
 from pydantic import BaseModel
 import uuid
 
+"""
+This module defines a mapper for converting mean maintenance data into various API representations.
+
+Classes:
+    MaintenanceByType: A Pydantic model representing maintenance count by type.
+    ClassroomMaintenance: A Pydantic model representing a list of maintenance by type.
+    MeanMaintenanceByClassroom: A Pydantic model representing maintenance data by classroom.
+    MeanMaintenanceDate: A Pydantic model representing mean maintenance data with average cost and mean details.
+    MeanMaintenanceClassroom: A Pydantic model representing maintenance data for a classroom with various mean types.
+    MeanMaintenanceMapper: A utility class for mapping MeanMaintenanceTable objects to various API models.
+
+Class Details:
+
+1. MaintenanceByType:
+    - Represents maintenance count by type.
+    - Attributes:
+        - type: The type of maintenance.
+        - count: The count of maintenance occurrences.
+
+2. ClassroomMaintenance:
+    - Represents a list of maintenance by type.
+    - Attributes:
+        - list: A list of MaintenanceByType objects.
+
+3. MeanMaintenanceByClassroom:
+    - Represents maintenance data by classroom.
+    - Attributes:
+        - classrooms: A list of ClassroomMaintenance objects.
+
+4. MeanMaintenanceDate:
+    - Represents mean maintenance data with average cost and mean details.
+    - Attributes:
+        - average_cost: The average cost of maintenance.
+        - mean_id: The unique identifier of the mean.
+        - mean_name: The name of the mean.
+
+5. MeanMaintenanceClassroom:
+    - Represents maintenance data for a classroom with various mean types.
+    - Attributes:
+        - number: The classroom number.
+        - other: Count of other types of maintenance.
+        - teaching_material: Count of teaching material maintenance.
+        - technological_mean: Count of technological mean maintenance.
+        - total_after_two_years: Total maintenance count after two years.
+
+6. MeanMaintenanceMapper:
+    - Provides methods to convert MeanMaintenanceTable objects into various API models.
+    
+    Methods:
+        - to_api(mean_maintenance: MeanMaintenanceTable) -> MeanMaintenanceModel: 
+            Converts a MeanMaintenanceTable object into a MeanMaintenanceModel object.
+        - to_date(data): 
+            Converts raw data into a list of MeanMaintenanceDate objects.
+        - to_classroom(data1, data2): 
+            Converts raw data into a list of MeanMaintenanceClassroom objects, associating maintenance types with classrooms.
+
+Dependencies:
+    - Pydantic for data validation and serialization.
+    - MeanMaintenanceModel and MeanMaintenanceTable for data representation.
+    - UUID for handling unique identifiers.
+"""
+
 class MaintenanceByType(BaseModel):
     type: str
     count: int

@@ -14,6 +14,39 @@ from fastapi import Request
 from backend.domain.schemas.user import UserModel
 from backend.presentation.utils.auth import get_current_user
 
+"""
+This module defines API endpoints for managing mean maintenance records using FastAPI.
+
+Endpoints:
+- POST /mean_maintenance: Create a new mean maintenance record.
+- GET /mean_maintenance: Retrieve mean maintenance records based on filters, including options for maintenance by classroom or date.
+- PATCH /mean_maintenance/{id}: Update an existing mean maintenance record by its ID.
+
+Dependencies:
+- FastAPI's APIRouter for routing.
+- SQLAlchemy's Session for database interactions.
+- Custom services and models for handling mean maintenance operations.
+
+Functions:
+- create_mean_maintenance: Handles the creation of a new mean maintenance record. Utilizes the MeanMaintenanceCreateService to add a record to the database.
+- read_mean_maintenance: Retrieves mean maintenance records based on filter criteria. Supports filtering by classroom or date.
+- update_teacher: Updates an existing mean maintenance record. Validates the existence of the record and applies changes if valid. Requires administrator authorization.
+
+Parameters:
+- mean_maintenance_input (MeanMaintenanceCreateModel): The data for creating a new mean maintenance record.
+- filters (MeanMaintenanceFilterSchema): The filter criteria for retrieving mean maintenance records.
+- mainteniance_by_classroom_filter (bool): Indicates if the user wants to filter maintenance by classroom.
+- date_filter (bool): Indicates if the user wants to filter maintenance by date.
+- id (str): The ID of the mean maintenance record to update.
+- filters (MeanMaintenanceChangeRequest): The changes to apply to the mean maintenance record.
+
+Returns:
+- JSON responses with the created, retrieved, or updated mean maintenance records.
+
+Raises:
+- HTTPException: Raised when a mean maintenance record is not found, with appropriate HTTP status codes.
+"""
+
 router = APIRouter()
 
 @router.post(

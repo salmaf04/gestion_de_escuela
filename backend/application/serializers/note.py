@@ -5,6 +5,39 @@ import uuid
 from backend.application.services.student import StudentPaginationService
 from fastapi.encoders import jsonable_encoder
 
+"""
+This module defines a mapper for converting note data into API representations.
+
+Classes:
+    NoteLessThanFifty: A Pydantic model representing notes with values less than fifty.
+    NoteMapper: A utility class for mapping StudentNoteTable objects to NoteModel objects and handling notes with values less than fifty.
+
+Class Details:
+
+1. NoteLessThanFifty:
+    - Represents notes with values less than fifty.
+    - Attributes:
+        - name: The name of the student.
+        - student_id: The unique identifier of the student.
+        - teacher_name: The name of the teacher.
+        - teacher_valoration: The valoration of the teacher, if available.
+
+2. NoteMapper:
+    - This class provides methods to convert StudentNoteTable objects into NoteModel objects and to handle notes with values less than fifty.
+    
+    Methods:
+        - to_api(note: StudentNoteTable) -> NoteModel: 
+            Converts the given StudentNoteTable object into a NoteModel object, mapping the relevant fields such as ID, teacher, student, subject, note value, and last modified by.
+        - to_less_than_fifty(data): 
+            Converts raw data into a list of NoteLessThanFifty objects, representing notes with values less than fifty.
+
+Dependencies:
+    - Pydantic for data validation and serialization.
+    - NoteModel for API data representation.
+    - StudentNoteTable for database representation.
+    - UUID for handling unique identifiers.
+    - FastAPI for JSON encoding.
+"""
 class NoteLessThanFifty(BaseModel) :
     name : str
     student_id : uuid.UUID
