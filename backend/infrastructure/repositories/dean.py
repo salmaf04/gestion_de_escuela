@@ -8,11 +8,28 @@ from backend.domain.filters.dean import DeanFilterSet , DeanFilterSchema, DeanCh
 from backend.application.utils.auth import get_password_hash, get_password
 from .base import IRepository
 
+"""
+Repository class for handling dean-related database operations.
+Implements the base repository interface for dean management.
+"""
+
 class DeanRepository(IRepository[DeanCreateModel, DeanModel, DeanChangeRequest, DeanFilterSchema]):
+    """
+    Repository for managing deans in the database.
+    Extends IRepository with specific implementations for dean operations.
+    """
     def __init__(self, session):
+        """Initialize repository with database session."""
         super().__init__(session)
 
-    def create(self, entity: DeanCreateModel) -> DeanTable :
+    def create(self, entity: DeanCreateModel) -> DeanTable:
+        """
+        Create a new dean in the database with hashed password.
+        Args:
+            entity: DeanCreateModel containing dean details
+        Returns:
+            Created DeanTable instance
+        """
         dean_dict = entity.model_dump(exclude={'password'})
         hashed_password = get_password_hash(get_password(entity))
         new_dean = DeanTable(**dean_dict, hashed_password=hashed_password)
