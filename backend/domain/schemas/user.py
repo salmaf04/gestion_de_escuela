@@ -30,9 +30,17 @@ class UserCreateModel(BaseModel):
         Helper method to parse email into domain components.
         Returns the domain parts after splitting at '@' and '.'
         """
-        parsed_email = email.split("@")
-        parsed_email_result = parsed_email[1].split(".")
-        return parsed_email_result
+        
+        try :
+            parsed_email = email.split("@")
+            if len(parsed_email) != 2 :
+               raise ValidationException("Invalid email")
+            parsed_email_result = parsed_email[1].split(".")
+            return parsed_email_result
+        except ValidationException as e :
+            raise HTTPException(status_code=400, detail=str(e))
+
+        
 
     @field_validator("email")
     def email_must_be_valid(cls, email):
