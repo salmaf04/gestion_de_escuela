@@ -39,8 +39,8 @@ export const useApiAusencias = () => {
                 .map((ausencia: IAusenciaDB) => {
                     return new AusenciaAdapter(
                         ausencia,
-                        estudiantes!.find((estudiante) => estudiante.id === ausencia.student.id)!,
-                        asignaturas!.find((asignatura) => asignatura.id === ausencia.subject.id)!)
+                        estudiantes!.find((estudiante) => estudiante.id === ausencia.student_id)!,
+                        asignaturas!.find((asignatura) => asignatura.id === ausencia.subject_id)!)
 
                 });
             setAusencias(ausenciaArray);

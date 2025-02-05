@@ -29,7 +29,7 @@ interface IAusenciaTableRow extends DBObject {
     id: string,
     studentName?: string;
     subjectName?: string;
-    ausencias: number;
+    date: string;
 }
 
 
@@ -73,8 +73,7 @@ export default function AusenciasScreen() {
                 id: item.id,
                 studentName: item.student?.name,
                 subjectName: item.subject?.name,
-                ausencias: item.absences_total,
-
+                date: item.date
             }
         }) ?? []
     }, [ausencias]);
