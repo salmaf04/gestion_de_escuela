@@ -17,5 +17,7 @@ export enum EndpointEnum {
     ADMIN = "administrator",
     SECRETARY = "secretary",
     VALORATION = 'valoration',
-    SANCION = 'sanction'
+    SANCION = 'sanction',
+    MEAN_REQUEST = "mean_request",
+    CLASSROOM_REQUEST = "classroom_request"
 }

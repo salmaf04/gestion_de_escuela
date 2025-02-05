@@ -79,7 +79,7 @@ export default function MediosScreen() {
     };
 
     const [dataTable, setDataTable] = useState<IMedioTableRow[]>([])
-
+    console.log(medios)
     const data = useMemo<IMedioTableRow[]>(() => {
         return medios?.map((item) => {
             return {
@@ -87,7 +87,6 @@ export default function MediosScreen() {
                 name: item.name,
                 state: item.state,
                 location: item.location,
-                classroom_name: item.classroom.location,
                 type: item.type,
             }
         }) ?? []

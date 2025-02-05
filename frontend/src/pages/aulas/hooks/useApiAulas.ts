@@ -6,19 +6,24 @@ import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {AulaCreateAdapter} from "../adapters/AulaCreateAdapter.ts";
 import {getQueryParamsFromObject} from "../../../utils/utils.ts";
+import {RolesEnum} from "../../../api/RolesEnum.ts";
 
 const endpoint = EndpointEnum.AULAS
 
 export const useApiAulas = () => {
     const [isLoading, setIsLoading] = useState(false)
-    const {setError, aulas: aulasAppContext, setAulas: setAulasAppContext, personalId, setMessage} = useContext(AppContext)
+    const {setError, aulas: aulasAppContext, setAulas: setAulasAppContext, personalId, setMessage, allowRoles} = useContext(AppContext)
 
     const getAulas = async () => {
         setIsLoading(true)
         if (aulasAppContext) {
             setIsLoading(false)
         }
-        const res = await apiRequest.getApi(endpoint)
+        let url = endpoint.toString()
+        if (allowRoles!([RolesEnum.TEACHER])){
+            url += "?avaliable=true"
+        }
+        const res = await apiRequest.getApi(url)
         if (res.ok) {
             const data: AulaGetResponse = await res.json()
             const aulaArray = Object.values(data)

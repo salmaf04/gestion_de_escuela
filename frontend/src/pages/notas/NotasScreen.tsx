@@ -27,8 +27,8 @@ export const NotasContext = createContext<INotasContext>({});
 
 interface INotaTableRow extends DBObject {
     id: string,
-    teacherName?: string;
     studentName?: string;
+    teacherName?: string;
     subjectName?: string;
     note_value: number;
 }
@@ -72,8 +72,8 @@ export default function NotasScreen() {
         return notas?.map((item) => {
             return {
                 id: item.id,
-                studentName: item?.student?.name,
                 teacherName: item.teacher?.name,
+                studentName: item?.student?.name,
                 subjectName: item.subject?.name,
                 note_value: item?.note_value
             }

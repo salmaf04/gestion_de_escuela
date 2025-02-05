@@ -6,5 +6,5 @@ export interface IAusenciaLocal extends DBObject{
     id: string,
     student: EstudianteGetAdapter,
     subject: AsignaturaGetAdapter,
-    date: string
+    absences_total: number
 }
