@@ -60,7 +60,8 @@ export default function AddNotaForm() {
     const estudiantesSelect: ISelect[] = estudiantes?.map((item)=>{
         return {
             id: item.id,
-            name: item?.name
+            name: `${item?.name} ${item?.lastname}`,
+
         }
     }) ?? []
     if (fields.length ===0){
@@ -76,7 +77,7 @@ export default function AddNotaForm() {
     const profesoresSelect: ISelect[] = profesores?.map((item)=>{
         return {
             id: item.id,
-            name: item?.name
+            name: `${item?.name} ${item?.lastname}`,
         }
     }) ?? []
 

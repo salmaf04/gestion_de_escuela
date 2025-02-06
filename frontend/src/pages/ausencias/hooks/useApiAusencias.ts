@@ -62,7 +62,7 @@ export const useApiAusencias = () => {
 
     const updateAusencia = async (id: string, ausencia: Partial<IAusenciaDB>) => {
         setIsLoading(true);
-        const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(ausencia))
+        const res = await apiRequest.patchApi(endpoint, id, ausencia)
         if (!res.ok)
             setError!(new Error(res.statusText));
         getAusencias()

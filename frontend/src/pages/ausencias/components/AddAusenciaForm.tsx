@@ -29,18 +29,21 @@ export default function AddAusenciaForm() {
         control,
         name: "ausencias",
     });
-
+    if (fields.length ===0){
+        append({})
+    }
     const onSubmit = (data) => {
         if (editting){
             const dataParse: Partial<IAusenciaDB> = {
-                student_id: data[`estudiante${0}`],
-                subject_id: data[`asignatura${0}`],
-                date: reverseDate(data[`date${0}`]),
+                student_id: data[`estudiante0`],
+                subject_id: data[`asignatura0`],
+                date: reverseDate(data[`date0`]),
             }
+            console.log(dataParse)
+
             onEditTableItem!(dataParse)
         }
         else{
-            console.log(data)
             const dataParse: Partial<IAusenciaDB>[] = []
             for (let i = 0; i < fields.length; i++) {
                 dataParse.push({
@@ -97,6 +100,8 @@ export default function AddAusenciaForm() {
                                                 label={'Estudiante'}
                                                 data={estudiantesSelect}
                                                 control={control}
+                                                defaultValue={editting && estudiantes?.find((item) => item.name === editting?.studentName)?.id}
+
                                             />
                                         </div>
                                         <div className={'w-full'}>
@@ -108,6 +113,7 @@ export default function AddAusenciaForm() {
                                                 labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
                                                 data={asignaturasSelect}
                                                 control={control}
+                                                defaultValue={editting && asignaturas?.find((item) => item.name === editting?.subjectName)?.id}
                                             />
                                         </div>
 
@@ -120,7 +126,7 @@ export default function AddAusenciaForm() {
                                             })}
                                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
 
-                                                defaultValue={editting?.date}
+                                                defaultValue={editting && reverseDate(editting.date)}
                                             />
 
                                         </div>
