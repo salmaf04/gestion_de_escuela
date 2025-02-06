@@ -49,8 +49,9 @@ class StudentRepository(IRepository[StudentCreateModel,StudentModel, StudentChan
         Returns:
             Updated StudentModel instance
         """
-        query = update(StudentTable).where(StudentTable.entity_id == entity.id)
+        query = update(StudentTable)
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
+        query = query.where(StudentTable.id == entity.id)    
         self.session.execute(query)
         self.session.commit()
             
