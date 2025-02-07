@@ -106,6 +106,22 @@ class TeacherMapper :
             salary=teacher.salary,
             alert=teacher.less_than_three_valoration 
         )
+    
+    def to_api_note(self, teacher:TeacherTable) :
+        return TeacherModel(
+            id = teacher.entity_id,
+            name=teacher.name,
+            lastname=teacher.lastname,
+            email=teacher.email,
+            specialty=teacher.specialty,
+            contract_type=teacher.contract_type,
+            experience=teacher.experience,
+            username=teacher.username,
+            list_of_subjects=self.to_subject_list(teacher.student_note_association),
+            valoration= teacher.average_valoration,
+            salary=teacher.salary,
+            alert=teacher.less_than_three_valoration 
+        )
 
     
     def to_subject_list(self, subjects) :
@@ -167,7 +183,6 @@ class TeacherMapper :
                 )
                 serialized_values.append(new_teacher)
             
-        print(ids)
 
         return serialized_values
     

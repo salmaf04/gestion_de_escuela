@@ -49,8 +49,6 @@ class AbsenceRepository(IRepository[AbsenceCreateModel,AbsenceTable, None,Absenc
             List of matching AbsenceTable instances
         """
 
-        print('hola')
-
         query = select(AbsenceTable.student_id, AbsenceTable.subject_id, func.count().label("absences_by_subject"))
         query = query.group_by(AbsenceTable.subject_id, AbsenceTable.student_id)
         query = query.subquery()

@@ -1,4 +1,10 @@
 from backend.domain.schemas.note import NoteModel
+from backend.domain.schemas.student import StudentModel
+from backend.domain.schemas.teacher import TeacherModel
+from backend.domain.schemas.subject import SubjectModel
+from backend.application.serializers.student import StudentMapper
+from backend.application.serializers.teacher import TeacherMapper
+from backend.application.serializers.subject import SubjectMapper
 from backend.domain.models.tables import StudentNoteTable
 from pydantic import BaseModel
 import uuid
@@ -43,8 +49,14 @@ class NoteLessThanFifty(BaseModel) :
     student_id : uuid.UUID
     teacher_name : str
     teacher_valoration : float | None
-   
 
+class NoteByTeacher(BaseModel) :
+    student : StudentModel
+    teacher: TeacherModel
+    subject: SubjectModel
+    note_value: float
+    last_modified_by: uuid.UUID
+   
 class NoteMapper :
     def to_api(self, note: StudentNoteTable) -> NoteModel :
             return NoteModel(
@@ -70,5 +82,22 @@ class NoteMapper :
 
         return serialized_values
         
+    def to_note_by_teacher(self, data) :
+        subject_mapper = SubjectMapper()
+        teacher_mapper = TeacherMapper()
+        student_mapper = StudentMapper()
+        serialized_values = []
+        
+        for item in data :
+            new_item = NoteByTeacher(
+                student = student_mapper.to_api(item[2]),
+                teacher = teacher_mapper.to_api_note(item[1]),
+                subject = subject_mapper.to_api(item[3]),
+                note_value = item[0].note_value,
+                last_modified_by = item[0].last_modified_by
+            )
+            serialized_values.append(new_item)
+
+        return serialized_values
 
 
