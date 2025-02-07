@@ -1,6 +1,7 @@
 import {useContext, useEffect} from "react";
 import {AppContext} from "../../../App.tsx";
 import {useApiSecretarias} from "../hooks/useApiSecretaria.ts";
+import UserCard, {UserDataProp} from "./UserCard.tsx";
 
 export default function SecretariaInfo(){
     const {getSecretaria, secretaria} = useApiSecretarias()
@@ -8,15 +9,27 @@ export default function SecretariaInfo(){
     useEffect(() => {
         getSecretaria(personalId!)
     }, []);
+    const userInfo: UserDataProp[] = [
+        {
+            name: 'Nombre',
+            value: secretaria?.name ?? 'No disponible',
+        },
+        {
+            name: 'Apellidos',
+            value: secretaria?.lastname ?? 'No disponible',
+        },
+        {
+            name: 'Correo',
+            value: secretaria?.email ?? 'No disponible',
+        },
+        {
+            name: 'Usuario',
+            value: secretaria?.username ?? 'No disponible',
+        }
+    ]
     return(
-        <>
-            <div className={''}>
-
-            </div>
-            <span>Nombre: {secretaria?.name}</span>
-            <span>Apellidos: {secretaria?.lastname}</span>
-            <span>Correo: {secretaria?.email}</span>
-            <span>Usuario:{secretaria?.username}</span>
-        </>
+        <div className={'size-fit mt-20'}>
+            <UserCard data={userInfo}/>
+        </div>
     )
 }

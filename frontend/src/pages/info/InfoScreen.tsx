@@ -8,26 +8,43 @@ import SecretariaInfo from "./components/SecretariaInfo.tsx";
 import AdministradorInfo from "./components/AdministradorInfo.tsx";
 
 export default function InfoScreen() {
-    const {roles} = useContext(AppContext)
+    const {roles, setToken, username} = useContext(AppContext)
 
     return (
         <div className={'w-full h-dvh flex flex-col py-10 px-20'}>
-            <h1 className={'text-2xl text-indigo-900 font-bold'}>
-                Mi Información:
-            </h1>
-            {roles?.some((item) => item === RolesEnum.TEACHER) &&
-                <ProfesorInfo/>
-            }
-            {roles?.some((item) => item === RolesEnum.STUDENT)&&
-                <EstudianteInfo />
-            }
-            {roles?.some((item) => item === RolesEnum.SECRETARY) &&
-                <SecretariaInfo />
-            }
-            {roles?.some((item) => item === RolesEnum.ADMIN) &&
-                <AdministradorInfo />
-            }
+            <div className={'flex space-x-4 w-full justify-between'}>
+                <div className={'flex flex-col'}>
+                    <h1 className={'text-3xl text-indigo-600 accent-i font-bold'}>
+                        Bienvenido/a
+                    </h1>
+                    <p className={'text-slate-800 text-sm italic'}>
+                        {`${username}: ${roles}`}
+                    </p>
 
+                </div>
+                <button className={'bg-gray-50 size-fit py-2 px-5 shadow rounded-md font-semibold text-gray-900 hover:bg-gray-200 transition-colors'}
+                        onClick={() => {
+                            setToken!("")
+                            sessionStorage.removeItem('token')
+                        }}
+                >
+                    Cerrar Sesión
+                </button>
+            </div>
+            <div className={'p-20'}>
+                {roles?.some((item) => item === RolesEnum.TEACHER) &&
+                    <ProfesorInfo/>
+                }
+                {roles?.some((item) => item === RolesEnum.STUDENT) &&
+                    <EstudianteInfo/>
+                }
+                {roles?.some((item) => item === RolesEnum.SECRETARY) &&
+                    <SecretariaInfo/>
+                }
+                {roles?.some((item) => item === RolesEnum.ADMIN) &&
+                    <AdministradorInfo/>
+                }
+            </div>
         </div>
     );
 }

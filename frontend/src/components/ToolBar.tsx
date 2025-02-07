@@ -11,10 +11,15 @@ export interface IToolbarContext {
     searchText?: string;
     setSearchText?: (text: string) => void;
     setShowModal?: (show: boolean) => void;
-    dataTable?: Array<any>
+    dataTable?: Array<any>,
 }
 
-export default function ToolBar({context, allowAddButton = true} : {context: React.Context<IToolbarContext>, allowAddButton: boolean }) {
+interface Props {
+    context: React.Context<IToolbarContext>,
+    allowAddButton: boolean
+}
+
+export default function ToolBar({context, allowAddButton = true, } : Props) {
     const {
         searchText,
         setSearchText,
