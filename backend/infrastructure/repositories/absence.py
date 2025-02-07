@@ -49,16 +49,19 @@ class AbsenceRepository(IRepository[AbsenceCreateModel,AbsenceTable, None,Absenc
             List of matching AbsenceTable instances
         """
 
-        query = select(AbsenceTable.subject_id, func.count().label("absences_by_subject"))
-        query = query.group_by(AbsenceTable.subject_id)
-        query = query.subquery()
+        print('hola')
 
-        final_query = select(query.c.subject_id,query.c.absences_by_subject,SubjectTable, AbsenceTable)
-        final_query = final_query.join(query, query.c.subject_id == AbsenceTable.subject_id)
-        final_query = final_query.join(SubjectTable, SubjectTable.entity_id == query.c.subject_id)
-        final_query = final_query.distinct(SubjectTable.entity_id)
-        return self.session.execute(final_query).all()
+        query = select(AbsenceTable.student_id, AbsenceTable.subject_id, func.count().label("absences_by_subject"))
+        query = query.group_by(AbsenceTable.subject_id, AbsenceTable.student_id)
+        query = query.subquery()
         
+        final_query = select(query.c.subject_id, query.c.absences_by_subject, SubjectTable, StudentTable, AbsenceTable, query.c.student_id)
+        final_query = final_query.join(query, query.c.subject_id == AbsenceTable.subject_id)
+        final_query = final_query.join(StudentTable, StudentTable.entity_id == query.c.student_id)
+        final_query = final_query.join(SubjectTable, SubjectTable.entity_id == query.c.subject_id)
+        final_query = final_query.distinct(SubjectTable.entity_id, StudentTable.entity_id)
+        final_query = final_query.order_by(SubjectTable.entity_id, StudentTable.entity_id)
+        return self.session.execute(final_query).all()
     
     def get_by_id(self, id: str) -> AbsenceTable:
         """Get absence by ID - Not implemented."""
@@ -102,8 +105,7 @@ class AbsenceRepository(IRepository[AbsenceCreateModel,AbsenceTable, None,Absenc
             List of absences grouped by student and subject with count
 
         """
-        students = self.get_students_by_teacher(teacher_id=teacher_id)
-
+        
         query = select(AbsenceTable.student_id, AbsenceTable.subject_id, func.count().label("absences_by_subject"))
         query = query.join(teacher_subject_table, AbsenceTable.subject_id == teacher_subject_table.c.subject_id)
         query = query.where(teacher_subject_table.c.teacher_id == teacher_id)

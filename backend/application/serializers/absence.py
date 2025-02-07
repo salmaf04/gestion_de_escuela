@@ -38,15 +38,15 @@ class AbsenceMapper :
 
         for absence in data :
             serialized_values.append(
-                SubjectBySecretary(
-                    student=student_mapper.to_api(absence[4]),
-                    subject=subject_mapper.to_api(absence[2]),  
+                SubjectByStudentByTeacher(
+                    student=student_mapper.to_api(absence[3]),
+                    subject=subject_mapper.to_api(absence[2]),
                     absences_total=absence[1]
                 ) 
             )
-        
-        return serialized_values
 
+        return serialized_values
+    
     def to_abscence_by_student(self, data) :
         serialized_values = []
         subject_mapper = SubjectMapper()

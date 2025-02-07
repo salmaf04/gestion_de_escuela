@@ -76,11 +76,7 @@ async def read_absence(
     absence_pagination_service = AbsencePaginationService(session)
     mapper = AbsenceMapper()
 
-
     absences = absence_pagination_service.get_absence(filter_params=filters)
-
-
-    print(absences)
 
     if not absences:
         raise HTTPException(
