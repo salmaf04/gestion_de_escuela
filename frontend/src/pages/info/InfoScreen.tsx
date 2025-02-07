@@ -6,9 +6,11 @@ import ProfesorInfo from "./components/ProfesorInfo.tsx";
 import EstudianteInfo from "./components/EstudianteInfo.tsx";
 import SecretariaInfo from "./components/SecretariaInfo.tsx";
 import AdministradorInfo from "./components/AdministradorInfo.tsx";
+import {rolesDisplayParser} from "../../utils/utils.ts";
 
 export default function InfoScreen() {
     const {roles, setToken, username} = useContext(AppContext)
+    const displayRoles = roles?.map((item) => rolesDisplayParser[item]).join(', ')
 
     return (
         <div className={'w-full h-dvh flex flex-col py-10 px-20'}>
@@ -18,7 +20,7 @@ export default function InfoScreen() {
                         Bienvenido/a
                     </h1>
                     <p className={'text-slate-800 text-sm italic'}>
-                        {`${username}: ${roles}`}
+                        {`${username}: ${displayRoles}`}
                     </p>
 
                 </div>

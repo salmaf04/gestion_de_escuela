@@ -7,11 +7,10 @@ import {IEditRow} from "../../types/IEditRow.ts";
 import {IEstudianteLocal} from "./models/IEstudianteLocal.ts";
 import {IEstudianteDB} from "./models/IEstudianteDB.ts";
 import {IEstudianteCreateDB} from "./models/IEstudianteCreateDB.ts";
-import ToolBar, {IToolbarContext} from "../../components/ToolBar.tsx";
-import {RolesEnum} from "../../api/RolesEnum.ts";
+import ToolBar from "./components/ToolBar.tsx";
 
 
-interface IEstudianteContext extends IToolbarContext{
+interface IEstudianteContext{
     searchText?: string;
     dataTable?: IEstudianteTableRow[];
     editting?: IEditRow<Partial<IEstudianteTableRow>>;
@@ -122,7 +121,7 @@ export default function EstudiantesScreen() {
 
         }}>
             <div className={'w-full h-dvh flex flex-col'}>
-                <ToolBar context={EstudianteContext} allowAddButton={allowRoles!([RolesEnum.SECRETARY])} />
+                <ToolBar />
                 <Body />
                 {(showModal || editting) &&
                     <AddEstudianteForm />
