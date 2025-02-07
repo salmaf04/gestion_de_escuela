@@ -61,6 +61,7 @@ class TeacherFilterSchema(BaseModel):
     
 class TeacherChangeRequest(BaseModel) :
     name : Optional[str] = None
+    lastname : Optional[str] = None
     full_name : Optional[str] = None
     specialty : Optional[str] = None
     contract_type : Optional[str] = None
