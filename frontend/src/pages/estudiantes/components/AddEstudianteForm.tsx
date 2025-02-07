@@ -84,16 +84,7 @@ export default function AddEstudianteForm() {
                                 defaultValue={editting?.body.email}
                             />
                         </div>
-                        <div className="group mb-4">
-                            <label
-                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Actividades
-                                Extras</label>
-                            <input
-                                type="checkbox" {...register("extra_activities")}
-                                className={"rounded-lg mx-4 p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50"}
-                                defaultChecked={editting?.body.extra_activities}
-                            />
-                        </div>
+
                         <div className="group mb-4">
                             <label
                                 className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Usuario</label>
@@ -106,7 +97,7 @@ export default function AddEstudianteForm() {
                             />
                         </div>
 
-                        <div className={'w-full'}>
+                        <div className={'w-full mb-4'}>
                             <Select
                                 {...register(`course_id`, {
                                     required: true,
@@ -119,8 +110,18 @@ export default function AddEstudianteForm() {
                             />
                         </div>
                     </div>
+                    <div className="group mb-4">
+                        <label
+                            className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Actividades
+                            Extras</label>
+                        <input
+                            type="checkbox" {...register("extra_activities")}
+                            className={"rounded-lg mx-4 p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50"}
+                            defaultChecked={editting?.body.extra_activities}
+                        />
+                    </div>
 
-                    <div className="flex space-x-3 justify-center">
+                    <div className="flex space-x-3 justify-center mt-10">
                         <button type="button" onClick={() => {
                             setShowModal!(false);
                             setEditting!(undefined);
@@ -131,14 +132,14 @@ export default function AddEstudianteForm() {
                         <button type="submit"
                                 className={`${isLoading ? 'hover:bg-indigo-300 bg-indigo-300 cursor-default' : 'bg-indigo-500 hover:bg-indigo-600 '} transition-colors w-full flex justify-center py-2  text-indigo-50 rounded-lg`}>
                             {isLoading ? <MySpinner className={'h-6 w-6'}/> : null}
-                    <p className={`${isLoading ? 'invisible' : 'visible'}`}>
-                        {editting ? 'Editar' : 'Guardar'}
-                    </p>
-                </button>
+                            <p className={`${isLoading ? 'invisible' : 'visible'}`}>
+                                {editting ? 'Editar' : 'Guardar'}
+                            </p>
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
-</div>
-</div>
-)
-    ;
+        </div>
+    )
+        ;
 }

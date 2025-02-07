@@ -11,10 +11,10 @@ import {useApiAulas} from "./hooks/useApiAulas.ts";
 interface IAulaContext {
     searchText?: string;
     dataTable?: AulaGetAdapter[];
-    editting?: IEditRow<AulaCreateAdapter>;
+    editting?: IEditRow<AulaGetAdapter>;
     showModal?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEditting?: (edit: IEditRow<AulaCreateAdapter> | undefined) => void;
+    setEditting?: (edit: IEditRow<AulaGetAdapter> | undefined) => void;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
     onEditTableItem?: (aulaEdit: AulaCreateAdapter) => void;
@@ -28,7 +28,7 @@ export const AulasContext = createContext<IAulaContext>(
 
 export default function AulasScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<IEditRow<AulaCreateAdapter> | undefined>()
+    const [editting, setEditting] = useState<IEditRow<AulaGetAdapter> | undefined>()
     const [showModal, setShowModal] = useState(false)
     const {aulas} = useContext(AppContext)
     const {

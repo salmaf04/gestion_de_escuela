@@ -29,8 +29,7 @@ export default function AddCursoForm() {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className={'grid grid-cols-2 gap-y-1 gap-x-10'}>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Año
-                                de inicio</label>
+                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Año</label>
                             <input
                                 type="number"
                                 {...register("year", {required: true})}

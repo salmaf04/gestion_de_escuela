@@ -32,7 +32,7 @@ export default function AddAulaForm() {
                                 type="number"
                                 {...register("number", {required: true})}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.body.number}
+                                defaultValue={editting?.body.number.slice(5)}
                             />
                         </div>
                         <div className="group mb-4">

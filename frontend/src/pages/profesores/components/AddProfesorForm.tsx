@@ -15,11 +15,17 @@ export default function AddProfesorForm() {
     const {isLoading} = useApiProfesor()
     const {getAsignaturas} = useApiAsignatura()
     const {asignaturas} = useContext(AppContext)
-
+    console.log(editting)
     useEffect(() => {
         getAsignaturas()
     }, []);
-    const [arraySelect, setArraySelect] = useState<ISelect[]>([])
+    const edittingAsignaturasArray: ISelect[] = editting?.body.asignaturas.map((item)=>{
+        return {
+            id: asignaturas!.find((i)=>i.name === item)!.id!,
+            name: item
+        }
+    }) ?? []
+    const [arraySelect, setArraySelect] = useState<ISelect[]>(edittingAsignaturasArray)
     const asignaturasSelect: ISelect[] = asignaturas?.map((item)=>{
         return {
             id: item.id,

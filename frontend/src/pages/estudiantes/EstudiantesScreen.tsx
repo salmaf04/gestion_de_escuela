@@ -14,7 +14,7 @@ import {RolesEnum} from "../../api/RolesEnum.ts";
 interface IEstudianteContext extends IToolbarContext{
     searchText?: string;
     dataTable?: IEstudianteTableRow[];
-    editting?: IEditRow<Partial<IEstudianteLocal>>;
+    editting?: IEditRow<Partial<IEstudianteTableRow>>;
     showModal?: boolean;
     setShowModal?: (text: boolean) => void;
     setEditting?: (estudiante?: IEditRow<Partial<IEstudianteTableRow>>) => void;
@@ -42,7 +42,7 @@ export const EstudianteContext = createContext<IEstudianteContext>({});
 
 export default function EstudiantesScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<IEditRow<Partial<IEstudianteLocal>> | undefined>();
+    const [editting, setEditting] = useState<IEditRow<Partial<IEstudianteTableRow>> | undefined>();
     const [showModal, setShowModal] = useState(false);
     const {estudiantes, allowRoles} = useContext(AppContext)
     const {

@@ -76,7 +76,6 @@ export default function CursosScreen() {
             }) ?? []
         )
     }, [searchText, cursos]);
-    console.log(showModal)
     return (
         <CursoContext.Provider value={{
             dataTable: dataTable,
@@ -84,6 +83,7 @@ export default function CursosScreen() {
             editting: editting,
             showModal: showModal,
             isCreatting: isCreating,
+            setEditting: setEditting,
             setShowModal: setShowModal,
             setSearchText: setSearchText,
             onDeleteTableItem: onDeleteTableItem,
