@@ -7,6 +7,11 @@ from backend.application.serializers.subject import SubjectMapper
 from pydantic import BaseModel
 import uuid
 
+class SubjectBySecretary(BaseModel) :
+    student : StudentModel
+    subject : SubjectModel
+    absences_total : int
+
 class SubjectByStudent(BaseModel) :
     subject : SubjectModel
     absences_total : int
@@ -26,6 +31,22 @@ class AbsenceMapper :
             date = absence.date.strftime("%d-%m-%Y")
         )
     
+    def to_absence_by_secretary(self, data) :
+        serialized_values = []
+        subject_mapper = SubjectMapper()
+        student_mapper = StudentMapper()
+
+        for absence in data :
+            serialized_values.append(
+                SubjectBySecretary(
+                    student=student_mapper.to_api(absence[4]),
+                    subject=subject_mapper.to_api(absence[2]),  
+                    absences_total=absence[1]
+                ) 
+            )
+        
+        return serialized_values
+
     def to_abscence_by_student(self, data) :
         serialized_values = []
         subject_mapper = SubjectMapper()
