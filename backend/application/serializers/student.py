@@ -28,6 +28,7 @@ Dependencies:
 class StudentMapper :
 
     def to_api(self, student: StudentTable) -> StudentModel :
+    
         return StudentModel(
             id = student.entity_id,
             name= student.name,

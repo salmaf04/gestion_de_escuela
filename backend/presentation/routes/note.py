@@ -100,6 +100,7 @@ async def read_note(
         notes = note_pagination_service.get_note_by_student(student_id=by_student)
     elif by_teacher :
         notes = note_pagination_service.get_note_by_student_by_teacher(teacher_id=by_teacher)
+        return mapper.to_note_by_teacher(notes)
     else :
         notes = note_pagination_service.get_note(filter_params=filters)
 

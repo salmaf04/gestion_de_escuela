@@ -2,6 +2,7 @@ from sqlalchemy_filterset import FilterSet, Filter, RangeFilter, BooleanFilter
 from pydantic import BaseModel
 from backend.domain.models.tables import StudentTable
 from typing import Optional
+import uuid
 
 """
 This module defines filter sets and schemas for managing students using SQLAlchemy and Pydantic.
@@ -26,6 +27,7 @@ Attributes:
 """
 
 class StudentFilterSet(FilterSet):
+    id = Filter(StudentTable.id)
     name = Filter(StudentTable.name)
     age = RangeFilter(StudentTable.age)
     email = Filter(StudentTable.email)
@@ -33,6 +35,7 @@ class StudentFilterSet(FilterSet):
 
 class StudentFilterSchema(BaseModel):
     name : str | None = None
+    id : uuid.UUID | None = None
     age : tuple[int, int] | None = None
     email : str | None = None
     extra_activities : bool | None = None

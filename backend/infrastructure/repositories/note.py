@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.note import NoteCreateModel
-from backend.domain.models.tables import StudentNoteTable, StudentTable, TeacherTable, SubjectTable
+from backend.domain.models.tables import StudentNoteTable, StudentTable, TeacherTable, SubjectTable, teacher_subject_table
 from backend.application.services.student import StudentPaginationService
 from backend.application.services.subject import SubjectPaginationService
 from backend.application.services.teacher import TeacherPaginationService
@@ -129,9 +129,12 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         return self.session.execute(query).scalars().all()
     
     def get_note_by_student_by_teacher(self,teacher_id: str):
-        query = select(StudentNoteTable)
-        query = query.where(StudentNoteTable.teacher_id == teacher_id)
+        query = select(StudentNoteTable, TeacherTable, StudentTable, SubjectTable)
+        query = query.join(teacher_subject_table, StudentNoteTable.subject_id == teacher_subject_table.c.subject_id)
+        query = query.join(TeacherTable, TeacherTable.entity_id == StudentNoteTable.teacher_id)
+        query = query.join(StudentTable, StudentTable.entity_id == StudentNoteTable.student_id)
+        query = query.join(SubjectTable, SubjectTable.entity_id == StudentNoteTable.subject_id)
         query = query.order_by(StudentNoteTable.subject_id)
-        return self.session.execute(query).scalars().all()
+        return self.session.execute(query).all()
        
     

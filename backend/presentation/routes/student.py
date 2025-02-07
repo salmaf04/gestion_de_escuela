@@ -109,12 +109,12 @@ async def delete_student(
 async def read_student(
     request: Request,
     id : str = None,
+    filters : StudentFilterSchema = Depends(),
     teacher_id : str = None,
     academic_performance = False,
     students_by_teacher = False,
-    filters: StudentFilterSchema = Depends(),
+    current_user: UserModel = Depends(get_current_user),
     session: Session = Depends(get_db),
-    current_user: UserModel = Depends(get_current_user)
 ) :
     student_pagination_service = StudentPaginationService(session)
     mapper = StudentMapper()
@@ -126,6 +126,7 @@ async def read_student(
         students = student_pagination_service.get_students_by_teacher(teacher_id=teacher_id)
         return mapper.to_student_by_teacher(students)
 
+    
     students = student_pagination_service.get_students(filter_params=filters)
 
     if not students :
