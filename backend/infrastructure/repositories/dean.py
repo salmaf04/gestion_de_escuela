@@ -43,13 +43,12 @@ class DeanRepository(IRepository[DeanCreateModel, DeanModel, DeanChangeRequest, 
         self.session.commit()
 
     def update(self, changes : DeanChangeRequest , entity : DeanModel) -> DeanModel:
-        query = update(DeanTable).where(DeanTable.entity_id == entity.id)
-        query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
-        self.session.execute(query)
+        table_entity = self.get_by_id(id=entity.id)
+        for key, value in changes.model_dump(exclude_unset=True, exclude_none=True).items():
+            setattr(table_entity, key, value)
         self.session.commit()
-        
-        dean = entity.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
-        return dean
+
+        return entity
         
     def get_by_id(self, id: str ) -> DeanTable :    
         query = self.session.query(DeanTable).filter(DeanTable.entity_id == id)

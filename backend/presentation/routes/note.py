@@ -84,6 +84,7 @@ async def create_note(
 async def read_note(
     request: Request,
     by_student : str = None,
+    by_teacher : str = None,
     filters: NoteFilterSchema = Depends(),
     less_than_fifty: bool = False,
     session: Session = Depends(get_db),
@@ -97,6 +98,8 @@ async def read_note(
         return mapper.to_less_than_fifty(notes)
     elif by_student :
         notes = note_pagination_service.get_note_by_student(student_id=by_student)
+    elif by_teacher :
+        notes = note_pagination_service.get_note_by_student_by_teacher(teacher_id=by_teacher)
     else :
         notes = note_pagination_service.get_note(filter_params=filters)
 

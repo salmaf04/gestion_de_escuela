@@ -43,6 +43,7 @@ class DeanFilterSchema(BaseModel):
     
 class DeanChangeRequest(BaseModel) :
     name : Optional[str] = None
+    lastname : Optional[str] = None
     full_name : Optional[str] = None
     email : Optional[str] = None
     specialty : Optional[str] = None

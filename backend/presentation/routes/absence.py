@@ -91,8 +91,4 @@ async def read_absence(
         absences = absence_pagination_service.get_absence_by_student_by_teacher(teacher_id=by_student_by_teacher)
         return mapper.to_absence_by_student_by_teacher(absences)
     
-    mapped_absences = []
-    for absence in absences:
-        mapped_absences.append(mapper.to_api(absence))
-
-    return mapped_absences
+    return mapper.to_absence_by_secretary(absences)

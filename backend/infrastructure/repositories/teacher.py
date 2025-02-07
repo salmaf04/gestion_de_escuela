@@ -53,13 +53,13 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
 
     def update(self, changes: TeacherChangeRequest, entity: TeacherModel) -> TeacherModel:
         """Update a teacher's information."""
-        query = update(TeacherTable).where(TeacherTable.entity_id == entity.id)
-        query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
-        self.session.execute(query)
-        self.session.commit()
         
-        teacher = entity.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
-        return teacher
+        table_entity = self.get_by_id(id=entity.id)
+        for key, value in changes.model_dump(exclude_unset=True, exclude_none=True).items():
+            setattr(table_entity, key, value)
+        self.session.commit()
+
+        return entity
 
     def get_by_id(self, id: str) -> TeacherTable:
         """Retrieve a teacher by their ID."""

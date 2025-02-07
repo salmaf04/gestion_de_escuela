@@ -55,14 +55,12 @@ class AdministratorRepository(IRepository[AdministratorCreateModel,Administrator
         Returns:
             Updated AdministratorModel instance
         """
-        query = update(AdministratorTable).where(AdministratorTable.entity_id == entity.id)
-        
-        query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
-        self.session.execute(query)
+        table_entity = self.get_by_id(id=entity.id)
+        for key, value in changes.model_dump(exclude_unset=True, exclude_none=True).items():
+            setattr(table_entity, key, value)
         self.session.commit()
-        
-        administrator = entity.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
-        return administrator
+
+        return entity
     
     def get(self, filter_params: AdministratorFilterSchema) -> list[AdministratorTable]:
         """

@@ -49,13 +49,13 @@ class StudentRepository(IRepository[StudentCreateModel,StudentModel, StudentChan
         Returns:
             Updated StudentModel instance
         """
-        query = update(StudentTable).where(StudentTable.entity_id == entity.id)
-        query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
-        self.session.execute(query)
+    
+        table_entity = self.get_by_id(id=entity.id)
+        for key, value in changes.model_dump(exclude_unset=True, exclude_none=True).items():
+            setattr(table_entity, key, value)
         self.session.commit()
-            
-        student = entity.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
-        return student
+
+        return entity
     
     def get_by_id(self, id: str) -> StudentTable:
         """Retrieve a student by their ID."""

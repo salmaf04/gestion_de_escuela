@@ -38,6 +38,7 @@ class AdministratorFilterSchema(BaseModel):
 
 class AdministratorChangeRequest(BaseModel) :
     name : Optional[str] = None
+    lastname : Optional[str] = None
     username : Optional[str] = None
     email : Optional[str] = None
     hash_password : Optional[str] = None

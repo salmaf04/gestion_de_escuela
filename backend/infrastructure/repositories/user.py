@@ -97,6 +97,13 @@ class UserRepository(IRepository[UserCreateModel,UserTable, UserChangeRequest,Us
         
         if personal_info_change_request.email:
             user_input.email = personal_info_change_request.email
+
+        if personal_info_change_request.name:
+            user_input.name = personal_info_change_request.name
+        
+        if personal_info_change_request.lastname:    
+            user_input.lastname = personal_info_change_request.lastname
+            
         return user_input
 
     def get_user_by_username(self, username: str) -> UserModel:
