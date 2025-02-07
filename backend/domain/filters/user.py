@@ -47,6 +47,8 @@ class UserFilterSchema(BaseModel):
     type : str | None = None
     roles : list[str] | None = None
 class UserChangeRequest(BaseModel) :
+    name : Optional[str] = None
+    lastname : Optional[str] = None
     username : Optional[str] = None
     email : Optional[str] = None
 
