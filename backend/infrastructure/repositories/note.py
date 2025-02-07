@@ -131,7 +131,7 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
     def get_note_by_student_by_teacher(self,teacher_id: str):
         query = select(StudentNoteTable, TeacherTable, StudentTable, SubjectTable)
         query = query.join(teacher_subject_table, StudentNoteTable.subject_id == teacher_subject_table.c.subject_id)
-        query = query.join(TeacherTable, TeacherTable.entity_id == teacher_id)
+        query = query.join(TeacherTable, TeacherTable.entity_id == StudentNoteTable.teacher_id)
         query = query.join(StudentTable, StudentTable.entity_id == StudentNoteTable.student_id)
         query = query.join(SubjectTable, SubjectTable.entity_id == StudentNoteTable.subject_id)
         query = query.order_by(StudentNoteTable.subject_id)
