@@ -1,10 +1,10 @@
-import {EstudianteGetAdapter} from "../../estudiantes/adapters/EstudianteGetAdapter.ts";
-import {AsignaturaGetAdapter} from "../../asignaturas/adapters/AsignaturaGetAdapter.ts";
 import {DBObject} from "../../../types.ts";
+import {IEstudianteDB} from "../../estudiantes/models/IEstudianteDB.ts";
+import {AsignaturaGetDB} from "../../asignaturas/models/AsignaturaGetDB.ts";
 
 export interface IAusenciaLocal extends DBObject{
     id: string,
-    student: EstudianteGetAdapter,
-    subject: AsignaturaGetAdapter,
+    student: IEstudianteDB,
+    subject: AsignaturaGetDB,
     absences_total: number
 }

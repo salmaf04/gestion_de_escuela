@@ -1,19 +1,19 @@
 import {IAusenciaDB} from "../models/IAusenciaDB.ts";
 import {IAusenciaLocal} from "../models/IAusenciaLocal.ts";
-import {EstudianteGetAdapter} from "../../estudiantes/adapters/EstudianteGetAdapter.ts";
-import {AsignaturaGetAdapter} from "../../asignaturas/adapters/AsignaturaGetAdapter.ts";
+import {IEstudianteDB} from "../../estudiantes/models/IEstudianteDB.ts";
+import {AsignaturaGetDB} from "../../asignaturas/models/AsignaturaGetDB.ts";
 
 export class AusenciaAdapter implements IAusenciaLocal{
     static Properties = ['ID', 'Estudiante', 'Asignatura', 'Cantidad']
     id: string
-    student: EstudianteGetAdapter
-    subject: AsignaturaGetAdapter
+    student: IEstudianteDB
+    subject: AsignaturaGetDB
     absences_total: number
 
-    constructor(nota: IAusenciaDB, student: EstudianteGetAdapter, subject: AsignaturaGetAdapter){
+    constructor(nota: IAusenciaDB){
         this.id = nota.id
         this.absences_total = nota.absences_total
-        this.student = student
-        this.subject = subject
+        this.student = nota.student
+        this.subject = nota.subject
     }
 }
