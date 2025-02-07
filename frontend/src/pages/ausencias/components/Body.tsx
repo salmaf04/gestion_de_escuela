@@ -2,9 +2,13 @@ import Table from "../../../components/Table.tsx";
 import {useContext} from "react";
 import {AusenciasContext} from "../AusenciasScreen.tsx";
 import {AusenciaAdapter} from "../adapters/AusenciaAdapter.ts";
+import {AppContext} from "../../../App.tsx";
+import {RolesEnum} from "../../../api/RolesEnum.ts";
 
 export default function Body(){
     const {dataTable, setEditting, onDeleteTableItem, isGetLoading} = useContext(AusenciasContext)
+    const {allowRoles} = useContext(AppContext)
+
     return(
             <Table
                 className={'h-5/6'}
@@ -14,9 +18,12 @@ export default function Body(){
                        onDeleteTableItem!(index)
                    }}
                    onEditRow={(index) => {
-                       const item = dataTable!.find((item) => item.id === index)
-                       setEditting!(item!)
+                       if (allowRoles!([RolesEnum.TEACHER])) {
+                           const item = dataTable!.find((item) => item.id === index)
+                           setEditting!(item!)
+                       }
                    }}
+                isRemoveActive={allowRoles!([RolesEnum.TEACHER])}
             />
     )
 }

@@ -17,9 +17,10 @@ interface Props {
         isVisible: (id: string) => boolean
         hoverColor: string
     }[]
+    isRemoveActive: boolean
 }
 
-export default function Table({header, className, Data, onRemoveRow, onEditRow, isLoading, actions}: Props) {
+export default function Table({header, className, Data, onRemoveRow, onEditRow, isLoading, actions, isRemoveActive}: Props) {
 
     return (
         <>
@@ -53,12 +54,15 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow, 
                                     )
                                 })
                             }
-                            <div className={'w-full flex justify-center'}>
-                                <div className={'w-fit'}>
-                                    <div className={`font-bold w-full`}>Eliminar</div>
-                                    <div className={'h-[3px] w-full bg-red-500 rounded-full'}/>
+                            {isRemoveActive &&
+                                <div className={'w-full flex justify-center'}>
+                                    <div className={'w-fit'}>
+                                        <div className={`font-bold w-full`}>Eliminar</div>
+                                        <div className={'h-[3px] w-full bg-red-500 rounded-full'}/>
+                                    </div>
                                 </div>
-                            </div>
+                            }
+
                         </div>
                         <div className={'scrollbar-hide text-sm'}>
                             {(Data).map((row) => {
@@ -125,18 +129,21 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow, 
                                                 )
                                             })
                                         }
-                                        <div className={'w-full flex justify-center'}>
-                                            <div
-                                                onClick={(e) => {
-                                                    onRemoveRow(row.id)
-                                                    e.stopPropagation()
-                                                }}
-                                                className={'size-9 flex items-center justify-center rounded-full hover:bg-indigo-200 cursor-pointer'}>
+                                        {isRemoveActive &&
+                                            <div className={'w-full flex justify-center'}>
+                                                <div
+                                                    onClick={(e) => {
+                                                        onRemoveRow(row.id)
+                                                        e.stopPropagation()
+                                                    }}
+                                                    className={'size-9 flex items-center justify-center rounded-full hover:bg-indigo-200 cursor-pointer'}>
 
-                                                <div className={'h-[3px] w-4 bg-red-500 rounded-full'}/>
+                                                    <div className={'h-[3px] w-4 bg-red-500 rounded-full'}/>
+                                                </div>
+
                                             </div>
+                                        }
 
-                                        </div>
                                     </div>
                                 )
                             })}

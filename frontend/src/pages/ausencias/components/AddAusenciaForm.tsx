@@ -62,7 +62,7 @@ export default function AddAusenciaForm() {
     const estudiantesSelect: ISelect[] = estudiantes?.map((item)=>{
         return {
             id: item.id,
-            name: item?.name
+            name: `${item?.name} ${item?.lastname}`
         }
     }) ?? []
 

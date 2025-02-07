@@ -3,9 +3,10 @@ import Body from "./components/Body.tsx";
 import {useApiUsuarios} from "./hooks/useApiUsuarios.ts";
 import {DBObject} from "../../types.ts";
 import {AppContext} from "../../App.tsx";
-import ToolBar from "../../components/ToolBar.tsx";
 import AddUsuarioForm from "./components/AddUsuarioForm.tsx";
 import {IUsuarioLocal} from "./models/IUsuarioLocal.ts";
+import {rolesDisplayParser} from "../../utils/utils.ts";
+import ToolBar from "./components/ToolBar.tsx";
 
 interface IUsuariosContext {
     searchText?: string;
@@ -29,6 +30,9 @@ interface IUsuarioTableRow extends DBObject {
     username: string,
     name: string,
     lastname: string,
+    email: string,
+    roles: string,
+    type: string,
 }
 
 export default function UsuariosScreen() {
@@ -68,6 +72,9 @@ export default function UsuariosScreen() {
                 username: item.username,
                 name: item.name,
                 lastname: item.lastname,
+                email: item.email,
+                roles: item.roles.map((item)=>rolesDisplayParser[item]).join(', '),
+                type: item.type,
             }
         }) ?? []
     }, [usuarios]);
@@ -98,8 +105,8 @@ export default function UsuariosScreen() {
             onEditTableItem: onEditTableItem,
             onAddTableItem: onAddTableItem,
         }}>
-            <div className={'w-full h-dvh flex flex-col'}>
-                <ToolBar context={UsuariosContext}/>
+            <div className={'w-full h-full flex flex-col'}>
+                <ToolBar />
                 <Body/>
                 {(showModal || editting) &&
                     <AddUsuarioForm />

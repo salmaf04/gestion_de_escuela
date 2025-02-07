@@ -4,6 +4,8 @@ import {useContext} from "react";
 import ExportButton from "../../../components/ExportButton.tsx";
 import {EstudianteContext} from "../EstudiantesScreen.tsx";
 import {EstudianteGetAdapter} from "../adapters/EstudianteGetAdapter.ts";
+import {AppContext} from "../../../App.tsx";
+import {RolesEnum} from "../../../api/RolesEnum.ts";
 
 export default function ToolBar() {
     const {
@@ -13,7 +15,7 @@ export default function ToolBar() {
         dataTable
     } = useContext(EstudianteContext)
 
-
+    const {allowRoles} = useContext(AppContext)
 
 
     return (
@@ -24,7 +26,9 @@ export default function ToolBar() {
                 }}/>
 
                 <ExportButton title={'Estudiantes'} headers = {EstudianteGetAdapter.Properties.slice(1)} data={dataTable}></ExportButton>
-                <AddButton onClick={() => setShowModal!(true)}/>
+                {allowRoles!([RolesEnum.SECRETARY]) &&
+                    <AddButton onClick={() => setShowModal!(true)}/>
+                }
             </div>
     )
 }

@@ -1,9 +1,9 @@
 import SearchInput from "../../../components/SearchInput.tsx";
 import AddButton from "../../../components/AddButton.tsx";
 import {useContext} from "react";
-import {AusenciasContext, NotasContext} from "../AusenciasScreen.tsx";
 import ExportButton from "../../../components/ExportButton.tsx";
-import {AusenciaAdapter} from "../adapters/AusenciaAdapter.ts";
+import {UsuariosContext} from "../UsuariosScreen.tsx";
+import {UsuarioGetAdapter} from "../adapters/UsuarioGetAdapter.ts";
 import {RolesEnum} from "../../../api/RolesEnum.ts";
 import {AppContext} from "../../../App.tsx";
 
@@ -13,7 +13,7 @@ export default function ToolBar() {
         setSearchText,
         setShowModal,
         dataTable
-    } = useContext(AusenciasContext)
+    } = useContext(UsuariosContext)
     const {allowRoles} = useContext(AppContext)
 
     return (
@@ -22,8 +22,8 @@ export default function ToolBar() {
                 <SearchInput focus={true} searchText={searchText!} setSearchText={(text: string) => {
                     setSearchText!(text)
                 }}/>
-                <ExportButton title={'Ausencias'} headers = {AusenciaAdapter.Properties.slice(1)} data={dataTable}></ExportButton>
-                {allowRoles!([RolesEnum.TEACHER]) &&
+                <ExportButton title={'Notas'} headers = {UsuarioGetAdapter.Properties.slice(1)} data={dataTable}></ExportButton>
+                {allowRoles!([RolesEnum.SECRETARY]) &&
                     <AddButton onClick={() => setShowModal!(true)}/>
                 }
             </div>

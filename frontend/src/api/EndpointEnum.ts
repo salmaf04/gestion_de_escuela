@@ -19,5 +19,7 @@ export enum EndpointEnum {
     VALORATION = 'valoration',
     SANCION = 'sanction',
     MEAN_REQUEST = "mean_request",
-    CLASSROOM_REQUEST = "classroom_request"
+    CLASSROOM_REQUEST = "classroom_request",
+    AULAS_AVAILABLES = 'classroom?avaliable=true',
+    USUARIOS = 'user',
 }

@@ -1,7 +1,6 @@
 import LoginScreen from "./pages/login/LoginScreen.tsx";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Sidebar from "./components/Sidebar.tsx";
-import HomeScreen from "./pages/home/HomeScreen.tsx";
 import Notification from "./components/Notification.tsx";
 import {createContext, useCallback, useEffect, useState} from "react";
 import {ProfesorGetAdapter} from "./pages/profesores/adapters/ProfesorGetAdapter.ts";
@@ -170,17 +169,8 @@ function App() {
                             </div>
                             <div className={'w-11/12'}>
                                 <Routes>
-                                    {allowRoles(Screens.Estudiantes.allowedRoles) &&
-                                        <Route path={'/'} element={<Navigate to={'/info'}/>}/>
-                                    }
-                                    {allowRoles(Screens.Medios.allowedRoles) &&
-                                        <Route path={'/'} element={<Navigate to={'/medios'}/>}/>
-                                    }
-                                    {allowRoles(Screens.Notas.allowedRoles) &&
-                                        <Route path={'/'} element={<Navigate to={'/notas'}/>}/>
-                                    }
-
-                                    <Route path={'/inicio'} element={<HomeScreen/>}/>
+                                    <Route path={'/info'} element={<InfoScreen/>}/>
+                                    <Route path={'/'} element={<Navigate to={'/info'}/>}/>
                                     {allowRoles(Screens.Estudiantes.allowedRoles) &&
                                         <Route path={'/estudiantes'} element={<EstudiantesScreen/>}/>
                                     }
@@ -211,10 +201,9 @@ function App() {
                                     {allowRoles(Screens.Ausencias.allowedRoles) &&
                                         <Route path={'/ausencias'} element={<AusenciasScreen/>}/>
                                     }
-                                    {allowRoles(Screens.Aulas.allowedRoles) &&
+                                    {allowRoles(Screens.Usuarios.allowedRoles) &&
                                         <Route path={'/usuarios'} element={<UsuariosScreen/>}/>
                                     }
-                                    <Route path={'/info'} element={<InfoScreen/>}/>
                                     <Route path={'/funcionalidades'} element={<FuncionalidadesScreen/>}/>
 
                                 </Routes>

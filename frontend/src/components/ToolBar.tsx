@@ -16,7 +16,7 @@ export interface IToolbarContext {
 
 interface Props {
     context: React.Context<IToolbarContext>,
-    allowAddButton: boolean
+    allowAddButton?: boolean
 }
 
 export default function ToolBar({context, allowAddButton = true, } : Props) {

@@ -29,7 +29,7 @@ export default function ProfesorInfo() {
         },
         {
             name: 'Asignaturas',
-            value: profesor?.specialty ?? 'No disponible',
+            value: profesor?.asignaturas.toString() ?? 'No disponible',
         },
         {
             name: 'Valoracion',

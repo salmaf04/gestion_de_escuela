@@ -4,7 +4,3 @@ export type AulaGetDB = {
     capacity: number;
     number: number
 };
-
-export type AulaGetResponse = {
-    [index: string]: AulaGetDB
-}

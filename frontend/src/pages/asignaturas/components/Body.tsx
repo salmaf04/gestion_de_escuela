@@ -2,9 +2,13 @@ import {AsignaturaGetAdapter} from "../adapters/AsignaturaGetAdapter.ts";
 import Table from "../../../components/Table.tsx";
 import {useContext} from "react";
 import {AsignaturaContext} from "../AsignaturasScreen.tsx";
+import {AppContext} from "../../../App.tsx";
+import {RolesEnum} from "../../../api/RolesEnum.ts";
 
 export default function Body(){
     const {dataTable, setEditting, onDeleteTableItem, isLoading} = useContext(AsignaturaContext)
+    const {allowRoles} = useContext(AppContext)
+
     return(
 
             <Table
@@ -15,9 +19,12 @@ export default function Body(){
                        onDeleteTableItem!(index)
                    }}
                    onEditRow={(index) => {
-                       const item = dataTable!.find((item) => item.id === index)
-                       setEditting!(item!)
+                       if (allowRoles!([RolesEnum.SECRETARY])) {
+                           const item = dataTable!.find((item) => item.id === index)
+                           setEditting!(item!)
+                       }
                    }}
+                isRemoveActive={allowRoles!([RolesEnum.SECRETARY])}
             />
     )
 }

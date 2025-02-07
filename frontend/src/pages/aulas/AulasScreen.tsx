@@ -1,5 +1,4 @@
-import {createContext, useContext, useEffect, useState} from "react";
-import {AulaGetAdapter} from "./adapters/AulaGetAdapter.ts";
+import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
 import {AulaCreateAdapter} from "./adapters/AulaCreateAdapter.ts";
@@ -10,11 +9,11 @@ import {useApiAulas} from "./hooks/useApiAulas.ts";
 
 interface IAulaContext {
     searchText?: string;
-    dataTable?: AulaGetAdapter[];
-    editting?: IEditRow<AulaGetAdapter>;
+    dataTable?: IAulaTableRow[];
+    editting?: IEditRow<IAulaTableRow>;
     showModal?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEditting?: (edit: IEditRow<AulaGetAdapter> | undefined) => void;
+    setEditting?: (edit: IEditRow<IAulaTableRow> | undefined) => void;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
     onEditTableItem?: (aulaEdit: AulaCreateAdapter) => void;
@@ -26,9 +25,16 @@ export const AulasContext = createContext<IAulaContext>(
     {}
 );
 
+interface IAulaTableRow{
+    id: string;
+    number: string
+    location: string;
+    capacity: number;
+}
+
 export default function AulasScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<IEditRow<AulaGetAdapter> | undefined>()
+    const [editting, setEditting] = useState<IEditRow<IAulaTableRow> | undefined>()
     const [showModal, setShowModal] = useState(false)
     const {aulas} = useContext(AppContext)
     const {
@@ -56,14 +62,24 @@ export default function AulasScreen() {
         createAula(aula)
     }
 
-    const [dataTable, setDataTable] = useState<AulaGetAdapter[]>(aulas ?? [])
+    const [dataTable, setDataTable] = useState<IAulaTableRow[]>([])
+
+    const data = useMemo<IAulaTableRow[]>(() => {
+        return aulas?.map((item) => {
+            return {
+                id: item!.id,
+                number: item.number,
+                location: item.location,
+                capacity: item.capacity
+            }
+        }) ?? []
+    }, [aulas]);
     useEffect(() => {
-        setDataTable(aulas!)
-        console.log(aulas)
+        setDataTable(data!)
     }, [aulas]);
     useEffect(() => {
         setDataTable(
-            aulas?.filter((row) => {
+            data?.filter((row) => {
                 return Object.values(row).some((value) => {
                     return value?.toString().toLowerCase().includes(searchText.toLowerCase())
                 })

@@ -36,11 +36,13 @@ export default function Body(){
                        onDeleteTableItem!(index)
                    }}
                    onEditRow={(index) => {
-                       const item = dataTable!.find((item) => item.id === index)
-                       console.log(item)
-                       setEditting!(item!)
+                       if (allowRoles!([RolesEnum.ADMIN])) {
+                           const item = dataTable!.find((item) => item.id === index)
+                           setEditting!(item!)
+                       }
                    }}
                 actions={actions}
+                isRemoveActive={allowRoles!([RolesEnum.ADMIN])}
             />
     )
 }

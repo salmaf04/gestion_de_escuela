@@ -1,22 +1,23 @@
 // frontend/src/pages/notas/components/AddAusenciaForm.tsx
 import {useContext, useEffect} from "react";
-import { NotasContext } from "../NotasScreen.tsx";
+import {NotasContext} from "../NotasScreen.tsx";
 import {useApiEstudiante} from "../../estudiantes/hooks/useApiEstudiante.ts";
 import {useApiAsignatura} from "../../asignaturas/hooks/useApiAsignatura.ts";
 import {AppContext} from "../../../App.tsx";
 import Select from "../../../components/Select.tsx";
 import MySpinner from "../../../components/MySpinner.tsx";
-import { useFieldArray, useForm} from "react-hook-form";
+import {useFieldArray, useForm} from "react-hook-form";
 import {ISelect} from "../../../types/ISelect.ts";
 import {useApiProfesor} from "../../profesores/hooks/useApiProfesor.ts";
 import {INotaCreateDB} from "../models/INotaCreateDB.ts";
+import {RolesEnum} from "../../../api/RolesEnum.ts";
 
 export default function AddNotaForm() {
     const { onAddTableItem, setShowModal, editting, onEditTableItem, setEditting } = useContext(NotasContext);
     const {getEstudiantes, isLoading} = useApiEstudiante()
     const {getAsignaturas} = useApiAsignatura()
     const {getProfesores} = useApiProfesor()
-    const {asignaturas, estudiantes, profesores} = useContext(AppContext)
+    const {asignaturas, estudiantes, profesores, allowRoles, personalId} = useContext(AppContext)
     useEffect(() => {
         getAsignaturas()
         getEstudiantes()
@@ -33,7 +34,7 @@ export default function AddNotaForm() {
 
         if (editting){
             const dataParse: Partial<INotaCreateDB> = {
-                teacher_id: data[`profesor${0}`],
+                teacher_id: allowRoles!([RolesEnum.SECRETARY]) ? data[`profesor${0}`] : personalId,
                 student_id: data[`estudiante${0}`],
                 subject_id: data[`asignatura${0}`],
                 note_value: data[`note_value${0}`],
@@ -44,7 +45,7 @@ export default function AddNotaForm() {
             const dataParse: Partial<INotaCreateDB>[] = []
             for (let i = 0; i < fields.length; i++) {
                 dataParse.push({
-                    teacher_id: data[`profesor${i}`],
+                    teacher_id: allowRoles!([RolesEnum.SECRETARY]) ? data[`profesor${i}`] : personalId,
                     student_id: data[`estudiante${i}`],
                     subject_id: data[`asignatura${i}`],
                     note_value: data[`note_value${i}`],
@@ -94,18 +95,21 @@ export default function AddNotaForm() {
                             fields.map((item, index) => {
                                 return (
                                     <div className="relative flex w-full items-center space-x-4" key={item.id}>
-                                        <div className={'w-full'}>
-                                            <Select
-                                                {...register(`profesor${index}`, {
-                                                    required: true,
-                                                })}
-                                                labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
-                                                label={'Profesor: '}
-                                                data={profesoresSelect}
-                                                control={control}
-                                                defaultValue={editting && profesores?.find((item) => item.name === editting?.teacherName)?.id}
-                                            />
-                                        </div>
+                                        {allowRoles!([RolesEnum.SECRETARY]) &&
+                                            <div className={'w-full'}>
+                                                <Select
+                                                    {...register(`profesor${index}`, {
+                                                        required: true,
+                                                    })}
+                                                    labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
+                                                    label={'Profesor: '}
+                                                    data={profesoresSelect}
+                                                    control={control}
+                                                    defaultValue={editting && profesores?.find((item) => item.name === editting?.teacherName)?.id}
+                                                />
+                                            </div>
+                                        }
+
                                         <div className={'w-full'}>
                                             <Select
                                                 {...register(`estudiante${index}`, {

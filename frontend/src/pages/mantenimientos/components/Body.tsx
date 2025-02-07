@@ -2,9 +2,13 @@ import Table from "../../../components/Table.tsx";
 import {useContext} from "react";
 import {MantenimientoGetAdapter} from "../adapters/MantenimientoGetAdapter.ts";
 import {MantenimientoContext} from "../MantenimientosScreen.tsx";
+import {AppContext} from "../../../App.tsx";
+import {RolesEnum} from "../../../api/RolesEnum.ts";
 
 export default function Body(){
     const {dataTable, setEditting, onDeleteTableItem, isLoading} = useContext(MantenimientoContext)
+    const {allowRoles} = useContext(AppContext)
+
     return(
             <Table
                 className={'h-5/6'}
@@ -14,10 +18,12 @@ export default function Body(){
                        onDeleteTableItem!(index)
                    }}
                    onEditRow={(index) => {
-                       const item = dataTable!.find((item) => item.id === index)
-                       console.log(item)
-                       setEditting!(item!)
+                       if (allowRoles!([RolesEnum.ADMIN])) {
+                           const item = dataTable!.find((item) => item.id === index)
+                           setEditting!(item!)
+                       }
                    }}
+                isRemoveActive={allowRoles!([RolesEnum.ADMIN])}
             />
     )
 }

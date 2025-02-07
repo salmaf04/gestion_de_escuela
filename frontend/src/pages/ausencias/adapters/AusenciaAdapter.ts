@@ -4,15 +4,15 @@ import {EstudianteGetAdapter} from "../../estudiantes/adapters/EstudianteGetAdap
 import {AsignaturaGetAdapter} from "../../asignaturas/adapters/AsignaturaGetAdapter.ts";
 
 export class AusenciaAdapter implements IAusenciaLocal{
-    static Properties = ['ID', 'Estudiante', 'Asignatura', 'Fecha']
+    static Properties = ['ID', 'Estudiante', 'Asignatura', 'Cantidad']
     id: string
-    student: EstudianteGetAdapter;
-    subject: AsignaturaGetAdapter;
-    date: string;
+    student: EstudianteGetAdapter
+    subject: AsignaturaGetAdapter
+    absences_total: number
 
     constructor(nota: IAusenciaDB, student: EstudianteGetAdapter, subject: AsignaturaGetAdapter){
         this.id = nota.id
-        this.date = nota.date
+        this.absences_total = nota.absences_total
         this.student = student
         this.subject = subject
     }

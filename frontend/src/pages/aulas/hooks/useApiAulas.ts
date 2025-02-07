@@ -1,33 +1,30 @@
 import {useContext, useState} from "react";
 import {AulaGetAdapter} from "../adapters/AulaGetAdapter.ts";
-import {AulaGetDB, AulaGetResponse} from "../models/AulaGetDB.ts";
+import {AulaGetDB} from "../models/AulaGetDB.ts";
 import {AppContext} from "../../../App.tsx";
 import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {AulaCreateAdapter} from "../adapters/AulaCreateAdapter.ts";
-import {getQueryParamsFromObject} from "../../../utils/utils.ts";
-import {RolesEnum} from "../../../api/RolesEnum.ts";
 
 const endpoint = EndpointEnum.AULAS
 
 export const useApiAulas = () => {
     const [isLoading, setIsLoading] = useState(false)
-    const {setError, aulas: aulasAppContext, setAulas: setAulasAppContext, personalId, setMessage, allowRoles} = useContext(AppContext)
+    const {setError, aulas: aulasAppContext, setAulas: setAulasAppContext, personalId, setMessage} = useContext(AppContext)
 
     const getAulas = async () => {
         setIsLoading(true)
         if (aulasAppContext) {
             setIsLoading(false)
         }
-        let url = endpoint.toString()
-        if (allowRoles!([RolesEnum.TEACHER])){
-            url += "?avaliable=true"
-        }
-        const res = await apiRequest.getApi(url)
+
+       const resAvailables = await apiRequest.getApi(EndpointEnum.AULAS_AVAILABLES)
+        const res = await apiRequest.getApi(endpoint)
         if (res.ok) {
-            const data: AulaGetResponse = await res.json()
+            const availables: AulaGetDB[] = await resAvailables.json()
+            const data: AulaGetDB[] = await res.json()
             const aulaArray = Object.values(data)
-                .map((aula: AulaGetDB) => new AulaGetAdapter(aula))
+                .map((aula: AulaGetDB) => new AulaGetAdapter(aula, availables.some((item)=>item.id === aula.id)))
             setAulasAppContext!(aulaArray)
         } else {
             setError!(new Error(res.statusText))
