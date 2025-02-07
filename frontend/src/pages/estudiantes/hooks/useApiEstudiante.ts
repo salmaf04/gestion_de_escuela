@@ -43,7 +43,7 @@ export const useApiEstudiante = () => {
     }
     const updateEstudiante = async (id: string, estudiante: Partial<IEstudianteDB>) => {
         setIsLoading(true)
-        const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(estudiante))
+        const res = await apiRequest.patchApi(endpoint, id, estudiante)
         if (!res.ok)
             setError!(new Error(res.statusText))
         await getEstudiantes()

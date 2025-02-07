@@ -47,7 +47,7 @@ export const useApiProfesor = () => {
     }
     const updateProfesor = async (id: string, profesor: ProfesorCreateAdapter) => {
         setIsLoading(true)
-        const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(profesor))
+        const res = await apiRequest.patchApi(endpoint, id, profesor)
         if (!res.ok)
             setError!(new Error(res.statusText))
         await getProfesores()

@@ -46,7 +46,7 @@ export const useApiAulas = () => {
     }
     const updateAula = async (id: string, aula: AulaCreateAdapter) => {
         setIsLoading(true)
-        const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(aula))
+        const res = await apiRequest.patchApi(endpoint, id, aula)
         if (!res.ok)
             setError!(new Error(res.statusText))
         await getAulas()
