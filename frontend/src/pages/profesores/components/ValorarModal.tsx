@@ -8,6 +8,7 @@ import {AppContext} from "../../../App.tsx";
 import {IValorationCreate} from "../models/IValorationCreate.ts";
 import Select from "../../../components/Select.tsx";
 import {DBObject} from "../../../types.ts";
+import {useApiEstudiante} from "../../estudiantes/hooks/useApiEstudiante.ts";
 
 interface Props{
     profesor?: DBObject,
@@ -17,28 +18,24 @@ export default function SancionModal({profesor, setShowModal}: Props) {
     const {register, handleSubmit, control} = useForm<IValorationCreate>()
     const {isLoading, valorarProfesor} = useApiProfesor()
     const {getAsignaturas} = useApiAsignatura()
-    const {asignaturas, cursos, personalId} = useContext(AppContext)
+    const {getEstudiante, estudiante} = useApiEstudiante()
+    const {asignaturas, personalId, profesores} = useContext(AppContext)
     const editting = false
     useEffect(() => {
-        getAsignaturas()
+        getAsignaturas!()
+        getEstudiante!(personalId!)
     }, []);
-    const asignaturasSelect: ISelect[] = asignaturas?.map((item)=>{
+    const asignaturasSelect: ISelect[] = profesores!.find((i) => i.id === profesor?.id)!.asignaturas.map((ap)=>{
         return {
-            id: item.id,
-            name: item?.name
-        }
-    }) ?? []
-    const cursosSelect: ISelect[] = cursos?.map((item)=>{
-        return {
-            id: item.id,
-            name: item?.year.toString()
+            id: asignaturas?.find((a) => a.name === ap)!.id ?? "",
+            name: ap
         }
     }) ?? []
 
     const onSubmit: SubmitHandler<Partial<IValorationCreate>> = (data) => {
         valorarProfesor({
             subject_id: data.subject_id!,
-            course_id: data.course_id!,
+            course_id: estudiante!.course.id,
             grade: data.grade!,
             student_id: personalId!,
             teacher_id: profesor?.id ?? "",
@@ -61,17 +58,6 @@ export default function SancionModal({profesor, setShowModal}: Props) {
                                 label={'Asignatura'}
                                 labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
                                 data={asignaturasSelect}
-                                control={control}
-                            />
-                        </div>
-                        <div className={'w-full mb-4'}>
-                            <Select
-                                {...register(`course_id`, {
-                                    required: true,
-                                })}
-                                label={'Curso'}
-                                labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
-                                data={cursosSelect}
                                 control={control}
                             />
                         </div>

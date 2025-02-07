@@ -13,16 +13,17 @@ export default function Body(){
             <Table
                 className={'h-5/6'}
                 isLoading={isGetLoading!}
-                Data={dataTable ?? []} header={AusenciaAdapter.Properties.slice(1)}
-                   onRemoveRow={(index) => {
-                       onDeleteTableItem!(index)
-                   }}
-                   onEditRow={(index) => {
-                       if (allowRoles!([RolesEnum.TEACHER])) {
-                           const item = dataTable!.find((item) => item.id === index)
-                           setEditting!(item!)
-                       }
-                   }}
+                Data={dataTable ?? []}
+                header={AusenciaAdapter.Properties.slice(allowRoles!([RolesEnum.STUDENT]) ? 2 : 1)}
+                onRemoveRow={(index) => {
+                    onDeleteTableItem!(index)
+                }}
+                onEditRow={(index) => {
+                    if (allowRoles!([RolesEnum.TEACHER])) {
+                        const item = dataTable!.find((item) => item.id === index)
+                        setEditting!(item!)
+                    }
+                }}
                 isRemoveActive={allowRoles!([RolesEnum.TEACHER])}
             />
     )

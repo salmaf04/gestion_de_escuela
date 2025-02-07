@@ -8,7 +8,7 @@ import {IAdministradorDB} from "../models/IAdministradorDB.ts";
 
 const endpoint = EndpointEnum.ADMIN;
 
-export const useApiAdministradores = () => {
+export const useApiAdministrador = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [administradores, setAdministradores] = useState<IAdministradorDB[]>();
     const [administrador, setAdministrador] = useState<IAdministradorDB>()

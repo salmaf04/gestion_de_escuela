@@ -74,6 +74,7 @@ export default function Body() {
                     setEditting!({id: index, body: item!})
                 }}
                 actions={actions}
+                isRemoveActive={allowRoles!([RolesEnum.SECRETARY])}
             />
             {
                 showValoration && <ValorarModal profesor={profesor} setShowModal={setShowValoration}/>

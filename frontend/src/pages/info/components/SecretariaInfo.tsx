@@ -1,10 +1,10 @@
 import {useContext, useEffect} from "react";
 import {AppContext} from "../../../App.tsx";
-import {useApiSecretarias} from "../hooks/useApiSecretaria.ts";
+import {useApiSecretaria} from "../hooks/useApiSecretaria.ts";
 import UserCard, {UserDataProp} from "./UserCard.tsx";
 
 export default function SecretariaInfo(){
-    const {getSecretaria, secretaria} = useApiSecretarias()
+    const {getSecretaria, secretaria} = useApiSecretaria()
     const {personalId} = useContext(AppContext)
     useEffect(() => {
         getSecretaria(personalId!)

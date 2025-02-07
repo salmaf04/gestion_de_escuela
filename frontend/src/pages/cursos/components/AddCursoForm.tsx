@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { CursoContext} from "../CursosScreen.tsx";
 import MySpinner from "../../../components/MySpinner.tsx";
 import {ICursoCreateDB} from "../models/ICursoCreateDB.ts";
+import {AppContext} from "../../../App.tsx";
 
 export default function AddCursoForm() {
     const { register, handleSubmit } = useForm<ICursoCreateDB>();

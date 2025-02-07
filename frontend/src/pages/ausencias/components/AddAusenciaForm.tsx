@@ -9,8 +9,8 @@ import MySpinner from "../../../components/MySpinner.tsx";
 import { useFieldArray, useForm} from "react-hook-form";
 import {ISelect} from "../../../types/ISelect.ts";
 import {useApiProfesor} from "../../profesores/hooks/useApiProfesor.ts";
-import {IAusenciaDB} from "../models/IAusenciaDB.ts";
 import {reverseDate} from "../../../utils/utils.ts";
+import {IAusenciaCreateDB} from "../models/IAusenciaCreateDB.ts";
 
 export default function AddAusenciaForm() {
     const { onAddTableItem, setShowModal, editting, onEditTableItem, setEditting } = useContext(AusenciasContext);
@@ -34,7 +34,7 @@ export default function AddAusenciaForm() {
     }
     const onSubmit = (data) => {
         if (editting){
-            const dataParse: Partial<IAusenciaDB> = {
+            const dataParse: IAusenciaCreateDB = {
                 student_id: data[`estudiante0`],
                 subject_id: data[`asignatura0`],
                 date: reverseDate(data[`date0`]),
@@ -44,7 +44,7 @@ export default function AddAusenciaForm() {
             onEditTableItem!(dataParse)
         }
         else{
-            const dataParse: Partial<IAusenciaDB>[] = []
+            const dataParse: IAusenciaCreateDB[] = []
             for (let i = 0; i < fields.length; i++) {
                 dataParse.push({
                     student_id: data[`estudiante${i}`],

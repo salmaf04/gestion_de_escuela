@@ -21,8 +21,10 @@ export default function Body(){
                        onDeleteTableItem!(index)
                    }}
                    onEditRow={(index) => {
-                       const item = dataTable!.find((item) => item.id === index)
-                       setEditting!({id: item!.id, body: item!})
+                       if (allowRoles([RolesEnum.SECRETARY])) {
+                           const item = dataTable!.find((item) => item.id === index)
+                           setEditting!({id: item!.id, body: item!})
+                       }
                    }}
                 actions={allowRoles!([RolesEnum.TEACHER]) ? [
                     {

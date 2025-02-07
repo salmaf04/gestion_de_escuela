@@ -8,7 +8,7 @@ import {ISecretariaDB} from "../models/ISecretariaDB.ts";
 
 const endpoint = EndpointEnum.SECRETARY;
 
-export const useApiSecretarias = () => {
+export const useApiSecretaria = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [secretarias, setSecretarias] = useState<ISecretariaDB[]>();
     const [secretaria, setSecretaria] = useState<ISecretariaDB>()

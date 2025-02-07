@@ -1,7 +1,7 @@
 import SearchInput from "../../../components/SearchInput.tsx";
 import AddButton from "../../../components/AddButton.tsx";
 import {useContext} from "react";
-import {AusenciasContext, NotasContext} from "../AusenciasScreen.tsx";
+import {AusenciasContext} from "../AusenciasScreen.tsx";
 import ExportButton from "../../../components/ExportButton.tsx";
 import {AusenciaAdapter} from "../adapters/AusenciaAdapter.ts";
 import {RolesEnum} from "../../../api/RolesEnum.ts";

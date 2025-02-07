@@ -1,22 +1,35 @@
 import {useContext, useEffect} from "react";
 import {AppContext} from "../../../App.tsx";
-import {useApiAdministradores} from "../hooks/useApiAdministrador.ts";
+import UserCard, {UserDataProp} from "./UserCard.tsx";
+import {useApiAdministrador} from "../hooks/useApiAdministrador.ts";
 
 export default function AdministradorInfo(){
-    const {getAdministrador, administrador} = useApiAdministradores()
+    const {getAdministrador, administrador} = useApiAdministrador()
     const {personalId} = useContext(AppContext)
     useEffect(() => {
         getAdministrador(personalId!)
     }, []);
+    const userInfo: UserDataProp[] = [
+        {
+            name: 'Nombre',
+            value: administrador?.name ?? 'No disponible',
+        },
+        {
+            name: 'Apellidos',
+            value: administrador?.lastname ?? 'No disponible',
+        },
+        {
+            name: 'Correo',
+            value: administrador?.email ?? 'No disponible',
+        },
+        {
+            name: 'Usuario',
+            value: administrador?.username ?? 'No disponible',
+        }
+    ]
     return(
-        <>
-            <div className={''}>
-
-            </div>
-            <span>Nombre: {administrador?.name}</span>
-            <span>Apellidos: {administrador?.lastname}</span>
-            <span>Correo: {administrador?.email}</span>
-            <span>Usuario:{administrador?.username}</span>
-        </>
+        <div className={'size-fit mt-20'}>
+            <UserCard data={userInfo}/>
+        </div>
     )
 }

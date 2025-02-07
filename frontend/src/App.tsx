@@ -163,7 +163,7 @@ function App() {
                 }
                 {token ?
                     (
-                        <div className={'h-dvh bg-indigo-50 flex w-full'}>
+                        <div className={'h-dvh bg-indigo-50 flex w-full overscroll-none'}>
                             <div className={'w-1/12'}>
                                 <Sidebar/>
                             </div>

@@ -10,5 +10,4 @@ export interface IEstudianteLocal extends IUsuarioLocal{
     extra_activities: boolean,
     username: string,
     course: ICursoGetDB,
-    lastname: string,
 }

@@ -33,7 +33,7 @@ export default function InfoScreen() {
                     Cerrar Sesión
                 </button>
             </div>
-            <div className={'p-20'}>
+            <div className={'h-full flex items-center ps-20'}>
                 {roles?.some((item) => item === RolesEnum.TEACHER) &&
                     <ProfesorInfo/>
                 }

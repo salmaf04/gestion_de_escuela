@@ -6,7 +6,8 @@ import AddAusenciaForm from "./components/AddAusenciaForm.tsx";
 import {useApiAusencias} from "./hooks/useApiAusencias.ts";
 import {DBObject} from "../../types.ts";
 import {AppContext} from "../../App.tsx";
-import {IAusenciaDB} from "./models/IAusenciaDB.ts";
+import {IAusenciaCreateDB} from "./models/IAusenciaCreateDB.ts";
+import {RolesEnum} from "../../api/RolesEnum.ts";
 
 interface IAusenciasContext {
     searchText?: string;
@@ -19,8 +20,8 @@ interface IAusenciasContext {
     setEditting?: (AusenciaDB?: IAusenciaTableRow) => void;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
-    onEditTableItem?: (ausenciaEdit: Partial<IAusenciaDB>) => void;
-    onAddTableItem?: (ausenciaEdit: Partial<IAusenciaDB>[]) => void;
+    onEditTableItem?: (ausenciaEdit: IAusenciaCreateDB) => void;
+    onAddTableItem?: (ausenciaEdit: IAusenciaCreateDB[]) => void;
 }
 
 export const AusenciasContext = createContext<IAusenciasContext>({});
@@ -38,7 +39,7 @@ export default function AusenciasScreen() {
     const [editting, setEditting] = useState<IAusenciaTableRow | undefined>();
     const [showModal, setShowModal] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
-    const {ausencias} = useContext(AppContext)
+    const {ausencias, allowRoles} = useContext(AppContext)
     const {
         deleteAusencia,
         createAusencia,
@@ -54,12 +55,12 @@ export default function AusenciasScreen() {
         deleteAusencia(deletedAusenciaId);
     };
 
-    const onEditTableItem = (ausenciasEdit: Partial<IAusenciaDB>) => {
+    const onEditTableItem = (ausenciasEdit: IAusenciaCreateDB) => {
         updateAusencia(editting!.id, ausenciasEdit)
         setEditting(undefined)
     };
 
-    const onAddTableItem = (ausencias: Partial<IAusenciaDB>[]) => {
+    const onAddTableItem = (ausencias: IAusenciaCreateDB[]) => {
         setIsCreating(true);
         ausencias.forEach((item) => {
             createAusencia(item);
@@ -69,12 +70,19 @@ export default function AusenciasScreen() {
     const [dataTable, setDataTable] = useState<IAusenciaTableRow[]>([])
     const data = useMemo<IAusenciaTableRow[]>(() => {
         return ausencias?.map((item) => {
-            return {
-                id: item.id,
-                studentName: item.student?.name,
-                subjectName: item.subject?.name,
-                ausencias: item.absences_total,
-            }
+            if (allowRoles!([RolesEnum.STUDENT]))
+                return {
+                    id: item.id,
+                    subjectName: item.subject?.name,
+                    ausencias: item.absences_total,
+                }
+            else
+                return {
+                    id: item.id,
+                    studentName: item.student?.name,
+                    subjectName: item.subject?.name,
+                    ausencias: item.absences_total,
+                }
         }) ?? []
     }, [ausencias]);
 

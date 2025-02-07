@@ -7,9 +7,12 @@ import ScreenType from "../types.ts";
 import {RolesEnum} from "../api/RolesEnum.ts";
 import NotaIcon from '../assets/nota.svg'
 import UserIcon from '../assets/user-sidebar.svg'
+import CursoIcon from '../assets/curso.svg'
+import AusenciaIcon from '../assets/ausencia.svg'
+import UsersIcon from '../assets/users.svg'
+import FunctIcon from '../assets/charts.svg'
 
 export const Screens = {
-    //Inicio: new ScreenType('Inicio', HomeIcon, '/inicio', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN,RolesEnum.ADMIN, RolesEnum.STUDENT]),
     Info: new ScreenType('Sobre mí', UserIcon, '/info', [RolesEnum.TEACHER, RolesEnum.STUDENT,RolesEnum.SECRETARY, RolesEnum.ADMIN, RolesEnum.DEAN]),
     Estudiantes: new ScreenType('Estudiantes', EstudianteIcon, '/estudiantes', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN]),
     Profesores: new ScreenType('Profesores', ProfesorIcon, '/profesores', [RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
@@ -18,9 +21,8 @@ export const Screens = {
     Medios: new ScreenType('Medios', MediosIcon, '/medios', [RolesEnum.TEACHER, RolesEnum.DEAN,RolesEnum.ADMIN]),
     Mantenimientos: new ScreenType('Mantenimientos', MediosIcon, '/mantenimientos', [RolesEnum.DEAN,RolesEnum.ADMIN]),
     Notas: new ScreenType('Notas', NotaIcon, '/nota', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
-    Cursos: new ScreenType('Cursos', NotaIcon, '/curso', [RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
-    Ausencias: new ScreenType('Ausencias', NotaIcon, '/ausencias', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
-    Funcionalidades: new ScreenType('Funcionalidades', NotaIcon, '/funcionalidades', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
-    Usuarios: new ScreenType('Usuarios', NotaIcon, '/usuarios', [RolesEnum.SECRETARY]),
-
+    Cursos: new ScreenType('Cursos', CursoIcon, '/curso', [RolesEnum.SECRETARY, RolesEnum.DEAN]),
+    Ausencias: new ScreenType('Ausencias', AusenciaIcon, '/ausencias', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
+    Usuarios: new ScreenType('Usuarios', UsersIcon, '/usuarios', [RolesEnum.SECRETARY]),
+    Funcionalidades: new ScreenType('Funcionalidades', FunctIcon, '/funcionalidades', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
 }

@@ -6,6 +6,7 @@ import apiRequest from "../../../api/apiRequest.ts";
 import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import {IAusenciaLocal} from "../models/IAusenciaLocal.ts";
 import {AusenciaAdapter} from "../adapters/AusenciaAdapter.ts";
+import {IAusenciaCreateDB} from "../models/IAusenciaCreateDB.ts";
 const endpoint = EndpointEnum.AUSENCIAS;
 
 export const useApiAusencias = () => {
@@ -35,7 +36,7 @@ export const useApiAusencias = () => {
         setIsLoading(false);
     };
 
-    const createAusencia = async (ausencia: Partial<IAusenciaDB>) => {
+    const createAusencia = async (ausencia: IAusenciaCreateDB) => {
         setIsLoading(true);
         const res = await apiRequest.postApi(endpoint, ausencia);
         if (!res.ok)
@@ -44,7 +45,7 @@ export const useApiAusencias = () => {
         setIsLoading(false);
     };
 
-    const updateAusencia = async (id: string, ausencia: Partial<IAusenciaDB>) => {
+    const updateAusencia = async (id: string, ausencia: IAusenciaCreateDB) => {
         setIsLoading(true);
         const res = await apiRequest.patchApi(endpoint, id, ausencia)
         if (!res.ok)
