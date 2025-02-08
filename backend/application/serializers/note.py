@@ -58,15 +58,23 @@ class NoteByTeacher(BaseModel) :
     last_modified_by: uuid.UUID
    
 class NoteMapper :
-    def to_api(self, note: StudentNoteTable) -> NoteModel :
-            return NoteModel(
-                id = note.entity_id,
-                teacher = note.teacher.name,
-                student = note.student.name,
-                subject = note.subject.name,
-                note_value = note.note_value,
-                last_modified_by = note.last_modified_by
+    def to_api(self, data) -> NoteModel :
+        subject_mapper = SubjectMapper()
+        teacher_mapper = TeacherMapper()
+        student_mapper = StudentMapper()
+        serialized_values = []
+       
+        for item in data :
+            new_item = NoteByTeacher(
+                student = student_mapper.to_api(item[1]),
+                teacher = teacher_mapper.to_api_note(item[2]),
+                subject = subject_mapper.to_api(item[3]),
+                note_value = item[0].note_value,
+                last_modified_by = item[0].last_modified_by
             )
+            serialized_values.append(new_item)
+        
+        return serialized_values
 
     def to_less_than_fifty(self, data) :
         serialized_values = []

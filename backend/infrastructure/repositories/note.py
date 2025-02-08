@@ -74,10 +74,14 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
 
     def get(self, filter_params: NoteFilterSchema) -> list[StudentNoteTable]:
         """Get notes based on filter parameters."""
-        query = select(StudentNoteTable)
+
+        query = select(StudentNoteTable, StudentTable, TeacherTable, SubjectTable)
+        query = query.join(StudentTable, StudentNoteTable.student_id == StudentTable.entity_id)
+        query = query.join(TeacherTable, StudentNoteTable.teacher_id == TeacherTable.entity_id)
+        query = query.join(SubjectTable, StudentNoteTable.subject_id == SubjectTable.entity_id)
         filter_set = NoteFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
-        return self.session.execute(query).scalars().all()
+        return self.session.execute(query).all()
 
     def grade_less_than_fifty(self):
         """
