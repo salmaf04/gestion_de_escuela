@@ -79,10 +79,7 @@ async def read_absence(
     absences = absence_pagination_service.get_absence(filter_params=filters)
 
     if not absences:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="There is no absence with that fields"
-        )
+        return []
     
     if by_student:
         absences = absence_pagination_service.get_absence_by_student(student_id=by_student)
