@@ -55,8 +55,7 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         
         if subjects :
             table_entity.teacher_subject_association = subjects
-        print(type(changes))
-        print(changes)
+        
         for key, value in changes.items() :
             setattr(table_entity, key, value)
         self.session.commit()
