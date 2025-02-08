@@ -5,6 +5,7 @@ import apiRequest from "../../../api/apiRequest.ts";
 import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import {getQueryParamsFromObject} from "../../../utils/utils.ts";
 import {ISecretariaDB} from "../models/ISecretariaDB.ts";
+import {ISecretariaCreateDB} from "../models/ISecretariaCreateDB.ts";
 
 const endpoint = EndpointEnum.SECRETARY;
 
@@ -31,7 +32,7 @@ export const useApiSecretaria = () => {
         setIsLoading(false);
     };
 
-    const createSecretaria = async (secretaria: Partial<ISecretariaDB>) => {
+    const createSecretaria = async (secretaria: ISecretariaCreateDB) => {
         setIsLoading(true);
         const res = await apiRequest.postApi(endpoint, secretaria);
         if (!res.ok)
@@ -39,7 +40,7 @@ export const useApiSecretaria = () => {
         setIsLoading(false);
     };
 
-    const updateSecretaria = async (id: string, secretaria: Partial<ISecretariaDB>) => {
+    const updateSecretaria = async (id: string, secretaria: Partial<ISecretariaCreateDB>) => {
         setIsLoading(true);
         const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(secretaria))
         if (!res.ok)

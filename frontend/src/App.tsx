@@ -37,6 +37,8 @@ interface AppContextInterface {
     setToken?: (token: string) => void;
     profesores?: ProfesorGetAdapter[];
     setProfesores?: (profesor: ProfesorGetAdapter[]) => void;
+    decanos?: ProfesorGetAdapter[];
+    setDecanos?: (decano: ProfesorGetAdapter[]) => void;
     aulas?: AulaGetAdapter[];
     setAulas?: (aulas: AulaGetAdapter[]) => void;
     estudiantes?: EstudianteGetAdapter[];
@@ -91,6 +93,7 @@ function App() {
     const [ausencias, setAusencias] = useState<IAusenciaLocal[]>()
     const [secretarias, setSecretarias] = useState<ISecretariaDB[]>()
     const [administradores, setAdministradores] = useState<IAdministradorDB[]>()
+    const [decanos, setDecanos] = useState<ProfesorGetAdapter[]>()
     const [roles, setRoles] = useState<RolesEnum[]>()
     const [personalId, setPersonalId] = useState<string>()
     const [message, setMessage] = useState<string | undefined>()
@@ -152,7 +155,9 @@ function App() {
             usuarios: usuarios,
             setUsuarios: setUsuarios,
             typeRole: typeRole,
-            setTypeRole: setTypeRole
+            setTypeRole: setTypeRole,
+            decanos: decanos,
+            setDecanos: setDecanos
         }}>
             <BrowserRouter>
                 {error &&

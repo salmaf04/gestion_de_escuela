@@ -4,23 +4,16 @@ import {useApiUsuarios} from "./hooks/useApiUsuarios.ts";
 import {DBObject} from "../../types.ts";
 import {AppContext} from "../../App.tsx";
 import AddUsuarioForm from "./components/AddUsuarioForm.tsx";
-import {IUsuarioLocal} from "./models/IUsuarioLocal.ts";
 import {rolesDisplayParser} from "../../utils/utils.ts";
 import ToolBar from "./components/ToolBar.tsx";
 
 interface IUsuariosContext {
     searchText?: string;
     dataTable?: IUsuarioTableRow[];
-    editting?: IUsuarioTableRow;
     showModal?: boolean;
-    isGetLoading?: boolean;
-    isCreatting?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEditting?: (UsuarioDB?: IUsuarioTableRow) => void;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
-    onEditTableItem?: (usuarioEdit: Partial<IUsuarioLocal>) => void;
-    onAddTableItem?: (usuarioEdit: Partial<IUsuarioLocal>[]) => void;
 }
 
 export const UsuariosContext = createContext<IUsuariosContext>({});
@@ -37,9 +30,7 @@ interface IUsuarioTableRow extends DBObject {
 
 export default function UsuariosScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<IUsuarioTableRow | undefined>();
     const [showModal, setShowModal] = useState(false);
-    const [isCreating, setIsCreating] = useState(false);
     const {usuarios} = useContext(AppContext)
     const {
         deleteUsuario,
@@ -52,17 +43,6 @@ export default function UsuariosScreen() {
 
     const onDeleteTableItem = (deletedUsuarioId: string) => {
         deleteUsuario(deletedUsuarioId);
-    };
-
-    const onEditTableItem = (usuariosEdit: Partial<IUsuarioLocal>) => {
-        setEditting(undefined)
-    };
-
-    const onAddTableItem = (usuarios: Partial<IUsuarioLocal>[]) => {
-        setIsCreating(true);
-        usuarios.forEach((item) => {
-        })
-        setIsCreating(false);
     };
     const [dataTable, setDataTable] = useState<IUsuarioTableRow[]>([])
     const data = useMemo<IUsuarioTableRow[]>(() => {
@@ -95,20 +75,15 @@ export default function UsuariosScreen() {
         <UsuariosContext.Provider value={{
             dataTable: dataTable,
             searchText: searchText,
-            editting: editting,
             showModal: showModal,
-            isCreatting: isCreating,
             setShowModal: setShowModal,
-            setEditting: setEditting,
             setSearchText: setSearchText,
             onDeleteTableItem: onDeleteTableItem,
-            onEditTableItem: onEditTableItem,
-            onAddTableItem: onAddTableItem,
         }}>
             <div className={'w-full h-full flex flex-col'}>
                 <ToolBar />
                 <Body/>
-                {(showModal || editting) &&
+                {(showModal) &&
                     <AddUsuarioForm />
                 }
             </div>

@@ -22,4 +22,5 @@ export enum EndpointEnum {
     CLASSROOM_REQUEST = "classroom_request",
     AULAS_AVAILABLES = 'classroom?avaliable=true',
     USUARIOS = 'user',
+    DEAN = 'dean'
 }
