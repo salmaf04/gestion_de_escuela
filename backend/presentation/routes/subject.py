@@ -104,7 +104,7 @@ async def delete_subject(
     response_model=dict[int, SubjectModel] | list[SubjectModel] | SubjectModel,
     status_code=status.HTTP_200_OK
 )
-@authorize(role=["secretary","teacher", "student"])
+@authorize(role=["secretary","teacher", "student", "dean"])
 async def read_subject(
     request: Request,
     subjects_by_students : str = None,

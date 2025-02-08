@@ -151,7 +151,7 @@ def authorize(role: list):
                 if method == 'GET' and url == 'subject':
                     if 'student' in user_roles :
                         kwargs['subjects_by_students'] = user_id1
-                    elif 'teacher' in user_roles :
+                    elif 'teacher' in user_roles and not 'dean' in user_roles :
                         kwargs['subjects_by_teacher'] = user_id1
 
                 if method == 'GET' and url == 'note':
