@@ -63,10 +63,9 @@ class NoteMapper :
         teacher_mapper = TeacherMapper()
         student_mapper = StudentMapper()
         serialized_values = []
-       
         for item in data :
             new_item = NoteByTeacher(
-                student = student_mapper.to_api(item[1]),
+                student = student_mapper.to_api((item[1], item[4])),
                 teacher = teacher_mapper.to_api_note(item[2]),
                 subject = subject_mapper.to_api(item[3]),
                 note_value = item[0].note_value,

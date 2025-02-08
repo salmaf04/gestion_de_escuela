@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.note import NoteCreateModel
-from backend.domain.models.tables import StudentNoteTable, StudentTable, TeacherTable, SubjectTable, teacher_subject_table
+from backend.domain.models.tables import StudentNoteTable, StudentTable, TeacherTable, SubjectTable, teacher_subject_table, CourseTable
 from backend.application.services.student import StudentPaginationService
 from backend.application.services.subject import SubjectPaginationService
 from backend.application.services.teacher import TeacherPaginationService
@@ -74,8 +74,9 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
 
     def get(self, filter_params: NoteFilterSchema) -> list[StudentNoteTable]:
         """Get notes based on filter parameters."""
-        query = select(StudentNoteTable, StudentTable, TeacherTable, SubjectTable)
+        query = select(StudentNoteTable, StudentTable, TeacherTable, SubjectTable, CourseTable)
         query = query.join(StudentTable, StudentNoteTable.student_id == StudentTable.entity_id)
+        query = query.join(CourseTable, StudentTable.course_id == CourseTable.entity_id)
         query = query.join(TeacherTable, StudentNoteTable.teacher_id == TeacherTable.entity_id)
         query = query.join(SubjectTable, StudentNoteTable.subject_id == SubjectTable.entity_id)
         filter_set = NoteFilterSet(self.session, query=query)
