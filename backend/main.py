@@ -19,11 +19,6 @@ from .presentation.routes.mean_request import router as mean_request_router
 from .presentation.routes.classroom_request import router as classroom_request_router
 from .presentation.routes.valoration_period import router as valoration_period_router
 from .presentation.routes.export_pdf import router as export_pdf_router
-from backend.domain.models.events import update_teacher_average, update_student_average
-from backend.domain.models.events import insert_user_roles, no_administrator, check_administrator_after_delete, check_administrator_after_insert
-from backend.domain.models.events import check_replacement
-from backend.domain.models.events import insert_default_valoration_period
-from backend.domain.models.events import update_less_than_three_valoration
 
 import os
 from dotenv import load_dotenv

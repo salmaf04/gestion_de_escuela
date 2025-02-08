@@ -31,6 +31,7 @@ class DeanMapper :
             email=dean.email,
             specialty=dean.specialty,
             contract_type=dean.contract_type,
+            salary=dean.salary,
             experience=dean.experience,
             username=dean.username,
         )

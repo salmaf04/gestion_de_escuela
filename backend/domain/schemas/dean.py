@@ -45,6 +45,7 @@ class DeanModel(BaseModel):
     lastname: str
     specialty: str
     contract_type: str  
+    salary: int
     experience: int
     email: str
     username: str
@@ -54,3 +55,4 @@ class DeanCreateModel(UserCreateModel):
     specialty: str
     contract_type: str
     experience: int
+    salary: int
