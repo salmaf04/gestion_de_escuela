@@ -132,11 +132,10 @@ async def read_student(
     if not students :
         return []
 
-    students_mapped = {}    
-     
-    
-    for i, student in enumerate(students) :
-        students_mapped[i] = mapper.to_api(student)
+    students_mapped = []
+
+    for student in students :
+        students_mapped.append(mapper.to_api(student))
         
     return students_mapped
 
