@@ -207,7 +207,7 @@ class TeacherMapper :
                     contract_type= teacher[0].contract_type,
                     experience= teacher[0].experience,
                     username= teacher[0].username,
-                    subjects=self.to_subject_list(teacher[0].teacher_subject_association),
+                    subjects=[teacher[1].name],
                     valoration= teacher[0].average_valoration,
                     salary=teacher[0].salary,
                     alert=teacher[0].less_than_three_valoration
