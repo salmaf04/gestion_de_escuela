@@ -73,7 +73,7 @@ class NoteMapper :
                 last_modified_by = item[0].last_modified_by
             )
             serialized_values.append(new_item)
-        
+       
         return serialized_values
 
     def to_less_than_fifty(self, data) :
@@ -98,8 +98,8 @@ class NoteMapper :
         
         for item in data :
             new_item = NoteByTeacher(
-                student = student_mapper.to_api(item[2]),
-                teacher = teacher_mapper.to_api_note(item[1]),
+                student = student_mapper.to_api(item[1]),
+                teacher = teacher_mapper.to_api_note(item[2]),
                 subject = subject_mapper.to_api(item[3]),
                 note_value = item[0].note_value,
                 last_modified_by = item[0].last_modified_by
@@ -107,5 +107,15 @@ class NoteMapper :
             serialized_values.append(new_item)
 
         return serialized_values
+    
+    def to_post(self, note: StudentNoteTable) : 
+        return NoteModel(
+            teacher=note.teacher.name,
+            student=note.student.name,
+            subject=note.subject.name,
+            id = note.entity_id,
+            note_value=note.note_value,
+            last_modified_by=note.last_modified_by
+        )
 
 

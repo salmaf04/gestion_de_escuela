@@ -74,13 +74,12 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
 
     def get(self, filter_params: NoteFilterSchema) -> list[StudentNoteTable]:
         """Get notes based on filter parameters."""
-
         query = select(StudentNoteTable, StudentTable, TeacherTable, SubjectTable)
         query = query.join(StudentTable, StudentNoteTable.student_id == StudentTable.entity_id)
         query = query.join(TeacherTable, StudentNoteTable.teacher_id == TeacherTable.entity_id)
         query = query.join(SubjectTable, StudentNoteTable.subject_id == SubjectTable.entity_id)
         filter_set = NoteFilterSet(self.session, query=query)
-        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
+        query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True)) 
         return self.session.execute(query).all()
 
     def grade_less_than_fifty(self):
@@ -127,18 +126,30 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         Returns:
             List of StudentNoteTable instances
         """
-        query = select(StudentNoteTable)
+        query = select(StudentNoteTable, StudentTable, TeacherTable, SubjectTable)
+        query = query.join(StudentTable, StudentNoteTable.student_id == StudentTable.entity_id)
+        query = query.join(TeacherTable, StudentNoteTable.teacher_id == TeacherTable.entity_id)
+        query = query.join(SubjectTable, StudentNoteTable.subject_id == SubjectTable.entity_id)
         query = query.where(StudentNoteTable.student_id == student_id)
         query = query.order_by(StudentNoteTable.subject_id)
-        return self.session.execute(query).scalars().all()
+        return self.session.execute(query).all()
     
-    def get_note_by_student_by_teacher(self,teacher_id: str):
-        query = select(StudentNoteTable, TeacherTable, StudentTable, SubjectTable)
-        query = query.join(teacher_subject_table, StudentNoteTable.subject_id == teacher_subject_table.c.subject_id)
-        query = query.join(TeacherTable, TeacherTable.entity_id == StudentNoteTable.teacher_id)
-        query = query.join(StudentTable, StudentTable.entity_id == StudentNoteTable.student_id)
-        query = query.join(SubjectTable, SubjectTable.entity_id == StudentNoteTable.subject_id)
-        query = query.order_by(StudentNoteTable.subject_id)
+    def get_note_by_student_by_teacher(self, teacher_id: str):
+        sub_query = select(teacher_subject_table.c.subject_id)
+        sub_query = sub_query.where(teacher_subject_table.c.teacher_id == teacher_id)
+        sub_query = sub_query.subquery()
+
+        query = select(StudentNoteTable, StudentTable, TeacherTable, SubjectTable,sub_query.c.subject_id)
+        query = query.join(StudentTable, StudentNoteTable.student_id == StudentTable.entity_id)
+        query = query.join(TeacherTable, StudentNoteTable.teacher_id == TeacherTable.entity_id)
+        query = query.join(SubjectTable, StudentNoteTable.subject_id == SubjectTable.entity_id)
+        query = query.where(
+            StudentNoteTable.subject_id.in_(
+                select(
+                    sub_query.c.subject_id
+                )
+            )
+        )
         return self.session.execute(query).all()
        
     

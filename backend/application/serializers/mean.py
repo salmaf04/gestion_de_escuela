@@ -24,7 +24,7 @@ class MeanMapper() :
 
     def to_api(self, data) -> MeanModel :
         serialized_data = []
-        print(data)
+    
         for mean in data :
             serialized_data.append(MeanModel(
                 id = mean[0].id,

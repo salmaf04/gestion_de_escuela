@@ -73,7 +73,7 @@ async def create_note(
     
     response = note_service.create_note(note=note_input, modified_by=user_id)
 
-    return mapper.to_api(response)
+    return mapper.to_post(response)
 
 @router.get(
     "/note",

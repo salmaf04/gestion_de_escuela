@@ -51,11 +51,15 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         self.session.delete(entity)
         self.session.commit()
 
-    def update(self, changes: TeacherChangeRequest, entity: TeacherModel) -> TeacherModel:
+    def update(self, changes: TeacherChangeRequest, entity: TeacherModel, subjects=None) -> TeacherModel:
         """Update a teacher's information."""
-        
+    
         table_entity = self.get_by_id(id=entity.id)
-        for key, value in changes.model_dump(exclude_unset=True, exclude_none=True).items():
+        
+        if subjects :
+            table_entity.teacher_subject_association.extend(subjects)
+
+        for key, value in changes :
             setattr(table_entity, key, value)
         self.session.commit()
 

@@ -114,9 +114,15 @@ class TeacherDeletionService:
 class TeacherUpdateService :
     def __init__(self, session):
         self.repo_istance = TeacherRepository(session)
+        self.subject_pagination = SubjectPaginationService(session)
 
     def update(self, changes : TeacherChangeRequest , teacher : TeacherModel ) -> TeacherModel: 
-        return self.repo_istance.update(changes, teacher)
+        if changes.subjects : 
+            filter_by_subject_ids = SubjectFilterSchema(id=changes.subjects)
+            subjects = self.subject_pagination.get_subjects(filter_params=filter_by_subject_ids)
+            changes = changes.model_dump(exclude={'subjects'}, exclude_none=True, exclude_unset=True)
+
+        return self.repo_istance.update(changes, teacher, subjects)
         
 class TeacherPaginationService :
     def __init__(self, session):
