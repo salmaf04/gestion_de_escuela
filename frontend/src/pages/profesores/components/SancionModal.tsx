@@ -1,12 +1,7 @@
 import {useForm, SubmitHandler} from "react-hook-form"
-import {useContext, useEffect} from "react";
 import MySpinner from "../../../components/MySpinner.tsx";
 import {useApiProfesor} from "../hooks/useApiProfesor.ts";
-import {ISelect} from "../../../types/ISelect.ts";
-import {useApiAsignatura} from "../../asignaturas/hooks/useApiAsignatura.ts";
-import {AppContext} from "../../../App.tsx";
 import {ISancionCreate} from "../models/ISancionCreate.ts";
-import Select from "../../../components/Select.tsx";
 import {DBObject} from "../../../types.ts";
 
 interface Props{
@@ -14,7 +9,7 @@ interface Props{
     setShowModal?: (text: boolean) => void;
 }
 export default function SancionModal({profesor, setShowModal}: Props) {
-    const {register, handleSubmit, control} = useForm<ISancionCreate>()
+    const {register, handleSubmit} = useForm<ISancionCreate>()
     const {isLoading, sancionarProfesor} = useApiProfesor()
     const editting = false
 
