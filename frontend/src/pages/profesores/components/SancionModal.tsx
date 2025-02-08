@@ -35,7 +35,7 @@ export default function SancionModal({profesor, setShowModal}: Props) {
                     <div className={'grid grid-cols-2 gap-y-5 gap-x-10'}>
                         <div className="group ">
                             <label
-                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Valoracion</label>
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Monto a sancionar</label>
                             <input
                                 type="number"
                                 {...register("amount", {
