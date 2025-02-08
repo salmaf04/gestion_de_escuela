@@ -275,7 +275,7 @@ async def update_teacher(
 
     teacher = teacher_pagination_service.get_teacher_by_id(id=id)
     subjects = teacher_subject_service.get_teacher_subjects(id=id)
-    teacher_model = mapper.to_api(teacher, subjects)
+    teacher_model = mapper.to_api(teacher)
 
     if not teacher :
         raise HTTPException(
