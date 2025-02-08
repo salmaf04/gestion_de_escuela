@@ -49,6 +49,7 @@ class AbsenceMapper :
 
         for absence in absences :
             if (absence[1].entity_id ,absence[2].entity_id) not in student_subject_ids :
+                print(absence[1].entity_id ,absence[2].entity_id)
                 student_subject_ids.append((absence[1].entity_id ,absence[2].entity_id))
                 serialized_values.append(
                     AbscenceBySubject(
