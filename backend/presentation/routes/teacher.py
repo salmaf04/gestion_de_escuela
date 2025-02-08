@@ -243,15 +243,15 @@ async def read_teacher(
         return mapper.to_teachers_sanctions(results, mean_data)
 
 
-    teachers, subjects = teacher_pagination_service.get_teachers(filter_params=filters)   
+    teachers = teacher_pagination_service.get_teachers(filter_params=filters)   
 
     if not teachers :
         return []
 
     teachers_mapped = []  
   
-    for  teacher, subject in zip(teachers, subjects) :
-        teachers_mapped.append(mapper.to_api(teacher, list(subject)))
+    for  teacher in teachers :
+        teachers_mapped.append(mapper.to_api(teacher))
         
     return teachers_mapped
 

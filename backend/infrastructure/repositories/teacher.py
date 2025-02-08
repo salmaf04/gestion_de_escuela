@@ -73,13 +73,7 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         filter_set = TeacherFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
         teachers = self.session.scalars(query).all()
-        mapper = TeacherMapper()
-        subjects = []
- 
-        if teachers:
-            for teacher in teachers:
-                subjects.append(mapper.to_subject_list(teacher.teacher_subject_association))
-        return teachers, subjects
+        return teachers
             
     def get_teacher_by_email(self, email: str) -> TeacherTable :
         query = self.session.query(TeacherTable).filter(TeacherTable.email == email)
