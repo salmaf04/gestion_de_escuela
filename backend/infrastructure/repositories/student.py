@@ -20,7 +20,7 @@ class StudentRepository(IRepository[StudentCreateModel,StudentModel, StudentChan
         """Initialize repository with database session."""
         super().__init__(session)
 
-    def create(self, entity: StudentCreateModel) -> StudentTable:
+    def create(self, entity: StudentCreateModel, course: CourseTable) -> StudentTable:
         """
         Create a new student record with hashed password.
         Args:
@@ -33,7 +33,7 @@ class StudentRepository(IRepository[StudentCreateModel,StudentModel, StudentChan
         new_student = StudentTable(**student_dict, hashed_password=hashed_password)
         self.session.add(new_student)
         self.session.commit()
-        return new_student
+        return new_student, course
     
     def delete(self, entity: StudentModel) -> None:
         """Delete a student from the database."""

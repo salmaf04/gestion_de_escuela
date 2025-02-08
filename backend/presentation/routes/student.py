@@ -75,9 +75,9 @@ async def create_student(
             detail="There is already an student with that email"
         )
 
-    response = student_service.create_student(student=student_input)
+    response, course = student_service.create_student(student=student_input)
 
-    return mapper.to_api(response)
+    return mapper.to_api((response, course))
 
 @router.delete(
     "/student/{id}",
