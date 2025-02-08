@@ -9,7 +9,7 @@ import AdministradorInfo from "./components/AdministradorInfo.tsx";
 import {rolesDisplayParser} from "../../utils/utils.ts";
 
 export default function InfoScreen() {
-    const {roles, setToken, username} = useContext(AppContext)
+    const {roles, setToken, username, allowRoles} = useContext(AppContext)
     const displayRoles = roles?.map((item) => rolesDisplayParser[item]).join(', ')
 
     return (
@@ -34,16 +34,16 @@ export default function InfoScreen() {
                 </button>
             </div>
             <div className={'h-full flex items-center ps-20'}>
-                {roles?.some((item) => item === RolesEnum.TEACHER) &&
+                {allowRoles!([RolesEnum.TEACHER]) &&
                     <ProfesorInfo/>
                 }
-                {roles?.some((item) => item === RolesEnum.STUDENT) &&
+                {allowRoles!([RolesEnum.STUDENT]) &&
                     <EstudianteInfo/>
                 }
-                {roles?.some((item) => item === RolesEnum.SECRETARY) &&
+                {allowRoles!([RolesEnum.SECRETARY]) &&
                     <SecretariaInfo/>
                 }
-                {roles?.some((item) => item === RolesEnum.ADMIN) &&
+                {allowRoles!([RolesEnum.ADMIN]) && !allowRoles!([RolesEnum.TEACHER]) &&
                     <AdministradorInfo/>
                 }
             </div>

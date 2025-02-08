@@ -19,14 +19,14 @@ export default function AddProfesorForm() {
     useEffect(() => {
         getAsignaturas()
     }, []);
-    const edittingAsignaturasArray: ISelect[] = editting?.body.asignaturas.map((item)=>{
+    const edittingAsignaturasArray: ISelect[] = editting?.body.asignaturas.map((item) => {
         return {
-            id: asignaturas!.find((i)=>i.name === item)!.id!,
+            id: asignaturas!.find((i) => i.name === item)!.id!,
             name: item
         }
     }) ?? []
     const [arraySelect, setArraySelect] = useState<ISelect[]>(edittingAsignaturasArray)
-    const asignaturasSelect: ISelect[] = asignaturas?.map((item)=>{
+    const asignaturasSelect: ISelect[] = asignaturas?.map((item) => {
         return {
             id: item.id,
             name: item?.name
@@ -36,7 +36,7 @@ export default function AddProfesorForm() {
     const onSubmit: SubmitHandler<ProfesorCreateAdapter> = (data) => {
         const data1 = {
             ...data,
-            asignaturas: arraySelect.map((i)=>i.name)
+            asignaturas: arraySelect.map((i) => i.name)
         }
         if (editting)
             onEditTableItem!(data1)
@@ -116,6 +116,7 @@ export default function AddProfesorForm() {
                                 className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Experiencia</label>
                             <input
                                 type="number" {...register("experience", {
+                                valueAsNumber: true,
                                 required: true
                             })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
@@ -128,6 +129,7 @@ export default function AddProfesorForm() {
                                 className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Salario</label>
                             <input
                                 type="number" {...register("salary", {
+                                valueAsNumber: true,
                                 required: true
                             })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
@@ -157,15 +159,17 @@ export default function AddProfesorForm() {
                                             {...register(`asignaturas.${index}`, {
                                                 value: arraySelect[index]?.name
                                             })}
-                                            label={`Asignatura ${index+1}`}
+                                            label={`Asignatura ${index + 1}`}
                                             labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
                                             data={asignaturasSelect}
                                             selected={item}
-                                            setSelected={(newItem)=>{setArraySelect((prev) =>
-                                                prev.map((item, idx) =>
-                                                    idx === index ? newItem : item
-                                                )
-                                            );}}
+                                            setSelected={(newItem) => {
+                                                setArraySelect((prev) =>
+                                                    prev.map((item, idx) =>
+                                                        idx === index ? newItem : item
+                                                    )
+                                                );
+                                            }}
                                         />
 
                                     </div>
