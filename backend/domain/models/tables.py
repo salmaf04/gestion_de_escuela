@@ -600,6 +600,16 @@ def check_administrator(mapper, connection, target):
     if result is None :
         connection.execute(UserTable.__table__.update().values(roles=[Roles.DEAN.value, Roles.TEACHER.value]).where(UserTable.entity_id == decano.id))
 
+@event.listens_for(DeanTable, 'after_delete')
+def check_dean(mapper, connection, target):
+    """
+    Manages dean privileges after dean deletion.
+    Transfers admin role to administrator if no dean remains.
+    """
+    user_id = target.id
+    print(user_id)
+    print('hola')
+    connection.execute(UserTable.__table__.update().values(roles=[Roles.TEACHER.value]).where(UserTable.entity_id == user_id))
 
 @event.listens_for(MeanMaintenanceTable, 'before_insert')
 def check_replacement(mapper, connection, target):
