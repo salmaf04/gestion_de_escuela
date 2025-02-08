@@ -133,7 +133,7 @@ def authorize(role: list):
                 throw_unauthorized = True
 
                 if method == 'GET' and url == 'student' :
-                    if 'teacher' in user_roles :
+                    if 'teacher' in user_roles and 'dean' not in user_roles:
                         kwargs['students_by_teacher'] = True
                         kwargs['teacher_id'] = user_id1
 
