@@ -5,7 +5,7 @@ import {AsignaturaGetDB} from "../../asignaturas/models/AsignaturaGetDB.ts";
 import {ProfesorDB} from "../../profesores/models/ProfesorGetDB.ts";
 
 export class NotaAdapter implements INotaLocal{
-    static Properties = ['ID', 'Profesor', 'Estudiante', 'Asignatura', 'Nota']
+    static Properties = ['ID', 'Estudiante', 'Profesor', 'Asignatura', 'Nota']
     id: string
     note_value: number;
     student: IEstudianteDB;

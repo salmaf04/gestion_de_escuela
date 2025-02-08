@@ -7,6 +7,7 @@ import {useApiNotas} from "./hooks/useApiNotas.ts";
 import {DBObject} from "../../types.ts";
 import {AppContext} from "../../App.tsx";
 import {INotaDB} from "./models/INotaDB.ts";
+import {RolesEnum} from "../../api/RolesEnum.ts";
 
 interface INotasContext {
     searchText?: string;
@@ -39,7 +40,7 @@ export default function NotasScreen() {
     const [editting, setEditting] = useState<INotaTableRow | undefined>();
     const [showModal, setShowModal] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
-    const {notas} = useContext(AppContext)
+    const {notas, allowRoles} = useContext(AppContext)
     const {
         deleteNota,
         createNota,
@@ -70,10 +71,18 @@ export default function NotasScreen() {
     const [dataTable, setDataTable] = useState<INotaTableRow[]>([])
     const data = useMemo<INotaTableRow[]>(() => {
         return notas?.map((item) => {
+            if (allowRoles!([RolesEnum.STUDENT])) {
+                return {
+                    id: item.id,
+                    teacherName: item.teacher?.name,
+                    subjectName: item.subject?.name,
+                    note_value: item?.note_value
+                }
+            }
             return {
                 id: item.id,
-                teacherName: item.teacher?.name,
                 studentName: item?.student?.name,
+                teacherName: item.teacher?.name,
                 subjectName: item.subject?.name,
                 note_value: item?.note_value
             }

@@ -13,7 +13,7 @@ export default function Body(){
             <Table
                 className={'h-5/6'}
                 isLoading={isGetLoading!}
-                Data={dataTable ?? []} header={NotaAdapter.Properties.slice(1)}
+                Data={dataTable ?? []} header={NotaAdapter.Properties.slice(allowRoles!([RolesEnum.STUDENT])? 2 : 1)}
                    onRemoveRow={(index) => {
                        onDeleteTableItem!(index)
                    }}
