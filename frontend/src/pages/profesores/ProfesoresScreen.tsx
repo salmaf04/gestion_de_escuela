@@ -30,8 +30,8 @@ interface IDataRow{
     salary: number;
     email: string;
     username: string
-    asignaturas: string[];
-    valoracion: string;
+    subjects: string[];
+    valoracion: number;
 }
 
 export const ProfesorContext = createContext<IProfesorContext>(
@@ -78,7 +78,7 @@ export default function ProfesoresScreen() {
             salary: p.salary,
             email: p.email,
             username: p.username,
-            asignaturas: p.asignaturas,
+            subjects: p.subjects.map((item)=> item.name),
             valoracion: p.valoracion,
         }
     }) ?? []

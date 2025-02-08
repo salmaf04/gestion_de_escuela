@@ -22,7 +22,7 @@ export function getProfesorCreateDbFromAdapter(profesorAdapter: ProfesorCreateAd
         contract_type: profesorAdapter.contractType,
         experience: profesorAdapter.experience,
         username: profesorAdapter.username,
-        list_of_subjects: profesorAdapter.asignaturas,
+        subjects: profesorAdapter.subjects,
         salary: profesorAdapter.salary
     }
 }

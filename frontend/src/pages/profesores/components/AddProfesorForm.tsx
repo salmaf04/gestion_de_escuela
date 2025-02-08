@@ -20,7 +20,7 @@ export default function AddProfesorForm() {
     useEffect(() => {
         getAsignaturas()
     }, []);
-    const edittingAsignaturasArray: ISelect[] = editting?.body.asignaturas.map((item) => {
+    const edittingAsignaturasArray: ISelect[] = editting?.body.subjects.map((item) => {
         return {
             id: asignaturas!.find((i) => i.name === item)!.id!,
             name: item
@@ -37,7 +37,7 @@ export default function AddProfesorForm() {
     const onSubmit: SubmitHandler<ProfesorCreateAdapter> = (data) => {
         const data1 = {
             ...data,
-            asignaturas: arraySelect.map((i) => i.id as string)
+            subjects: arraySelect.map((i) => i.id as string)
         }
         if (editting)
             onEditTableItem!(data1)
@@ -158,7 +158,7 @@ export default function AddProfesorForm() {
                                     <div className={'flex w-full space-x-2'}>
                                         <div className="group relative w-full" key={index}>
                                             <SelectProfesor
-                                                {...register(`asignaturas.${index}`, {
+                                                {...register(`subjects.${index}`, {
                                                     value: arraySelect[index]?.name
                                                 })}
                                                 label={`Asignatura ${index + 1}`}

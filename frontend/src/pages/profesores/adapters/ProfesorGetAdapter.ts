@@ -1,5 +1,6 @@
 import {DBObject} from "../../../types.ts";
 import {ProfesorDB} from "../models/ProfesorGetDB.ts";
+import {AsignaturaGetDB} from "../../asignaturas/models/AsignaturaGetDB.ts";
 
 export class ProfesorGetAdapter implements DBObject{
     static Properties = ['Id', 'Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia','Salario', 'Correo' ,  'Usuario', 'Asignaturas', 'Valoracion']
@@ -12,8 +13,8 @@ export class ProfesorGetAdapter implements DBObject{
     salary : number
     email: string
     username: string
-    asignaturas: string[]
-    valoracion: string
+    subjects: AsignaturaGetDB[]
+    valoracion: number
     alert: number
 
 
@@ -27,7 +28,7 @@ export class ProfesorGetAdapter implements DBObject{
         this.salary = profesorModel.salary
         this.email = profesorModel.email;
         this.username = profesorModel.username;
-        this.asignaturas = profesorModel.list_of_subjects;
+        this.subjects = profesorModel.subjects;
         this.valoracion = profesorModel.valoration;
         this.alert = profesorModel.alert;
     }

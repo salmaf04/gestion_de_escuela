@@ -7,5 +7,5 @@ export type ProfesorCreateDB = {
     "experience": number
     "username": string
     "salary" : number,
-    "list_of_subjects": string[]
+    "subjects": string[]
 }

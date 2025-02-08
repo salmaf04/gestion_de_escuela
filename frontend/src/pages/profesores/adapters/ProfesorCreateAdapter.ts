@@ -1,7 +1,6 @@
 import {ProfesorCreateDB} from "../models/ProfesorCreateDB.ts";
-import {ProfesorGetAdapter} from "./ProfesorGetAdapter.ts";
 
-export class ProfesorCreateAdapter implements Partial<ProfesorGetAdapter>{
+export class ProfesorCreateAdapter {
     static Properties = ['Nombre', 'Apellidos', 'Especialidad', 'Contrato', 'Experiencia', 'Correo' ,  'Usuario',  'Salario'  , 'Asignaturas']
     name: string
     lastname: string
@@ -11,7 +10,7 @@ export class ProfesorCreateAdapter implements Partial<ProfesorGetAdapter>{
     experience: number
     salary : number
     username: string
-    asignaturas: string[]
+    subjects: string[]
 
     constructor(profesorCreateDB: ProfesorCreateDB) {
 
@@ -23,7 +22,7 @@ export class ProfesorCreateAdapter implements Partial<ProfesorGetAdapter>{
         this.experience = profesorCreateDB.experience;
         this.username = profesorCreateDB.username;
         this.salary = profesorCreateDB.salary;
-        this.asignaturas = profesorCreateDB.list_of_subjects;
+        this.subjects = profesorCreateDB.list_of_subjects;
     }
 
 }

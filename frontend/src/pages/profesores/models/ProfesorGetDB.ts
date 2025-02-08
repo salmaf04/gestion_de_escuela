@@ -1,3 +1,5 @@
+import {AsignaturaGetDB} from "../../asignaturas/models/AsignaturaGetDB.ts";
+
 export type ProfesorDB = {
 
         id: string
@@ -9,8 +11,8 @@ export type ProfesorDB = {
         "salary" : number,
         "email": string
         "username": string
-        "list_of_subjects": string[]
-        "valoration": string,
+        "subjects": AsignaturaGetDB[]
+        "valoration": number,
         alert: number
     }
 
