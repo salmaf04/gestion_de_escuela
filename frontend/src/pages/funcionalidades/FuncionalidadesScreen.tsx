@@ -55,7 +55,7 @@ function FuncionalidadesScreen() {
     ];
 
     return (
-        <div className={' flex flex-col m2 px-6'}>
+        <div className={'h-dvh flex flex-col m2 px-6 overflow-y-scroll py-20'}>
            <div>
                 {data.map((section, index) => (
                     <Table
