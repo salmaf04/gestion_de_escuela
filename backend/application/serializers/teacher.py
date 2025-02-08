@@ -92,7 +92,7 @@ class TeacherTechnologicalClassroom(BaseModel) :
 
 class TeacherMapper :
 
-    def to_api(self, teacher: TeacherTable , subjects: list[str] , valoration: float = None) -> TeacherModel :
+    def to_api(self, teacher: TeacherTable) -> TeacherModel :
         return TeacherModel(
             id = teacher.entity_id,
             name=teacher.name,
@@ -102,7 +102,7 @@ class TeacherMapper :
             contract_type=teacher.contract_type,
             experience=teacher.experience,
             username=teacher.username,
-            list_of_subjects=subjects,
+            subjects=self.to_subject_list(teacher.teacher_subject_association),
             valoration= teacher.average_valoration,
             salary=teacher.salary,
             alert=teacher.less_than_three_valoration 
@@ -118,7 +118,7 @@ class TeacherMapper :
             contract_type=teacher.contract_type,
             experience=teacher.experience,
             username=teacher.username,
-            list_of_subjects=self.to_subject_list(teacher.teacher_subject_association),
+            subjects=self.to_subject_list(teacher.teacher_subject_association),
             valoration= teacher.average_valoration,
             salary=teacher.salary,
             alert=teacher.less_than_three_valoration 
@@ -128,7 +128,6 @@ class TeacherMapper :
     def to_subject_list(self, subjects) :
         subjects_list = []
         subject_mapper = SubjectMapper()
-
         for subject in subjects :
             subjects_list.append(subject_mapper.to_api(subject))
 
@@ -196,7 +195,7 @@ class TeacherMapper :
 
         for teacher in data :
             if teacher[0].id in teacher_ids :
-                serialized_values[len(serialized_values)-1].list_of_subjects.append(teacher[1].name)
+                serialized_values[len(serialized_values)-1].subjects.append(teacher[1].name)
             else :
                 teacher_ids.append(teacher[0].id)
                 new_teacher = TeacherModel(
@@ -208,7 +207,7 @@ class TeacherMapper :
                     contract_type= teacher[0].contract_type,
                     experience= teacher[0].experience,
                     username= teacher[0].username,
-                    list_of_subjects=[teacher[1].name],
+                    subjects=self.to_subject_list(teacher[0].teacher_subject_association),
                     valoration= teacher[0].average_valoration,
                     salary=teacher[0].salary,
                     alert=teacher[0].less_than_three_valoration

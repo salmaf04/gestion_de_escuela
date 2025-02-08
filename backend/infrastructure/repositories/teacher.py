@@ -35,15 +35,12 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         Returns:
             Created TeacherTable instance
         """
-        teacher_dict = entity.model_dump(exclude={'password', 'list_of_subjects'})
+        teacher_dict = entity.model_dump(exclude={'password', 'subjects'})
         hashed_password = get_password_hash(get_password(entity))
         new_teacher = TeacherTable(**teacher_dict, hashed_password=hashed_password)
         new_teacher.teacher_subject_association = subjects if subjects else []
         self.session.add(new_teacher)
         self.session.commit()
-        if subjects :
-            for subject in subjects :
-                subject.teacher_subject_association.append(new_teacher)
         return new_teacher
 
     def delete(self, entity: TeacherModel) -> None:

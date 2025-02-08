@@ -27,7 +27,7 @@ Attributes:
 - email (str): The email address of the teacher.
 - username (str): The username of the teacher.
 - salary (float | None): The salary of the teacher, optional.
-- list_of_subjects (list[str]): The list of subjects the teacher is associated with.
+- subjects (list[str]): The list of subjects the teacher is associated with.
 - valoration (float | str | None): The valoration of the teacher, optional.
 - alert (int | None): The alert status of the teacher, default is 0.
 """
@@ -41,7 +41,7 @@ class TeacherModel(BaseModel):
     email: str
     username: str
     salary: float | None = None
-    list_of_subjects: list[SubjectModel]
+    subjects: list[SubjectModel] | None = None
     valoration : Optional[float | str ] = None
     alert : int | None = 0
     
@@ -50,5 +50,5 @@ class TeacherCreateModel(UserCreateModel):
     contract_type: str
     experience: int
     salary: float
-    list_of_subjects: list[str]
+    subjects: list[str]
     

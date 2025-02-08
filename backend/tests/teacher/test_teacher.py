@@ -25,7 +25,7 @@ class TestTeacher:
                     "contract_type":"undefined",
                     "experience" :20,
                     "email":"marquitos@gmail.com",
-                    "list_of_subjects" :[],
+                    "subjects" :[],
                     "salary" : 8000,
                 }
             ),
