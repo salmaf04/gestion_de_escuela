@@ -1,7 +1,6 @@
 import {ICursoGetDB} from "../../cursos/models/ICursoGetDB.ts";
-import {IUsuarioLocal} from "../../usuarios/models/IUsuarioLocal.ts";
 
-export interface IEstudianteLocal extends IUsuarioLocal{
+export interface IEstudianteLocal{
     id: string,
     name: string,
     lastname: string,

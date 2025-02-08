@@ -1,3 +1,5 @@
+import {ICursoGetDB} from "../../cursos/models/ICursoGetDB.ts";
+
 export interface IEstudianteDB {
     id: string,
     name: string,
@@ -6,6 +8,5 @@ export interface IEstudianteDB {
     email: string,
     extra_activities: boolean,
     username: string,
-    course_id: string,
-    lastname: string
+    course: ICursoGetDB,
 }

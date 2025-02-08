@@ -13,7 +13,7 @@ export class EstudianteGetAdapter implements IEstudianteLocal{
     username: string;
     course: ICursoGetDB;
 
-    constructor(estudianteGetDB: IEstudianteDB, curso: ICursoGetDB) {
+    constructor(estudianteGetDB: IEstudianteDB) {
         this.id = estudianteGetDB.id;
         this.name = estudianteGetDB.name;
         this.lastname = estudianteGetDB.lastname;
@@ -21,7 +21,7 @@ export class EstudianteGetAdapter implements IEstudianteLocal{
         this.email = estudianteGetDB.email;
         this.username = estudianteGetDB.username;
         this.extra_activities = estudianteGetDB.extra_activities;
-        this.course = curso;
+        this.course = estudianteGetDB.course;
     }
 
 }

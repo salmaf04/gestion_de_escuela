@@ -22,15 +22,15 @@ export default function AddProfesorForm() {
     }, []);
     const edittingAsignaturasArray: ISelect[] = editting?.body.subjects.map((item) => {
         return {
-            id: asignaturas!.find((i) => i.name === item)!.id!,
+            id: asignaturas?.find((i) => i.name === item)?.id ?? "",
             name: item
         }
     }) ?? []
     const [arraySelect, setArraySelect] = useState<ISelect[]>(edittingAsignaturasArray)
     const asignaturasSelect: ISelect[] = asignaturas?.map((item) => {
         return {
-            id: item.id,
-            name: item?.name
+            id: item?.id ?? "",
+            name: item?.name ?? ""
         }
     }) ?? []
 

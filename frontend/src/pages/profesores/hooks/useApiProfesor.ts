@@ -1,4 +1,4 @@
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {ProfesorGetAdapter} from "../adapters/ProfesorGetAdapter.ts";
 import {ProfesorDB, ProfesorGetResponse} from "../models/ProfesorGetDB.ts";
 import {AppContext} from "../../../App.tsx";
@@ -8,8 +8,8 @@ import {ProfesorCreateAdapter} from "../adapters/ProfesorCreateAdapter.ts";
 import {getProfesorCreateDbFromAdapter} from "../utils/utils.ts";
 import {getQueryParamsFromObject} from "../../../utils/utils.ts";
 import {IValorationCreate} from "../models/IValorationCreate.ts";
-import {useApiEstudiante} from "../../estudiantes/hooks/useApiEstudiante.ts";
 import {ISancionCreate} from "../models/ISancionCreate.ts";
+import {useApiAsignatura} from "../../asignaturas/hooks/useApiAsignatura.ts";
 
 const endpoint = EndpointEnum.PROFESORES
 
@@ -17,14 +17,15 @@ export const useApiProfesor = () => {
     const [isLoading, setIsLoading] = useState(false)
     const {setError, profesores: profesoresAppContext, setProfesores: setProfesoresAppContext, setMessage} = useContext(AppContext)
     const [profesor, setProfesor] = useState<ProfesorGetAdapter>()
-    const {getEstudiantes} = useApiEstudiante()
-
+    const {getAsignaturas} = useApiAsignatura()
+    useEffect(() => {
+        getAsignaturas()
+    }, []);
     const getProfesores = async () => {
         setIsLoading(true)
         if (profesoresAppContext) {
             setIsLoading(false)
         }
-        await getEstudiantes()
          const res = await apiRequest.getApi(endpoint)
          if (res.ok) {
              const data: ProfesorGetResponse = await res.json()

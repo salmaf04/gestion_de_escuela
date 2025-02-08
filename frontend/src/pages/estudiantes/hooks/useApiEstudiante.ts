@@ -13,7 +13,7 @@ const endpoint = EndpointEnum.ESTUDIANTES
 export const useApiEstudiante = () => {
     const [isLoading, setIsLoading] = useState(false)
     const {getCursos} = useApiCurso()
-    const {setError, estudiantes: estudiantesAppContext, setEstudiantes: setEstudiantesAppContext, cursos} = useContext(AppContext)
+    const {setError, estudiantes: estudiantesAppContext, setEstudiantes: setEstudiantesAppContext} = useContext(AppContext)
     const [estudiante, setEstudiante] = useState<IEstudianteLocal>()
     const getEstudiantes = async () => {
         setIsLoading(true)
@@ -25,7 +25,7 @@ export const useApiEstudiante = () => {
         if (res.ok) {
             const data: IEstudianteDB[] = await res.json()
             const estudianteArray: IEstudianteLocal[] = Object.values(data)
-                .map((estudiante: IEstudianteDB) => new EstudianteGetAdapter(estudiante, cursos!.find((item)=> item.id === estudiante.course_id)!))
+                .map((estudiante: IEstudianteDB) => new EstudianteGetAdapter(estudiante))
             setEstudiantesAppContext!(estudianteArray)
         } else {
             setError!(new Error(res.statusText))
@@ -65,7 +65,7 @@ export const useApiEstudiante = () => {
         const res = await apiRequest.getApi(endpoint, getQueryParamsFromObject({id: id}));
         if (res.ok){
             const data: IEstudianteDB[] = await res.json()
-            setEstudiante(new EstudianteGetAdapter(data[0], cursos!.find((item)=> item.id === data[0].course_id)!))
+            setEstudiante(new EstudianteGetAdapter(data[0]))
         }
         if (!res.ok)
             setError!(new Error(res.statusText));
