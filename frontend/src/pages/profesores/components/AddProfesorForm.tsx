@@ -8,6 +8,7 @@ import {ISelect} from "../../../types/ISelect.ts";
 import {useApiAsignatura} from "../../asignaturas/hooks/useApiAsignatura.ts";
 import {AppContext} from "../../../App.tsx";
 import SelectProfesor from "./SelectProfesor.tsx";
+import RemoveIcon from '../../../assets/remove.svg'
 
 export default function AddProfesorForm() {
     const {register, handleSubmit} = useForm<ProfesorCreateAdapter>()
@@ -36,7 +37,7 @@ export default function AddProfesorForm() {
     const onSubmit: SubmitHandler<ProfesorCreateAdapter> = (data) => {
         const data1 = {
             ...data,
-            asignaturas: arraySelect.map((i) => i.name)
+            asignaturas: arraySelect.map((i) => i.id as string)
         }
         if (editting)
             onEditTableItem!(data1)
@@ -154,25 +155,38 @@ export default function AddProfesorForm() {
                         {
                             arraySelect.map((item, index) => {
                                 return (
-                                    <div className="group relative" key={index}>
-                                        <SelectProfesor
-                                            {...register(`asignaturas.${index}`, {
-                                                value: arraySelect[index]?.name
-                                            })}
-                                            label={`Asignatura ${index + 1}`}
-                                            labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
-                                            data={asignaturasSelect}
-                                            selected={item}
-                                            setSelected={(newItem) => {
-                                                setArraySelect((prev) =>
-                                                    prev.map((item, idx) =>
-                                                        idx === index ? newItem : item
-                                                    )
-                                                );
-                                            }}
-                                        />
-
+                                    <div className={'flex w-full space-x-2'}>
+                                        <div className="group relative w-full" key={index}>
+                                            <SelectProfesor
+                                                {...register(`asignaturas.${index}`, {
+                                                    value: arraySelect[index]?.name
+                                                })}
+                                                label={`Asignatura ${index + 1}`}
+                                                labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
+                                                data={asignaturasSelect}
+                                                selected={item}
+                                                setSelected={(newItem) => {
+                                                    setArraySelect((prev) =>
+                                                        prev.map((item, idx) =>
+                                                            idx === index ? newItem : item
+                                                        )
+                                                    );
+                                                }}
+                                            />
+                                            <button
+                                                className={'absolute top-1 end-0 p-[3px] bg-red-200 hover:bg-red-400 transition-colors w-4 h-4 rounded-full self-end flex justify-center items-center'}
+                                                onClick={(e)=>{
+                                                    setArraySelect((prev) =>
+                                                        prev.filter((_, idx) => idx !== index)
+                                                    );
+                                                    e.preventDefault()
+                                                }}
+                                            >
+                                                <img src={RemoveIcon} alt={'Eliminar'}/>
+                                            </button>
+                                        </div>
                                     </div>
+
                                 )
                             })
                         }
