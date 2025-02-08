@@ -66,4 +66,5 @@ class TeacherChangeRequest(BaseModel) :
     specialty : Optional[str] = None
     contract_type : Optional[str] = None
     experience : Optional[int] = None
+    salary : Optional[int] = None
    
