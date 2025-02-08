@@ -5,12 +5,23 @@ import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {IUsuarioCreateDB} from "../models/IUsuarioCreateDB.ts";
 import {IUsuarioDB} from "../models/IUsuarioDB.ts";
+import {useApiProfesor} from "../../profesores/hooks/useApiProfesor.ts";
+import {useApiEstudiante} from "../../estudiantes/hooks/useApiEstudiante.ts";
+import {useApiDecano} from "./useApiDecano.ts";
+import {useApiSecretaria} from "../../info/hooks/useApiSecretaria.ts";
+import {useApiAdministrador} from "../../info/hooks/useApiAdministrador.ts";
+import {RolesEnum} from "../../../api/RolesEnum.ts";
 
 const endpoint = EndpointEnum.USUARIOS
 
 export const useApiUsuarios = () => {
     const [isLoading, setIsLoading] = useState(false)
-    const {setError, usuarios: usuariosAppContext, setUsuarios: setUsuariosAppContext, personalId, setMessage} = useContext(AppContext)
+    const {setError, usuarios: usuariosAppContext, setUsuarios: setUsuariosAppContext} = useContext(AppContext)
+    const {deleteProfesor} = useApiProfesor()
+    const {deleteEstudiante} = useApiEstudiante()
+    const {deleteDecano} = useApiDecano()
+    const {deleteSecretaria} = useApiSecretaria()
+    const {deleteAdministrador} = useApiAdministrador()
 
     const getUsuarios = async () => {
         setIsLoading(true)
@@ -49,20 +60,26 @@ export const useApiUsuarios = () => {
 
     const deleteUsuario = async (id: string) => {
         setIsLoading(true);
-        const res = await apiRequest.deleteApi(endpoint, id);
-        if (!res.ok)
-            setError!(new Error(res.statusText));
-        await getUsuarios()
-        setIsLoading(false);
-    };
-
-    const solicitarUsuario = async (classRoom: {classroom_id: string}) => {
-        setIsLoading(true);
-        const res = await apiRequest.postApi(EndpointEnum.CLASSROOM_REQUEST+"/"+personalId, classRoom);
-        if (!res.ok)
-            setError!(new Error(res.statusText));
-        else
-            setMessage!("Solicitud enviada correctamente")
+        const role = usuariosAppContext!.find(usuario => usuario.id === id)!.type
+        switch (role) {
+            case RolesEnum.TEACHER:
+                await deleteProfesor(id)
+                break
+            case RolesEnum.STUDENT:
+                await deleteEstudiante(id)
+                break
+            case RolesEnum.DEAN:
+                await deleteDecano(id)
+                break
+            case RolesEnum.SECRETARY:
+                await deleteSecretaria(id)
+                break
+            case RolesEnum.ADMIN:
+                await deleteAdministrador(id)
+                break
+            default:
+                break
+        }
         await getUsuarios()
         setIsLoading(false);
     };
@@ -73,6 +90,5 @@ export const useApiUsuarios = () => {
         createUsuario,
         deleteUsuario,
         updateUsuario,
-        solicitarUsuario
     }
 }
