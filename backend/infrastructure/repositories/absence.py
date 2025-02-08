@@ -48,18 +48,18 @@ class AbsenceRepository(IRepository[AbsenceCreateModel,AbsenceTable, None,Absenc
         Returns:
             List of matching AbsenceTable instances
         """
-
+        
         query = select(AbsenceTable.student_id, AbsenceTable.subject_id, func.count().label("absences_by_subject"))
         query = query.group_by(AbsenceTable.subject_id, AbsenceTable.student_id)
-        query = query.subquery()
-        
-        final_query = select(query.c.subject_id, query.c.absences_by_subject, SubjectTable, StudentTable, AbsenceTable, query.c.student_id)
-        final_query = final_query.join(query, query.c.subject_id == AbsenceTable.subject_id)
-        final_query = final_query.join(StudentTable, StudentTable.entity_id == query.c.student_id)
-        final_query = final_query.join(SubjectTable, SubjectTable.entity_id == query.c.subject_id)
-        final_query = final_query.distinct(SubjectTable.entity_id, StudentTable.entity_id)
-        final_query = final_query.order_by(SubjectTable.entity_id, StudentTable.entity_id)
-        return self.session.execute(final_query).all()
+        query = query.order_by(AbsenceTable.student_id, AbsenceTable.subject_id)
+        total = self.session.execute(query).all()
+
+        final_query = select(AbsenceTable, StudentTable, SubjectTable, CourseTable)
+        final_query = final_query.join(StudentTable, AbsenceTable.student_id == StudentTable.entity_id)
+        final_query = final_query.join(SubjectTable, AbsenceTable.subject_id == SubjectTable.entity_id) 
+        final_query = final_query.join(CourseTable, StudentTable.course_id == CourseTable.entity_id)
+        final_query = final_query.order_by(StudentTable.entity_id, SubjectTable.entity_id)
+        return self.session.execute(final_query).all(), total
     
     def get_by_id(self, id: str) -> AbsenceTable:
         """Get absence by ID - Not implemented."""
