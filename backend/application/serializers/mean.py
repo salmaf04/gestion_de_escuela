@@ -22,14 +22,20 @@ Dependencies:
 """ 
 class MeanMapper() :
 
-    def to_api(self, mean: MeanTable) -> MeanModel :
-        return MeanModel(
-            id = mean.entity_id,
-            name = mean.name,
-            state = mean.state,
-            location = mean.location,
-            type= mean.type,
-            classroom_id= mean.classroom.entity_id if mean.classroom else None,
-            to_be_replaced= mean.to_be_replaced
-        )
-        
+    def to_api(self, data) -> MeanModel :
+        serialized_data = []
+        print(data)
+        for mean in data :
+            serialized_data.append(MeanModel(
+                id = mean[0].id,
+                name = mean[0].name,
+                state = mean[0].state,
+                location = mean[0].location,
+                type= mean[0].type,
+                classroom_id= mean[0].classroom.entity_id if mean[0].classroom else None,
+                to_be_replaced= mean[0].to_be_replaced,
+                requested_by = str(mean[1]) if mean[1] else None
+            ))
+
+        return serialized_data
+       

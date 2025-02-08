@@ -85,7 +85,7 @@ async def delete_mean(
 
 @router.get(
     "/mean",
-    response_model=list[MeanModel] | MeanModel,
+    response_model=list[MeanModel] | MeanModel| list,
     status_code=status.HTTP_200_OK
 )
 async def read_mean(
@@ -101,9 +101,7 @@ async def read_mean(
     else :
         means = mean_pagination_service.get_means(filter_params=filters)
 
-    means_mapped = [mapper.to_api(mean) for mean in means] if means else []
-        
-    return means_mapped
+    return mapper.to_api(means)
     
 @router.patch(
     "/mean/{id}",

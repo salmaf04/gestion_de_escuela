@@ -106,10 +106,11 @@ class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,Me
         Returns:
             List of matching MeanTable instances
         """
-        query = select(MeanTable)
+        query = select(MeanTable, teacher_request_mean_table)
+        query = query.outerjoin(teacher_request_mean_table, MeanTable.entity_id == teacher_request_mean_table.c.mean_id)
         filter_set = MeanFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
-        return self.session.execute(query).scalars().all()
+        return self.session.execute(query).all()
     
     def get_avaliable_means(self) -> list[MeanTable]:
         """

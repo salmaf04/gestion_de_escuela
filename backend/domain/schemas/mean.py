@@ -76,6 +76,7 @@ class MeanModel (BaseModel):
     location: str
     classroom_id: uuid.UUID | None
     to_be_replaced: bool | None = None
+    requested_by: str | None = None
     type: str
     
 class MeanCreateModel(BaseModel):
@@ -93,6 +94,7 @@ class MeanCreateModel(BaseModel):
     state: str
     location: str 
     classroom_id: uuid.UUID
+    requested_by: str
     type: str
 
     @field_validator('state')
