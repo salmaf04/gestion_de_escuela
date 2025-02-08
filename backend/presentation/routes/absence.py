@@ -75,17 +75,15 @@ async def read_absence(
     """
     absence_pagination_service = AbsencePaginationService(session)
     mapper = AbsenceMapper()
-
-    absences = absence_pagination_service.get_absence(filter_params=filters)
+    
+    if by_student:
+        absences, total = absence_pagination_service.get_absence_by_student(student_id=by_student)
+    elif by_student_by_teacher:
+        absences, total = absence_pagination_service.get_absence_by_student_by_teacher(teacher_id=by_student_by_teacher)
+    else :
+        absences,total = absence_pagination_service.get_absence(filter_params=filters)
 
     if not absences:
         return []
     
-    if by_student:
-        absences = absence_pagination_service.get_absence_by_student(student_id=by_student)
-        return mapper.to_abscence_by_student(absences)
-    elif by_student_by_teacher:
-        absences = absence_pagination_service.get_absence_by_student_by_teacher(teacher_id=by_student_by_teacher)
-        return mapper.to_absence_by_student_by_teacher(absences)
-    
-    return mapper.to_absence_by_secretary(absences)
+    return mapper.to_absence_by_secretary(absences, total)
