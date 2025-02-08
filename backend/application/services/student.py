@@ -84,9 +84,11 @@ Dependencies:
 class StudentCreateService :
     def __init__(self, session):
         self.repo_instance = StudentRepository(session)
+        self.course_pagination_service = CoursePaginationService(session)
 
     def create_student(self, student:StudentCreateModel) -> StudentTable :
-        return self.repo_instance.create(student)
+        course = self.course_pagination_service.get_course_by_id(id=student.course_id)
+        return self.repo_instance.create(student,course)
    
 class StudentDeletionService:
     def __init__(self, session):

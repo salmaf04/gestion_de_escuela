@@ -20,7 +20,7 @@ class StudentRepository(IRepository[StudentCreateModel,StudentModel, StudentChan
         """Initialize repository with database session."""
         super().__init__(session)
 
-    def create(self, entity: StudentCreateModel) -> StudentTable:
+    def create(self, entity: StudentCreateModel, course: CourseTable) -> StudentTable:
         """
         Create a new student record with hashed password.
         Args:
@@ -33,7 +33,7 @@ class StudentRepository(IRepository[StudentCreateModel,StudentModel, StudentChan
         new_student = StudentTable(**student_dict, hashed_password=hashed_password)
         self.session.add(new_student)
         self.session.commit()
-        return new_student
+        return new_student, course
     
     def delete(self, entity: StudentModel) -> None:
         """Delete a student from the database."""
@@ -65,10 +65,11 @@ class StudentRepository(IRepository[StudentCreateModel,StudentModel, StudentChan
     
     def get(self, filter_params: StudentFilterSchema) -> list[StudentTable]:
         """Get students based on filter parameters."""
-        query = select(StudentTable)
+        query = select(StudentTable, CourseTable)
+        query = query.join(CourseTable, StudentTable.course_id == CourseTable.entity_id)
         filter_set = StudentFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
-        return self.session.execute(query).scalars().all()
+        return self.session.execute(query).all()
     
     def get_student_by_email(self, email: str) -> StudentTable:
         """

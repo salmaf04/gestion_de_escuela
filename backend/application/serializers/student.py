@@ -1,5 +1,6 @@
 from backend.domain.schemas.student import StudentModel, StudentAcademicPerformance, StudentSubjectPerformance
 from backend.domain.models.tables import StudentTable
+from backend.application.serializers.course import CourseMapper
 
 """
 This module defines a mapper for converting student data into API representations.
@@ -27,19 +28,20 @@ Dependencies:
 
 class StudentMapper :
 
-    def to_api(self, student: StudentTable) -> StudentModel :
-    
+    def to_api(self, student) -> StudentModel :
+        course_mapper = CourseMapper()
+
         return StudentModel(
-            id = student.entity_id,
-            name= student.name,
-            lastname= student.lastname,
-            age= student.age,
-            email= student.email,
-            extra_activities= student.extra_activities,  
-            username= student.username,
-            hash_password= student.hashed_password,
-            course_id = student.course_id 
-        )
+            id = student[0].entity_id,
+            name= student[0].name,
+            lastname= student[0].lastname,
+            age= student[0].age,
+            email= student[0].email,
+            extra_activities= student[0].extra_activities,  
+            username= student[0].username,
+            hash_password= student[0].hashed_password,
+            course = course_mapper.to_api(student[1])
+            )
         
     def to_academic_performance(self, data) :
         started = False
@@ -68,6 +70,7 @@ class StudentMapper :
     
     def to_student_by_teacher(self, data) :
         serialized_students = []
+        course_mapper = CourseMapper()
 
         for tuple in data : 
             student = StudentModel(
@@ -79,7 +82,7 @@ class StudentMapper :
                 extra_activities= tuple[3].extra_activities,  
                 username= tuple[3].username,
                 hash_password= tuple[3].hashed_password,
-                course_id = tuple[3].course_id 
+                course_id = course_mapper.to_api(tuple[3].course)
             )
             serialized_students.append(student)
         return serialized_students
