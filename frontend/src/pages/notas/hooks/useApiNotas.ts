@@ -22,7 +22,7 @@ export const useApiNotas = () => {
 
 
 
-    const { setError, notas: notasAppContext, setNotas: setNotasAppContext, profesores, asignaturas, estudiantes } = useContext(AppContext);
+    const { setError, notas: notasAppContext, setNotas: setNotasAppContext } = useContext(AppContext);
 
     const getNotas = async () => {
         setIsLoading(true);
@@ -37,11 +37,7 @@ export const useApiNotas = () => {
             const data: INotaDB[] = await res.json();
             const notaArray: INotaLocal[] = Object.values(data)
                 .map((nota: INotaDB) => {
-                    return new NotaAdapter(
-                        nota,
-                        estudiantes!.find((estudiante) => estudiante.name === nota.student)!,
-                        asignaturas!.find((asignatura) => asignatura.name === nota.subject)!,
-                        profesores!.find((profesor) => profesor.name === nota.teacher)!,)
+                    return new NotaAdapter(nota)
 
                 });
             setNotas(notaArray);
