@@ -75,9 +75,9 @@ async def create_student(
             detail="There is already an student with that email"
         )
 
-    response = student_service.create_student(student=student_input)
+    response, course = student_service.create_student(student=student_input)
 
-    return mapper.to_api(response)
+    return mapper.to_api((response, course))
 
 @router.delete(
     "/student/{id}",
@@ -132,11 +132,10 @@ async def read_student(
     if not students :
         return []
 
-    students_mapped = {}    
+    students_mapped = []  
      
-    
-    for i, student in enumerate(students) :
-        students_mapped[i] = mapper.to_api(student)
+    for student in students :
+        students_mapped.append(mapper.to_api(student))
         
     return students_mapped
 

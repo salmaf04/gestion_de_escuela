@@ -1,5 +1,6 @@
 from backend.domain.schemas.student import StudentModel, StudentAcademicPerformance, StudentSubjectPerformance
 from backend.domain.models.tables import StudentTable
+from backend.application.serializers.course import CourseMapper
 
 """
 This module defines a mapper for converting student data into API representations.
@@ -27,19 +28,21 @@ Dependencies:
 
 class StudentMapper :
 
-    def to_api(self, student: StudentTable) -> StudentModel :
-    
-        return StudentModel(
-            id = student.entity_id,
-            name= student.name,
-            lastname= student.lastname,
-            age= student.age,
-            email= student.email,
-            extra_activities= student.extra_activities,  
-            username= student.username,
-            hash_password= student.hashed_password,
-            course_id = student.course_id 
-        )
+    def to_api(self, data) -> StudentModel :
+        course_mapper = CourseMapper()
+
+        for student in data :
+            return StudentModel(
+                id = student.entity_id,
+                name= student.name,
+                lastname= student.lastname,
+                age= student.age,
+                email= student.email,
+                extra_activities= student.extra_activities,  
+                username= student.username,
+                hash_password= student.hashed_password,
+                course = course_mapper.to_api(student.course)
+            )
         
     def to_academic_performance(self, data) :
         started = False

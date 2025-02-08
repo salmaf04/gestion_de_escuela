@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 import uuid
 from backend.domain.schemas.user import UserCreateModel
+from backend.domain.schemas.course import CourseModel
 
 """
 This module defines Pydantic models for representing student data and performance in the application.
@@ -63,7 +64,7 @@ class StudentModel(BaseModel):
     extra_activities: bool
     username: str
     hash_password: str
-    course_id : uuid.UUID
+    course : CourseModel
     
 class StudentCreateModel(UserCreateModel):
     age: int
