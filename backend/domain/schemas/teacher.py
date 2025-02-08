@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 import uuid
 from typing import Optional
 from backend.domain.schemas.user import UserCreateModel
+from backend.domain.schemas.subject import SubjectModel
 
 """
 This module defines Pydantic models for managing teacher data.
@@ -40,7 +41,7 @@ class TeacherModel(BaseModel):
     email: str
     username: str
     salary: float | None = None
-    list_of_subjects: list[str]
+    list_of_subjects: list[SubjectModel]
     valoration : Optional[float | str ] = None
     alert : int | None = 0
     

@@ -1,5 +1,6 @@
 from backend.domain.schemas.teacher import TeacherModel
 from backend.domain.models.tables import TeacherTable
+from backend.application.serializers.subject import SubjectMapper
 from pydantic import BaseModel
 from datetime import datetime
 import uuid
@@ -125,11 +126,14 @@ class TeacherMapper :
 
     
     def to_subject_list(self, subjects) :
-        names = []
+        subjects_list = []
+        subject_mapper = SubjectMapper()
+
         for subject in subjects :
-            names.append(subject.name)
-        return names
-    
+            subjects_list.append(subject_mapper.to_api(subject))
+
+        return subjects_list
+            
     def to_teachers_with_average(self, data) :
         serialized_values = []
 
