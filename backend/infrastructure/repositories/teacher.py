@@ -57,7 +57,7 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         table_entity = self.get_by_id(id=entity.id)
         
         if subjects :
-            table_entity.teacher_subject_association.extend(subjects)
+            table_entity.teacher_subject_association = subjects
 
         for key, value in changes :
             setattr(table_entity, key, value)
