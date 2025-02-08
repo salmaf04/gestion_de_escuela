@@ -45,12 +45,12 @@ class ClassroomMapper :
                 )
             else :
                 ids.append(classroom[0].entity_id)
-                
                 new_classroom = ClassroomModel(
                     id = classroom[0].entity_id,
                     number= classroom[0].number,
                     location = classroom[0].location,
                     capacity = classroom[0].capacity,
+                    requested_by= str(classroom[2]) if classroom[2] else None,
                     means = [
                         MeanClassroomModel(
                             id = classroom[1].id,

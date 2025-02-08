@@ -45,6 +45,7 @@ class ClassroomCreateModel(BaseModel):
 
 class ClassroomModel(ClassroomCreateModel):
     id: uuid.UUID
+    requested_by : str | None = None
     means : list[MeanClassroomModel] | None = None
 
 class ClassroomModelPost(ClassroomCreateModel) :

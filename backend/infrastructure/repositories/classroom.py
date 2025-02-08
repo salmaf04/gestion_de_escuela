@@ -1,5 +1,5 @@
 from backend.domain.schemas.classroom import ClassroomCreateModel, ClassroomModel
-from backend.domain.models.tables import ClassroomTable, MeanTable
+from backend.domain.models.tables import ClassroomTable, MeanTable, teacher_request_classroom_table
 from sqlalchemy.orm import Session
 from backend.domain.filters.classroom import ClassroomFilterSchema, ClassroomFilterSet, ClassroomChangeRequest
 from sqlalchemy import select, update
@@ -79,12 +79,15 @@ class ClassroomRepository(IRepository[ClassroomCreateModel,ClassroomModel, Class
         Returns:
             List of matching ClassroomTable instances with their means
         """
-        query = select(ClassroomTable, MeanTable)
+        
+        query = select(ClassroomTable, MeanTable, teacher_request_classroom_table.c.teacher_id)
         query = query.outerjoin(MeanTable, ClassroomTable.entity_id == MeanTable.classroom_id)
+        query = query.outerjoin(teacher_request_classroom_table, ClassroomTable.entity_id == teacher_request_classroom_table.c.classroom_id)
         filter_set = ClassroomFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
-        query = query.group_by(ClassroomTable, MeanTable)
+        query = query.group_by(ClassroomTable, MeanTable, teacher_request_classroom_table.c.teacher_id)
         query = query.order_by(ClassroomTable.entity_id)
+        print(self.session.execute(query).all())
         return self.session.execute(query).all()
     
     
