@@ -20,8 +20,21 @@ export default function Body() {
     const [profesor, setProfesor] = useState<DBObject>()
     const {setError, profesores, allowRoles, typeRole, valorationPeriod} = useContext(AppContext)
 
+    let data = []
     const actions = []
+    let header = ProfesorGetAdapter.Properties.slice(1)
     if (allowRoles!([RolesEnum.STUDENT])){
+        header = ["Nombre", "Apellidos", "Especialidad", "Asignaturas", "Valoración"]
+        data = dataTable!.map((p) =>{
+            return {
+                id: p.id,
+                name: p.name,
+                lastname: p.lastname,
+                specialty: p.specialty,
+                subjects: p.subjects,
+                valoracion: p.valoracion,
+            }
+        })
         actions.push({
             action: (row: DBObject) => {
                 setShowValoration(true)
@@ -33,6 +46,8 @@ export default function Body() {
             icon: <img src={ValorarIcon} alt={'Valorar'}/>,
             isVisible: () => valorationPeriod!.open
         })
+    }else{
+        data = dataTable!
     }
     if (typeRole === "dean"){
         actions.push(
@@ -64,8 +79,8 @@ export default function Body() {
             <Table
                 className={'h-5/6'}
                 isLoading={isLoading}
-                Data={dataTable ?? []}
-                header={ProfesorGetAdapter.Properties.slice(1)}
+                Data={data ?? []}
+                header={header}
                 onRemoveRow={(index) => {
                     onDeleteTableItem!(index)
                 }}
