@@ -5,7 +5,6 @@ import {AppContext} from "../../../App.tsx";
 import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {AsignaturaCreateAdapter} from "../adapters/AsignaturaCreateAdapter.ts";
-import {useApiCurso} from "../../cursos/hooks/useApiCurso.ts";
 import {getQueryParamsFromObject} from "../../../utils/utils.ts";
 
 const endpoint = EndpointEnum.ASIGNATURAS
@@ -13,7 +12,6 @@ const endpoint = EndpointEnum.ASIGNATURAS
 export const useApiAsignatura = () => {
     const [isLoading, setIsLoading] = useState(false)
     const {setError, asignaturas: asignaturasAppContext, setAsignaturas: setAsignaturasAppContext} = useContext(AppContext)
-    const {getCursos} = useApiCurso()
 
     const getAsignaturas = async () => {
         setIsLoading(true)
@@ -24,13 +22,10 @@ export const useApiAsignatura = () => {
 
         if (res.ok) {
             const data: AsignaturaGetResponse = await res.json()
-            await getCursos((res)=>{
-                console.log(res)
-                const asignaturaArray = Object.values(data)
-                    .map((asignatura: AsignaturaGetDB) => new AsignaturaGetAdapter(asignatura, res.find((item) => item.id === asignatura.course_id)!))
-                setAsignaturasAppContext!(asignaturaArray)
-            })
+            const asignaturaArray = Object.values(data)
+                .map((asignatura: AsignaturaGetDB) => new AsignaturaGetAdapter(asignatura))
 
+            setAsignaturasAppContext!(asignaturaArray)
         } else {
             setError!(new Error(res.statusText))
         }

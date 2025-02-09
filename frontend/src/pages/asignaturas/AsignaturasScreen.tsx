@@ -10,6 +10,7 @@ import {AulaGetAdapter} from "../aulas/adapters/AulaGetAdapter.ts";
 import {DBObject} from "../../types.ts";
 import {AsignaturaGetAdapter} from "./adapters/AsignaturaGetAdapter.ts";
 import {useApiAulas} from "../aulas/hooks/useApiAulas.ts";
+import {useApiCurso} from "../cursos/hooks/useApiCurso.ts";
 
 interface IAsignaturaContext {
     searchText?: string;
@@ -48,6 +49,7 @@ export default function AsignaturasScreen() {
     const [isEditing, setIsEditing] = useState(false);
     const {asignaturas, aulas} = useContext(AppContext)
     const {getAulas} = useApiAulas()
+    const {getCursos} = useApiCurso()
     const {
         deleteAsignatura,
         createAsignatura,
@@ -59,6 +61,7 @@ export default function AsignaturasScreen() {
     useEffect(() => {
         getAsignaturas();
         getAulas()
+        getCursos()
     }, []);
 
     const onDeleteTableItem = (deletedAsignaturaId: string) => {
@@ -79,7 +82,7 @@ export default function AsignaturasScreen() {
     };
 
     const [dataTable, setDataTable] = useState<IAsignaturaTableRow[]>([])
-
+    console.log(asignaturas)
     const data = useMemo<IAsignaturaTableRow[]>(() => {
         return asignaturas?.map((item) => {
             return {
@@ -87,7 +90,7 @@ export default function AsignaturasScreen() {
                 name: item.name ?? "Desconocido",
                 hourly_load: item.hourly_load ?? 0,
                 study_program: item.study_program ?? 0,
-                classroom_name: aulas?.find((i) => i.id === item.classroom_id)?.number ?? "Desconocido",
+                classroom_name: `Aula ${item.classroom.number ?? "Desconocida"}`,
                 course_year: item.course.year ?? 0
             }
         }) ?? []

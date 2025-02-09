@@ -1,5 +1,6 @@
 import { AsignaturaGetDB } from "../models/AsignaturaGetDB.ts";
-import {ICursoGetLocal} from "../../cursos/models/ICursoGetLocal.ts";
+import {ICursoGetDB} from "../../cursos/models/ICursoGetDB.ts";
+import {AulaGetDB} from "../../aulas/models/AulaGetDB.ts";
 
 export class AsignaturaGetAdapter {
     static Properties = ['ID' , 'Nombre', 'Carga Horaria', 'Programa de Estudio ' ,' Aula', 'Curso']
@@ -7,15 +8,15 @@ export class AsignaturaGetAdapter {
     name: string;
     hourly_load: number;
     study_program: number;
-    classroom_id: string;
-    course: ICursoGetLocal
+    classroom: AulaGetDB;
+    course: ICursoGetDB
 
-    constructor(asignaturaGetDB: AsignaturaGetDB, curso: ICursoGetLocal) {
+    constructor(asignaturaGetDB: AsignaturaGetDB) {
         this.id = asignaturaGetDB.id;
         this.name = asignaturaGetDB.name;
         this.hourly_load = asignaturaGetDB.hourly_load;
         this.study_program = asignaturaGetDB.study_program;
-        this.classroom_id = asignaturaGetDB.classroom_id;
-        this.course = curso;
+        this.classroom = asignaturaGetDB.classroom;
+        this.course = asignaturaGetDB.course;
     }
 }
