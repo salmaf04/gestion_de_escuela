@@ -85,8 +85,11 @@ export default function Body() {
                     onDeleteTableItem!(index)
                 }}
                 onEditRow={(index) => {
-                    const item = dataTable!.find((item) => item.id === index)
-                    setEditting!({id: index, body: item!})
+                    if (allowRoles!([RolesEnum.SECRETARY])){
+                        const item = dataTable!.find((item) => item.id === index)
+                        setEditting!({id: index, body: item!})
+                    }
+
                 }}
                 actions={actions}
                 isRemoveActive={allowRoles!([RolesEnum.SECRETARY])}
