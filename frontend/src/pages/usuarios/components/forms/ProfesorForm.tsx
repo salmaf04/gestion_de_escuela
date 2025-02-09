@@ -8,12 +8,14 @@ import {AppContext} from "../../../../App.tsx";
 import {useApiAsignatura} from "../../../asignaturas/hooks/useApiAsignatura.ts";
 import {useApiProfesor} from "../../../profesores/hooks/useApiProfesor.ts";
 import {UsuariosContext} from "../../UsuariosScreen.tsx";
+import {useApiUsuarios} from "../../hooks/useApiUsuarios.ts";
 
 export default function ProfesorForm(){
     const {register, handleSubmit} = useForm<ProfesorCreateAdapter>()
     const {setShowModal} = useContext(UsuariosContext)
     const {isLoading} = useApiProfesor()
     const {getAsignaturas} = useApiAsignatura()
+    const {getUsuarios} = useApiUsuarios()
     const {asignaturas} = useContext(AppContext)
     const {
         createProfesor,
@@ -35,7 +37,7 @@ export default function ProfesorForm(){
             asignaturas: arraySelect.map((i)=>i.name)
         }
         createProfesor!(data1)
-
+        getUsuarios()
         setShowModal!(false)
     }
 
@@ -135,8 +137,8 @@ export default function ProfesorForm(){
                         return (
                             <div className="group relative" key={index}>
                                 <SelectProfesor
-                                    {...register(`asignaturas.${index}`, {
-                                        value: arraySelect[index]?.name
+                                    {...register(`subjects.${index}`, {
+                                        value: arraySelect[index]?.id as string
                                     })}
                                     label={`Asignatura ${index + 1}`}
                                     labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}

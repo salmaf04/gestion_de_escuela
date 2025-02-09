@@ -8,13 +8,13 @@ import {useApiEstudiante} from "../../../estudiantes/hooks/useApiEstudiante.ts";
 import {IEstudianteCreateDB} from "../../../estudiantes/models/IEstudianteCreateDB.ts";
 import {ISelect} from "../../../../types/ISelect.ts";
 import {ICursoGetLocal} from "../../../cursos/models/ICursoGetLocal.ts";
-import {CursoContext} from "../../../cursos/CursosScreen.tsx";
 import {useApiCurso} from "../../../cursos/hooks/useApiCurso.ts";
+import {UsuariosContext} from "../../UsuariosScreen.tsx";
 
 export default function EstudianteForm(){
 
     const { register, handleSubmit, control } = useForm<Partial<IEstudianteDB>>();
-    const { setShowModal } = useContext(CursoContext);
+    const { setShowModal } = useContext(UsuariosContext);
     const {createEstudiante} = useApiEstudiante()
     const {cursos} = useContext(AppContext)
     const {getCursos} = useApiCurso()

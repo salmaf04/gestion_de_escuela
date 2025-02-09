@@ -22,7 +22,7 @@ export class ProfesorCreateAdapter {
         this.experience = profesorCreateDB.experience;
         this.username = profesorCreateDB.username;
         this.salary = profesorCreateDB.salary;
-        this.subjects = profesorCreateDB.list_of_subjects;
+        this.subjects = profesorCreateDB.subjects;
     }
 
 }
