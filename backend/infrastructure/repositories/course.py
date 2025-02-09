@@ -56,8 +56,8 @@ class CourseRepository(IRepository[CourseCreateModel,CourseModel, CourseChangeRe
         self.session.commit()
         
         # Bug: This should be 'course' instead of 'student'
-        student = student.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
-        return student
+        entity = entity.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
+        return entity
     
     def get_by_id(self, id: str) -> CourseModel:
         """
