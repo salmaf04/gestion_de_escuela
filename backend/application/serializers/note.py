@@ -60,22 +60,22 @@ class NoteByTeacher(BaseModel) :
    
 class NoteMapper :
     def to_api(self, data) -> NoteModel :
+        if isinstance(data, list) :
+            data = data[0]
+            
         subject_mapper = SubjectMapper()
         teacher_mapper = TeacherMapper()
         student_mapper = StudentMapper()
-        serialized_values = []
-        for item in data :
-            new_item = NoteByTeacher(
-                id = item[0].entity_id,
-                student = student_mapper.to_api((item[1], item[4])),
-                teacher = teacher_mapper.to_api_note(item[2]),
-                subject = subject_mapper.to_api(item[3]),
-                note_value = item[0].note_value,
-                last_modified_by = item[0].last_modified_by
-            )
-            serialized_values.append(new_item)
+        new_item = NoteByTeacher(
+            id = data[0].entity_id,
+            student = student_mapper.to_api((data[1], data[4])),
+            teacher = teacher_mapper.to_api_note(data[2]),
+            subject = subject_mapper.to_api(data[3]),
+            note_value = data[0].note_value,
+            last_modified_by = data[0].last_modified_by
+        )
        
-        return serialized_values
+        return new_item
 
     def to_less_than_fifty(self, data) :
         serialized_values = []

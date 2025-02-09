@@ -26,12 +26,14 @@ Attributes:
 """
 
 class NoteFilterSet(FilterSet):
+    id = Filter(StudentNoteTable.entity_id)
     student_id = Filter(StudentNoteTable.student_id)
     subject_id = Filter(StudentNoteTable.subject_id)
     teacher_id = Filter(StudentNoteTable.teacher_id)
     note_value = Filter(StudentNoteTable.note_value)
 
 class NoteFilterSchema(BaseModel):
+    id : uuid.UUID | None = None
     student_id : uuid.UUID | None = None
     subject_id : uuid.UUID | None = None
     teacher_id : uuid.UUID | None = None

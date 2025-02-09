@@ -64,7 +64,12 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         """
         entity.note_value = changes.note_value
         self.session.commit()
-        return self.get_by_id(id=entity.entity_id)
+        
+        new_note = self.get(
+            NoteFilterSchema(id=entity.entity_id)
+        )
+
+        return new_note
 
     def get_by_id(self, id: str) -> StudentNoteTable:
         """Retrieve a note by its ID."""

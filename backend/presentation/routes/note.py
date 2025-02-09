@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from backend.domain.schemas.note import NoteCreateModel, NoteModel
 from sqlalchemy.orm import Session
 from backend.application.services.note import NoteCreateService, NotePaginationService, NoteUpdateService, NoteDeleteService
-from backend.application.serializers.note import NoteMapper
+from backend.application.serializers.note import NoteMapper, NoteByTeacher
 from backend.configuration import get_db
 from backend.domain.filters.note import NoteFilterSchema, NoteChangeRequest
 from fastapi.encoders import jsonable_encoder
@@ -15,6 +15,7 @@ from backend.presentation.utils.auth import get_current_user
 import uuid
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Request
+from typing import Union
 
 """
 This module defines API endpoints for managing notes using FastAPI.
@@ -107,13 +108,17 @@ async def read_note(
     if not notes :
         return []
     
-    return mapper.to_api(notes)
+    serialized_notes = []
 
+    for note in notes :
+        serialized_notes.append(mapper.to_api(note))
+
+    return serialized_notes
 
 @router.patch(
     "/note/{id}",
     status_code=status.HTTP_200_OK,
-    response_model=NoteModel,
+    response_model= Union[NoteModel, NoteByTeacher],
     responses={ 
         status.HTTP_404_NOT_FOUND: {
             "description": "Not found",
@@ -142,7 +147,7 @@ async def update_note(
         )
     
     updated_note = update_service.update_note(note=note, modified_by=user_id, new_note=new_note)
-
+    
     return mapper.to_api(updated_note)
 
 @router.delete(
