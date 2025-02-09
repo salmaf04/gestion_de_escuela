@@ -41,7 +41,7 @@ class StudentMapper :
             username= student[0].username,
             hash_password= student[0].hashed_password,
             course = course_mapper.to_api(student[1])
-            )
+        )
         
     def to_academic_performance(self, data) :
         started = False

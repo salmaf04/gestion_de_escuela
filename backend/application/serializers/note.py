@@ -51,6 +51,7 @@ class NoteLessThanFifty(BaseModel) :
     teacher_valoration : float | None
 
 class NoteByTeacher(BaseModel) :
+    id : uuid.UUID
     student : StudentModel
     teacher: TeacherModel
     subject: SubjectModel
@@ -65,6 +66,7 @@ class NoteMapper :
         serialized_values = []
         for item in data :
             new_item = NoteByTeacher(
+                id = item[0].entity_id,
                 student = student_mapper.to_api((item[1], item[4])),
                 teacher = teacher_mapper.to_api_note(item[2]),
                 subject = subject_mapper.to_api(item[3]),
@@ -97,6 +99,7 @@ class NoteMapper :
         
         for item in data :
             new_item = NoteByTeacher(
+                id = item[0].entity_id,
                 student = student_mapper.to_api((item[1], item[5])),
                 teacher = teacher_mapper.to_api_note(item[2]),
                 subject = subject_mapper.to_api(item[3]),

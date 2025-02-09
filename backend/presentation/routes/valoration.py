@@ -53,11 +53,6 @@ async def create_valoration(
     valoration_filter_by_student_id = ValorationFilterSchema(student_id=valoration_input.student_id, teacher_id=valoration_input.teacher_id)
     valoration_check = valoration_pagination_service.get_valoration(filter_params=valoration_filter_by_student_id)
     
-    if valoration_check :
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Lo sentimos, no puedes valorar más de una vez al mismo profesor"
-        )
 
     response = valoration_service.create_valoration(valoration=valoration_input)
 
@@ -65,7 +60,7 @@ async def create_valoration(
 
 @router.get(
     "/valoration",
-    response_model=dict[int, ValorationModel] | TeacherValoration | list,
+    response_model=dict[int, ValorationModel] | list[ValorationModel] | list,
     status_code=status.HTTP_200_OK
 )
 async def read_valoration(
@@ -86,9 +81,9 @@ async def read_valoration(
     if not valorations :
         return []
 
-    valorations_mapped = {}    
+    valorations_mapped = []
      
-    for i, valoration in enumerate(valorations) :
-        valorations_mapped[i] = mapper.to_api(valoration)
+    for valoration in valorations :
+        valorations_mapped.append(mapper.to_api(valoration))
         
     return valorations_mapped

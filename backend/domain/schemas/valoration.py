@@ -3,10 +3,15 @@ Pydantic models for teacher evaluation/valoration data validation and serializat
 These models define the structure for creating and representing teacher evaluations.
 """
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, Field
+from typing import Optional
 import uuid 
 from backend.domain.schemas.exceptions import ValidationException
 from fastapi import HTTPException
+from backend.domain.schemas.teacher import TeacherModel
+from backend.domain.schemas.student import StudentModel
+from backend.domain.schemas.subject import SubjectModel
+from backend.domain.schemas.course import CourseModel
 
 
 class ValorationCreateModel(BaseModel):
@@ -52,12 +57,11 @@ class ValorationModel(BaseModel):
         - grade: Integer value of the evaluation
     """
     id: uuid.UUID
-    teacher_id: uuid.UUID
-    student_id: uuid.UUID | None
-    subject_id: uuid.UUID
-    course_id: uuid.UUID
-    grade: int
-
+    teacher: TeacherModel
+    student : Optional[StudentModel] = None
+    subject: SubjectModel
+    course: CourseModel
+    grade: float
 
 class TeacherSubjectValoration(BaseModel):
     """

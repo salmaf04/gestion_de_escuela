@@ -32,8 +32,7 @@ class SubjectMapper :
     def to_api(self, subject: SubjectTable) -> SubjectModel :
         classroom_mapper = ClassroomMapper()
         course_mapper = CourseMapper()
-        print(subject)
-        print('hola')
+    
         return SubjectModel(
             id = subject.entity_id,
             name= subject.name,
