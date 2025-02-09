@@ -1,17 +1,21 @@
 // frontend/src/pages/medios/CursosScreen.tsx
 import {AppContext} from "../../App.tsx";
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {RolesEnum} from "../../api/RolesEnum.ts";
 import ProfesorInfo from "./components/ProfesorInfo.tsx";
 import EstudianteInfo from "./components/EstudianteInfo.tsx";
 import SecretariaInfo from "./components/SecretariaInfo.tsx";
 import AdministradorInfo from "./components/AdministradorInfo.tsx";
 import {rolesDisplayParser} from "../../utils/utils.ts";
+import {useApiValorationPeriod} from "./hooks/useApiValorationPeriod.ts";
 
 export default function InfoScreen() {
     const {roles, setToken, username, allowRoles} = useContext(AppContext)
     const displayRoles = roles?.map((item) => rolesDisplayParser[item]).join(', ')
-
+    const {getValorationPeriod} = useApiValorationPeriod()
+    useEffect(() => {
+        getValorationPeriod()
+    }, []);
     return (
         <div className={'w-full h-dvh flex flex-col py-10 px-20'}>
             <div className={'flex space-x-4 w-full justify-between'}>

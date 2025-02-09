@@ -29,6 +29,7 @@ import {IAusenciaLocal} from "./pages/ausencias/models/IAusenciaLocal.ts";
 import AusenciasScreen from "./pages/ausencias/AusenciasScreen.tsx";
 import {IUsuarioLocal} from "./pages/usuarios/models/IUsuarioLocal.ts";
 import UsuariosScreen from "./pages/usuarios/UsuariosScreen.tsx";
+import {IValorationPeriod} from "./pages/info/models/IValorationPeriod.ts";
 
 
 interface AppContextInterface {
@@ -61,6 +62,8 @@ interface AppContextInterface {
     setAdministradores?: (administradores: IAdministradorDB[]) => void,
     usuarios?: IUsuarioLocal[],
     setUsuarios?: (usuarios: IUsuarioLocal[]) => void,
+    valorationPeriod?: IValorationPeriod,
+    setvalorationPeriod?: (usuarios: IValorationPeriod) => void,
 
     setRoles?: (role: RolesEnum[]) => void,
     roles?: RolesEnum[],
@@ -94,6 +97,7 @@ function App() {
     const [secretarias, setSecretarias] = useState<ISecretariaDB[]>()
     const [administradores, setAdministradores] = useState<IAdministradorDB[]>()
     const [decanos, setDecanos] = useState<ProfesorGetAdapter[]>()
+    const [valorationPeriod, setvalorationPeriod] = useState<IValorationPeriod>()
     const [roles, setRoles] = useState<RolesEnum[]>()
     const [personalId, setPersonalId] = useState<string>()
     const [message, setMessage] = useState<string | undefined>()
@@ -157,7 +161,9 @@ function App() {
             typeRole: typeRole,
             setTypeRole: setTypeRole,
             decanos: decanos,
-            setDecanos: setDecanos
+            setDecanos: setDecanos,
+            setvalorationPeriod: setvalorationPeriod,
+            valorationPeriod: valorationPeriod
         }}>
             <BrowserRouter>
                 {error &&
