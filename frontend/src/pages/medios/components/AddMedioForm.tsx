@@ -24,6 +24,7 @@ export default function AddMedioForm() {
             onEditTableItem!(data);
         else
             onAddTableItem!(data);
+        setShowModal!(false)
     };
 
     const aulasSelect: ISelect[] = aulas?.map((item: AulaGetAdapter)=>{
