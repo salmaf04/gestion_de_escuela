@@ -6,14 +6,13 @@ export class AulaGetAdapter {
     number: string
     location: string;
     capacity: number;
-    isAvailable: boolean
+    requested_by: string
 
-
-    constructor(aulaGetDB: AulaGetDB, isAvailable: boolean) {
+    constructor(aulaGetDB: AulaGetDB) {
         this.id = aulaGetDB.id;
         this.number = "Aula "+aulaGetDB.number;
         this.location = aulaGetDB.location;
         this.capacity = aulaGetDB.capacity;
-        this.isAvailable = isAvailable
+        this.requested_by = aulaGetDB.requested_by;
     }
 }

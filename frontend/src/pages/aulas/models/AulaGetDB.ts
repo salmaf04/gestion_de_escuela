@@ -3,4 +3,5 @@ export type AulaGetDB = {
     location: string;
     capacity: number;
     number: number
+    requested_by: string
 };

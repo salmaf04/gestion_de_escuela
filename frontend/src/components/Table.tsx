@@ -118,7 +118,7 @@ export default function Table({header, className, Data, onRemoveRow, onEditRow, 
                                                                     action.action(row)
                                                                     e.stopPropagation()
                                                                 }}
-                                                                className={`size-9 flex items-center justify-center rounded-full hover:bg-${action.hoverColor}-200 cursor-pointer`}>
+                                                                className={`size-9 flex items-center justify-center rounded-full ${action.hoverColor} cursor-pointer`}>
 
                                                                 {action.icon}
                                                             </div>

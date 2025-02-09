@@ -71,6 +71,16 @@ export const useApiMedio = () => {
         await getAulas()
         setIsLoading(false);
     };
+    const devolverMedio = async (mean_id: string) => {
+        setIsLoading(true);
+        const res = await apiRequest.deleteApi(EndpointEnum.MEAN_REQUEST, personalId!, {mean_id: mean_id});
+        if (!res.ok)
+            setError!(new Error(res.statusText));
+        else
+            setMessage!("Solicitud enviada correctamente")
+        await getAulas()
+        setIsLoading(false);
+    };
 
     return {
         isLoading,
@@ -78,6 +88,7 @@ export const useApiMedio = () => {
         createMedio,
         deleteMedio,
         updateMedio,
-        solicitarMedio
+        solicitarMedio,
+        devolverMedio
     }
 }

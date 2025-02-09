@@ -28,7 +28,7 @@ export default function Body() {
                 setProfesor(row)
             },
             lineColor: 'bg-green-500',
-            hoverColor: 'bg-green-100',
+            hoverColor: 'hover:bg-green-100',
             title: "Valorar",
             icon: <img src={ValorarIcon} alt={'Valorar'}/>,
             isVisible: () => true
@@ -41,7 +41,7 @@ export default function Body() {
                     setError!(new Error("Este profesor lleva más de 5 años recibiendo malas valoraciones"))
                 },
                 lineColor: 'bg-amber-500',
-                hoverColor: 'bg-amber-100',
+                hoverColor: 'hover:bg-amber-100',
                 title: "Alerta",
                 icon: <img src={AlertIcon} alt={'Alerta'}/>,
                 isVisible: (row: string) => profesores!.find!((profesor) => profesor.id === row)!.alert > 5
@@ -52,7 +52,7 @@ export default function Body() {
                     setShowSancion(true)
                 },
                 lineColor: 'bg-red-700',
-                hoverColor: 'bg-red-100',
+                hoverColor: 'hover:bg-red-100',
                 title: "Sancionar",
                 icon: <img src={SancionIcon} alt={'Sancionar'}/>,
                 isVisible: () => true

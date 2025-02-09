@@ -39,12 +39,13 @@ function patchApi(endpoint: EndpointEnum, id: string = "", body: IApiObject, que
     })
 }
 
-function deleteApi(endpoint: EndpointEnum, id: string) {
+function deleteApi(endpoint: EndpointEnum, id: string, body: object = {}) {
     return fetch(`http://localhost:8000/${endpoint}/${id}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-        }
+        },
+        body: JSON.stringify(body),
     })
 }
 

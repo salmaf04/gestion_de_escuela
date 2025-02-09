@@ -20,7 +20,7 @@ export default function EditAusencia({setShowModal, estudianteId, asignaturaId, 
         const dataParse: IAusenciaCreateDB = {
             student_id: asignaturaId,
             subject_id: estudianteId,
-            date: reverseDate(data[`date`]),
+            date: data[`date`],
         }
         console.log(dataParse)
         console.log(asignaturaId)

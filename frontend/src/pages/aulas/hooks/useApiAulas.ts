@@ -17,14 +17,11 @@ export const useApiAulas = () => {
         if (aulasAppContext) {
             setIsLoading(false)
         }
-
-       const resAvailables = await apiRequest.getApi(EndpointEnum.AULAS_AVAILABLES)
         const res = await apiRequest.getApi(endpoint)
         if (res.ok) {
-            const availables: AulaGetDB[] = await resAvailables.json()
             const data: AulaGetDB[] = await res.json()
             const aulaArray = Object.values(data)
-                .map((aula: AulaGetDB) => new AulaGetAdapter(aula, availables.some((item)=>item.id === aula.id)))
+                .map((aula: AulaGetDB) => new AulaGetAdapter(aula))
             setAulasAppContext!(aulaArray)
         } else {
             setError!(new Error(res.statusText))
@@ -70,12 +67,24 @@ export const useApiAulas = () => {
         setIsLoading(false);
     };
 
+    const devolverAula = async (idAula: string) => {
+        setIsLoading(true);
+        const res = await apiRequest.deleteApi(EndpointEnum.CLASSROOM_REQUEST, personalId!, {classroom_id: idAula});
+        if (!res.ok)
+            setError!(new Error(res.statusText));
+        else
+            setMessage!("Solicitud enviada correctamente")
+        await getAulas()
+        setIsLoading(false);
+    };
+
     return {
         isLoading,
         getAulas,
         createAula,
         deleteAula,
         updateAula,
-        solicitarAula
+        solicitarAula,
+        devolverAula
     }
 }
