@@ -14,6 +14,7 @@ export class ProfesorGetAdapter implements DBObject{
     email: string
     username: string
     subjects: AsignaturaGetDB[]
+    subject_to_evaluate: AsignaturaGetDB[]
     valoracion: number
     alert: number
 
@@ -31,6 +32,7 @@ export class ProfesorGetAdapter implements DBObject{
         this.subjects = profesorModel.subjects;
         this.valoracion = profesorModel.valoration;
         this.alert = profesorModel.alert;
+        this.subject_to_evaluate = profesorModel.subject_to_evaluate;
     }
 
 }

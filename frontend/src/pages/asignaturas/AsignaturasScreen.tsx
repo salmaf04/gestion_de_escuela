@@ -90,8 +90,8 @@ export default function AsignaturasScreen() {
                 name: item.name ?? "Desconocido",
                 hourly_load: item.hourly_load ?? 0,
                 study_program: item.study_program ?? 0,
-                classroom_name: `Aula ${item.classroom.number ?? "Desconocida"}`,
-                course_year: item.course.year ?? 0
+                classroom_name: `Aula ${item?.classroom?.number ?? "Desconocida"}`,
+                course_year: item.course?.year ?? 0
             }
         }) ?? []
     }, [asignaturas]);

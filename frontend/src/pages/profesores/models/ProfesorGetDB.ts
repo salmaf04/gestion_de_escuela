@@ -12,6 +12,7 @@ export type ProfesorDB = {
         "email": string
         "username": string
         "subjects": AsignaturaGetDB[]
+        "subject_to_evaluate": AsignaturaGetDB[]
         "valoration": number,
         alert: number
     }

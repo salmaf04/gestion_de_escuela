@@ -25,7 +25,7 @@ export default function SancionModal({profesor, setShowModal}: Props) {
         getAsignaturas!()
         getEstudiante!(personalId!)
     }, []);
-    const asignaturasSelect: ISelect[] = profesores!.find((i) => i.id === profesor?.id)!.subjects.map((ap)=>{
+    const asignaturasSelect: ISelect[] = profesores!.find((i) => i.id === profesor?.id)!.subject_to_evaluate.map((ap)=>{
         return {
             id: ap.id,
             name: ap.name
@@ -67,7 +67,10 @@ export default function SancionModal({profesor, setShowModal}: Props) {
                             <input
                                 type="number"
                                 {...register("grade", {
-                                    required: "true"
+                                    required: "true",
+                                    valueAsNumber: true,
+                                    max: 10,
+                                    min: 1
                                 })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
                             />

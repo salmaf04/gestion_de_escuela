@@ -30,9 +30,20 @@ export default function AddMedioForm() {
     const aulasSelect: ISelect[] = aulas?.map((item: AulaGetAdapter)=>{
         return {
             id: item.id,
-            name: item.location
+            name: item.number
         }
     }) ?? []
+
+    const statusSelect: ISelect[] = [
+        {id: 'good', name: 'Bien'},
+        {id: 'regular', name: 'Regular'},
+        {id: 'bad', name: 'Mal'}
+    ]
+    const typeSelect: ISelect[] = [
+        {id: 'technological_mean', name: 'Medio Tecnológico'},
+        {id: 'teaching_material', name: 'Material de clases'},
+        {id: 'other', name: 'Otro'}
+    ]
 
     return (
         <div className={`fixed z-20 inset-0 bg-black bg-opacity-50 flex justify-center items-center`}>
@@ -49,20 +60,23 @@ export default function AddMedioForm() {
                                 defaultValue={editting?.name}
                             />
                         </div>
-                        <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Estado</label>
-                            <input
-                                type="text"
-                                {...register("state", { required: true })}
-                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.state}
+                        <div className={'w-full mb-4'}>
+                            <Select
+                                {...register(`state`, {
+                                    required: true,
+                                })}
+                                label={'Estado'}
+                                labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
+                                data={statusSelect}
+                                control={control}
                             />
                         </div>
                         <div className="group mb-4">
-                            <label className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Ubicación</label>
+                            <label
+                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Ubicación</label>
                             <input
                                 type="text"
-                                {...register("location", { required: true })}
+                                {...register("location", {required: true})}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
                                 defaultValue={editting?.location}
                             />
@@ -78,14 +92,15 @@ export default function AddMedioForm() {
                                 control={control}
                             />
                         </div>
-                        <div className="group mb-4">
-                            <label
-                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold">Tipo</label>
-                            <input
-                                type="text"
-                                {...register("type", {required: true})}
-                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.type}
+                        <div className={'w-full mb-4'}>
+                            <Select
+                                {...register(`type`, {
+                                    required: true,
+                                })}
+                                label={'Tipo'}
+                                labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
+                                data={typeSelect}
+                                control={control}
                             />
                         </div>
                     </div>
@@ -95,11 +110,11 @@ export default function AddMedioForm() {
                             setShowModal!(false);
                             setEditting!(undefined);
                         }}
-                            hidden={isLoading}
-                            className="hover:bg-gray-400 transition-colors w-full py-2 bg-gray-300 rounded-lg text-gray-900">Cancelar
+                                hidden={isLoading}
+                                className="hover:bg-gray-400 transition-colors w-full py-2 bg-gray-300 rounded-lg text-gray-900">Cancelar
                         </button>
                         <button type="submit"
-                            className={`${isLoading ? 'hover:bg-indigo-300 bg-indigo-300 cursor-default' : 'bg-indigo-500 hover:bg-indigo-600 '} transition-colors w-full flex justify-center py-2 text-indigo-50 rounded-lg`}>
+                                className={`${isLoading ? 'hover:bg-indigo-300 bg-indigo-300 cursor-default' : 'bg-indigo-500 hover:bg-indigo-600 '} transition-colors w-full flex justify-center py-2 text-indigo-50 rounded-lg`}>
                             {isLoading ? <MySpinner className={'h-6 w-6'} /> : null}
                             <p className={`${isLoading ? 'invisible' : 'visible'}`}>
                                 {editting ? 'Editar' : 'Guardar'}
