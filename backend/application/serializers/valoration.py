@@ -1,5 +1,9 @@
 from backend.domain.schemas.valoration import ValorationModel, TeacherValoration, TeacherSubjectValoration
 from backend.domain.models.tables import TeacherNoteTable
+from backend.application.serializers.teacher import TeacherMapper
+from backend.application.serializers.student import StudentMapper
+from backend.application.serializers.subject import SubjectMapper
+from backend.application.serializers.course import CourseMapper
 
 """
 This module defines a mapper for converting valoration data into API representations.
@@ -24,15 +28,37 @@ Dependencies:
 """
 class ValorationMapper :
 
-    def to_api(self, valoration: TeacherNoteTable) -> ValorationModel :
-        return ValorationModel(
-            id = valoration.entity_id,
-            teacher_id = valoration.teacher_id,
-            student_id = valoration.student_id if valoration.student_id else None,
-            subject_id = valoration.subject_id,
-            course_id = valoration.course_id,
-            grade = valoration.grade
-        )
+    def to_api(self, data) -> ValorationModel :
+        teacher_mapper = TeacherMapper()
+        subject_mapper = SubjectMapper()
+        student_mapper = StudentMapper()
+        course_mapper = CourseMapper()
+
+        if isinstance(data, TeacherNoteTable) :
+            valoration = data
+            note = valoration.grade
+
+            mapped_valoration =  ValorationModel(
+                id = valoration.entity_id,
+                teacher = teacher_mapper.to_api(valoration.teacher) if valoration.teacher else None,
+                student=  student_mapper.to_api((valoration.student, valoration.course)) if valoration.student else None,
+                subject = subject_mapper.to_api(valoration.subject),
+                course = course_mapper.to_api(valoration.course),
+                grade = note
+            )
+        else :     
+            note = data[1]
+            valoration = data[0]
+
+            mapped_valoration =  ValorationModel(
+                id = valoration.entity_id,
+                teacher = teacher_mapper.to_api(valoration.teacher) if valoration.teacher else None,
+                subject = subject_mapper.to_api(valoration.subject),
+                course = course_mapper.to_api(valoration.course),
+                grade = note
+            )
+
+        return mapped_valoration.model_dump(exclude_unset=True, exclude_none=True)
     
     def to_valoration_by_subject(self, data) :
         started = False

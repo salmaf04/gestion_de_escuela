@@ -606,7 +606,6 @@ def check_dean(mapper, connection, target):
     Manages dean privileges after dean deletion.
     Transfers admin role to administrator if no dean remains.
     """
-    print("hola")
     user_id = target.id
     connection.execute(UserTable.__table__.update().values(roles=[Roles.TEACHER.value]).where(UserTable.entity_id == user_id))
 
