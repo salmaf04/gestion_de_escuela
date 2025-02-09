@@ -2,6 +2,7 @@ from backend.domain.schemas.subject import SubjectModel
 from backend.domain.models.tables import SubjectTable
 from backend.application.serializers.classroom import ClassroomMapper
 from backend.application.serializers.course import CourseMapper
+from typing import Optional
 
 """
 This module defines a mapper for converting subject data into API representations.
@@ -26,6 +27,9 @@ Dependencies:
     - SubjectModel for API data representation.
     - SubjectTable for database representation.
 """
+
+class SubjectByTeacher(SubjectModel) :
+    average_note : Optional[float] = None
 
 class SubjectMapper :
 
@@ -66,13 +70,14 @@ class SubjectMapper :
         course_mapper = CourseMapper()
 
         for subject in data :
-            new_subject = SubjectModel(
+            new_subject = SubjectByTeacher(
                 id = subject[0].entity_id,
                 name= subject[0].name,
                 hourly_load= subject[0].hourly_load,
                 study_program= subject[0].study_program,
                 classroom = classroom_mapper.to_api_default(subject[0].classroom) if subject[0].classroom else None,
-                course = course_mapper.to_api(subject[0].course) if subject[0].course else None
+                course = course_mapper.to_api(subject[0].course) if subject[0].course else None, 
+                average_note= subject[1] if subject[1] else None
             )
             serialized_values.append(new_subject)
 

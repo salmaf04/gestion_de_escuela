@@ -3,7 +3,7 @@ from backend.domain.schemas.subject import  SubjectModel, SubjectCreateModel
 from sqlalchemy.orm import Session
 from backend.application.services.subject import SubjectCreateService, SubjectPaginationService, SubjectDeletionService, SubjectUpdateService
 from fastapi.exceptions import HTTPException
-from backend.application.serializers.subject import SubjectMapper
+from backend.application.serializers.subject import SubjectMapper, SubjectByTeacher
 from backend.domain.filters.subject import SubjectFilterSchema, SubjectChangeRequest
 from backend.configuration import get_db
 from backend.presentation.utils.auth import authorize
@@ -101,7 +101,7 @@ async def delete_subject(
 
 @router.get(
     "/subject",
-    response_model=dict[int, SubjectModel] | list[SubjectModel] | SubjectModel,
+    response_model=dict[int, SubjectModel] | list[SubjectModel] | SubjectModel | list[SubjectByTeacher],
     status_code=status.HTTP_200_OK
 )
 @authorize(role=["secretary","teacher", "student", "dean"])
@@ -123,6 +123,7 @@ async def read_subject(
         return mapper.to_subjects_by_students(subjects)
     elif subjects_by_teacher :
         subjects = subject_pagination_service.get_subjects_by_teacher(teacher_id=subjects_by_teacher)
+        print(mapper.to_subjects_by_teacher(subjects))
         return mapper.to_subjects_by_teacher(subjects)
 
     if not subjects :

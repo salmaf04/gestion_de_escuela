@@ -1,7 +1,7 @@
-from sqlalchemy import select, update
+from sqlalchemy import select, update, func
 from backend.domain.filters.subject import SubjectFilterSet , SubjectFilterSchema, SubjectChangeRequest
 from backend.domain.schemas.subject import SubjectCreateModel, SubjectModel
-from backend.domain.models.tables import SubjectTable, CourseTable, StudentTable, teacher_subject_table, ClassroomTable
+from backend.domain.models.tables import SubjectTable, CourseTable, StudentTable, teacher_subject_table, ClassroomTable, TeacherNoteTable
 import uuid
 from backend.application.services.classroom import ClassroomPaginationService
 from backend.application.services.course import CoursePaginationService
@@ -113,8 +113,15 @@ class SubjectRepository(IRepository[SubjectCreateModel,SubjectTable, SubjectChan
         Returns:
             List of tuples containing subject and teacher-subject association information
         """
-        query = select(SubjectTable, teacher_subject_table)
+        
+        subquery = select(TeacherNoteTable.teacher_id, TeacherNoteTable.subject_id, (func.sum(TeacherNoteTable.grade)/func.count()).label("average_note"))
+        subquery = subquery.where(TeacherNoteTable.teacher_id == teacher_id)
+        subquery = subquery.group_by(TeacherNoteTable.teacher_id, TeacherNoteTable.subject_id)
+        subquery = subquery.subquery()
+
+        query = select(SubjectTable, subquery.c.average_note)
         query = query.join(teacher_subject_table, SubjectTable.entity_id == teacher_subject_table.c.subject_id)
+        query = query.outerjoin(subquery, SubjectTable.entity_id == subquery.c.subject_id)
         query = query.where(teacher_subject_table.c.teacher_id == teacher_id)
         query = query.distinct(SubjectTable.entity_id)
         return self.session.execute(query).all()
