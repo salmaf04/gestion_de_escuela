@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, status, Depends
-from backend.domain.schemas.valoration_period import ValorationPeriodChangeRequest
+from backend.domain.schemas.valoration_period import ValorationPeriodChangeRequest, ValorationPeriodModel
 from sqlalchemy.orm import Session
-from backend.application.services.valoration_period import ValorationPeriodUpdateService
+from backend.application.services.valoration_period import ValorationPeriodUpdateService, ValorationPeriodPaginationService
 from backend.configuration import get_db
+from backend.application.serializers.valoration_period import ValorationPeriodMapper
 
 """
 This module defines an API endpoint for updating valoration periods using FastAPI.
@@ -45,3 +46,18 @@ async def update_valoration_period(
     valoration_period = valoration_period_service.update_one(changes=valoration_period_input)
 
     return valoration_period_input
+
+@router.get(
+    "/valoration_period",
+    response_model=ValorationPeriodModel,
+    status_code=status.HTTP_200_OK
+)
+async def get_valoration_period(
+    session: Session = Depends(get_db)
+):
+    valoration_period_service = ValorationPeriodPaginationService(session)
+    mapper = ValorationPeriodMapper()
+
+    valoration_period = valoration_period_service.get_valoration_period(filter_params=None)
+
+    return mapper.to_api(valoration_period)

@@ -15,3 +15,6 @@ Attributes:
 
 class ValorationPeriodChangeRequest(BaseModel):
     open : bool | None = None
+
+class ValorationPeriodModel(BaseModel):
+    open : bool

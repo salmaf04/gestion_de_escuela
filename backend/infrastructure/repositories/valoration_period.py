@@ -21,7 +21,8 @@ class ValorationPeriodRepository(IRepository[ValorationPeriodChangeRequest,Valor
         pass
 
     def get(self, filter_params: None) -> list[ValorationPeriodTable] :
-        pass
+        status = self.session.query(ValorationPeriodTable).first()
+        return status
 
     def get_by_id(self, id: str ) -> ValorationPeriodTable :
         pass

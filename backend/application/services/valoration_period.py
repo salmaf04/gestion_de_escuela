@@ -33,3 +33,10 @@ class ValorationPeriodUpdateService :
 
     def update_one(self, changes : ValorationPeriodChangeRequest) :
         return self.repo_instance.update(changes)
+    
+class ValorationPeriodPaginationService :
+    def __init__(self, session):
+        self.repo_instance = ValorationPeriodRepository(session)
+
+    def get_valoration_period(self, filter_params: None) -> list[ValorationPeriodTable] :
+        return self.repo_instance.get(filter_params)
