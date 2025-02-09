@@ -62,12 +62,12 @@ class AbsenceRepository(IRepository[AbsenceCreateModel,AbsenceTable, None,Absenc
         return self.session.execute(final_query).all(), total
     
     def get_by_id(self, id: str) -> AbsenceTable:
-        """Get absence by ID - Not implemented."""
-        pass
-
+        absence = self.session.query(AbsenceTable).filter(AbsenceTable.entity_id == id)
+        return absence.scalar()
+    
     def delete(self, entity: AbsenceTable) -> None:
-        """Delete absence - Not implemented."""
-        pass
+        self.session.delete(entity)
+        self.session.commit()
 
     def update(self, changes: None, entity: AbsenceTable) -> AbsenceTable:
         """Update absence - Not implemented."""

@@ -60,6 +60,9 @@ class AbsencePaginationService :
     def __init__(self, session):
         self.repo_instance = AbsenceRepository(session)
 
+    def get_absence_by_id(self, id: str) -> AbsenceTable :  
+        return self.repo_instance.get_by_id(id)
+
     def get_absence(self, filter_params: AbsenceFilterSchema) -> list[AbsenceTable] :
         return self.repo_instance.get(filter_params)
     
@@ -68,4 +71,11 @@ class AbsencePaginationService :
     
     def get_absence_by_student_by_teacher(self, teacher_id: uuid.UUID) -> list[AbsenceTable] :
         return self.repo_instance.get_absence_by_student_by_teacher(teacher_id)
+    
+class AbsenceDeleteService :
+    def __init__(self, session):
+        self.repo_instance = AbsenceRepository(session)
+
+    def delete_absence(self, absence: AbsenceTable) -> None :
+        return self.repo_instance.delete(absence)
 
