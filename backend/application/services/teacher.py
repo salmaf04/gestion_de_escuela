@@ -117,13 +117,14 @@ class TeacherUpdateService :
         self.subject_pagination = SubjectPaginationService(session)
 
     def update(self, changes : TeacherChangeRequest , teacher : TeacherModel ) -> TeacherModel: 
-        if changes.subjects : 
+        if isinstance(changes.subjects,list) : 
             filter_by_subject_ids = SubjectFilterSchema(id=changes.subjects)
             subjects = self.subject_pagination.get_subjects(filter_params=filter_by_subject_ids)
             changes = changes.model_dump(exclude={'subjects'}, exclude_none=True, exclude_unset=True)
-
-        return self.repo_istance.update(changes, teacher, subjects)
+            return self.repo_istance.update(changes, teacher, subjects)
         
+        return self.repo_istance.update(changes, teacher)
+
 class TeacherPaginationService :
     def __init__(self, session):
         self.repo_istance = TeacherRepository(session)

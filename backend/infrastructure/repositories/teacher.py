@@ -53,10 +53,12 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
     
         table_entity = self.get_by_id(id=entity.id)
         
-        if subjects :
+        if isinstance(subjects, list) :
             table_entity.teacher_subject_association = subjects
         
-        for key, value in changes.items() :
+        change_dict = changes.model_dump(exclude_none=True, exclude_unset=True) if type(changes) == TeacherChangeRequest else changes
+
+        for key, value in change_dict.items() :
             setattr(table_entity, key, value)
         self.session.commit()
 

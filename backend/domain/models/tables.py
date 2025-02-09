@@ -607,8 +607,6 @@ def check_dean(mapper, connection, target):
     Transfers admin role to administrator if no dean remains.
     """
     user_id = target.id
-    print(user_id)
-    print('hola')
     connection.execute(UserTable.__table__.update().values(roles=[Roles.TEACHER.value]).where(UserTable.entity_id == user_id))
 
 @event.listens_for(MeanMaintenanceTable, 'before_insert')
