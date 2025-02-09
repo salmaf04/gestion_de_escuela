@@ -43,6 +43,7 @@ function deleteApi(endpoint: EndpointEnum, id: string, body: object = {}) {
     return fetch(`http://localhost:8000/${endpoint}/${id}`, {
         method: 'DELETE',
         headers: {
+            'Content-Type': 'application/json',
             'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         },
         body: JSON.stringify(body),
