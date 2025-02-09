@@ -40,4 +40,7 @@ class NoteFilterSchema(BaseModel):
     note_value : int | None = None
 
 class NoteChangeRequest(BaseModel) :
+    student_id : uuid.UUID | None = None
+    subject_id : uuid.UUID | None = None
+    teacher_id : uuid.UUID | None = None
     note_value : Optional[int] = None
