@@ -8,19 +8,21 @@ import {DBObject} from "../../types.ts";
 import {AppContext} from "../../App.tsx";
 import {IAusenciaCreateDB} from "./models/IAusenciaCreateDB.ts";
 import {RolesEnum} from "../../api/RolesEnum.ts";
+import DateModal from "./components/DateModal.tsx";
+import {IAusenciaLocal} from "./models/IAusenciaLocal.ts";
 
 interface IAusenciasContext {
     searchText?: string;
     dataTable?: IAusenciaTableRow[];
-    editting?: IAusenciaTableRow;
+    editting?: IAusenciaLocal;
     showModal?: boolean;
     isGetLoading?: boolean;
     isCreatting?: boolean;
     setShowModal?: (text: boolean) => void;
-    setEditting?: (AusenciaDB?: IAusenciaTableRow) => void;
+    setEditting?: (AusenciaDB?: IAusenciaLocal) => void;
     setSearchText?: (text: string) => void;
     onDeleteTableItem?: (index: string) => void;
-    onEditTableItem?: (ausenciaEdit: IAusenciaCreateDB) => void;
+    onEditTableItem?: (ausenciaEdit: IAusenciaCreateDB, index: string) => void;
     onAddTableItem?: (ausenciaEdit: IAusenciaCreateDB[]) => void;
 }
 
@@ -36,7 +38,7 @@ interface IAusenciaTableRow extends DBObject {
 
 export default function AusenciasScreen() {
     const [searchText, setSearchText] = useState('');
-    const [editting, setEditting] = useState<IAusenciaTableRow | undefined>();
+    const [editting, setEditting] = useState<IAusenciaLocal | undefined>();
     const [showModal, setShowModal] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
     const {ausencias, allowRoles} = useContext(AppContext)
@@ -55,8 +57,8 @@ export default function AusenciasScreen() {
         deleteAusencia(deletedAusenciaId);
     };
 
-    const onEditTableItem = (ausenciasEdit: IAusenciaCreateDB) => {
-        updateAusencia(editting!.id, ausenciasEdit)
+    const onEditTableItem = (ausenciasEdit: IAusenciaCreateDB, index: string) => {
+        updateAusencia(index, ausenciasEdit)
         setEditting(undefined)
     };
 
@@ -115,8 +117,11 @@ export default function AusenciasScreen() {
             <div className={'w-full h-dvh flex flex-col'}>
                 <ToolBar/>
                 <Body/>
-                {(showModal || editting) &&
+                {(showModal) &&
                     <AddAusenciaForm/>
+                }
+                {editting &&
+                    <DateModal />
                 }
             </div>
         </AusenciasContext.Provider>

@@ -12,7 +12,7 @@ const endpoint = EndpointEnum.ASIGNATURAS
 
 export const useApiAsignatura = () => {
     const [isLoading, setIsLoading] = useState(false)
-    const {setError, asignaturas: asignaturasAppContext, setAsignaturas: setAsignaturasAppContext, cursos} = useContext(AppContext)
+    const {setError, asignaturas: asignaturasAppContext, setAsignaturas: setAsignaturasAppContext} = useContext(AppContext)
     const {getCursos} = useApiCurso()
 
     const getAsignaturas = async () => {
@@ -21,12 +21,16 @@ export const useApiAsignatura = () => {
             setIsLoading(false)
         }
         const res = await apiRequest.getApi(endpoint)
-        getCursos()
+
         if (res.ok) {
             const data: AsignaturaGetResponse = await res.json()
-            const asignaturaArray = Object.values(data)
-                .map((asignatura: AsignaturaGetDB) => new AsignaturaGetAdapter(asignatura, cursos!.find((item) => item.id === asignatura.course_id)!))
-            setAsignaturasAppContext!(asignaturaArray)
+            await getCursos((res)=>{
+                console.log(res)
+                const asignaturaArray = Object.values(data)
+                    .map((asignatura: AsignaturaGetDB) => new AsignaturaGetAdapter(asignatura, res.find((item) => item.id === asignatura.course_id)!))
+                setAsignaturasAppContext!(asignaturaArray)
+            })
+
         } else {
             setError!(new Error(res.statusText))
         }

@@ -24,9 +24,8 @@ export const useApiAusencias = () => {
         if (res.ok) {
             const data: IAusenciaDB[] = await res.json();
             const ausenciaArray: IAusenciaLocal[] = Object.values(data)
-                .map((ausencia: IAusenciaDB) => {
-                    return new AusenciaAdapter(ausencia)
-
+                .map((ausencia: IAusenciaDB, index) => {
+                    return new AusenciaAdapter(ausencia, index.toString())
                 });
             setAusencias(ausenciaArray);
             setAusenciasAppContext!(ausenciaArray);

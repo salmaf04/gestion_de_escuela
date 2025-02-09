@@ -7,8 +7,8 @@ import {RolesEnum} from "../../../api/RolesEnum.ts";
 
 export default function Body(){
     const {dataTable, setEditting, onDeleteTableItem, isGetLoading} = useContext(AusenciasContext)
-    const {allowRoles} = useContext(AppContext)
-
+    const {allowRoles, ausencias} = useContext(AppContext)
+    console.log(dataTable)
     return(
             <Table
                 className={'h-5/6'}
@@ -20,8 +20,12 @@ export default function Body(){
                 }}
                 onEditRow={(index) => {
                     if (allowRoles!([RolesEnum.TEACHER])) {
-                        const item = dataTable!.find((item) => item.id === index)
-                        setEditting!(item!)
+                        const item = ausencias!.find((item) => item.id === index)
+                        console.log({
+                            index
+                            ,...item
+                        })
+                        setEditting!(item)
                     }
                 }}
                 isRemoveActive={allowRoles!([RolesEnum.TEACHER])}

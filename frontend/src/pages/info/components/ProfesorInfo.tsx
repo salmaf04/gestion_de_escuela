@@ -29,11 +29,11 @@ export default function ProfesorInfo() {
         },
         {
             name: 'Asignaturas',
-            value: profesor?.asignaturas.toString() ?? 'No disponible',
+            value: profesor?.subjects.map((item)=>item.name).join(', ') ?? 'No disponible',
         },
         {
             name: 'Valoracion',
-            value: profesor?.valoracion ?? 'No disponible',
+            value: profesor?.valoracion?.toString() ?? 'No disponible',
         },
         {
             name: 'Salario',

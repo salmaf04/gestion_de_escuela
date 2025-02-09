@@ -100,8 +100,6 @@ export default function AddAusenciaForm() {
                                                 label={'Estudiante'}
                                                 data={estudiantesSelect}
                                                 control={control}
-                                                defaultValue={editting && estudiantes?.find((item) => item.name === editting?.studentName)?.id}
-
                                             />
                                         </div>
                                         <div className={'w-full'}>
@@ -113,7 +111,6 @@ export default function AddAusenciaForm() {
                                                 labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
                                                 data={asignaturasSelect}
                                                 control={control}
-                                                defaultValue={editting && asignaturas?.find((item) => item.name === editting?.subjectName)?.id}
                                             />
                                         </div>
 
@@ -126,7 +123,6 @@ export default function AddAusenciaForm() {
                                             })}
                                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
 
-                                                defaultValue={editting && reverseDate(editting.date)}
                                             />
 
                                         </div>

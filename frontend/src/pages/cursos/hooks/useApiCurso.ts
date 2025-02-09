@@ -13,7 +13,7 @@ export const useApiCurso = () => {
     const [isLoading, setIsLoading] = useState(false)
     const {setError, cursos: cursosAppContext, setCursos: setCursosAppContext} = useContext(AppContext)
 
-    const getCursos = async () => {
+    const getCursos = async (thenAction: (res: ICursoGetLocal[]) => void = () => {}) => {
         setIsLoading(true)
         if (cursosAppContext) {
             setIsLoading(false)
@@ -29,6 +29,7 @@ export const useApiCurso = () => {
                     }
                 })
             setCursosAppContext!(cursoArray)
+            thenAction(cursoArray)
         } else {
             setError!(new Error(res.statusText))
         }
