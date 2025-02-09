@@ -6,7 +6,7 @@ import {AppContext} from "../../../App.tsx";
 import {RolesEnum} from "../../../api/RolesEnum.ts";
 
 export default function Body(){
-    const {dataTable, setEditting, onDeleteTableItem, isGetLoading} = useContext(AusenciasContext)
+    const {dataTable, setEditting, isGetLoading} = useContext(AusenciasContext)
     const {allowRoles, ausencias} = useContext(AppContext)
     console.log(dataTable)
     return(
@@ -15,9 +15,7 @@ export default function Body(){
                 isLoading={isGetLoading!}
                 Data={dataTable ?? []}
                 header={AusenciaAdapter.Properties.slice(allowRoles!([RolesEnum.STUDENT]) ? 2 : 1)}
-                onRemoveRow={(index) => {
-                    onDeleteTableItem!(index)
-                }}
+                onRemoveRow={() => {}}
                 onEditRow={(index) => {
                     if (allowRoles!([RolesEnum.TEACHER])) {
                         const item = ausencias!.find((item) => item.id === index)
@@ -28,7 +26,7 @@ export default function Body(){
                         setEditting!(item)
                     }
                 }}
-                isRemoveActive={allowRoles!([RolesEnum.TEACHER])}
+                isRemoveActive={false}
             />
     )
 }
