@@ -24,5 +24,5 @@ export const Screens = {
     Cursos: new ScreenType('Cursos', CursoIcon, '/curso', [RolesEnum.SECRETARY, RolesEnum.DEAN]),
     Ausencias: new ScreenType('Ausencias', AusenciaIcon, '/ausencias', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
     Usuarios: new ScreenType('Usuarios', UsersIcon, '/usuarios', [RolesEnum.SECRETARY]),
-    Funcionalidades: new ScreenType('Funcionalidades', FunctIcon, '/funcionalidades', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN]),
+    Funcionalidades: new ScreenType('Funcionalidades', FunctIcon, '/funcionalidades', [ RolesEnum.SECRETARY, RolesEnum.DEAN]),
 }
