@@ -25,6 +25,7 @@ export default function AddAsignaturaForm() {
             onEditTableItem!(data);
         else
             onAddTableItem!(data);
+        setShowModal!(false)
 
     };
     const cursosSelect: ISelect[] = cursos?.map((item: ICursoGetLocal)=>{
