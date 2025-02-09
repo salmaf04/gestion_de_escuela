@@ -1,11 +1,11 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import select, func
+from sqlalchemy import select, func, update
 from backend.domain.schemas.absence import AbsenceCreateModel
 from backend.domain.models.tables import AbsenceTable, StudentTable, SubjectTable, TeacherTable, CourseTable, teacher_subject_table
 from backend.application.services.student import StudentPaginationService
 from backend.application.services.course import CoursePaginationService
 from backend.application.services.subject import SubjectPaginationService
-from backend.domain.filters.absence import AbsenceFilterSchema, AbsenceFilterSet
+from backend.domain.filters.absence import AbsenceFilterSchema, AbsenceFilterSet, AbsenceChangeRequest
 from datetime import datetime
 from .base import IRepository
 import uuid
@@ -69,9 +69,12 @@ class AbsenceRepository(IRepository[AbsenceCreateModel,AbsenceTable, None,Absenc
         self.session.delete(entity)
         self.session.commit()
 
-    def update(self, changes: None, entity: AbsenceTable) -> AbsenceTable:
-        """Update absence - Not implemented."""
-        pass
+    def update(self, changes: AbsenceChangeRequest, entity: AbsenceTable) -> AbsenceTable:
+        update_statement = update(AbsenceTable).where(AbsenceTable.entity_id == entity.entity_id)
+        update_statement = update_statement.values(date=changes.date)
+        self.session.execute(update_statement)
+        self.session.commit()
+        return self.get_by_id(id=entity.entity_id)
         
     def get_absence_by_student(self, student_id: uuid.UUID) -> list[AbsenceTable]:
         """
