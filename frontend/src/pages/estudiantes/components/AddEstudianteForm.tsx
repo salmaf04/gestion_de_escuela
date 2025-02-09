@@ -59,7 +59,7 @@ export default function AddEstudianteForm() {
                                     required: "true"
                                 })}
                                 className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={editting?.body.name}
+                                defaultValue={editting?.body.lastname}
                             />
                         </div>
                         <div className="group mb-4">
