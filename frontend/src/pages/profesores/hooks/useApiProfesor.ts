@@ -60,6 +60,7 @@ export const useApiProfesor = () => {
         const res = await apiRequest.deleteApi(endpoint, id);
         if (res.ok)
             setMessage!('Profesor eliminado correctamente')
+        else
             setError!(new Error(res.statusText));
         await getProfesores()
         setIsLoading(false);
