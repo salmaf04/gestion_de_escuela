@@ -606,9 +606,8 @@ def check_dean(mapper, connection, target):
     Manages dean privileges after dean deletion.
     Transfers admin role to administrator if no dean remains.
     """
+    print("hola")
     user_id = target.id
-    print(user_id)
-    print('hola')
     connection.execute(UserTable.__table__.update().values(roles=[Roles.TEACHER.value]).where(UserTable.entity_id == user_id))
 
 @event.listens_for(MeanMaintenanceTable, 'before_insert')
@@ -631,4 +630,29 @@ def check_replacement(mapper, connection, target):
 
     if result >= 2 : 
         connection.execute(update(MeanTable).where(MeanTable.entity_id == target.mean_id).values(to_be_replaced=True))
+
+
+dean_trigger = """
+CREATE OR REPLACE FUNCTION update_user_role_on_dean_delete()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE "user"
+    SET roles = '{"TEACHER"}'
+    WHERE entity_id = OLD.id;
+    
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER after_dean_delete_trigger
+AFTER DELETE ON dean
+FOR EACH ROW
+EXECUTE FUNCTION update_user_role_on_dean_delete();
+"""
+
+event.listen(
+    DeanTable.__table__,
+    'after_create',
+    DDL(dean_trigger)
+)
     
