@@ -50,4 +50,5 @@ class ClassroomModel(ClassroomCreateModel):
 
 class ClassroomModelPost(ClassroomCreateModel) :
     id: uuid.UUID
+
     

@@ -1,5 +1,6 @@
 from backend.domain.schemas.mean import MeanModel
 from backend.domain.models.tables import MeanTable
+from backend.application.serializers.classroom import ClassroomMapper
 
 """
 This module defines a mapper for converting mean data into API representations.
@@ -24,6 +25,7 @@ class MeanMapper() :
 
     def to_api(self, data) -> MeanModel :
         serialized_data = []
+        classroom_mapper = ClassroomMapper()
     
         for mean in data :
             serialized_data.append(MeanModel(
@@ -32,7 +34,7 @@ class MeanMapper() :
                 state = mean[0].state,
                 location = mean[0].location,
                 type= mean[0].type,
-                classroom_id= mean[0].classroom.entity_id if mean[0].classroom else None,
+                classroom = classroom_mapper.to_api_default(mean[2]) if mean[2] else None ,
                 to_be_replaced= mean[0].to_be_replaced,
                 requested_by = str(mean[1]) if mean[1] else None
             ))

@@ -7,6 +7,7 @@ from pydantic import BaseModel, field_validator
 import uuid
 from enum import Enum
 from fastapi import HTTPException, status
+from typing import Any
 
 class ValidStates(str, Enum) :
     """
@@ -74,7 +75,7 @@ class MeanModel (BaseModel):
     name: str
     state: str
     location: str
-    classroom_id: uuid.UUID | None
+    classroom: Any 
     to_be_replaced: bool | None = None
     requested_by: str | None = None
     type: str
