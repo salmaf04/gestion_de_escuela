@@ -18,7 +18,7 @@ export default function Body() {
     const [showValoration, setShowValoration] = useState(false)
     const [showSancion, setShowSancion] = useState(false)
     const [profesor, setProfesor] = useState<DBObject>()
-    const {setError, profesores, allowRoles, typeRole} = useContext(AppContext)
+    const {setError, profesores, allowRoles, typeRole, valorationPeriod} = useContext(AppContext)
 
     const actions = []
     if (allowRoles!([RolesEnum.STUDENT])){
@@ -31,7 +31,7 @@ export default function Body() {
             hoverColor: 'hover:bg-green-100',
             title: "Valorar",
             icon: <img src={ValorarIcon} alt={'Valorar'}/>,
-            isVisible: () => true
+            isVisible: () => valorationPeriod!.open
         })
     }
     if (typeRole === "dean"){

@@ -19,16 +19,16 @@ export default function SancionModal({profesor, setShowModal}: Props) {
     const {isLoading, valorarProfesor} = useApiProfesor()
     const {getAsignaturas} = useApiAsignatura()
     const {getEstudiante, estudiante} = useApiEstudiante()
-    const {asignaturas, personalId, profesores} = useContext(AppContext)
+    const {personalId, profesores} = useContext(AppContext)
     const editting = false
     useEffect(() => {
         getAsignaturas!()
         getEstudiante!(personalId!)
     }, []);
-    const asignaturasSelect: ISelect[] = profesores!.find((i) => i.id === profesor?.id)!.asignaturas.map((ap)=>{
+    const asignaturasSelect: ISelect[] = profesores!.find((i) => i.id === profesor?.id)!.subjects.map((ap)=>{
         return {
-            id: asignaturas?.find((a) => a.name === ap)!.id ?? "",
-            name: ap
+            id: ap.id,
+            name: ap.name
         }
     }) ?? []
 

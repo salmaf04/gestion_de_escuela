@@ -6,6 +6,7 @@ import AddProfesorForm from "./components/AddProfesorForm.tsx";
 import {useApiProfesor} from "./hooks/useApiProfesor.ts";
 import {AppContext} from "../../App.tsx";
 import {IEditRow} from "../../types/IEditRow.ts";
+import {useApiValorationPeriod} from "../info/hooks/useApiValorationPeriod.ts";
 
 interface IProfesorContext {
     searchText?: string;
@@ -42,6 +43,7 @@ export default function ProfesoresScreen() {
     const [searchText, setSearchText] = useState('');
     const [editting, setEditting] = useState<IEditRow<ProfesorCreateAdapter> | undefined>()
     const [showModal, setShowModal] = useState(false)
+    const {getValorationPeriod} = useApiValorationPeriod()
     const {profesores} = useContext(AppContext)
     const {
         deleteProfesor,
@@ -51,6 +53,7 @@ export default function ProfesoresScreen() {
     } = useApiProfesor()
     useEffect(() => {
         getProfesores()
+        getValorationPeriod()
     }, []);
 
     const onDeleteTableItem = (deletedProfesorId : string ) => {
