@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from backend.domain.schemas.note import NoteCreateModel, NoteModel
 from sqlalchemy.orm import Session
-from backend.application.services.note import NoteCreateService, NotePaginationService, NoteUpdateService
+from backend.application.services.note import NoteCreateService, NotePaginationService, NoteUpdateService, NoteDeleteService
 from backend.application.serializers.note import NoteMapper
 from backend.configuration import get_db
 from backend.domain.filters.note import NoteFilterSchema, NoteChangeRequest
@@ -145,3 +145,23 @@ async def update_note(
     updated_note = update_service.update_note(note=note, modified_by=user_id, new_note=new_note)
 
     return mapper.to_api(updated_note)
+
+@router.delete(
+    "/note/{id}",
+    status_code=status.HTTP_200_OK
+) 
+async def delete_note(
+    id: str,
+    session: Session = Depends(get_db)
+) :
+    note_pagination_service = NotePaginationService(session)
+    note_delete_service = NoteDeleteService(session)
+    note = note_pagination_service.get_note_by_id(id=id)
+
+    if not note : 
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="There is no note with that id"
+        )
+    
+    note_delete_service.delete(note=note)

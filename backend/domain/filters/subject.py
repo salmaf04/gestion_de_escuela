@@ -2,6 +2,7 @@ from sqlalchemy_filterset import FilterSet, Filter, RangeFilter, BooleanFilter, 
 from pydantic import BaseModel
 from backend.domain.models.tables import SubjectTable
 from typing import Optional
+import uuid
 
 """
 This module defines filter sets and schemas for managing subjects using SQLAlchemy and Pydantic.
@@ -43,3 +44,4 @@ class SubjectChangeRequest(BaseModel) :
     hourly_load : Optional[int] = None
     study_program : Optional[int] = None
     classroom_id : Optional[str] = None
+    course_id : Optional[uuid.UUID] = None

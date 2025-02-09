@@ -99,6 +99,13 @@ class NoteUpdateService() :
 
     def update_note(self, note : NoteModel, modified_by : str, new_note : NoteChangeRequest ) :
         return self.repo_instance.update(new_note, note, modified_by=modified_by)
+    
+class NoteDeleteService() :
+    def __init__(self, session):
+        self.repo_instance = NoteRepository(session)
+
+    def delete(self, note : NoteModel) : 
+        return self.repo_instance.delete(note)
 
     
 
