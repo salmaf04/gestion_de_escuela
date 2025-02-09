@@ -68,7 +68,7 @@ export const useApiMedio = () => {
             setError!(new Error(res.statusText));
         else
             setMessage!("Solicitud enviada correctamente")
-        await getAulas()
+        await getMedios()
         setIsLoading(false);
     };
     const devolverMedio = async (mean_id: string) => {
@@ -78,7 +78,7 @@ export const useApiMedio = () => {
             setError!(new Error(res.statusText));
         else
             setMessage!("Solicitud enviada correctamente")
-        await getAulas()
+        await getMedios()
         setIsLoading(false);
     };
 
