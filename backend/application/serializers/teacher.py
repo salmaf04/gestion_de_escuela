@@ -93,8 +93,7 @@ class TeacherTechnologicalClassroom(BaseModel) :
 class TeacherSubjectToEvaluate(BaseModel) :
     subjects_to_evaluate : list[SubjectModel]
 
-class TeacherByStudent(BaseModel) :
-    teacher : TeacherModel
+class TeacherByStudent(TeacherModel) :
     subject_to_evaluate : list[SubjectModel]
 
 class TeacherMapper :
@@ -208,10 +207,10 @@ class TeacherMapper :
 
         for teacher in data :
             if teacher[0].id in teacher_ids :
-                serialized_values[len(serialized_values)-1].teacher.subjects.append(subject_mapper.to_api(teacher[1]))
+                serialized_values[len(serialized_values)-1].subjects.append(subject_mapper.to_api(teacher[1]))
             else :
-                teacher_ids.append(teacher[0].id)
-                new_teacher = TeacherModel(
+                teacher_ids.append(teacher[0].id)        
+                new_teacher_with_subjects = TeacherByStudent(
                     id = teacher[0].id,
                     name= teacher[0].name,
                     lastname= teacher[0].lastname,
@@ -225,11 +224,7 @@ class TeacherMapper :
                     ],
                     valoration= teacher[0].average_valoration,
                     salary=teacher[0].salary,
-                    alert=teacher[0].less_than_three_valoration
-                )
-                
-                new_teacher_with_subjects = TeacherByStudent(
-                    teacher = new_teacher,
+                    alert=teacher[0].less_than_three_valoration,
                     subject_to_evaluate = subjects_to_evaluate[index].subjects_to_evaluate
                 )
 
