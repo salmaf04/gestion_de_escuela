@@ -127,10 +127,11 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         Returns:
             List of StudentNoteTable instances
         """
-        query = select(StudentNoteTable, StudentTable, TeacherTable, SubjectTable)
+        query = select(StudentNoteTable, StudentTable, TeacherTable, SubjectTable, CourseTable)
         query = query.join(StudentTable, StudentNoteTable.student_id == StudentTable.entity_id)
         query = query.join(TeacherTable, StudentNoteTable.teacher_id == TeacherTable.entity_id)
         query = query.join(SubjectTable, StudentNoteTable.subject_id == SubjectTable.entity_id)
+        query = query.join(CourseTable, StudentTable.course_id == CourseTable.entity_id)
         query = query.where(StudentNoteTable.student_id == student_id)
         query = query.order_by(StudentNoteTable.subject_id)
         return self.session.execute(query).all()
