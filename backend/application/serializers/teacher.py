@@ -3,6 +3,7 @@ from backend.domain.models.tables import TeacherTable
 from backend.application.serializers.subject import SubjectMapper
 from pydantic import BaseModel
 from datetime import datetime
+from backend.domain.schemas.subject import SubjectModel
 import uuid
 
 """
@@ -89,6 +90,12 @@ class TeacherTechnologicalClassroom(BaseModel) :
     mean : str
     state : str
 
+class TeacherSubjectToEvaluate(BaseModel) :
+    subjects_to_evaluate : list[SubjectModel]
+
+class TeacherByStudent(BaseModel) :
+    teacher : TeacherModel
+    subject_to_evaluate : list[SubjectModel]
 
 class TeacherMapper :
 
@@ -189,14 +196,19 @@ class TeacherMapper :
 
         return serialized_values
     
-    def to_teachers_by_students(self, data) :
+    def to_teachers_by_students(self, big_data) :
         serialized_values = []
         teacher_ids = []
         subject_mapper = SubjectMapper()
+        data = big_data[0]
+        teacher_subject_to_evaluate = big_data[1]
+
+        subjects_to_evaluate = self.subjects_to_evaluate(teacher_subject_to_evaluate)
+        index = 0
 
         for teacher in data :
             if teacher[0].id in teacher_ids :
-                serialized_values[len(serialized_values)-1].subjects.append(subject_mapper.to_api(teacher[1]))
+                serialized_values[len(serialized_values)-1].teacher.subjects.append(subject_mapper.to_api(teacher[1]))
             else :
                 teacher_ids.append(teacher[0].id)
                 new_teacher = TeacherModel(
@@ -215,7 +227,44 @@ class TeacherMapper :
                     salary=teacher[0].salary,
                     alert=teacher[0].less_than_three_valoration
                 )
+                
+                new_teacher_with_subjects = TeacherByStudent(
+                    teacher = new_teacher,
+                    subject_to_evaluate = subjects_to_evaluate[index].subjects_to_evaluate
+                )
+
+                serialized_values.append(new_teacher_with_subjects)
+
+        return serialized_values
+    
+
+    def subjects_to_evaluate(self, data) :
+        serialized_values = []
+        student = data[0][1]
+        subjects = student.course.subjects
+
+        for i, teacher_val in enumerate(data) :
+            note = teacher_val[0]
+            student = teacher_val[1]
+            
+            if note.subject in subjects :
+                subjects.remove(note.subject)
+            
+            if i == len(data) - 1 : 
+                new_teacher = TeacherSubjectToEvaluate(
+                        subjects_to_evaluate = self.to_subject_list(subjects)
+                    )
+                
                 serialized_values.append(new_teacher)
+                subjects = student.course.subjects
+              
+            elif teacher_val.teacher_id != data[i+1][0].teacher_id :
+                    new_teacher = TeacherSubjectToEvaluate(
+                        subjects_to_evaluate = self.to_subject_list(subjects)
+                    )
+
+                    serialized_values.append(new_teacher)
+                    subjects = student.course.subjects
 
         return serialized_values
     

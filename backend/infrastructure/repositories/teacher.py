@@ -154,4 +154,12 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         query = query.join(StudentTable, CourseTable.entity_id == StudentTable.course_id)
         query = query.where(StudentTable.id == student_id)
         query = query.order_by(TeacherTable.id)
+        return self.session.execute(query).all() , self.get_subjects_to_evualuate(student_id)
+    
+
+    def get_subjects_to_evualuate(self, student_id: str):
+        query = select(TeacherNoteTable, StudentTable)
+        query = query.join(StudentTable, TeacherNoteTable.student_id == StudentTable.entity_id)
+        query =query.where(TeacherNoteTable.student_id == student_id)
+        query = query.order_by(TeacherNoteTable.teacher_id)
         return self.session.execute(query).all()
