@@ -44,7 +44,7 @@ class SubjectRepository(IRepository[SubjectCreateModel,SubjectTable, SubjectChan
         self.session.delete(entity)
         self.session.commit()
 
-    def update(self, changes: SubjectChangeRequest, entity: SubjectTable) -> SubjectTable:
+    def update(self, changes: SubjectChangeRequest, entity: SubjectModel) -> SubjectTable:
         """
         Update a subject's information.
         Args:
@@ -53,7 +53,7 @@ class SubjectRepository(IRepository[SubjectCreateModel,SubjectTable, SubjectChan
         Returns:
             Updated SubjectTable instance
         """
-        query = update(SubjectTable).where(SubjectTable.entity_id == entity.entity_id)
+        query = update(SubjectTable).where(SubjectTable.entity_id == entity.id)
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
         self.session.execute(query)
         self.session.commit()
