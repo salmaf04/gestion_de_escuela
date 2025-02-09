@@ -38,4 +38,5 @@ class MeanMaintenanceFilterSchema(BaseModel):
     finished : bool | None = None
 
 class MeanMaintenanceChangeRequest(BaseModel):
+    cost : float | None = None
     finished : bool | None = None
