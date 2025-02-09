@@ -6,7 +6,7 @@ Provides endpoints for creating and retrieving absence records.
 from fastapi import APIRouter, HTTPException, status, Depends
 from backend.domain.schemas.absence import AbsenceCreateModel, AbsenceModel
 from sqlalchemy.orm import Session
-from backend.application.services.absence import AbsenceCreateService, AbsencePaginationService
+from backend.application.services.absence import AbsenceCreateService, AbsencePaginationService, AbsenceDeleteService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.absence import AbsenceMapper
 from backend.configuration import get_db
@@ -87,3 +87,25 @@ async def read_absence(
         return []
     
     return mapper.to_absence_by_secretary(absences, total)
+
+
+@router.delete(
+    "/absence/{absence_id}",
+    status_code=status.HTTP_200_OK
+)
+async def delete_absence(
+    absence_id: str,
+    session: Session = Depends(get_db)
+):
+    absence_pagination_service = AbsencePaginationService(session)
+    absence_delete_service = AbsenceDeleteService(session)
+    absence = absence_pagination_service.get_absence_by_id(id=absence_id)
+
+    if not absence :
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="There is no absence with that id"
+        )
+    
+    delete_service = AbsenceDeleteService(session)
+    delete_service.delete_absence(absence)
