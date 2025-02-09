@@ -30,3 +30,6 @@ class AbsenceFilterSchema(BaseModel):
     student_id : uuid.UUID | None = None
     subject_id : uuid.UUID | None = None
     date : str | None = None
+
+class AbsenceChangeRequest(BaseModel):
+    date : str | None = None

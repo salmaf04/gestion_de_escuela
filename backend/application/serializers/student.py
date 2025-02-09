@@ -72,7 +72,7 @@ class StudentMapper :
         serialized_students = []
         course_mapper = CourseMapper()
 
-        for tuple in data : 
+        for tuple in data :             
             student = StudentModel(
                 id = tuple[3].id,
                 name= tuple[3].name,
@@ -82,7 +82,7 @@ class StudentMapper :
                 extra_activities= tuple[3].extra_activities,  
                 username= tuple[3].username,
                 hash_password= tuple[3].hashed_password,
-                course_id = course_mapper.to_api(tuple[3].course)
+                course = course_mapper.to_api(tuple[3].course)
             )
             serialized_students.append(student)
         return serialized_students

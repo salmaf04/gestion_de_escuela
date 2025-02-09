@@ -5,7 +5,7 @@ from backend.domain.models.tables import AbsenceTable, StudentTable, SubjectTabl
 from backend.application.services.student import StudentPaginationService
 from backend.application.services.course import CoursePaginationService
 from backend.application.services.subject import SubjectPaginationService
-from backend.domain.filters.absence import AbsenceFilterSchema, AbsenceFilterSet
+from backend.domain.filters.absence import AbsenceFilterSchema, AbsenceFilterSet, AbsenceChangeRequest
 from datetime import datetime
 import uuid
 from  backend.infrastructure.repositories.absence import AbsenceRepository
@@ -78,4 +78,11 @@ class AbsenceDeleteService :
 
     def delete_absence(self, absence: AbsenceTable) -> None :
         return self.repo_instance.delete(absence)
+    
+class AbsenceUpdateService :
+    def __init__(self, session):
+        self.repo_instance = AbsenceRepository(session)
+
+    def update_absence(self, changes : AbsenceChangeRequest , entity : AbsenceTable) -> AbsenceTable: 
+        return self.repo_instance.update(changes, entity)
 

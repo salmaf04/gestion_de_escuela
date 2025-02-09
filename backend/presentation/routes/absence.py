@@ -6,11 +6,11 @@ Provides endpoints for creating and retrieving absence records.
 from fastapi import APIRouter, HTTPException, status, Depends
 from backend.domain.schemas.absence import AbsenceCreateModel, AbsenceModel
 from sqlalchemy.orm import Session
-from backend.application.services.absence import AbsenceCreateService, AbsencePaginationService, AbsenceDeleteService
+from backend.application.services.absence import AbsenceCreateService, AbsencePaginationService, AbsenceDeleteService, AbsenceUpdateService
 from fastapi.exceptions import HTTPException
 from backend.application.serializers.absence import AbsenceMapper
 from backend.configuration import get_db
-from backend.domain.filters.absence import AbsenceFilterSchema
+from backend.domain.filters.absence import AbsenceFilterSchema, AbsenceChangeRequest
 from backend.presentation.utils.auth import authorize
 from fastapi import Request
 from backend.domain.schemas.user import UserModel
@@ -109,3 +109,34 @@ async def delete_absence(
     
     delete_service = AbsenceDeleteService(session)
     delete_service.delete_absence(absence)
+
+
+@router.patch(
+    "/absence/{id}",
+    status_code=status.HTTP_200_OK,
+    response_model=AbsenceModel,
+    responses={ 
+        status.HTTP_404_NOT_FOUND: {
+            "description": "Not found",
+        }
+    },
+) 
+async def update_absence(
+    id: str,
+    new_absence: AbsenceChangeRequest,
+    session: Session = Depends(get_db),
+) : 
+    absence_pagination_service = AbsencePaginationService(session)
+    absence = absence_pagination_service.get_absence_by_id(id=id)
+    mapper = AbsenceMapper()
+
+    if not absence : 
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="There is no absence with that id"
+        )
+    
+    update_service = AbsenceUpdateService(session)
+
+    updated_absence = update_service.update_absence(changes=new_absence, entity=absence)
+    return mapper.to_api(updated_absence)
