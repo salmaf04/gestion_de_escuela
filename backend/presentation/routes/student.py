@@ -161,7 +161,6 @@ async def update_student(
             detail="There is no student with that id"
         )
     
-    student_model = mapper.to_api(student)
-    student_updated = student_update_service.update_one(changes=filters, student=student_model)
+    student_updated = student_update_service.update_one(changes=filters, student=student)
 
-    return student_updated
+    return mapper.to_api(student_updated)
