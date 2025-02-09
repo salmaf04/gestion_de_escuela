@@ -48,3 +48,4 @@ class StudentChangeRequest(BaseModel) :
     extra_activities : Optional[bool] = None
     username : Optional[str] = None
     hash_password : Optional[str] = None
+    course_id : Optional[uuid.UUID] = None
