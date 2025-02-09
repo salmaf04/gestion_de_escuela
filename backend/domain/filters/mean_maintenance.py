@@ -25,12 +25,14 @@ Attributes:
 """
 
 class MeanMaintenanceFilterSet(FilterSet):
+    id = Filter(MeanMaintenanceTable.entity_id)
     mean_id = Filter(MeanMaintenanceTable.mean_id)
     cost = Filter(MeanMaintenanceTable.cost)
     finished = Filter(MeanMaintenanceTable.finished)
 
 
 class MeanMaintenanceFilterSchema(BaseModel):
+    id : uuid.UUID | None = None
     mean_id : uuid.UUID | None = None
     cost : float| None = None
     finished : bool | None = None

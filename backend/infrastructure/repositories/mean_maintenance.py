@@ -38,14 +38,16 @@ class MeanMaintenanceRepository(IRepository[MeanMaintenanceCreateModel,MeanMaint
         date_converted = datetime.strptime(entity.date, "%d-%m-%Y")
         mean_maintenance_dict = entity.model_dump(exclude={"date"})
         new_mean_maintenance = MeanMaintenanceTable(**mean_maintenance_dict, date=date_converted)
-        mean = mean  
-        
         new_mean_maintenance.mean = mean
         mean.mean_maintenance_association.append(new_mean_maintenance)
-
         self.session.add(new_mean_maintenance)
         self.session.commit()
-        return new_mean_maintenance
+  
+        maintenance = self.get(
+            filter_params=MeanMaintenanceFilterSchema(id=new_mean_maintenance.entity_id)
+        )
+
+        return maintenance
     
     def delete(self, entity: MeanMaintenanceTable) -> None:
         """
@@ -56,7 +58,7 @@ class MeanMaintenanceRepository(IRepository[MeanMaintenanceCreateModel,MeanMaint
         self.session.delete(entity)
         self.session.commit()
 
-    def update(self, changes: MeanMaintenanceChangeRequest, entity: MeanMaintenanceModel) -> MeanMaintenanceTable:
+    def update(self, changes: MeanMaintenanceChangeRequest, entity) -> MeanMaintenanceTable:
         """
         Update a maintenance record's information.
         Args:
@@ -65,13 +67,16 @@ class MeanMaintenanceRepository(IRepository[MeanMaintenanceCreateModel,MeanMaint
         Returns:
             Updated MeanMaintenanceTable instance
         """
-        query = update(MeanMaintenanceTable).where(MeanMaintenanceTable.entity_id == entity.id)
+        query = update(MeanMaintenanceTable).where(MeanMaintenanceTable.entity_id == entity.entity_id)
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
         self.session.execute(query)
         self.session.commit()
         
-        mean_maintenance = entity.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
-        return mean_maintenance
+        maintenance = self.get(
+            filter_params=MeanMaintenanceFilterSchema(id=entity.entity_id)
+        )
+
+        return maintenance
     
     def get_by_id(self, id: str) -> MeanMaintenanceTable:
         """
@@ -93,10 +98,12 @@ class MeanMaintenanceRepository(IRepository[MeanMaintenanceCreateModel,MeanMaint
         Returns:
             List of matching MeanMaintenanceTable instances
         """
-        query = select(MeanMaintenanceTable)
+        query = select(MeanMaintenanceTable, MeanTable, ClassroomTable) 
+        query = query.join(MeanTable, MeanMaintenanceTable.mean_id == MeanTable.entity_id)
+        query = query.join(ClassroomTable, ClassroomTable.entity_id == MeanTable.classroom_id)
         filter_set = MeanMaintenanceFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True)) 
-        return self.session.execute(query).scalars().all()
+        return self.session.execute(query).all()
     
     def get_mainenance_by_classroom(self):
         """

@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 import uuid
 from typing import Optional
+from backend.domain.schemas.mean import MeanModel
 
 """
 This module defines Pydantic models for representing mean maintenance data in the application.
@@ -43,7 +44,7 @@ class MeanMaintenanceCreateModel(BaseModel):
 
 class MeanMaintenanceModel(BaseModel):
     id: uuid.UUID
-    mean: str
+    mean: MeanModel
     cost: float
     date : str
     finished : bool | None = None

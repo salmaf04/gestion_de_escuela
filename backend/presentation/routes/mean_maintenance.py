@@ -100,10 +100,10 @@ async def read_mean_maintenance(
                 detail="There is no mean_maintenance with that fields"
             )
     
-        mean_maintenances_mapped = {}    
-     
-        for i, mean_maintenance in enumerate(mean_maintenances) :
-            mean_maintenances_mapped[i] = mapper.to_api(mean_maintenance)
+        mean_maintenances_mapped = []
+        
+        for maintenance in mean_maintenances :
+            mean_maintenances_mapped.append(mapper.to_api(maintenance))
         
     return mean_maintenances_mapped
 
@@ -114,7 +114,7 @@ async def read_mean_maintenance(
     status_code=status.HTTP_200_OK
 )
 @authorize(role=["administrator"])
-async def update_teacher(
+async def update_mean_maintenance(
     request: Request,
     id : str,
     filters: MeanMaintenanceChangeRequest,
@@ -133,8 +133,6 @@ async def update_teacher(
             detail="There is no maintenance with that id"
         )
     
-    mean_model = mapper.to_api(mean)
+    mean_updated = mean_update_service.update_one(changes=filters, mean_maintenance=mean)
     
-    mean_updated = mean_update_service.update_one(changes=filters, mean_maintenance=mean_model)
-
-    return mean_updated
+    return mapper.to_api(mean_updated)

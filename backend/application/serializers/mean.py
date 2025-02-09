@@ -41,14 +41,29 @@ class MeanMapper() :
 
         return serialized_data
     
-    def to_api_default(self, mean: MeanTable) -> MeanModel :
+    def to_api_default(self, data) -> MeanModel :
+        classroom_mapper = ClassroomMapper()
+
+        if isinstance(data, list) :
+            data = data[0]
+        
+            return MeanModel(
+                id = data[0].entity_id,
+                name = data[0].name,
+                state = data[0].state,
+                location = data[0].location,
+                type= data[0].type,
+                classroom= classroom_mapper.to_api_default(data[2]) if data[2] else None,
+                to_be_replaced= data[0].to_be_replaced
+            )
+        
         return MeanModel(
-            id = mean.entity_id,
-            name = mean.name,
-            state = mean.state,
-            location = mean.location,
-            type= mean.type,
-            classroom_id= mean.classroom.entity_id if mean.classroom else None,
-            to_be_replaced= mean.to_be_replaced
-        )
+                id = data[0].entity_id,
+                name = data[0].name,
+                state = data[0].state,
+                location = data[0].location,
+                type= data[0].type,
+                classroom= classroom_mapper.to_api_default(data[1]) if data[1] else None,
+                to_be_replaced= data[0].to_be_replaced
+            )
        

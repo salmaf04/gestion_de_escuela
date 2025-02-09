@@ -55,7 +55,11 @@ class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,Me
         new_mean.classroom = classroom
         self.session.add(new_mean)
         self.session.commit()
-        return new_mean
+         
+        mean = self.get(
+            filter_params=MeanFilterSchema(id=new_mean.entity_id)
+        )
+        return mean
 
     def delete(self, entity: MeanModel) -> None:
         """
@@ -66,7 +70,7 @@ class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,Me
         self.session.delete(entity)
         self.session.commit()
         
-    def update(self, changes: MeanChangeRequest, entity: MeanModel) -> MeanModel:
+    def update(self, changes: MeanChangeRequest, entity: MeanTable) -> MeanModel:
         """
         Update a mean's information.
         Args:
@@ -80,7 +84,10 @@ class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,Me
         self.session.execute(query)
         self.session.commit()
         
-        mean = entity.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
+        mean = self.get(
+            filter_params=MeanFilterSchema(id=entity.id)
+        )
+
         return mean
         
     def get_by_id(self, id: str) -> MeanTable:
@@ -108,7 +115,6 @@ class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,Me
         query = query.outerjoin(ClassroomTable, ClassroomTable.entity_id == MeanTable.classroom_id)
         filter_set = MeanFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
-        print(self.session.execute(query).all())
         return self.session.execute(query).all()
     
     def get_avaliable_means(self) -> list[MeanTable]:

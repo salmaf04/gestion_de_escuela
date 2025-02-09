@@ -89,7 +89,7 @@ class MeanUpdateService :
     def __init__ (self, session):
         self.repo_instance = MeanRepository(session)
 
-    def update_one(self, changes : MeanChangeRequest , mean : MeanModel ) -> MeanModel: 
+    def update_one(self, changes : MeanChangeRequest , mean : MeanTable ) -> MeanModel: 
         return self.repo_instance.update(changes, mean)
     
 class MeanPaginationService :

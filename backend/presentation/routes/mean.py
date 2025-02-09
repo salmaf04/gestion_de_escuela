@@ -118,7 +118,6 @@ async def mean_update(
     mapper = MeanMapper()
 
     mean = mean_pagination_service.get_mean_by_id(id = id)
-    mean_model = mapper.to_api_default(mean)
 
     if not mean :
         raise HTTPException(
@@ -126,7 +125,7 @@ async def mean_update(
             detail="There is no mean with that id"
         )
 
-    mean_updated = mean_update_service.update_one(changes=filters, mean=mean_model)
+    mean_updated = mean_update_service.update_one(changes=filters, mean=mean)
 
-    return mean_updated
+    return mapper.to_api_default(mean_updated)
 

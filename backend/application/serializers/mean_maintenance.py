@@ -2,6 +2,7 @@ from backend.domain.schemas.mean_maintenance import MeanMaintenanceModel
 from backend.domain.models.tables import MeanMaintenanceTable
 from pydantic import BaseModel
 import uuid
+from backend.application.serializers.mean import MeanMapper
 
 """
 This module defines a mapper for converting mean maintenance data into various API representations.
@@ -94,16 +95,22 @@ class MeanMaintenanceClassroom(BaseModel) :
 
 class MeanMaintenanceMapper :
 
-    def to_api(self, mean_maintenance: MeanMaintenanceTable) -> MeanMaintenanceTable :
+    def to_api(self, big_data): 
+        mean_mapper = MeanMapper()
+        
+        if isinstance(big_data, list) :
+            data = big_data[0]
+        else :
+            data = big_data
+
         return MeanMaintenanceModel(
-            id = mean_maintenance.entity_id,
-            mean = mean_maintenance.mean.name,
-            cost = mean_maintenance.cost,
-            date = mean_maintenance.date.strftime("%d-%m-%Y"),
-            finished = mean_maintenance.finished
+            id = data[0].entity_id,
+            mean = mean_mapper.to_api_default((data[1], data[2])),
+            cost = data[0].cost,
+            date = data[0].date.strftime("%d-%m-%Y"),
+            finished = data[0].finished
         )
     
-
     def to_date(self, data) :
         serialized_values = []
 

@@ -27,6 +27,7 @@ Attributes:
 """
 
 class MeanFilterSet(FilterSet):
+    id = Filter(MeanTable.entity_id)
     name = Filter(MeanTable.name)
     state = InFilter(MeanTable.state)
     location = Filter(MeanTable.location)
@@ -34,6 +35,7 @@ class MeanFilterSet(FilterSet):
     type = Filter(MeanTable.type)
 
 class MeanFilterSchema(BaseModel):
+    id : uuid.UUID | None = None
     name : str | None = None
     state : list[str] | None = None
     location : str | None = None
