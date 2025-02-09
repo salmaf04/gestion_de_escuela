@@ -113,7 +113,7 @@ class UserModel(BaseModel):
     username: str
     email: str
     hashed_password: str 
-    roles: list[str]
+    roles: list[str] | None = None
     type: str
 
 class UserLoginModel(BaseModel):
