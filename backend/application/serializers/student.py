@@ -82,7 +82,7 @@ class StudentMapper :
                 extra_activities= tuple[3].extra_activities,  
                 username= tuple[3].username,
                 hash_password= tuple[3].hashed_password,
-                course_id = course_mapper.to_api(tuple[3].course)
+                course = course_mapper.to_api(tuple[3].course)
             )
             serialized_students.append(student)
         return serialized_students
