@@ -72,7 +72,7 @@ class StudentMapper :
         serialized_students = []
         course_mapper = CourseMapper()
 
-        for tuple in data : 
+        for tuple in data :             
             student = StudentModel(
                 id = tuple[3].id,
                 name= tuple[3].name,

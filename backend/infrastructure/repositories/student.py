@@ -112,8 +112,8 @@ class StudentRepository(IRepository[StudentCreateModel,StudentModel, StudentChan
         query = query.join(SubjectTable, teacher_subject_table.c.subject_id == SubjectTable.entity_id)
         query = query.join(CourseTable, SubjectTable.course_id == CourseTable.entity_id)
         query = query.join(StudentTable, CourseTable.entity_id == StudentTable.course_id)
-        query = query.where(TeacherTable.id == teacher_id)
         query = query.distinct(StudentTable.id)
+        query = query.where(teacher_subject_table.c.teacher_id == teacher_id)
         return self.session.execute(query).all()
 
     
