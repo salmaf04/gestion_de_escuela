@@ -201,7 +201,7 @@ class TeacherMapper :
         subject_mapper = SubjectMapper()
         data = big_data[0]
         teacher_subject_to_evaluate = big_data[1]
-
+        student = teacher_subject_to_evaluate[0][1]
         subjects_to_evaluate = self.subjects_to_evaluate(teacher_subject_to_evaluate)
         index = 0
 
@@ -225,13 +225,10 @@ class TeacherMapper :
                     valoration= teacher[0].average_valoration,
                     salary=teacher[0].salary,
                     alert=teacher[0].less_than_three_valoration,
-                    subject_to_evaluate = subjects_to_evaluate[index].subjects_to_evaluate
+                    subject_to_evaluate = subjects_to_evaluate[index].subjects_to_evaluate if index < len(subjects_to_evaluate) else self.to_subject_list(student.course.subjects)
                 )
-
-                
-
+                index += 1
                 serialized_values.append(new_teacher_with_subjects)
-
         return serialized_values
     
 
@@ -263,7 +260,6 @@ class TeacherMapper :
                     serialized_values.append(new_teacher)
                     subjects = student.course.subjects
         
-        print(serialized_values)
         return serialized_values
     
 

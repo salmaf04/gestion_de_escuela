@@ -153,8 +153,8 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
         query = query.join(CourseTable, SubjectTable.course_id == CourseTable.entity_id)
         query = query.join(StudentTable, CourseTable.entity_id == StudentTable.course_id)
         query = query.where(StudentTable.id == student_id)
+        query = query.distinct(TeacherTable.id)
         query = query.order_by(TeacherTable.id)
-
         return self.session.execute(query).all() , self.get_subjects_to_evualuate(student_id)
     
 

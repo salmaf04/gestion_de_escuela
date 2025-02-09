@@ -86,9 +86,7 @@ class MeanMaintenanceRepository(IRepository[MeanMaintenanceCreateModel,MeanMaint
         Returns:
             Matching MeanMaintenanceTable instance or None
         """
-        print(id)
         result = self.session.query(MeanMaintenanceTable).filter(MeanMaintenanceTable.entity_id == id).scalar()
-        print(result)
         return result
 
     def get(self, filter_params: MeanMaintenanceFilterSchema) -> list[MeanMaintenanceTable]:
