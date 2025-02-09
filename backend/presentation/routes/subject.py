@@ -131,10 +131,10 @@ async def read_subject(
             detail="There is no subject with that id"
         )
 
-    subjects_mapped = {}    
-     
-    for i, subject in enumerate(subjects) :
-        subjects_mapped[i] = mapper.to_api(subject)
+    subjects_mapped = []
+
+    for subject in subjects :
+        subjects_mapped.append(mapper.to_api(subject))
         
     return subjects_mapped
 
@@ -153,7 +153,6 @@ async def update_subject(
     mapper = SubjectMapper()
 
     subject = subject_pagination_service.get_subject_by_id(id = id)
-    subject_model = mapper.to_api(subject)
 
     if not subject :
         raise HTTPException(
@@ -161,6 +160,6 @@ async def update_subject(
             detail="There is no subject with that id"
         )
    
-    subject_updated = subject_update_service.update_one(changes=filter_params, subject=subject_model)
+    subject_updated = subject_update_service.update_one(changes=filter_params, subject=subject)
 
-    return subject_updated
+    return mapper.to_api(subject_updated)

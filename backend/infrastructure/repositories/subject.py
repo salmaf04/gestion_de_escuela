@@ -1,7 +1,7 @@
 from sqlalchemy import select, update
 from backend.domain.filters.subject import SubjectFilterSet , SubjectFilterSchema, SubjectChangeRequest
 from backend.domain.schemas.subject import SubjectCreateModel, SubjectModel
-from backend.domain.models.tables import SubjectTable, CourseTable, StudentTable, teacher_subject_table
+from backend.domain.models.tables import SubjectTable, CourseTable, StudentTable, teacher_subject_table, ClassroomTable
 import uuid
 from backend.application.services.classroom import ClassroomPaginationService
 from backend.application.services.course import CoursePaginationService
@@ -37,14 +37,19 @@ class SubjectRepository(IRepository[SubjectCreateModel,SubjectTable, SubjectChan
         classroom.subjects.append(new_subject)
         self.session.add(new_subject)
         self.session.commit()
-        return new_subject
+        
+        subject = self.get(
+            filter_params=SubjectFilterSchema(id=new_subject.entity_id)
+        )
+
+        return subject
 
     def delete(self, entity: SubjectTable) -> None:
         """Delete a subject from the database."""
         self.session.delete(entity)
         self.session.commit()
 
-    def update(self, changes: SubjectChangeRequest, entity: SubjectModel) -> SubjectTable:
+    def update(self, changes: SubjectChangeRequest, entity: SubjectTable) -> SubjectTable:
         """
         Update a subject's information.
         Args:
@@ -53,12 +58,15 @@ class SubjectRepository(IRepository[SubjectCreateModel,SubjectTable, SubjectChan
         Returns:
             Updated SubjectTable instance
         """
-        query = update(SubjectTable).where(SubjectTable.entity_id == entity.id)
+        query = update(SubjectTable).where(SubjectTable.entity_id == entity.entity_id)
         query = query.values(changes.model_dump(exclude_unset=True, exclude_none=True))
         self.session.execute(query)
         self.session.commit()
         
-        subject = entity.model_copy(update=changes.model_dump(exclude_unset=True, exclude_none=True))
+        subject = self.get(
+            filter_params=SubjectFilterSchema(id=entity.entity_id)
+        )
+
         return subject
            
     def get_by_id(self, id: str) -> SubjectTable:
@@ -81,10 +89,12 @@ class SubjectRepository(IRepository[SubjectCreateModel,SubjectTable, SubjectChan
         Returns:
             List of matching SubjectTable instances
         """
-        query = select(SubjectTable)
+        query = select(SubjectTable, ClassroomTable, CourseTable)
+        query = query.join(ClassroomTable, ClassroomTable.entity_id == SubjectTable.classroom_id)
+        query = query.join(CourseTable, CourseTable.entity_id == SubjectTable.course_id)
         filter_set = SubjectFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
-        return self.session.execute(query).scalars().all()
+        return self.session.execute(query).all()
 
     def get_subjects_by_students(self, student_id: str):
         """
@@ -94,7 +104,7 @@ class SubjectRepository(IRepository[SubjectCreateModel,SubjectTable, SubjectChan
         Returns:
             List of tuples containing subject, course, and student information
         """
-        query = select(SubjectTable, CourseTable, StudentTable)
+        query = select(SubjectTable, CourseTable, StudentTable, ClassroomTable)
         query = query.join(SubjectTable, CourseTable.entity_id == SubjectTable.course_id)
         query = query.join(StudentTable, CourseTable.entity_id == StudentTable.course_id)
         query = query.where(StudentTable.id == student_id)

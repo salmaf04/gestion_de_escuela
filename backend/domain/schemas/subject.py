@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 import uuid
+from backend.domain.schemas.classroom import ClassroomModelPost
+from backend.domain.schemas.course import CourseModel
 
 """
 This module defines Pydantic models for representing subject data in the application.
@@ -40,8 +42,8 @@ class SubjectModel(BaseModel):
     name: str
     hourly_load: int
     study_program: int
-    classroom_id : uuid.UUID | None
-    course_id : uuid.UUID   
+    classroom : ClassroomModelPost | None
+    course : CourseModel | None
     
 class SubjectCreateModel(BaseModel):
     name: str

@@ -27,14 +27,14 @@ Attributes:
 
 class SubjectFilterSet(FilterSet):
     name = InFilter(SubjectTable.name)
-    id = InFilter(SubjectTable.entity_id)
+    id = Filter(SubjectTable.entity_id)
     hourly_load = RangeFilter(SubjectTable.hourly_load)
     study_program = RangeFilter(SubjectTable.study_program)
     course_id = Filter(SubjectTable.course_id)
 
 class SubjectFilterSchema(BaseModel):
     name : list[str] | None = None
-    id : list[str] | None = None
+    id : uuid.UUID | str | None = None
     hourly_load : tuple[int, int] | None = None
     study_program : tuple[int, int] | None = None
     course_id : str | None = None

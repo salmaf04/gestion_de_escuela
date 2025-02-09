@@ -92,7 +92,7 @@ class SubjectUpdateService :
     def __init__(self, session):
         self.repo_instance = SubjectRepository(session)
 
-    def update_one(self, changes : SubjectChangeRequest , subject : SubjectModel ) -> SubjectModel: 
+    def update_one(self, changes : SubjectChangeRequest , subject : SubjectTable ) -> SubjectModel: 
         return self.repo_instance.update(changes, subject)
 
 class SubjectPaginationService :

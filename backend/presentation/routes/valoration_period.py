@@ -32,7 +32,7 @@ Raises:
 router = APIRouter()
 
 @router.patch(
-    "/valoration_period/",
+    "/valoration_period",
     response_model=ValorationPeriodChangeRequest,
     status_code=status.HTTP_200_OK
 )
