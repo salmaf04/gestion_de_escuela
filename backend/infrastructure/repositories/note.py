@@ -144,6 +144,7 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         query = query.join(StudentTable, StudentNoteTable.student_id == StudentTable.entity_id)
         query = query.join(TeacherTable, StudentNoteTable.teacher_id == TeacherTable.entity_id)
         query = query.join(SubjectTable, StudentNoteTable.subject_id == SubjectTable.entity_id)
+        query = query.join(sub_query, StudentNoteTable.subject_id == sub_query.c.subject_id)
         query = query.join(CourseTable, StudentTable.course_id == CourseTable.entity_id)
         query = query.where(
             StudentNoteTable.subject_id.in_(
