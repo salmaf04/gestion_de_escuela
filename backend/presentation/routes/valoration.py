@@ -51,9 +51,7 @@ async def create_valoration(
     mapper = ValorationMapper()
 
     valoration_filter_by_student_id = ValorationFilterSchema(student_id=valoration_input.student_id, teacher_id=valoration_input.teacher_id)
-    valoration_check = valoration_pagination_service.get_valoration(filter_params=valoration_filter_by_student_id)
     
-
     response = valoration_service.create_valoration(valoration=valoration_input)
 
     return mapper.to_api(response)
