@@ -5,7 +5,6 @@ import {AppContext} from "../../../App.tsx";
 import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {AsignaturaCreateAdapter} from "../adapters/AsignaturaCreateAdapter.ts";
-import {getQueryParamsFromObject} from "../../../utils/utils.ts";
 
 const endpoint = EndpointEnum.ASIGNATURAS
 
@@ -42,7 +41,7 @@ export const useApiAsignatura = () => {
     }
     const updateAsignatura = async (id: string, asignatura: Partial<AsignaturaCreateAdapter>) => {
         setIsLoading(true)
-        const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(asignatura))
+        const res = await apiRequest.patchApi(endpoint, id, asignatura)
         if (!res.ok)
             setError!(new Error(res.statusText))
         await getAsignaturas()
