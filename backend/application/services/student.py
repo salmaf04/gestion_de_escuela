@@ -101,7 +101,7 @@ class StudentUpdateService :
     def __init__(self, session):
         self.repo_instance = StudentRepository(session)
 
-    def update_one(self, changes : StudentChangeRequest , student : StudentModel ) -> StudentModel: 
+    def update_one(self, changes : StudentChangeRequest , student : StudentTable ) -> StudentModel: 
         return self.repo_instance.update(changes, student)
         
 class StudentPaginationService :

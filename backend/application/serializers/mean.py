@@ -38,4 +38,15 @@ class MeanMapper() :
             ))
 
         return serialized_data
+    
+    def to_api_default(self, mean: MeanTable) -> MeanModel :
+        return MeanModel(
+            id = mean.entity_id,
+            name = mean.name,
+            state = mean.state,
+            location = mean.location,
+            type= mean.type,
+            classroom_id= mean.classroom.entity_id if mean.classroom else None,
+            to_be_replaced= mean.to_be_replaced
+        )
        

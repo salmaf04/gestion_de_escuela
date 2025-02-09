@@ -40,7 +40,7 @@ class StudentRepository(IRepository[StudentCreateModel,StudentModel, StudentChan
         self.session.delete(entity)        
         self.session.commit()
 
-    def update(self, changes: StudentChangeRequest, entity: StudentModel) -> StudentModel:
+    def update(self, changes: StudentChangeRequest, entity: StudentTable) -> StudentModel:
         """
         Update a student's information.
         Args:
@@ -49,13 +49,16 @@ class StudentRepository(IRepository[StudentCreateModel,StudentModel, StudentChan
         Returns:
             Updated StudentModel instance
         """
-    
         table_entity = self.get_by_id(id=entity.id)
         for key, value in changes.model_dump(exclude_unset=True, exclude_none=True).items():
             setattr(table_entity, key, value)
         self.session.commit()
 
-        return entity
+        student_course = select(StudentTable, CourseTable)
+        student_course = student_course.join(CourseTable, StudentTable.course_id == CourseTable.entity_id)
+        student_course = student_course.where(StudentTable.entity_id == entity.id)
+
+        return self.session.execute(student_course).first()
     
     def get_by_id(self, id: str) -> StudentTable:
         """Retrieve a student by their ID."""

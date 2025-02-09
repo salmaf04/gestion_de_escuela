@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.mean import MeanCreateModel, MeanModel
-from backend.domain.models.tables import MeanTable , TechnologicalMeanTable , TeachingMaterialTable, OthersTable, MeanMaintenanceTable, teacher_request_mean_table
+from backend.domain.models.tables import MeanTable , TechnologicalMeanTable , TeachingMaterialTable, OthersTable, MeanMaintenanceTable, teacher_request_mean_table, ClassroomTable
 from sqlalchemy import and_
 import uuid
 from sqlalchemy import select, update, and_
@@ -23,7 +23,7 @@ class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,Me
         """Initialize repository with database session."""
         super().__init__(session)
 
-    def create(self, entity: MeanCreateModel) -> MeanTable:
+    def create(self, entity: MeanCreateModel, classroom: ClassroomTable) -> MeanTable:
         """
         Create a new mean/resource in the database.
         Handles different types of means (technological, teaching material, other).
@@ -40,9 +40,6 @@ class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,Me
             "other": OthersTable,
         }
         
-        classroom_pagination_service = ClassroomPaginationService()
-        classroom = classroom_pagination_service.get_classroom_by_id(session=self.session, id=entity.classroom_id)
-
         mean_dict = entity.model_dump()
         mean_type = table_to_insert.get(entity.type, None)
     

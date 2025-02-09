@@ -72,9 +72,11 @@ Dependencies:
 class MeanCreateService() :
     def __init__ (self, session):
         self.repo_instance = MeanRepository(session)
+        self.classroom_pagination_service = ClassroomPaginationService(session)
 
     def mean_create(self, mean: MeanCreateModel) -> MeanTable :
-        return self.repo_instance.create(mean)
+        classroom = self.classroom_pagination_service.get_classroom_by_id(id=mean.classroom_id)
+        return self.repo_instance.create(mean, classroom=classroom)
     
 class MeanDeletionService:
     def __init__ (self, session):
