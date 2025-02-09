@@ -228,6 +228,8 @@ class TeacherMapper :
                     subject_to_evaluate = subjects_to_evaluate[index].subjects_to_evaluate
                 )
 
+                
+
                 serialized_values.append(new_teacher_with_subjects)
 
         return serialized_values
@@ -252,15 +254,16 @@ class TeacherMapper :
                 
                 serialized_values.append(new_teacher)
                 subjects = student.course.subjects
-              
-            elif teacher_val.teacher_id != data[i+1][0].teacher_id :
+               
+            elif note.teacher_id != data[i+1][0].teacher_id :
                     new_teacher = TeacherSubjectToEvaluate(
                         subjects_to_evaluate = self.to_subject_list(subjects)
                     )
 
                     serialized_values.append(new_teacher)
                     subjects = student.course.subjects
-
+        
+        print(serialized_values)
         return serialized_values
     
 
