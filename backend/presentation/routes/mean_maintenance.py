@@ -95,10 +95,7 @@ async def read_mean_maintenance(
         mean_maintenances = mean_maintenance_pagination_service.get_mean_maintenance(filter_params=filters)
 
         if not mean_maintenances :
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="There is no mean_maintenance with that fields"
-            )
+            return []
     
         mean_maintenances_mapped = []
         
