@@ -58,7 +58,7 @@ async def create_mean(
 
     response = mean_service.mean_create(mean=model_input)
 
-    return mapper.to_api(response)
+    return mapper.to_api_default(response)
 
 
 @router.delete(
@@ -118,7 +118,7 @@ async def mean_update(
     mapper = MeanMapper()
 
     mean = mean_pagination_service.get_mean_by_id(id = id)
-    mean_model = mapper.to_api(mean)
+    mean_model = mapper.to_api_default(mean)
 
     if not mean :
         raise HTTPException(

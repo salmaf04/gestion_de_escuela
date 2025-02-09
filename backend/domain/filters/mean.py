@@ -2,6 +2,7 @@ from sqlalchemy_filterset import FilterSet, Filter, InFilter, BooleanFilter
 from pydantic import BaseModel
 from backend.domain.models.tables import MeanTable
 from typing import Optional
+import uuid
 
 """
 This module defines filter sets and schemas for managing means using SQLAlchemy and Pydantic.
@@ -42,4 +43,4 @@ class MeanFilterSchema(BaseModel):
 class MeanChangeRequest(BaseModel) :
     state : Optional[str] = None
     location : Optional[str] = None
-    classroom_id : Optional[str] = None
+    classroom_id : Optional[uuid.UUID] = None

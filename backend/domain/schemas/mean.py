@@ -94,7 +94,6 @@ class MeanCreateModel(BaseModel):
     state: str
     location: str 
     classroom_id: uuid.UUID
-    requested_by: str
     type: str
 
     @field_validator('state')

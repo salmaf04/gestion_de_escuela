@@ -192,10 +192,11 @@ class TeacherMapper :
     def to_teachers_by_students(self, data) :
         serialized_values = []
         teacher_ids = []
+        subject_mapper = SubjectMapper()
 
         for teacher in data :
             if teacher[0].id in teacher_ids :
-                serialized_values[len(serialized_values)-1].subjects.append(teacher[1].name)
+                serialized_values[len(serialized_values)-1].subjects.append(subject_mapper.to_api(teacher[1]))
             else :
                 teacher_ids.append(teacher[0].id)
                 new_teacher = TeacherModel(
@@ -207,7 +208,9 @@ class TeacherMapper :
                     contract_type= teacher[0].contract_type,
                     experience= teacher[0].experience,
                     username= teacher[0].username,
-                    subjects=[teacher[1].name],
+                    subjects=[
+                        subject_mapper.to_api(teacher[1])
+                    ],
                     valoration= teacher[0].average_valoration,
                     salary=teacher[0].salary,
                     alert=teacher[0].less_than_three_valoration
