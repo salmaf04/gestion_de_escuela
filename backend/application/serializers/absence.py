@@ -23,11 +23,14 @@ class SubjectByStudentByTeacher(BaseModel) :
     dates : list[str]
     absences_total : int
 
+class DateAbsence(BaseModel) :
+    date : datetime
+    absence_id : uuid.UUID
 
 class AbscenceBySubject(BaseModel) :
     student : StudentModel
     subject : SubjectModel
-    dates : list[datetime]
+    dates : list[DateAbsence]
     absences_total : int
 
 class AbsenceMapper :
@@ -54,13 +57,23 @@ class AbsenceMapper :
                     AbscenceBySubject(
                         student=student_mapper.to_api((absence[1],absence[3])),
                         subject=subject_mapper.to_api(absence[2]),
-                        dates=[absence[0].date],
+                        dates=[
+                            DateAbsence(
+                                date=absence[0].date,
+                                absence_id=absence[0].entity_id
+                            )
+                        ],
                         absences_total=total[index][2]
                     ) 
                 )
                 index += 1
             else :
-                serialized_values[len(serialized_values)-1].dates.append(absence[0].date)
+                serialized_values[len(serialized_values)-1].dates.append(
+                    DateAbsence(
+                        date=absence[0].date,
+                        absence_id=absence[0].entity_id
+                    )
+                )
                 
 
         return serialized_values
