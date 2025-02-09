@@ -6,7 +6,6 @@ import apiRequest from "../../../api/apiRequest.ts";
 import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import {INotaLocal} from "../models/INotaLocal.ts";
 import {NotaAdapter} from "../adapters/NotaAdapter.ts";
-import {getQueryParamsFromObject} from "../../../utils/utils.ts";
 
 const endpoint = EndpointEnum.NOTAS;
 
@@ -48,7 +47,7 @@ export const useApiNotas = () => {
 
     const updateNota = async (id: string, nota: Partial<INotaDB>) => {
         setIsLoading(true);
-        const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(nota))
+        const res = await apiRequest.patchApi(endpoint, id, nota)
         if (!res.ok)
             setError!(new Error(res.statusText));
         await getNotas()
