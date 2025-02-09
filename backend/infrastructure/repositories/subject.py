@@ -38,9 +38,7 @@ class SubjectRepository(IRepository[SubjectCreateModel,SubjectTable, SubjectChan
         self.session.add(new_subject)
         self.session.commit()
         
-        subject = self.get(
-            filter_params=SubjectFilterSchema(id=new_subject.entity_id)
-        )
+        subject = self.get_by_id(id=new_subject.entity_id)
 
         return subject
 
@@ -63,9 +61,7 @@ class SubjectRepository(IRepository[SubjectCreateModel,SubjectTable, SubjectChan
         self.session.execute(query)
         self.session.commit()
         
-        subject = self.get(
-            filter_params=SubjectFilterSchema(id=entity.entity_id)
-        )
+        subject = self.get_by_id(id=entity.entity_id)
 
         return subject
            
@@ -89,12 +85,10 @@ class SubjectRepository(IRepository[SubjectCreateModel,SubjectTable, SubjectChan
         Returns:
             List of matching SubjectTable instances
         """
-        query = select(SubjectTable, ClassroomTable, CourseTable)
-        query = query.join(ClassroomTable, ClassroomTable.entity_id == SubjectTable.classroom_id)
-        query = query.join(CourseTable, CourseTable.entity_id == SubjectTable.course_id)
+        query = select(SubjectTable)
         filter_set = SubjectFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
-        return self.session.execute(query).all()
+        return self.session.execute(query).scalars().all()
 
     def get_subjects_by_students(self, student_id: str):
         """
@@ -104,7 +98,7 @@ class SubjectRepository(IRepository[SubjectCreateModel,SubjectTable, SubjectChan
         Returns:
             List of tuples containing subject, course, and student information
         """
-        query = select(SubjectTable, CourseTable, StudentTable, ClassroomTable)
+        query = select(SubjectTable, CourseTable, StudentTable)
         query = query.join(SubjectTable, CourseTable.entity_id == SubjectTable.course_id)
         query = query.join(StudentTable, CourseTable.entity_id == StudentTable.course_id)
         query = query.where(StudentTable.id == student_id)

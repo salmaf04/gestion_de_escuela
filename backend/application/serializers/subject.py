@@ -29,24 +29,18 @@ Dependencies:
 
 class SubjectMapper :
 
-    def to_api(self, data) -> SubjectModel :
+    def to_api(self, subject: SubjectTable) -> SubjectModel :
         classroom_mapper = ClassroomMapper()
         course_mapper = CourseMapper()
-        
-        if isinstance(data, list) :
-            data = data[0]
-
-        subject = data[0]
-        classroom = data[1]
-        course = data[2]
-
+        print(subject)
+        print('hola')
         return SubjectModel(
             id = subject.entity_id,
             name= subject.name,
             hourly_load= subject.hourly_load,
             study_program= subject.study_program,
-            classroom = classroom_mapper.to_api_default(classroom) if classroom else None,
-            course = course_mapper.to_api(course) if course else None
+            classroom = classroom_mapper.to_api_default(subject.classroom) if subject.classroom else None,
+            course = course_mapper.to_api(subject.course) if subject.course else None
         )
     
     def to_subjects_by_students(self, data) :
@@ -69,6 +63,8 @@ class SubjectMapper :
     
     def to_subjects_by_teacher(self, data) :
         serialized_values = []
+        classroom_mapper = ClassroomMapper()
+        course_mapper = CourseMapper()
 
         for subject in data :
             new_subject = SubjectModel(
@@ -76,8 +72,8 @@ class SubjectMapper :
                 name= subject[0].name,
                 hourly_load= subject[0].hourly_load,
                 study_program= subject[0].study_program,
-                classroom_id= subject[0].classroom_id if subject[0].classroom_id else None,
-                course_id = subject[0].course_id
+                classroom = classroom_mapper.to_api_default(subject[0].classroom) if subject[0].classroom else None,
+                course = course_mapper.to_api(subject[0].course) if subject[0].course else None
             )
             serialized_values.append(new_subject)
 
