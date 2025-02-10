@@ -6,7 +6,7 @@ export default function LeftSideLogin(){
     return (
         <div className={'bg-indigo-500 p-10 size-full'}>
             <div className={'w-fit'}>
-                <h1 className={'text-white font-bold text-4xl'}>EduManager</h1>
+                <h1 className={'text-white font-bold text-4xl'}>Académica</h1>
                 <p className={'text-lg text-indigo-50 text-end'}>te da la bienvenida</p>
             </div>
             <div className={'w-full h-full '}>
