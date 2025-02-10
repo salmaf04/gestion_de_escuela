@@ -53,12 +53,13 @@ class ValorationMapper :
 
             mapped_valoration =  ValorationModel(
                 id = valoration.entity_id,
-                teacher = teacher_mapper.to_api(valoration.teacher) if valoration.teacher else None,
+                teacher = teacher_mapper.to_api(valoration.teacher),
+                student= student_mapper.to_api((valoration.student, valoration.course)) if valoration.student else None,
                 subject = subject_mapper.to_api(valoration.subject),
                 course = course_mapper.to_api(valoration.course),
                 grade = note
             )
-            return mapped_valoration.model_dump(exclude_unset=True, exclude_none=True)
+            return mapped_valoration
     
     def to_valoration_by_subject(self, data) :
         started = False
