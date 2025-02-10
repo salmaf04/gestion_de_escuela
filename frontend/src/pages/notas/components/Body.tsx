@@ -8,15 +8,21 @@ import {RolesEnum} from "../../../api/RolesEnum.ts";
 export default function Body(){
     const {dataTable, setEditting, onDeleteTableItem, isGetLoading} = useContext(NotasContext)
     const {allowRoles} = useContext(AppContext)
-    let header = NotaAdapter.Properties.slice(allowRoles!([RolesEnum.STUDENT])? 2 : 1)
-    if (!allowRoles!([RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.ADMIN])) {
+    let header: string[] = []
+    if (allowRoles!([RolesEnum.STUDENT])) {
+        header = ['Profesor', 'Asignatura', "Últ. Modificación", 'Nota']
+    }else
+    if (allowRoles!([RolesEnum.SECRETARY])) {
+        header = NotaAdapter.Properties.slice(1)
+    }else
         header = ['Estudiante', 'Asignatura', "Últ. Modificación", 'Nota']
-    }
+
     return(
             <Table
                 className={'h-5/6'}
                 isLoading={isGetLoading!}
-                Data={dataTable ?? []} header={header}
+                Data={dataTable ?? []}
+                header={header}
                    onRemoveRow={(index) => {
                        onDeleteTableItem!(index)
                    }}
