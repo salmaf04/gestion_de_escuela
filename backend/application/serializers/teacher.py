@@ -200,9 +200,13 @@ class TeacherMapper :
         teacher_ids = []
         subject_mapper = SubjectMapper()
         data = big_data[0]
-        teacher_subject_to_evaluate = big_data[1]
-        student = teacher_subject_to_evaluate[0][1]
-        subjects_to_evaluate = self.subjects_to_evaluate(teacher_subject_to_evaluate)
+        teacher_subject_to_evaluate = big_data[1] 
+        if teacher_subject_to_evaluate :
+            student = teacher_subject_to_evaluate[0][1] 
+            subjects_to_evaluate = self.subjects_to_evaluate(teacher_subject_to_evaluate)
+        else :
+            subjects_to_evaluate = []
+            student = data[0][3]
         index = 0
 
         for teacher in data :
