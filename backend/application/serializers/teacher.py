@@ -210,6 +210,7 @@ class TeacherMapper :
             student = teacher_subject_to_evaluate[0][1] 
             subjects_to_evaluate = self.subjects_to_evaluate(teacher_subject_to_evaluate)
         else :
+            move = False
             subjects_to_evaluate = []
             student = data[0][3]
         
