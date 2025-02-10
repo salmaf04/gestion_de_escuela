@@ -66,6 +66,10 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         entity.note_value = changes.note_value
         self.session.commit()
         
+        update_stmt = update(StudentNoteTable).where(StudentNoteTable.entity_id == entity.entity_id).values(last_modified_by=modified_by)
+        self.session.execute(update_stmt)
+        self.session.commit()
+
         new_note = self.get(
             NoteFilterSchema(id=entity.entity_id)
         )
@@ -89,6 +93,7 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         query = query.join(TeacherTable, StudentNoteTable.teacher_id == TeacherTable.entity_id)
         query = query.join(SubjectTable, StudentNoteTable.subject_id == SubjectTable.entity_id)
         query = query.join(user_alias, StudentNoteTable.last_modified_by == user_alias.entity_id)
+        query = query.order_by(StudentNoteTable.entity_id)
 
         filter_set = NoteFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True)) 
@@ -138,13 +143,17 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         Returns:
             List of StudentNoteTable instances
         """
-        query = select(StudentNoteTable, StudentTable, TeacherTable, SubjectTable, CourseTable)
+
+        user_alias = aliased(UserTable)
+
+        query = select(StudentNoteTable, StudentTable, TeacherTable, SubjectTable, CourseTable, user_alias)
         query = query.join(StudentTable, StudentNoteTable.student_id == StudentTable.entity_id)
         query = query.join(TeacherTable, StudentNoteTable.teacher_id == TeacherTable.entity_id)
         query = query.join(SubjectTable, StudentNoteTable.subject_id == SubjectTable.entity_id)
         query = query.join(CourseTable, StudentTable.course_id == CourseTable.entity_id)
+        query = query.join(user_alias, StudentNoteTable.last_modified_by == user_alias.entity_id)
         query = query.where(StudentNoteTable.student_id == student_id)
-        query = query.order_by(StudentNoteTable.subject_id)
+        query = query.order_by(StudentNoteTable.entity_id)
         return self.session.execute(query).all()
     
     def get_note_by_student_by_teacher(self, teacher_id: str):
@@ -168,6 +177,7 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
                 )
             )
         )
+        query = query.order_by(StudentNoteTable.entity_id)
         return self.session.execute(query).all()
        
     
