@@ -94,7 +94,7 @@ class TeacherSubjectToEvaluate(BaseModel) :
     subjects_to_evaluate : list[SubjectModel] = []
 
 class TeacherByStudent(TeacherModel) :
-    subject_to_evaluate : list[SubjectModel]
+    subject_to_evaluate : list[SubjectModel] = []
 
 class TeacherMapper :
 
