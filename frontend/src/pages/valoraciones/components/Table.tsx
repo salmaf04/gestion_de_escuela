@@ -15,7 +15,7 @@ const Table: React.FC<ProfesoresTableProps> = ({ title, items, headers, showHead
 
     return (
         <>
-            <h1 className={' font-semibold text-lg'}>{title} </h1>
+
                 <table className="mb-10 min-w-full divide-y">
                     <thead>
                     <tr>

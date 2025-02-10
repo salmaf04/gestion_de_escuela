@@ -216,10 +216,11 @@ function App() {
                                     {allowRoles(Screens.Usuarios.allowedRoles) &&
                                         <Route path={'/usuarios'} element={<UsuariosScreen/>}/>
                                     }
+                                    <Route path={'/valoraciones'} element={<ValoracionesScreen/>}/>
 
                                     <Route path={'/funcionalidades'} element={<FuncionalidadesScreen/>}/>
 
-                                    <Route path={'/valoraciones'} element={<ValoracionesScreen/>}/>
+
 
                                 </Routes>
                             </div>
