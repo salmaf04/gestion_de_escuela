@@ -33,7 +33,7 @@ class SanctionRepository(IRepository[SanctionCreateModel,SanctionTable, None,Non
         new_sanction = SanctionTable(**entity.model_dump(exclude_unset=True, exclude_none=True))
         new_sanction.teacher = teacher
         teacher.sanctions.append(new_sanction)
-        teacher.salary -= entity.amount
+        teacher.salary -= entity.amount if teacher.salary-entity.amount >= 0 else 0
         self.session.add(new_sanction)
         self.session.commit()
         return new_sanction
