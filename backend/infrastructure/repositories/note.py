@@ -1,11 +1,12 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.note import NoteCreateModel
-from backend.domain.models.tables import StudentNoteTable, StudentTable, TeacherTable, SubjectTable, teacher_subject_table, CourseTable
+from backend.domain.models.tables import StudentNoteTable, StudentTable, TeacherTable, SubjectTable, teacher_subject_table, CourseTable, UserTable
 from backend.application.services.student import StudentPaginationService
 from backend.application.services.subject import SubjectPaginationService
 from backend.application.services.teacher import TeacherPaginationService
 from backend.domain.filters.note import NoteFilterSet , NoteFilterSchema, NoteChangeRequest
-from sqlalchemy import select, func, update
+from sqlalchemy import select, func, update, and_
+from sqlalchemy.orm import aliased
 from backend.application.services.student import UpdateNoteAverageService
 from .base import IRepository
 
@@ -79,11 +80,16 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
 
     def get(self, filter_params: NoteFilterSchema) -> list[StudentNoteTable]:
         """Get notes based on filter parameters."""
-        query = select(StudentNoteTable, StudentTable, TeacherTable, SubjectTable, CourseTable)
+        
+        user_alias = aliased(UserTable)
+        
+        query = select(StudentNoteTable, StudentTable, TeacherTable, SubjectTable, CourseTable , user_alias)
         query = query.join(StudentTable, StudentNoteTable.student_id == StudentTable.entity_id)
         query = query.join(CourseTable, StudentTable.course_id == CourseTable.entity_id)
         query = query.join(TeacherTable, StudentNoteTable.teacher_id == TeacherTable.entity_id)
         query = query.join(SubjectTable, StudentNoteTable.subject_id == SubjectTable.entity_id)
+        query = query.join(user_alias, StudentNoteTable.last_modified_by == user_alias.entity_id)
+
         filter_set = NoteFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True)) 
         return self.session.execute(query).all()
@@ -142,16 +148,19 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
         return self.session.execute(query).all()
     
     def get_note_by_student_by_teacher(self, teacher_id: str):
+        user_alias = aliased(UserTable)
+
         sub_query = select(teacher_subject_table.c.subject_id)
         sub_query = sub_query.where(teacher_subject_table.c.teacher_id == teacher_id)
         sub_query = sub_query.subquery()
 
-        query = select(StudentNoteTable, StudentTable, TeacherTable, SubjectTable,sub_query.c.subject_id, CourseTable)
+        query = select(StudentNoteTable, StudentTable, TeacherTable, SubjectTable,sub_query.c.subject_id, CourseTable, user_alias)
         query = query.join(StudentTable, StudentNoteTable.student_id == StudentTable.entity_id)
         query = query.join(TeacherTable, StudentNoteTable.teacher_id == TeacherTable.entity_id)
         query = query.join(SubjectTable, StudentNoteTable.subject_id == SubjectTable.entity_id)
         query = query.join(sub_query, StudentNoteTable.subject_id == sub_query.c.subject_id)
         query = query.join(CourseTable, StudentTable.course_id == CourseTable.entity_id)
+        query = query.join(user_alias, StudentNoteTable.last_modified_by == user_alias.entity_id)
         query = query.where(
             StudentNoteTable.subject_id.in_(
                 select(
