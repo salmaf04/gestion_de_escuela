@@ -58,7 +58,7 @@ export const useApiAusencias = () => {
         const res = await apiRequest.deleteApi(endpoint, id);
         if (!res.ok)
             setError!(new Error(res.statusText));
-        getAusencias()
+        await getAusencias()
         setIsLoading(false);
     };
 

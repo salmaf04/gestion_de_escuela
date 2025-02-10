@@ -36,6 +36,7 @@ export default function DateModal() {
                     header={['Fecha']}
                     onRemoveRow={(index) => {
                         deleteAusencia(index)
+                        setEditting!(undefined)
                     }}
                     onEditRow={(index) => {
                         setShowEditModal(index)

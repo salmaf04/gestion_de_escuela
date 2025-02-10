@@ -41,7 +41,7 @@ export const useApiNotas = () => {
         const res = await apiRequest.postApi(endpoint, nota);
         if (!res.ok)
             setError!(new Error(res.statusText));
-        await getNotas()
+        getNotas()
         setIsLoading(false);
     };
 
@@ -50,7 +50,7 @@ export const useApiNotas = () => {
         const res = await apiRequest.patchApi(endpoint, id, nota)
         if (!res.ok)
             setError!(new Error(res.statusText));
-        await getNotas()
+        getNotas()
         setIsLoading(false);
     };
 

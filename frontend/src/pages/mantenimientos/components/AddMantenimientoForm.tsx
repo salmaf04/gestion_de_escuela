@@ -34,6 +34,8 @@ export default function AddMantenimientoForm() {
             onEditTableItem!(data)
         else
             onAddTableItem!(data)
+        setShowModal!(false);
+        setEditting!(undefined);
     }
 
     const mediosSelect: ISelect[] = medios?.map((item: MedioGetAdapter) => {
@@ -49,31 +51,36 @@ export default function AddMantenimientoForm() {
                 <h2 className="text-2xl text-indigo-600 text-center font-bold group mb-4">{`${editting ? 'Editar Registro' : 'Añadir Registro'}`}</h2>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className={'grid grid-cols-2 gap-y-1 gap-x-10'}>
-                        <div className={'w-full mb-4'}>
-                            <Select
-                                {...register(`mean_id`, {
-                                    required: true,
-                                })}
-                                label={'Mantenimiento'}
-                                labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
-                                data={mediosSelect}
-                                control={control}
-                                defaultValue={editting && medios!.find((item) => item.name === editting?.mean_name)!.id}
-                            />
-                        </div>
-                        <div className="group mb-4">
-                            <label
-                                className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Fecha</label>
-                            <input
-                                type="date"
-                                {...register("date", {
-                                    required: "true"
-                                })}
-                                className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
-                                defaultValue={reverseDate(editting?.date)}
+                        {!editting &&
+                            <>
+                                <div className={'w-full mb-4'}>
+                                    <Select
+                                        {...register(`mean_id`, {
+                                            required: true,
+                                        })}
+                                        label={'Mantenimiento'}
+                                        labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
+                                        data={mediosSelect}
+                                        control={control}
+                                    />
+                                </div>
+                                <div className="group mb-4">
+                                    <label
+                                        className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Fecha</label>
+                                    <input
+                                        type="date"
+                                        {...register("date", {
+                                            required: "true"
+                                        })}
+                                        className={"rounded-lg h-10 w-full p-3 text-indigo-950 focus:outline-indigo-600 bg-indigo-50 text-sm"}
+                                    />
+                                </div>
+                            </>
 
-                            />
-                        </div>
+
+                        }
+
+
                         <div className="group mb-4">
                             <label
                                 className="text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold ">Costo</label>

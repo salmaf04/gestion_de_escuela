@@ -4,15 +4,13 @@ import {AppContext} from "../../../App.tsx";
 import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {IMantenimientoLocal} from "../models/IMantenimientoLocal.ts";
-import {useApiMedio} from "../../medios/hooks/useApiMedios.ts";
 import {IMantenimientoDB} from "../models/IMantenimientoDB.ts";
 
 const endpoint = EndpointEnum.MANTENIMIENTOS
 
 export const useApiMantenimiento = () => {
     const [isLoading, setIsLoading] = useState(false)
-    const {setError, mantenimientos: mantenimientosAppContext, setMantenimientos: setMantenimientosAppContext, medios} = useContext(AppContext)
-    const {getMedios} = useApiMedio()
+    const {setError, mantenimientos: mantenimientosAppContext, setMantenimientos: setMantenimientosAppContext} = useContext(AppContext)
 
     const getMantenimientos = async () => {
         setIsLoading(true)
@@ -20,12 +18,11 @@ export const useApiMantenimiento = () => {
             setIsLoading(false)
         }
         const res = await apiRequest.getApi(endpoint)
-        await getMedios()
         if (res.ok) {
             const data: IMantenimientoDB[] = await res.json()
 
             const mantenimientoArray: IMantenimientoLocal[] = Object.values(data)
-                .map((mantenimiento: IMantenimientoDB) => new MantenimientoGetAdapter(mantenimiento, medios!.find((item) => item.name === mantenimiento.mean)!))
+                .map((mantenimiento: IMantenimientoDB) => new MantenimientoGetAdapter(mantenimiento))
             setMantenimientosAppContext!(mantenimientoArray)
         } else {
             setError!(new Error(res.statusText))
