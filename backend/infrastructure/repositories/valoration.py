@@ -55,13 +55,15 @@ class ValorationRepository(IRepository[ValorationCreateModel,TeacherNoteTable, N
     def get(self, filter_params: ValorationFilterSchema) -> list[TeacherNoteTable] :
         valoration_avg = select(TeacherNoteTable.teacher_id , TeacherNoteTable.subject_id, (func.sum(TeacherNoteTable.grade)/func.count()).label("valoration")) 
         valoration_avg = valoration_avg.group_by(TeacherNoteTable.teacher_id , TeacherNoteTable.subject_id)
+        print(self.session.execute(valoration_avg).all())
         valoration_avg = valoration_avg.subquery()
         
-        query = select(TeacherNoteTable, valoration_avg.c.valoration)
-        query = query.join(valoration_avg, TeacherNoteTable.teacher_id == valoration_avg.c.teacher_id)
+        query = select(TeacherTable, SubjectTable, valoration_avg.c.valoration)
+        query = query.join(valoration_avg, TeacherTable.id == valoration_avg.c.teacher_id)
+        query = query.join(SubjectTable, SubjectTable.entity_id == valoration_avg.c.subject_id)
+        query = query.order_by(TeacherTable.id)
         filter_set = ValorationFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
-        query = query.distinct(TeacherNoteTable.teacher_id , TeacherNoteTable.subject_id)
         return self.session.execute(query).all()
    
     def get_valoration_by_teacher_id(self, teacher_id: str) :

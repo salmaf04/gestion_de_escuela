@@ -4,6 +4,9 @@ from backend.application.serializers.teacher import TeacherMapper
 from backend.application.serializers.student import StudentMapper
 from backend.application.serializers.subject import SubjectMapper
 from backend.application.serializers.course import CourseMapper
+from pydantic import BaseModel
+from backend.domain.schemas.teacher import TeacherModel
+from backend.domain.schemas.subject import SubjectModel
 
 """
 This module defines a mapper for converting valoration data into API representations.
@@ -26,6 +29,12 @@ Dependencies:
     - ValorationModel, TeacherValoration, and TeacherSubjectValoration for API data representation.
     - TeacherNoteTable for database representation.
 """
+
+class ValorationSecretary(BaseModel) :
+    teacher : TeacherModel
+    subject : SubjectModel
+    average_valoration : float
+
 class ValorationMapper :
 
     def to_api(self, data) -> ValorationModel :
@@ -48,14 +57,13 @@ class ValorationMapper :
             )
             return mapped_valoration
         else :     
-            note = data[1]
-            valoration = data[0]
-            mapped_valoration =  ValorationModel(
-                id = valoration.entity_id,
-                teacher = teacher_mapper.to_api(valoration.teacher),
-                subject = subject_mapper.to_api(valoration.subject),
-                course = course_mapper.to_api(valoration.course),
-                grade = note
+            subject = data[1]
+            teacher = data[0]
+            note = data[2]
+            mapped_valoration =  ValorationSecretary(
+                teacher = teacher_mapper.to_api(teacher),
+                subject = subject_mapper.to_api(subject),
+                average_valoration = note
             )
             return mapped_valoration.model_dump(exclude_unset=True, exclude_none=True)
     
