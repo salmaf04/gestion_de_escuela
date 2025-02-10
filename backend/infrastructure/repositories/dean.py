@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from backend.domain.schemas.dean import DeanCreateModel, DeanModel
-from backend.domain.models.tables import DeanTable
+from backend.domain.models.tables import DeanTable, UserTable
 from sqlalchemy import and_, update
 import uuid
 from sqlalchemy import select, delete
@@ -39,6 +39,9 @@ class DeanRepository(IRepository[DeanCreateModel, DeanModel, DeanChangeRequest, 
     
     def delete(self, entity: DeanModel) -> None :
         delete_statement = delete(DeanTable).where(DeanTable.entity_id == entity.id)
+        update_type = update(UserTable).where(UserTable.entity_id == entity.id).values(type="teacher")
+        self.session.execute(update_type)
+        self.session.commit()
         self.session.execute(delete_statement)
         self.session.commit()
 
