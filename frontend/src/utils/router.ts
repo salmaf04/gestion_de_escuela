@@ -11,6 +11,7 @@ import CursoIcon from '../assets/curso.svg'
 import AusenciaIcon from '../assets/ausencia.svg'
 import UsersIcon from '../assets/users.svg'
 import FunctIcon from '../assets/charts.svg'
+import Valoraciones from '../assets/valoraraciones.svg'
 
 export const Screens = {
     Info: new ScreenType('Sobre mí', UserIcon, '/info', [RolesEnum.TEACHER, RolesEnum.STUDENT,RolesEnum.SECRETARY, RolesEnum.ADMIN, RolesEnum.DEAN]),
@@ -24,7 +25,7 @@ export const Screens = {
     Cursos: new ScreenType('Cursos', CursoIcon, '/curso', [RolesEnum.SECRETARY, RolesEnum.DEAN]),
     Ausencias: new ScreenType('Ausencias', AusenciaIcon, '/ausencias', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
     Usuarios: new ScreenType('Usuarios', UsersIcon, '/usuarios', [RolesEnum.SECRETARY]),
-    Valoraciones: new ScreenType('Valoraciones', FunctIcon, '/valoraciones', [ RolesEnum.SECRETARY, RolesEnum.DEAN]),
+    Valoraciones: new ScreenType('Valoraciones', Valoraciones, '/valoraciones', [ RolesEnum.SECRETARY, RolesEnum.DEAN]),
     Funcionalidades: new ScreenType('Funcionalidades', FunctIcon, '/funcionalidades', [ RolesEnum.SECRETARY, RolesEnum.DEAN]),
 
 }
