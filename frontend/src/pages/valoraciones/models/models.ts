@@ -1,5 +1,4 @@
 export type ValoracionPorAsignaturaDeProfesorGetDB = {
-    id: string;
     teacher: {
         id: string;
         name: string;
@@ -19,10 +18,6 @@ export type ValoracionPorAsignaturaDeProfesorGetDB = {
                 number: number;
                 location: string;
                 capacity: number;
-                id: string;
-            };
-            course: {
-                year: number;
                 id: string;
             };
         }[];
@@ -49,5 +44,5 @@ export type ValoracionPorAsignaturaDeProfesorGetDB = {
         year: number;
         id: string;
     };
-    grade: number;
+    average_valoration: number;
 };

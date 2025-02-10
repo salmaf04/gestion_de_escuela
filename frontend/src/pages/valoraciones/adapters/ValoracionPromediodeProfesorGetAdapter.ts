@@ -1,7 +1,7 @@
 import { ValoracionPorAsignaturaDeProfesorGetDB } from "../models/models.ts";
 
 export class ValoracionPorAsignaturadeProfesorGetAdapter {
-    id: string;
+
     teacherName: string;
     teacherLastname: string;
     subjectName: string;
@@ -9,12 +9,11 @@ export class ValoracionPorAsignaturadeProfesorGetAdapter {
     valoration : number
 
     constructor(data: ValoracionPorAsignaturaDeProfesorGetDB) {
-        this.id = data.id;
         this.teacherName = data.teacher.name;
         this.teacherLastname = data.teacher.lastname;
         this.subjectName = data.subject.name;
-        this.courseYear = data.course.year;
-        this.valoration = data.grade
+        this.courseYear = data.subject.course.year;
+        this.valoration = data.average_valoration
     }
     [key: string]: any;
 }
