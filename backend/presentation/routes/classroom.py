@@ -42,7 +42,18 @@ async def create_classroom(
     session: Session = Depends(get_db)
 ) :
     classroom_service = ClassroomCreateService(session)
+    classroom_pagination_service = ClassroomPaginationService(session)
     mapper = ClassroomMapper()
+    
+    check_classroom = classroom_pagination_service.get_classroom(
+        filter_params=ClassroomFilterSchema(number=classroom_input.number)
+    )
+
+    if check_classroom :
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="There is already a classroom with that number"
+        )
 
     response = classroom_service.create_classroom(classroom=classroom_input)
 
