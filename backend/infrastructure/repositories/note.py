@@ -125,11 +125,14 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
                 StudentTable.id.label('student_id'),
                 TeacherTable.name.label('teacher_name'),
                 TeacherTable.average_valoration.label('average_teacher_valoration'),
-                TeacherTable.id
+                TeacherTable.id,
+                query.c.subject_id
             )
             .join(second_query, second_query.c.student_id == StudentTable.id)
+            .join(query, query.c.student_id == StudentTable.id)
             .join(StudentNoteTable, StudentNoteTable.student_id == StudentTable.id)
             .join(TeacherTable, TeacherTable.id == StudentNoteTable.teacher_id)
+            .where(StudentNoteTable.subject_id == query.c.subject_id)
             .distinct(TeacherTable.id, StudentTable.id)
             .order_by(StudentTable.id, TeacherTable.id)
         )
