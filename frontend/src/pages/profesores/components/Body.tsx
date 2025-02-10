@@ -44,10 +44,7 @@ export default function Body() {
             hoverColor: 'hover:bg-green-100',
             title: "Valorar",
             icon: <img src={ValorarIcon} alt={'Valorar'}/>,
-            isVisible: (id: string) => {
-                console.log(valorationPeriod!.open && profesores!.find((profesor) => profesor.id === id)!.subject_to_evaluate.length > 0)
-                return valorationPeriod!.open && profesores!.find((profesor) => profesor.id === id)!.subject_to_evaluate.length > 0
-            }
+            isVisible: (id: string) => valorationPeriod!.open && profesores!.find((profesor) => profesor.id === id)!.subject_to_evaluate.length > 0
         })
     }else{
         data = dataTable!
