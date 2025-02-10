@@ -124,15 +124,18 @@ class NoteRepository(IRepository[NoteCreateModel,StudentNoteTable, NoteChangeReq
                 StudentTable.name.label('student_name'),
                 StudentTable.id.label('student_id'),
                 TeacherTable.name.label('teacher_name'),
-                func.avg(TeacherTable.average_valoration).label('average_teacher_valoration')
+                TeacherTable.average_valoration.label('average_teacher_valoration'),
+                TeacherTable.id
             )
             .join(second_query, second_query.c.student_id == StudentTable.id)
             .join(StudentNoteTable, StudentNoteTable.student_id == StudentTable.id)
             .join(TeacherTable, TeacherTable.id == StudentNoteTable.teacher_id)
-            .group_by(StudentTable.name, StudentTable.id, TeacherTable.name)
+            .distinct(TeacherTable.id, StudentTable.id)
+            .order_by(StudentTable.id, TeacherTable.id)
         )
-
-        results = self.session.execute(combined_query).fetchall()
+          
+        results = self.session.execute(combined_query).all()
+        print(results)
         return results
     
     def get_note_by_student(self, student_id: str) -> list[StudentNoteTable]:
