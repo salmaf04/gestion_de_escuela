@@ -50,7 +50,7 @@ class ValorationMapper :
         else :     
             note = data[1]
             valoration = data[0]
-
+            print('hola')
             mapped_valoration =  ValorationModel(
                 id = valoration.entity_id,
                 teacher = teacher_mapper.to_api(valoration.teacher),
@@ -58,7 +58,7 @@ class ValorationMapper :
                 course = course_mapper.to_api(valoration.course),
                 grade = note
             )
-            return mapped_valoration
+            return mapped_valoration.model_dump(exclude_unset=True, exclude_none=True)
     
     def to_valoration_by_subject(self, data) :
         started = False
