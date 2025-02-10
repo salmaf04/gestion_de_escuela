@@ -89,10 +89,7 @@ class TeacherTechnologicalClassroom(BaseModel) :
     specialty : str
     mean : str
     state : str
-
-class TeacherSubjectToEvaluate(BaseModel) :
-    subjects_to_evaluate : list[SubjectModel] = []
-
+    
 class TeacherByStudent(TeacherModel) :
     subject_to_evaluate : list[SubjectModel] = []
 
@@ -207,34 +204,34 @@ class TeacherMapper :
         else :
             subjects_to_evaluate = []
             student = data[0][3]
-        index = 0
         
         for teacher in data :
-            if teacher[0].id in teacher_ids :
-                serialized_values[len(serialized_values)-1].subjects.append(subject_mapper.to_api(teacher[1]))
-            else :
-                teacher_ids.append(teacher[0].id)
-                subjects_to_check = set(student.course.subjects.copy()).intersection(teacher[0].teacher_subject_association.copy())
-                subjects = list(subjects_to_check) if subjects_to_check else []
-                new_teacher_with_subjects = TeacherByStudent(
-                    id = teacher[0].id,
-                    name= teacher[0].name,
-                    lastname= teacher[0].lastname,
-                    email= teacher[0].email,
-                    specialty= teacher[0].specialty,
-                    contract_type= teacher[0].contract_type,
-                    experience= teacher[0].experience,
-                    username= teacher[0].username,
-                    subjects=[
-                        subject_mapper.to_api(teacher[1])
-                    ],
-                    valoration= teacher[0].average_valoration,
-                    salary=teacher[0].salary,
-                    alert=teacher[0].less_than_three_valoration,
-                    subject_to_evaluate = subjects_to_evaluate[index].subjects_to_evaluate if index < len(subjects_to_evaluate) else self.to_subject_list(subjects)
-                )
-                index += 1
-                serialized_values.append(new_teacher_with_subjects)
+            subjects_to_check = set(student.course.subjects.copy()).intersection(teacher[0].teacher_subject_association.copy())
+            subjects = list(subjects_to_check) if subjects_to_check else []
+            new_teacher_with_subjects = TeacherByStudent(
+                id = teacher[0].id,
+                name= teacher[0].name,
+                lastname= teacher[0].lastname,
+                email= teacher[0].email,
+                specialty= teacher[0].specialty,
+                contract_type= teacher[0].contract_type,
+                experience= teacher[0].experience,
+                username= teacher[0].username,
+                subjects=self.to_subject_list(teacher[0].teacher_subject_association),
+                valoration= teacher[0].average_valoration,
+                salary=teacher[0].salary,
+                alert=teacher[0].less_than_three_valoration
+            )
+            for tuple in subjects_to_evaluate :
+                move = False
+                if tuple[0] == teacher[0].id :
+                    move = True
+                    new_teacher_with_subjects.subject_to_evaluate=tuple[1]
+                    break
+            if not move :
+                new_teacher_with_subjects.subject_to_evaluate=self.to_subject_list(subjects)
+
+            serialized_values.append(new_teacher_with_subjects)
 
         return serialized_values
     
@@ -257,23 +254,14 @@ class TeacherMapper :
             student = teacher_val[1]
             
             if note.subject in subjects :
-                print(note.subject) 
                 subjects.remove(note.subject)
             
             if i == len(data) - 1 : 
-                new_teacher = TeacherSubjectToEvaluate(
-                        subjects_to_evaluate = self.to_subject_list(subjects)
-                    )
-                
-                serialized_values.append(new_teacher)
+                serialized_values.append([note.teacher_id, self.to_subject_list(subjects)])
                 subjects = student.course.subjects.copy()
                
             elif note.teacher_id != data[i+1][0].teacher_id :
-                    new_teacher = TeacherSubjectToEvaluate(
-                        subjects_to_evaluate = self.to_subject_list(subjects)
-                    )
-
-                    serialized_values.append(new_teacher)
+                    serialized_values.append([note.teacher_id, self.to_subject_list(subjects)])
                     subjects = student.course.subjects.copy()
        
         return serialized_values
