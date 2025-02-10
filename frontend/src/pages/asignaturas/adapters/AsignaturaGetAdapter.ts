@@ -10,6 +10,7 @@ export class AsignaturaGetAdapter {
     study_program: number;
     classroom: AulaGetDB;
     course: ICursoGetDB
+    average_note: number
 
     constructor(asignaturaGetDB: AsignaturaGetDB) {
         this.id = asignaturaGetDB.id;
@@ -18,5 +19,6 @@ export class AsignaturaGetAdapter {
         this.study_program = asignaturaGetDB.study_program;
         this.classroom = asignaturaGetDB.classroom;
         this.course = asignaturaGetDB.course;
+        this.average_note = asignaturaGetDB.average_note
     }
 }

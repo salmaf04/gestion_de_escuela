@@ -9,6 +9,7 @@ export type AsignaturaGetDB = {
     study_program: number;
     classroom: AulaGetDB;
     course: ICursoGetDB
+    average_note: number
 }
 
 export type AsignaturaGetResponse = AsignaturaGetDB[]

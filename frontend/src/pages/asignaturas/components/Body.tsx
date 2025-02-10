@@ -8,13 +8,16 @@ import {RolesEnum} from "../../../api/RolesEnum.ts";
 export default function Body(){
     const {dataTable, setEditting, onDeleteTableItem, isLoading} = useContext(AsignaturaContext)
     const {allowRoles} = useContext(AppContext)
-
+    const header = AsignaturaGetAdapter.Properties.slice(1)
+    if (allowRoles!([RolesEnum.TEACHER]))
+        header.push('Mi Valoración')
     return(
 
             <Table
                 className={'h-5/6'}
                 isLoading={isLoading!}
-                Data={dataTable ?? []} header={AsignaturaGetAdapter.Properties.slice(1)}
+                Data={dataTable ?? []}
+                header={header}
                    onRemoveRow={(index) => {
                        onDeleteTableItem!(index)
                    }}

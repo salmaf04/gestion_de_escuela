@@ -2,15 +2,16 @@
 import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
-import { AsignaturaCreateAdapter } from "./adapters/AsignaturaCreateAdapter.ts";
+import {AsignaturaCreateAdapter} from "./adapters/AsignaturaCreateAdapter.ts";
 import AddAsignaturaForm from "./components/AddAsignaturaForm.tsx";
-import { useApiAsignatura } from "./hooks/useApiAsignatura.ts";
+import {useApiAsignatura} from "./hooks/useApiAsignatura.ts";
 import {AppContext} from "../../App.tsx";
 import {AulaGetAdapter} from "../aulas/adapters/AulaGetAdapter.ts";
 import {DBObject} from "../../types.ts";
 import {AsignaturaGetAdapter} from "./adapters/AsignaturaGetAdapter.ts";
 import {useApiAulas} from "../aulas/hooks/useApiAulas.ts";
 import {useApiCurso} from "../cursos/hooks/useApiCurso.ts";
+import {RolesEnum} from "../../api/RolesEnum.ts";
 
 interface IAsignaturaContext {
     searchText?: string;
@@ -37,6 +38,7 @@ interface IAsignaturaTableRow extends DBObject {
     classroom_name: string
     study_program: number;
     course_year: number
+    average_note?: number
 }
 
 export const AsignaturaContext = createContext<IAsignaturaContext>({});
@@ -47,7 +49,7 @@ export default function AsignaturasScreen() {
     const [showModal, setShowModal] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const {asignaturas, aulas} = useContext(AppContext)
+    const {asignaturas, aulas, allowRoles} = useContext(AppContext)
     const {getAulas} = useApiAulas()
     const {getCursos} = useApiCurso()
     const {
@@ -85,14 +87,25 @@ export default function AsignaturasScreen() {
     console.log(asignaturas)
     const data = useMemo<IAsignaturaTableRow[]>(() => {
         return asignaturas?.map((item) => {
-            return {
-                id: item!.id,
-                name: item.name ?? "Desconocido",
-                hourly_load: item.hourly_load ?? 0,
-                study_program: item.study_program ?? 0,
-                classroom_name: `Aula ${item?.classroom?.number ?? "Desconocida"}`,
-                course_year: item.course?.year ?? 0
-            }
+            if (allowRoles!([RolesEnum.TEACHER]))
+                return {
+                    id: item!.id,
+                    name: item.name ?? "Desconocido",
+                    hourly_load: item.hourly_load ?? 0,
+                    study_program: item.study_program ?? 0,
+                    classroom_name: `Aula ${item?.classroom?.number ?? "Desconocida"}`,
+                    course_year: item.course?.year ?? 0,
+                    average_note: item?.average_note ?? "No Disponible"
+                }
+            else
+                return {
+                    id: item!.id,
+                    name: item.name ?? "Desconocido",
+                    hourly_load: item.hourly_load ?? 0,
+                    study_program: item.study_program ?? 0,
+                    classroom_name: `Aula ${item?.classroom?.number ?? "Desconocida"}`,
+                    course_year: item.course?.year ?? 0,
+                }
         }) ?? []
     }, [asignaturas]);
 
