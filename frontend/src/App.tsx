@@ -30,6 +30,7 @@ import AusenciasScreen from "./pages/ausencias/AusenciasScreen.tsx";
 import {IUsuarioLocal} from "./pages/usuarios/models/IUsuarioLocal.ts";
 import UsuariosScreen from "./pages/usuarios/UsuariosScreen.tsx";
 import {IValorationPeriod} from "./pages/info/models/IValorationPeriod.ts";
+import ValoracionesScreen from "./pages/valoraciones/ValoracionesScreen.tsx";
 
 
 interface AppContextInterface {
@@ -215,7 +216,10 @@ function App() {
                                     {allowRoles(Screens.Usuarios.allowedRoles) &&
                                         <Route path={'/usuarios'} element={<UsuariosScreen/>}/>
                                     }
+
                                     <Route path={'/funcionalidades'} element={<FuncionalidadesScreen/>}/>
+
+                                    <Route path={'/valoraciones'} element={<ValoracionesScreen/>}/>
 
                                 </Routes>
                             </div>
