@@ -31,6 +31,7 @@ interface INotaTableRow extends DBObject {
     studentName?: string;
     teacherName?: string;
     subjectName?: string;
+    last_modified_by?: string
     note_value: number;
 }
 
@@ -74,18 +75,30 @@ export default function NotasScreen() {
             if (allowRoles!([RolesEnum.STUDENT])) {
                 return {
                     id: item.id,
-                    teacherName: item.teacher?.name,
+                    teacherName: `${item.teacher.name} ${item.teacher.lastname}`,
                     subjectName: item.subject?.name,
+                    last_modified_by: `${item.last_modified_by.name} ${item.last_modified_by.lastname}`,
                     note_value: item?.note_value
                 }
             }
-            return {
-                id: item.id,
-                studentName: item?.student?.name,
-                teacherName: item.teacher?.name,
-                subjectName: item.subject?.name,
-                note_value: item?.note_value
-            }
+            if (allowRoles!([RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.ADMIN]))
+                return {
+                    id: item.id,
+                    studentName: `${item.student.name} ${item.student.lastname}`,
+                    teacherName: `${item.teacher.name} ${item.teacher.lastname}`,
+                    subjectName: item.subject?.name,
+                    last_modified_by: `${item.last_modified_by.name} ${item.last_modified_by.lastname}`,
+                    note_value: item?.note_value
+                }
+            else
+                return {
+                    id: item.id,
+                    studentName: `${item.student.name} ${item.student.lastname}`,
+                    subjectName: item.subject?.name,
+                    last_modified_by: `${item.last_modified_by.name} ${item.last_modified_by.lastname}`,
+                    note_value: item?.note_value
+                }
+
         }) ?? []
     }, [notas]);
 

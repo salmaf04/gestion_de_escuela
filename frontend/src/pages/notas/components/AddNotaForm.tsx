@@ -105,7 +105,7 @@ export default function AddNotaForm() {
                                                     label={'Profesor: '}
                                                     data={profesoresSelect}
                                                     control={control}
-                                                    defaultValue={editting && profesores?.find((item) => item.name === editting?.teacherName)?.id}
+                                                    defaultValue={editting && profesores?.find((item) => `${item.name} ${item.lastname}` === editting?.teacherName)?.id}
                                                 />
                                             </div>
                                         }
@@ -119,7 +119,7 @@ export default function AddNotaForm() {
                                                 label={'Estudiante'}
                                                 data={estudiantesSelect}
                                                 control={control}
-                                                defaultValue={editting && estudiantes?.find((item) => item.name === editting?.studentName)?.id}
+                                                defaultValue={editting && estudiantes?.find((item) => `${item.name} ${item.lastname}` === editting?.studentName)?.id}
 
                                             />
                                         </div>

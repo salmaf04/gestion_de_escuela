@@ -13,9 +13,7 @@ export default function SecretariaInfo(){
     useEffect(() => {
         getSecretaria(personalId!)
     }, []);
-    useEffect(() => {
-        updateValorationPeriod(isValorationPeriod)
-    }, [isValorationPeriod]);
+
     const userInfo: UserDataProp[] = [
         {
             name: 'Nombre',
@@ -44,7 +42,7 @@ export default function SecretariaInfo(){
                 <div className={'mt-10'}>
                     <div className={'flex space-x-5'}>
                         <p className={'text-slate-500 font-semibold'}>Período de valoraciones: </p>
-                        <Toggle enabled={isValorationPeriod} setEnabled={setIsValorationPeriod}/>
+                        <Toggle enabled={valorationPeriod?.open ?? false} setEnabled={updateValorationPeriod}/>
                     </div>
                 </div>
             </div>
