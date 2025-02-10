@@ -44,7 +44,18 @@ async def create_course(
     session: Session = Depends(get_db)
 ) :
     course_service = CourseCreateService(session)
+    couse_pagination_service = CoursePaginationService(session)
     mapper = CourseMapper()
+
+    course_check = couse_pagination_service.get_course(
+        filter_params=CourseFilterSchema(year=course_input.year)
+    )
+
+    if course_check :
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="There is already a course with that year"
+        )
 
     response = course_service.create_course(course=course_input)
 
