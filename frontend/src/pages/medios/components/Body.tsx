@@ -24,7 +24,7 @@ export default function Body() {
             hoverColor: 'hover:bg-green-100',
             title: "Solicitar",
             icon: <img src={SolicitarIcon} alt={'Solicitar'}/>,
-            isVisible: (id) => !(medios?.find((aula) => aula.id === id)?.requested_by ?? true)
+            isVisible: (id) => !(medios?.find((aula) => aula.id === id)?.requested_by ?? false)
         }, {
             action: (row) => {
                 devolverMedio(row.id)
