@@ -104,6 +104,13 @@ class MeanMaintenanceUpdateService :
 
     def update_one(self, changes : MeanMaintenanceChangeRequest , mean_maintenance) -> MeanMaintenanceModel:
         return self.repo_instance.update(changes, mean_maintenance)
+    
+class MeanMaintenanceDeleteService :
+    def __init__(self, session):
+        self.repo_instance = MeanMaintenanceRepository(session)
+
+    def delete(self, mean_maintenance : MeanMaintenanceTable) -> None:
+        return self.repo_instance.delete(mean_maintenance)
       
 
     

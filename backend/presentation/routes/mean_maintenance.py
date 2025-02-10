@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from backend.domain.schemas.mean_maintenance import MeanMaintenanceCreateModel, MeanMaintenanceModel
 from sqlalchemy.orm import Session
-from backend.application.services.mean_maintenance import MeanMaintenanceCreateService, MeanMaintenancePaginationService, MeanMaintenanceUpdateService
+from backend.application.services.mean_maintenance import MeanMaintenanceCreateService, MeanMaintenancePaginationService, MeanMaintenanceUpdateService, MeanMaintenanceDeleteService
 from backend.application.serializers.mean_maintenance import MeanMaintenanceMapper, MeanMaintenanceDate
 from backend.configuration import get_db
 from backend.domain.filters.mean_maintenance import MeanMaintenanceFilterSchema, MeanMaintenanceChangeRequest
@@ -133,3 +133,25 @@ async def update_mean_maintenance(
     mean_updated = mean_update_service.update_one(changes=filters, mean_maintenance=mean)
     
     return mapper.to_api(mean_updated)
+
+
+@router.delete(
+    "/mean_maintenance/{id}",
+    status_code=status.HTTP_200_OK
+) 
+async def delete_mean_maintenance(
+    id: str,
+    session: Session = Depends(get_db)
+) :
+    mean_maintenance_pagination_service = MeanMaintenancePaginationService(session)
+    mean_maintenance_delete_service = MeanMaintenanceDeleteService(session)
+
+    mean =mean_maintenance_pagination_service.get_mean_maintenance_by_id(id=id)
+
+    if not mean :
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="There is no mean maintenance with that id"
+        )
+    
+    mean_maintenance_delete_service.delete(mean_maintenance=mean)
