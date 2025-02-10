@@ -17,7 +17,7 @@ export default function InfoScreen() {
         getValorationPeriod()
     }, []);
     return (
-        <div className={'w-full h-dvh flex flex-col py-10 px-20'}>
+        <div className={'w-full h-dvh overflow-y-scroll flex flex-col py-10 px-20'}>
             <div className={'flex space-x-4 w-full justify-between'}>
                 <div className={'flex flex-col'}>
                     <h1 className={'text-3xl text-indigo-600 accent-i font-bold'}>
