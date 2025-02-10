@@ -2,14 +2,17 @@ from backend.domain.schemas.note import NoteModel
 from backend.domain.schemas.student import StudentModel
 from backend.domain.schemas.teacher import TeacherModel
 from backend.domain.schemas.subject import SubjectModel
+from backend.domain.schemas.user import UserModel
 from backend.application.serializers.student import StudentMapper
 from backend.application.serializers.teacher import TeacherMapper
 from backend.application.serializers.subject import SubjectMapper
+from backend.application.serializers.user import UserMapper
 from backend.domain.models.tables import StudentNoteTable
 from pydantic import BaseModel
 import uuid
 from backend.application.services.student import StudentPaginationService
 from fastapi.encoders import jsonable_encoder
+from typing import Union
 
 """
 This module defines a mapper for converting note data into API representations.
@@ -56,7 +59,7 @@ class NoteByTeacher(BaseModel) :
     teacher: TeacherModel
     subject: SubjectModel
     note_value: float
-    last_modified_by: uuid.UUID
+    last_modified_by: UserModel
    
 class NoteMapper :
     def to_api(self, data) -> NoteModel :
@@ -66,13 +69,14 @@ class NoteMapper :
         subject_mapper = SubjectMapper()
         teacher_mapper = TeacherMapper()
         student_mapper = StudentMapper()
+        user_mapper = UserMapper()
         new_item = NoteByTeacher(
             id = data[0].entity_id,
             student = student_mapper.to_api((data[1], data[4])),
             teacher = teacher_mapper.to_api_note(data[2]),
             subject = subject_mapper.to_api(data[3]),
             note_value = data[0].note_value,
-            last_modified_by = data[0].last_modified_by
+            last_modified_by = user_mapper.to_api(data[5])
         )
        
         return new_item
@@ -95,6 +99,7 @@ class NoteMapper :
         subject_mapper = SubjectMapper()
         teacher_mapper = TeacherMapper()
         student_mapper = StudentMapper()
+        user_mapper = UserMapper()
         serialized_values = []
         
         for item in data :
@@ -104,7 +109,7 @@ class NoteMapper :
                 teacher = teacher_mapper.to_api_note(item[2]),
                 subject = subject_mapper.to_api(item[3]),
                 note_value = item[0].note_value,
-                last_modified_by = item[0].last_modified_by
+                last_modified_by = user_mapper.to_api(item[6])
             )
             serialized_values.append(new_item)
 
