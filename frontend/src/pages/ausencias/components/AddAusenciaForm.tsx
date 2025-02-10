@@ -17,7 +17,7 @@ export default function AddAusenciaForm() {
     const {getEstudiantes, isLoading} = useApiEstudiante()
     const {getAsignaturas} = useApiAsignatura()
     const {getProfesores} = useApiProfesor()
-    const {asignaturas, estudiantes} = useContext(AppContext)
+    const {asignaturas, estudiantes, profesores, personalId, typeRole} = useContext(AppContext)
     useEffect(() => {
         getAsignaturas()
         getEstudiantes()
@@ -59,7 +59,7 @@ export default function AddAusenciaForm() {
     }
 
 
-    const estudiantesSelect: ISelect[] = estudiantes?.map((item)=>{
+    let estudiantesSelect: ISelect[] = estudiantes?.map((item)=>{
         return {
             id: item.id,
             name: `${item?.name} ${item?.lastname}`
@@ -69,14 +69,29 @@ export default function AddAusenciaForm() {
     useEffect(() => {
 
     }, []);
-    const asignaturasSelect: ISelect[] = asignaturas?.map((item)=>{
+    let asignaturasSelect: ISelect[] = asignaturas?.map((item)=>{
         return {
             id: item.id,
             name: item?.name
         }
     }) ?? []
 
-
+    if (typeRole === "dean"){
+        asignaturasSelect = profesores!.find((it) => it.id === personalId)!.subjects.map((item)=>{
+            return {
+                id: item.id,
+                name: item?.name
+            }
+        })
+        estudiantesSelect = estudiantes?.filter((item) =>
+            profesores?.find((it)=> it.id === personalId)!.subjects.some((subject) => subject.course?.year === item.course?.year)
+        ).map((item) => {
+            return {
+                id: item.id,
+                name: `${item?.name} ${item?.lastname}`,
+            };
+        }) ?? [];
+    }
 
 
     return (
