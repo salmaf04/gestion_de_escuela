@@ -1,13 +1,9 @@
 import { useApiValoraciones } from "./hooks/useApiValoraciones.ts";
 import Table from "./components/Table.tsx";
-import ExportFuncionalidadesButton from "../../components/ExportFuncionalidadesButton.tsx";
+import ExportValorationButton from "../../components/ExporValoracionesButton.tsx";
 import { FiltrodeMantenimientoGetDB, CostoPromedioGetDB, ValoracionPromediodeProfesorGetDB, ValoracionPromediodeEstudianteGetDB, SalariosdeProfesoresGetDB } from "../../models/models.ts";
 import {ValoracionPorAsignaturadeProfesorGetAdapter} from "./adapters/ValoracionPromediodeProfesorGetAdapter.ts";
-import SearchInput from "../../components/SearchInput.tsx";
-import ExportButton from "../../components/ExportButton.tsx";
-import {MedioGetAdapter} from "../medios/adapters/MedioGetAdapter.ts";
-import {RolesEnum} from "../../api/RolesEnum.ts";
-import AddButton from "../../components/AddButton.tsx";
+
 
 type Adapter = ValoracionPorAsignaturadeProfesorGetAdapter | FiltrodeMantenimientoGetDB | CostoPromedioGetDB | ValoracionPromediodeProfesorGetDB | ValoracionPromediodeEstudianteGetDB | SalariosdeProfesoresGetDB;
 
@@ -34,7 +30,7 @@ function ValoracionesScreen() {
             <div>
                 <div className={'my-4 flex justify-around'}>
                     <h1 className={' my-2 font-bold text-xl text-center'}>{data[0].title}</h1>
-                    <ExportFuncionalidadesButton  data={data} options={data.map(option => option.title)}/>
+                    <ExportValorationButton  data={data} options={data.map(option => option.title)}/>
                 </div>
 
                 <div>
