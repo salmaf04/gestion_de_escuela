@@ -49,7 +49,7 @@ class AbsenceMapper :
         student_mapper = StudentMapper()
         student_subject_ids = []
         index = 0
-
+        
         for absence in absences :
             if (absence[1].entity_id ,absence[2].entity_id) not in student_subject_ids :
                 student_subject_ids.append((absence[1].entity_id ,absence[2].entity_id))

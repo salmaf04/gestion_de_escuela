@@ -115,6 +115,7 @@ class AbsenceRepository(IRepository[AbsenceCreateModel,AbsenceTable, None,Absenc
                 select(teacher_subject_table.c.subject_id).where(teacher_subject_table.c.teacher_id == teacher_id)
             ))
         query = query.group_by(AbsenceTable.subject_id, AbsenceTable.student_id)
+        query = query.order_by(AbsenceTable.student_id, AbsenceTable.subject_id)
         total = self.session.execute(query).all()
 
         final_query = select(AbsenceTable, StudentTable, SubjectTable, CourseTable)
@@ -125,7 +126,7 @@ class AbsenceRepository(IRepository[AbsenceCreateModel,AbsenceTable, None,Absenc
             AbsenceTable.subject_id.in_(
                 select(teacher_subject_table.c.subject_id).where(teacher_subject_table.c.teacher_id == teacher_id)
             ))
-        final_query = final_query.order_by(SubjectTable.entity_id)
+        final_query = final_query.order_by(AbsenceTable.student_id, AbsenceTable.subject_id)
         return self.session.execute(final_query).all(), total
 
     def get_students_by_teacher(self, teacher_id: uuid.UUID) -> list[StudentTable]:

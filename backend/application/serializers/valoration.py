@@ -50,7 +50,6 @@ class ValorationMapper :
         else :     
             note = data[1]
             valoration = data[0]
-            print('hola')
             mapped_valoration =  ValorationModel(
                 id = valoration.entity_id,
                 teacher = teacher_mapper.to_api(valoration.teacher),
