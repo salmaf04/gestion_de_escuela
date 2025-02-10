@@ -33,7 +33,7 @@ export default function Body() {
             hoverColor: 'hover:bg-red-100',
             title: "Devolver",
             icon: <img src={DevolverIcon} alt={'Devolver'}/>,
-            isVisible: (id) => medios?.find((aula) => aula.id === id)?.requested_by ?? "" === personalId
+            isVisible: (id) => (medios?.find((aula) => aula.id === id)?.requested_by ?? "") === personalId
         })
     }
     if (allowRoles!([RolesEnum.ADMIN])){

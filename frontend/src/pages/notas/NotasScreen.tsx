@@ -81,7 +81,7 @@ export default function NotasScreen() {
                     note_value: item?.note_value
                 }
             }
-            if (allowRoles!([RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.ADMIN]))
+            if (allowRoles!([RolesEnum.SECRETARY]))
                 return {
                     id: item.id,
                     studentName: `${item.student.name} ${item.student.lastname}`,
