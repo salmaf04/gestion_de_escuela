@@ -17,7 +17,7 @@ export default function AddNotaForm() {
     const {getEstudiantes, isLoading} = useApiEstudiante()
     const {getAsignaturas} = useApiAsignatura()
     const {getProfesores} = useApiProfesor()
-    const {asignaturas, estudiantes, profesores, allowRoles, personalId} = useContext(AppContext)
+    const {asignaturas, estudiantes, profesores, allowRoles, personalId, typeRole} = useContext(AppContext)
     useEffect(() => {
         getAsignaturas()
         getEstudiantes()
@@ -57,8 +57,7 @@ export default function AddNotaForm() {
         setShowModal!(false)
     }
 
-
-    const estudiantesSelect: ISelect[] = estudiantes?.map((item)=>{
+    let estudiantesSelect: ISelect[] = estudiantes?.map((item)=>{
         return {
             id: item.id,
             name: `${item?.name} ${item?.lastname}`,
@@ -68,12 +67,29 @@ export default function AddNotaForm() {
     if (fields.length ===0){
         append({})
     }
-    const asignaturasSelect: ISelect[] = asignaturas?.map((item)=>{
+    let asignaturasSelect: ISelect[] = asignaturas?.map((item)=>{
         return {
             id: item.id,
             name: item?.name
         }
     }) ?? []
+
+    if (typeRole === "dean"){
+        asignaturasSelect = profesores!.find((it) => it.id === personalId)!.subjects.map((item)=>{
+            return {
+                id: item.id,
+                name: item?.name
+            }
+        })
+        estudiantesSelect = estudiantes?.filter((item) =>
+            profesores?.find((it)=> it.id === personalId)!.subjects.some((subject) => subject.course?.year === item.course?.year)
+        ).map((item) => {
+            return {
+                id: item.id,
+                name: `${item?.name} ${item?.lastname}`,
+            };
+        }) ?? [];
+    }
 
     const profesoresSelect: ISelect[] = profesores?.map((item)=>{
         return {
@@ -114,6 +130,7 @@ export default function AddNotaForm() {
                                             <Select
                                                 {...register(`estudiante${index}`, {
                                                     required: true,
+                                                    disabled: !!editting
                                                 })}
                                                 labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
                                                 label={'Estudiante'}
@@ -127,6 +144,7 @@ export default function AddNotaForm() {
                                             <Select
                                                 {...register(`asignatura${index}`, {
                                                     required: true,
+                                                    disabled: !!editting
                                                 })}
                                                 label={'Asignatura'}
                                                 labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
