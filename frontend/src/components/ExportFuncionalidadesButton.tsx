@@ -38,25 +38,22 @@ function exportDataToPDF(options: string[], data?: dataExport) {
         });
     }
 
-    doc.save('data_report.pdf');
+    doc.save('valoración_de_profesores.pdf');
 }
 
 
 export default function ExportFuncionalidadesButton({data , options }  : ExportButtonProps ) {
 
-    const[select , setSelect] = useState(false)
-
     const handleExport = (options : string[]) => {
         exportDataToPDF(options , data );
-        setSelect(false);
+
     };
 
 
     return (
 
         <>
-            {select && <FunctionalitiesForm onAccept={handleExport} onCancel={() => setSelect(false)} options={options}></FunctionalitiesForm>}
-            <button onClick={() => setSelect(true)} className="flex justify-around items-center gap-2 cursor-pointer transition-all hover:from-indigo-600 hover:to-indigo-600 hover:scale-105 text-indigo-50 font-semibold py-2 px-5 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg ">
+            <button onClick={() => handleExport(['Valoración de Profesores'])} className="flex justify-around items-center gap-2 cursor-pointer transition-all hover:from-indigo-600 hover:to-indigo-600 hover:scale-105 text-indigo-50 font-semibold py-2 px-5 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg ">
                 Exportar
             </button>
         </>
