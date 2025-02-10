@@ -93,8 +93,5 @@ class CoursePaginationService :
     def get_course_by_id(self, id:uuid.UUID ) -> CourseTable :
         return self.repo_instance.get_by_id(id)
     
-    def get_course_by_year(self, year: int) -> CourseTable :
-        return self.repo_instance.get_by_year(year)
-    
     def get_course(self, filter_params: CourseFilterSchema) -> list[CourseTable] :
         return self.repo_instance.get(filter_params)
