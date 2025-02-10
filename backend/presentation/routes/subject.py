@@ -123,7 +123,6 @@ async def read_subject(
         return mapper.to_subjects_by_students(subjects)
     elif subjects_by_teacher :
         subjects = subject_pagination_service.get_subjects_by_teacher(teacher_id=subjects_by_teacher)
-        print(mapper.to_subjects_by_teacher(subjects))
         return mapper.to_subjects_by_teacher(subjects)
 
     if not subjects :
