@@ -236,7 +236,6 @@ class TeacherMapper :
                 index += 1
                 serialized_values.append(new_teacher_with_subjects)
 
-        print(len(serialized_values))
         return serialized_values
     
 
