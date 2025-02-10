@@ -41,11 +41,6 @@ export default function AddAsignaturaForm() {
             name: item.number
         }
     }) ?? []
-    if (aulasSelect?.[0].id != null)
-        aulasSelect.unshift({
-            id: "",
-            name: "Ninguna"
-        })
     return (
         <div className={`fixed z-20 inset-0 bg-black bg-opacity-50 flex justify-center items-center`}>
             <div className="min-h-[30%] bg-white w-1/2 py-6 px-8 rounded-lg">
@@ -85,7 +80,7 @@ export default function AddAsignaturaForm() {
                         <div className={'w-full mb-4'}>
                             <Select
                                 {...register(`classroom_id`, {
-                                    required: false,
+                                    required: true,
                                 })}
                                 label={'Aula'}
                                 labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}

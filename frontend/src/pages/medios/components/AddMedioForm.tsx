@@ -45,11 +45,6 @@ export default function AddMedioForm() {
             name: item.number
         }
     }) ?? []
-    if (aulasSelect?.[0].id != null)
-        aulasSelect.unshift({
-            id: "",
-            name: "Ninguna"
-        })
 
     const statusSelect: ISelect[] = [
         {id: 'good', name: 'Bien'},
@@ -103,7 +98,7 @@ export default function AddMedioForm() {
                         <div className={'w-full mb-4'}>
                             <Select
                                 {...register(`classroom_id`, {
-                                    required: false,
+                                    required: true,
                                 })}
                                 label={'Aula'}
                                 labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
