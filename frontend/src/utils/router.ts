@@ -26,6 +26,6 @@ export const Screens = {
     Ausencias: new ScreenType('Ausencias', AusenciaIcon, '/ausencias', [RolesEnum.TEACHER, RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.STUDENT]),
     Usuarios: new ScreenType('Usuarios', UsersIcon, '/usuarios', [RolesEnum.SECRETARY]),
     Valoraciones: new ScreenType('Valoraciones', Valoraciones, '/valoraciones', [ RolesEnum.SECRETARY, RolesEnum.DEAN]),
-    Funcionalidades: new ScreenType('Funcionalidades', FunctIcon, '/funcionalidades', [ RolesEnum.SECRETARY, RolesEnum.DEAN]),
+    Funcionalidades: new ScreenType('Funcionalidades', FunctIcon, '/funcionalidades', [ RolesEnum.SECRETARY, RolesEnum.DEAN, RolesEnum.ADMIN]),
 
 }
