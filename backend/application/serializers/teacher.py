@@ -135,15 +135,23 @@ class TeacherMapper :
             subjects_list.append(subject_mapper.to_api(subject))
 
         return subjects_list
+    
+    def to_subjects_string(self, subjects) :
+        subjects_list = []
+
+        for subject in subjects :
+            subjects_list.append(subject.name)
+
+        return subjects_list
             
     def to_teachers_with_average(self, data) :
         serialized_values = []
 
-        for teacher, subjects in zip(data[0], data[1]) :
+        for teacher in data :
             new_teacher = TeacherBetterThanEight(
-                name= teacher.name,
-                average_valoration= teacher.average_valoration,
-                subjects= subjects
+                name= teacher[0].name,
+                average_valoration= teacher[0].average_valoration,
+                subjects= self.to_subjects_string(teacher[0].teacher_subject_association)
             )
             serialized_values.append(new_teacher)
 

@@ -84,16 +84,10 @@ class TeacherRepository(IRepository[TeacherCreateModel,TeacherModel, TeacherChan
 
     def get_teachers_average_better_than_8(self) -> tuple[list, list]:
         """Get teachers with average valoration better than 8 and their subjects."""
-        subjects = []
-        query = select(TeacherTable.name, TeacherTable.id, TeacherTable.average_valoration).where(TeacherTable.average_valoration > 8)
+        query = select(TeacherTable).where(TeacherTable.average_valoration > 8)
         results = self.session.execute(query).all()
-        mapper = TeacherMapper()
-
-        for teacher in results:
-            teacher = self.get_by_id(id=teacher.id)
-            subjects.append(mapper.to_subject_list(teacher.teacher_subject_association))
-        return results, subjects
-
+        return results
+    
     def get_teachers_by_technological_classroom(self):
         """Get teachers associated with technological classrooms."""
         query = select(TeacherTable, SubjectTable, ClassroomTable, TechnologicalMeanTable.name, TechnologicalMeanTable.state)   
