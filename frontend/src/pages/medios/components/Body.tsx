@@ -24,7 +24,7 @@ export default function Body() {
             hoverColor: 'hover:bg-green-100',
             title: "Solicitar",
             icon: <img src={SolicitarIcon} alt={'Solicitar'}/>,
-            isVisible: (id) => !medios!.find((aula) => aula.id === id)!.requested_by
+            isVisible: (id) => !(medios?.find((aula) => aula.id === id)?.requested_by ?? true)
         }, {
             action: (row) => {
                 devolverMedio(row.id)
@@ -33,7 +33,7 @@ export default function Body() {
             hoverColor: 'hover:bg-red-100',
             title: "Devolver",
             icon: <img src={DevolverIcon} alt={'Devolver'}/>,
-            isVisible: (id) => medios!.find((aula) => aula.id === id)!.requested_by === personalId
+            isVisible: (id) => medios?.find((aula) => aula.id === id)?.requested_by ?? "" === personalId
         })
     }
     if (allowRoles!([RolesEnum.ADMIN])){
@@ -46,7 +46,7 @@ export default function Body() {
                 hoverColor: 'hover:bg-amber-100',
                 title: "Alerta",
                 icon: <img src={AlertIcon} alt={'Alerta'}/>,
-                isVisible: (row: string) => medios!.find!((medio) => medio.id === row)!.to_be_replaced
+                isVisible: (row: string) => medios?.find((medio) => medio.id === row)?.to_be_replaced ?? false
             }
         )
     }
