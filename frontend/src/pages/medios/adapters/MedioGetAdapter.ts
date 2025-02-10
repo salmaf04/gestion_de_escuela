@@ -2,7 +2,7 @@ import { MedioGetDB } from "../models/MedioGetDB.ts";
 import {AulaGetDB} from "../../aulas/models/AulaGetDB.ts";
 
 export class MedioGetAdapter {
-    static Properties = ['Id', 'Nombre', 'Estado', 'Ubicación', 'Tipo']
+    static Properties = ['Id', 'Nombre', 'Estado', 'Ubicación', "Aula", 'Tipo']
     id: string;
     name: string;
     state: string;

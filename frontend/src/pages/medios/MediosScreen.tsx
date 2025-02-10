@@ -3,7 +3,7 @@ import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import ToolBar from "./components/ToolBar.tsx";
 import Body from "./components/Body.tsx";
 import { MedioCreateAdapter } from "./adapters/MedioCreateAdapter.ts";
-import AddMedioForm from "./components/AddMedioForm.tsx";
+import AddMedioForm, {meanType, stateType} from "./components/AddMedioForm.tsx";
 import {AppContext} from "../../App.tsx";
 import {AulaGetAdapter} from "../aulas/adapters/AulaGetAdapter.ts";
 import {DBObject} from "../../types.ts";
@@ -85,9 +85,10 @@ export default function MediosScreen() {
             return {
                 id: item.id,
                 name: item.name,
-                state: item.state,
+                state: stateType[item.state],
                 location: item.location,
-                type: item.type,
+                classroom_name: `Aula ${item.classroom.number}`,
+                type: meanType[item.type],
             }
         }) ?? []
     }, [medios]);

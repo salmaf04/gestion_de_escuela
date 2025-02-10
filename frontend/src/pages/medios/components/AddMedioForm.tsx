@@ -9,6 +9,17 @@ import {AulaGetAdapter} from "../../aulas/adapters/AulaGetAdapter.ts";
 import {AppContext} from "../../../App.tsx";
 import Select from "../../../components/Select.tsx";
 
+export const stateType: { [key: string]: string } = {
+    good: "Bien",
+    regular: "Regular",
+    bad: "Mal"
+};
+
+export const meanType: { [key: string]: string } = {
+    technological_mean: "Medio Tecnológico",
+    teaching_material: "Material de clases",
+    other: "Otro"
+};
 export default function AddMedioForm() {
     const { register, handleSubmit, control } = useForm<MedioCreateAdapter>();
     const { editting, isEditting, isCreatting, onEditTableItem, onAddTableItem, setEditting, setShowModal } = useContext(MedioContext);
@@ -26,6 +37,7 @@ export default function AddMedioForm() {
             onAddTableItem!(data);
         setShowModal!(false)
     };
+    console.log(aulas)
 
     const aulasSelect: ISelect[] = aulas?.map((item: AulaGetAdapter)=>{
         return {
@@ -33,6 +45,7 @@ export default function AddMedioForm() {
             name: item.number
         }
     }) ?? []
+    console.log(editting)
 
     const statusSelect: ISelect[] = [
         {id: 'good', name: 'Bien'},
@@ -69,6 +82,7 @@ export default function AddMedioForm() {
                                 labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
                                 data={statusSelect}
                                 control={control}
+                                defaultValue={editting && statusSelect!.find((item) => item.name === editting.state)!.id}
                             />
                         </div>
                         <div className="group mb-4">
@@ -90,19 +104,23 @@ export default function AddMedioForm() {
                                 labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
                                 data={aulasSelect}
                                 control={control}
+                                defaultValue={editting && aulas!.find((item) => item.number === editting.classroom_name)!.id}
                             />
                         </div>
-                        <div className={'w-full mb-4'}>
-                            <Select
-                                {...register(`type`, {
-                                    required: true,
-                                })}
-                                label={'Tipo'}
-                                labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
-                                data={typeSelect}
-                                control={control}
-                            />
-                        </div>
+                        {!editting &&
+                            <div className={'w-full mb-4'}>
+                                <Select
+                                    {...register(`type`, {
+                                        required: true,
+                                    })}
+                                    label={'Tipo'}
+                                    labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
+                                    data={typeSelect}
+                                    control={control}
+                                />
+                            </div>
+                        }
+
                     </div>
 
                     <div className="flex space-x-3 justify-center">
