@@ -5,8 +5,6 @@ import {AppContext} from "../../../App.tsx";
 import {EndpointEnum} from "../../../api/EndpointEnum.ts";
 import apiRequest from "../../../api/apiRequest.ts";
 import {MedioCreateAdapter} from "../adapters/MedioCreateAdapter.ts";
-import {useApiAulas} from "../../aulas/hooks/useApiAulas.ts";
-import {getQueryParamsFromObject} from "../../../utils/utils.ts";
 
 const endpoint = EndpointEnum.MEDIOS
 
@@ -41,7 +39,7 @@ export const useApiMedio = () => {
     }
     const updateMedio = async (id: string, medio: Partial<MedioCreateAdapter>) => {
         setIsLoading(true)
-        const res = await apiRequest.patchApi(endpoint, id, {}, getQueryParamsFromObject(medio))
+        const res = await apiRequest.patchApi(endpoint, id, medio)
         if (!res.ok)
             setError!(new Error(res.statusText))
         await getMedios()

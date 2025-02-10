@@ -252,7 +252,7 @@ async def read_teacher(
   
     for  teacher in teachers :
         teachers_mapped.append(mapper.to_api(teacher))
-        
+    
     return teachers_mapped
 
 @router.patch(

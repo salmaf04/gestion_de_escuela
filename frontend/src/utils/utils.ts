@@ -10,9 +10,9 @@ export function reverseDate(date: string): string {
 }
 
 export const rolesDisplayParser = {
-    [RolesEnum.ADMIN]: 'administrador',
-    [RolesEnum.TEACHER]: 'profesor',
-    [RolesEnum.STUDENT]: 'estudiante',
-    [RolesEnum.SECRETARY]: 'secretaria',
-    [RolesEnum.DEAN]: 'decano'
+    [RolesEnum.ADMIN]: 'Administrador',
+    [RolesEnum.TEACHER]: 'Profesor',
+    [RolesEnum.STUDENT]: 'Estudiante',
+    [RolesEnum.SECRETARY]: 'Secretaria',
+    [RolesEnum.DEAN]: 'Decano'
 }

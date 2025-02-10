@@ -17,10 +17,6 @@ export const useApiProfesor = () => {
     const [isLoading, setIsLoading] = useState(false)
     const {setError, profesores: profesoresAppContext, setProfesores: setProfesoresAppContext, setMessage} = useContext(AppContext)
     const [profesor, setProfesor] = useState<ProfesorGetAdapter>()
-    const {getAsignaturas} = useApiAsignatura()
-    useEffect(() => {
-        getAsignaturas()
-    }, []);
     const getProfesores = async () => {
         setIsLoading(true)
         if (profesoresAppContext) {

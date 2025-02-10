@@ -54,11 +54,10 @@ export default function UsuariosScreen() {
                 lastname: item.lastname,
                 email: item.email,
                 roles: item.roles.map((item)=>rolesDisplayParser[item]).join(', '),
-                type: item.type,
+                type: rolesDisplayParser[item.type],
             }
         }) ?? []
     }, [usuarios]);
-
     useEffect(() => {
 
         setDataTable(data)

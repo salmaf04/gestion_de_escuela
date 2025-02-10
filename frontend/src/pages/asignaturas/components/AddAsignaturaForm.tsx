@@ -86,7 +86,7 @@ export default function AddAsignaturaForm() {
                                 labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
                                 data={aulasSelect}
                                 control={control}
-                                defaultValue={editting && aulas!.find((item) => item.number === editting.classroom_name)!.id}
+                                defaultValue={editting && aulas?.find((item) => item.number === editting.classroom_name)?.id}
                             />
                         </div>
                         <div className={'w-full mb-4'}>
