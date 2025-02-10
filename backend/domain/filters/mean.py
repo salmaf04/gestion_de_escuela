@@ -43,6 +43,9 @@ class MeanFilterSchema(BaseModel):
     type : str | None = None
     
 class MeanChangeRequest(BaseModel) :
+    name : Optional[str] = None
+    to_be_replaced : Optional[bool] = None
+    type : Optional[str] = None
     state : Optional[str] = None
     location : Optional[str] = None
     classroom_id : Optional[uuid.UUID] = None
