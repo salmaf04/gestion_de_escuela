@@ -113,6 +113,7 @@ class MeanRepository(IRepository[MeanCreateModel,MeanModel, MeanChangeRequest,Me
         query = select(MeanTable, teacher_request_mean_table.c.teacher_id, ClassroomTable)
         query = query.outerjoin(teacher_request_mean_table, MeanTable.entity_id == teacher_request_mean_table.c.mean_id)
         query = query.outerjoin(ClassroomTable, ClassroomTable.entity_id == MeanTable.classroom_id)
+        query = query.order_by(MeanTable.entity_id)
         filter_set = MeanFilterSet(self.session, query=query)
         query = filter_set.filter_query(filter_params.model_dump(exclude_unset=True,exclude_none=True))
         return self.session.execute(query).all()
