@@ -208,12 +208,14 @@ class TeacherMapper :
             subjects_to_evaluate = []
             student = data[0][3]
         index = 0
-
+        
         for teacher in data :
             if teacher[0].id in teacher_ids :
                 serialized_values[len(serialized_values)-1].subjects.append(subject_mapper.to_api(teacher[1]))
             else :
-                teacher_ids.append(teacher[0].id)        
+                teacher_ids.append(teacher[0].id)
+                subjects_to_check = set(student.course.subjects.copy()).intersection(teacher[0].teacher_subject_association.copy())
+                subjects = list(subjects_to_check) if subjects_to_check else []
                 new_teacher_with_subjects = TeacherByStudent(
                     id = teacher[0].id,
                     name= teacher[0].name,
@@ -229,23 +231,34 @@ class TeacherMapper :
                     valoration= teacher[0].average_valoration,
                     salary=teacher[0].salary,
                     alert=teacher[0].less_than_three_valoration,
-                    subject_to_evaluate = subjects_to_evaluate[index].subjects_to_evaluate if index < len(subjects_to_evaluate) else self.to_subject_list(student.course.subjects)
+                    subject_to_evaluate = subjects_to_evaluate[index].subjects_to_evaluate if index < len(subjects_to_evaluate) else self.to_subject_list(subjects)
                 )
                 index += 1
                 serialized_values.append(new_teacher_with_subjects)
+
+        print(len(serialized_values))
         return serialized_values
     
 
     def subjects_to_evaluate(self, data) :
         serialized_values = []
         student = data[0][1]
-        subjects = student.course.subjects
+        teacher_ids = []
+        subjects_to_check = set(student.course.subjects.copy()).intersection(data[0][0].teacher.teacher_subject_association.copy())
+        subjects = list(subjects_to_check) if subjects_to_check else []
+        teacher_ids.append(data[0][0].teacher.id)
 
         for i, teacher_val in enumerate(data) :
+            if teacher_val[0].teacher_id not in teacher_ids :
+                teacher_ids.append(teacher_val[0].teacher_id)
+                subjects_to_check = set(student.course.subjects.copy()).intersection(teacher_val[0].teacher.teacher_subject_association.copy())
+                subjects = list(subjects_to_check) if subjects_to_check else []
+            
             note = teacher_val[0]
             student = teacher_val[1]
             
             if note.subject in subjects :
+                print(note.subject) 
                 subjects.remove(note.subject)
             
             if i == len(data) - 1 : 
@@ -254,7 +267,7 @@ class TeacherMapper :
                     )
                 
                 serialized_values.append(new_teacher)
-                subjects = student.course.subjects
+                subjects = student.course.subjects.copy()
                
             elif note.teacher_id != data[i+1][0].teacher_id :
                     new_teacher = TeacherSubjectToEvaluate(
@@ -262,8 +275,8 @@ class TeacherMapper :
                     )
 
                     serialized_values.append(new_teacher)
-                    subjects = student.course.subjects
-        
+                    subjects = student.course.subjects.copy()
+       
         return serialized_values
     
 
