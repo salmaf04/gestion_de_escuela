@@ -45,7 +45,11 @@ export default function AddMedioForm() {
             name: item.number
         }
     }) ?? []
-    console.log(editting)
+    if (aulasSelect?.[0].id != null)
+        aulasSelect.unshift({
+            id: "",
+            name: "Ninguna"
+        })
 
     const statusSelect: ISelect[] = [
         {id: 'good', name: 'Bien'},
@@ -57,6 +61,7 @@ export default function AddMedioForm() {
         {id: 'teaching_material', name: 'Material de clases'},
         {id: 'other', name: 'Otro'}
     ]
+
 
     return (
         <div className={`fixed z-20 inset-0 bg-black bg-opacity-50 flex justify-center items-center`}>
@@ -98,13 +103,13 @@ export default function AddMedioForm() {
                         <div className={'w-full mb-4'}>
                             <Select
                                 {...register(`classroom_id`, {
-                                    required: true,
+                                    required: false,
                                 })}
                                 label={'Aula'}
                                 labelClassName={'text-indigo-950 text-xs group-focus-within:text-indigo-500 font-semibold '}
                                 data={aulasSelect}
                                 control={control}
-                                defaultValue={editting && aulas!.find((item) => item.number === editting.classroom_name)!.id}
+                                defaultValue={editting && aulas!.find((item) => item.number === editting.classroom_name)?.id}
                             />
                         </div>
                         {!editting &&

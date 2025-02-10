@@ -1,4 +1,4 @@
 export interface ISelect{
-    id: number | string,
+    id: number | string | null,
     name: string
 }
